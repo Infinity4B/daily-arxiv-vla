@@ -1,5 +1,7 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-10-28 | BLM$_1$: A Boundless Large Model for Cross-Space, Cross-Task, and Cross-Embodiment Learning | http://arxiv.org/abs/2510.24161v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-27 | RoboOmni: Proactive Robot Manipulation in Omni-modal Context | http://arxiv.org/abs/2510.23763v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-27 | UrbanVLA: A Vision-Language-Action Model for Urban Micromobility | http://arxiv.org/abs/2510.23576v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-27 | RobotArena $\infty$: Scalable Robot Benchmarking via Real-to-Sim Translation | http://arxiv.org/abs/2510.23571v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-27 | Dexbotic: Open-Source Vision-Language-Action Toolbox | http://arxiv.org/abs/2510.23511v1 | <details><summary>展开</summary>待生成</details> |
