@@ -1,5 +1,9 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-10-30 | Running VLAs at Real-time Speed | http://arxiv.org/abs/2510.26742v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-30 | RoboOS-NeXT: A Unified Memory-based Framework for Lifelong, Scalable, and Robust Multi-Robot Collaboration | http://arxiv.org/abs/2510.26536v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-30 | Human-in-the-loop Online Rejection Sampling for Robotic Manipulation | http://arxiv.org/abs/2510.26406v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-29 | $π_\texttt{RL}$: Online RL Fine-tuning for Flow-based Vision-Language-Action Models | http://arxiv.org/abs/2510.25889v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-29 | Robotic Assistant: Completing Collaborative Tasks with Dexterous Vision-Language-Action Models | http://arxiv.org/abs/2510.25713v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-29 | Don't Blind Your VLA: Aligning Visual Representations for OOD Generalization | http://arxiv.org/abs/2510.25616v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-29 | NanoVLA: Routing Decoupled Vision-Language Understanding for Nano-sized Generalist Robotic Policies | http://arxiv.org/abs/2510.25122v1 | <details><summary>展开</summary>待生成</details> |
