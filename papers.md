@@ -1,5 +1,17 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-11-04 | XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations | http://arxiv.org/abs/2511.02776v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-03 | Unified Diffusion VLA: Vision-Language-Action Model via Joint Discrete Denoising Diffusion Process | http://arxiv.org/abs/2511.01718v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-03 | PixelVLA: Advancing Pixel-level Understanding in Vision-Language-Action Model | http://arxiv.org/abs/2511.01571v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-03 | RobustVLA: Robustness-Aware Reinforcement Post-Training for Vision-Language-Action Models | http://arxiv.org/abs/2511.01331v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-03 | Embodiment Transfer Learning for Vision-Language-Action Models | http://arxiv.org/abs/2511.01224v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-03 | OmniVLA: Unifiying Multi-Sensor Perception for Physically-Grounded Multimodal VLA | http://arxiv.org/abs/2511.01210v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-02 | Maestro: Orchestrating Robotics Modules with Vision-Language Models for Zero-Shot Generalist Robots | http://arxiv.org/abs/2511.00917v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-01 | iFlyBot-VLA Technical Report | http://arxiv.org/abs/2511.01914v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-31 | Dual-Stream Diffusion for World-Model Augmented Vision-Language-Action Model | http://arxiv.org/abs/2510.27607v2 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-31 | End-to-End Dexterous Arm-Hand VLA Policies via Shared Autonomy: VR Teleoperation Augmented by Autonomous Hand VLA Policy for Efficient Data Collection | http://arxiv.org/abs/2511.00139v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-30 | Self-Improving Vision-Language-Action Models with Data Generation via Residual RL | http://arxiv.org/abs/2511.00091v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-10-30 | Alpamayo-R1: Bridging Reasoning and Action Prediction for Generalizable Autonomous Driving in the Long Tail | http://arxiv.org/abs/2511.00088v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-27 | RoboOmni: Proactive Robot Manipulation in Omni-modal Context | http://arxiv.org/abs/2510.23763v3 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-31 | Dual-Stream Diffusion for World-Model Augmented Vision-Language-Action Model | http://arxiv.org/abs/2510.27607v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-10-31 | EBT-Policy: Energy Unlocks Emergent Physical Reasoning Capabilities | http://arxiv.org/abs/2510.27545v1 | <details><summary>展开</summary>待生成</details> |
