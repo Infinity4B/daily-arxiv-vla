@@ -1,5 +1,8 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-11-06 | Evo-1: Lightweight Vision-Language-Action Model with Preserved Semantic Alignment | http://arxiv.org/abs/2511.04555v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-06 | GraSP-VLA: Graph-based Symbolic Action Representation for Long-Horizon Planning with VLA Policies | http://arxiv.org/abs/2511.04357v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-03 | OmniVLA: Physically-Grounded Multimodal VLA with Unified Multi-Sensor Perception for Robotic Manipulation | http://arxiv.org/abs/2511.01210v2 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-04 | XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations | http://arxiv.org/abs/2511.02776v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-03 | Unified Diffusion VLA: Vision-Language-Action Model via Joint Discrete Denoising Diffusion Process | http://arxiv.org/abs/2511.01718v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-03 | PixelVLA: Advancing Pixel-level Understanding in Vision-Language-Action Model | http://arxiv.org/abs/2511.01571v1 | <details><summary>展开</summary>待生成</details> |
