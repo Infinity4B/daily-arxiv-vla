@@ -1,5 +1,7 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-11-07 | EveryDayVLA: A Vision-Language-Action Model for Affordable Robotic Manipulation | http://arxiv.org/abs/2511.05397v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-07 | TwinVLA: Data-Efficient Bimanual Manipulation with Twin Single-Arm Vision-Language-Action Models | http://arxiv.org/abs/2511.05275v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-06 | Evo-1: Lightweight Vision-Language-Action Model with Preserved Semantic Alignment | http://arxiv.org/abs/2511.04555v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-06 | GraSP-VLA: Graph-based Symbolic Action Representation for Long-Horizon Planning with VLA Policies | http://arxiv.org/abs/2511.04357v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-03 | OmniVLA: Physically-Grounded Multimodal VLA with Unified Multi-Sensor Perception for Robotic Manipulation | http://arxiv.org/abs/2511.01210v2 | <details><summary>展开</summary>待生成</details> |
