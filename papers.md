@@ -1,5 +1,9 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-11-10 | How Do VLAs Effectively Inherit from VLMs? | http://arxiv.org/abs/2511.06619v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-09 | ExpReS-VLA: Specializing Vision-Language-Action Models Through Experience Replay and Retrieval | http://arxiv.org/abs/2511.06202v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-08 | 10 Open Challenges Steering the Future of Vision-Language-Action Models | http://arxiv.org/abs/2511.05936v1 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-07 | Lite VLA: Efficient Vision-Language-Action Control on CPU-Bound Edge Robots | http://arxiv.org/abs/2511.05642v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-07 | EveryDayVLA: A Vision-Language-Action Model for Affordable Robotic Manipulation | http://arxiv.org/abs/2511.05397v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-07 | TwinVLA: Data-Efficient Bimanual Manipulation with Twin Single-Arm Vision-Language-Action Models | http://arxiv.org/abs/2511.05275v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-06 | Evo-1: Lightweight Vision-Language-Action Model with Preserved Semantic Alignment | http://arxiv.org/abs/2511.04555v1 | <details><summary>展开</summary>待生成</details> |
