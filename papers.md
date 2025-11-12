@@ -1,5 +1,9 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-10-10 | VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation | http://arxiv.org/abs/2510.09607v2 | <details><summary>展开</summary>待生成</details> |
+| 2025-09-17 | GeoAware-VLA: Implicit Geometry Aware Vision-Language-Action Model | http://arxiv.org/abs/2509.14117v3 | <details><summary>展开</summary>待生成</details> |
+| 2025-06-15 | SP-VLA: A Joint Model Scheduling and Token Pruning Approach for VLA Model Acceleration | http://arxiv.org/abs/2506.12723v3 | <details><summary>展开</summary>待生成</details> |
+| 2025-09-23 | Pure Vision Language Action (VLA) Models: A Comprehensive Survey | http://arxiv.org/abs/2509.19012v3 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-10 | How Do VLAs Effectively Inherit from VLMs? | http://arxiv.org/abs/2511.06619v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-09 | ExpReS-VLA: Specializing Vision-Language-Action Models Through Experience Replay and Retrieval | http://arxiv.org/abs/2511.06202v1 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-08 | 10 Open Challenges Steering the Future of Vision-Language-Action Models | http://arxiv.org/abs/2511.05936v1 | <details><summary>展开</summary>待生成</details> |
