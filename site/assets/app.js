@@ -9,11 +9,12 @@
   const $ = (sel) => document.querySelector(sel);
   const groupsEl = $('#groups');
   const searchEl = $('#search');
-  const modal = $('#modal');
-  const modalTitle = $('#modal-title');
-  const modalMeta = $('#modal-meta');
-  const modalBody = $('#modal-body');
-  const modalClose = $('#modal-close');
+  const detailView = $('#detail-view');
+  const detailTitle = $('#detail-title');
+  const detailMeta = $('#detail-meta');
+  const detailBody = $('#detail-body');
+  const detailBack = $('#detail-back');
+  let currentItem = null;
 
   /**
    * @param {Array} items
@@ -61,7 +62,7 @@
         const detailBtn = document.createElement('button');
         detailBtn.className = 'btn primary';
         detailBtn.textContent = '详情';
-        detailBtn.onclick = ()=> openModal(it);
+        detailBtn.onclick = ()=> openDetail(it);
         btnRow.appendChild(viewBtn);
         btnRow.appendChild(detailBtn);
         card.appendChild(title);
@@ -77,23 +78,52 @@
   /**
    * @param {title:string,date:string,summary_html:string,link:string} it
    */
-  function openModal(it){
-    modalTitle.textContent = it.title;
-    modalMeta.innerHTML = `${it.date} · <a href="${it.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
-    modalBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
-    modal.classList.remove('hidden');
+  function openDetail(it){
+    currentItem = it;
+    detailTitle.textContent = it.title;
+    detailMeta.innerHTML = `${it.date} · <a href="${it.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+    detailBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
+    detailView.classList.remove('hidden');
+    // 使用 pushState 添加历史记录，但不改变 URL
+    history.pushState({ view: 'detail', item: it }, '', window.location.href);
+    // 滚动到顶部
+    window.scrollTo(0, 0);
   }
 
-  function closeModal(){ modal.classList.add('hidden'); }
+  function closeDetail(){ 
+    detailView.classList.add('hidden');
+    currentItem = null;
+    // 如果当前在详情页面状态，替换为列表状态（不跳转）
+    if (history.state && history.state.view === 'detail') {
+      history.replaceState({ view: 'list' }, '', window.location.href);
+    }
+  }
 
   function sync(){
     const items = filterItems(DATA, searchEl.value);
     renderGroups(items);
   }
 
-  modalClose.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e)=>{ if(e.target.classList.contains('modal-backdrop')) closeModal(); });
+  detailBack.addEventListener('click', closeDetail);
+  
+  // 监听浏览器前进/后退事件
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.view === 'detail' && e.state.item) {
+      // 前进到详情页面（不添加新的历史记录）
+      currentItem = e.state.item;
+      detailTitle.textContent = e.state.item.title;
+      detailMeta.innerHTML = `${e.state.item.date} · <a href="${e.state.item.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+      detailBody.innerHTML = e.state.item.summary_html;
+      detailView.classList.remove('hidden');
+      window.scrollTo(0, 0);
+    } else {
+      // 返回到列表页面（包括 view 为 'list' 或 null 的情况）
+      detailView.classList.add('hidden');
+      currentItem = null;
+    }
+  });
+
   searchEl.addEventListener('input', sync);
 
-  fetch('/daily-arxiv-vla/assets/data.json').then(r=>r.json()).then(arr=>{ DATA = arr; sync(); });
+  fetch('assets/data.json').then(r=>r.json()).then(arr=>{ DATA = arr; sync(); });
 })();

@@ -5,6 +5,7 @@ from typing import List, Tuple
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
+from tqdm import tqdm
 
 
 """
@@ -80,7 +81,7 @@ def rebuild_line(date_str: str, title: str, link: str, summary_html: str) -> str
     return f"| {date_str} | {safe_title} | {link} | {safe_summary} |\n"
 
 
-def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-ai/DeepSeek-R1-0528") -> str:
+def generate_summary_for_link(client: OpenAI, link: str, model: str = "MiniMax/MiniMax-M2") -> str:
     """
     /**
      * @function generate_summary_for_link
@@ -110,28 +111,28 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-
         messages=[
             {
                 'role': 'system',
-                'content': '你是一名论文阅读专家。根据提供的Arxiv论文HTML原文，用中文简明扼要总结论文的要点，不需要输出其他内容。'
+                'content': '你是一名论文阅读专家。根据提供的Arxiv论文HTML原文，总结论文的要点，只需提供Markdown格式文本，不要使用加粗，不需要输出其他内容。\n要求：\n论文总结分为以下部分：论文研究单位、论文概述、论文核心贡献点、论文方法描述、论文使用数据集和训练资源、论文使用的评估环境和评估指标。'
             },
             {
                 'role': 'user',
                 'content': f"以下为论文的HTML原文（可能已截断）：\n\n{html_content}"
             },
         ],
-        stream=True,
+        stream=False,
     )
-
-    chunks: List[str] = []
-    for chunk in response:
-        delta = getattr(chunk.choices[0], "delta", None)
-        if not delta:
-            continue
-        piece = getattr(delta, "content", None)
-        if piece:
-            chunks.append(piece)
-
-    text = "".join(chunks).strip()
-    # 精简多余空白
-    text = re.sub(r"\s+", " ", text)
+    text = getattr(response.choices[0].message, "content", "") if response.choices else ""
+    text = text.strip()
+    # 移除模型可能输出的 <think>...</think> 思考内容
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
+    # 规范化换行：保留换行符，但规范化空白
+    # 1. 将多个连续空格（非换行空白）合并为单个空格
+    text = re.sub(r"[ \t]+", " ", text)
+    # 2. 将多个连续换行合并为最多两个换行
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    # 3. 移除行尾空格
+    text = re.sub(r" +\n", "\n", text)
+    # 4. 将换行符转换为 <br> 标签以便在 Markdown 表格中存储
+    text = text.replace("\n", "<br>")
     return text
 
 
@@ -178,9 +179,7 @@ def update_papers_md() -> Tuple[int, int]:
 
     client = get_client()
 
-    need_count = 0
-    success_count = 0
-
+    entries_to_update: List[Tuple[int, str, str, str]] = []
     for idx, line in enumerate(body):
         if not line.strip().startswith("|"):
             continue
@@ -190,8 +189,14 @@ def update_papers_md() -> Tuple[int, int]:
         date_str, title, link, summary_cell = cells
         if not is_placeholder_summary(summary_cell):
             continue
+        entries_to_update.append((idx, date_str, title, link))
 
-        need_count += 1
+    need_count = len(entries_to_update)
+    success_count = 0
+
+    progress_bar = tqdm(entries_to_update, desc="生成简要总结", unit="篇")
+
+    for idx, date_str, title, link in progress_bar:
         try:
             summary_text = generate_summary_for_link(client, link)
             if not summary_text:
@@ -204,6 +209,7 @@ def update_papers_md() -> Tuple[int, int]:
             with open(papers_md, "w", encoding="utf-8") as f:
                 f.writelines(header + body)
             success_count += 1
+            progress_bar.set_postfix({"成功": success_count})
         except Exception as e:
             # 单条失败跳过，不中断整体
             print(f"生成摘要失败: {link}: {e}")

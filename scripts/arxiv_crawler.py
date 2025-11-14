@@ -69,6 +69,21 @@ class ArxivVLACollector:
 				filtered.append(r)
 		return filtered
 
+	def _normalize_link(self, link: str) -> str:
+		"""
+		/**
+		 * @private 规范化 arXiv 链接，去掉版本号（如 v1, v2, v3）。
+		 * @param {str} link - 原始链接
+		 * @returns {str} 规范化后的链接（无版本号）
+		 */
+		"""
+		# 先去掉首尾空格
+		link = link.strip()
+		# 匹配 arxiv.org/abs/ 后面的 arXiv ID 格式，去掉版本号部分
+		# 例如：http://arxiv.org/abs/2510.09607v2 -> http://arxiv.org/abs/2510.09607
+		# 只处理包含 arxiv.org/abs/ 的链接，避免误匹配其他数字格式
+		return re.sub(r"(arxiv\.org/abs/(\d+\.\d+))v\d+", r"\1", link, flags=re.IGNORECASE).strip()
+
 	def _default_summary_cell(self) -> str:
 		"""
 		/**
@@ -94,7 +109,8 @@ class ArxivVLACollector:
 		"""
 		/**
 		 * 解析 `papers.md` 已有的 arXiv 链接集合，用于去重。
-		 * @returns {Set[str]} 已存在的链接集合
+		 * 返回规范化后的链接（去掉版本号），避免同一论文的不同版本被重复添加。
+		 * @returns {Set[str]} 已存在的规范化链接集合
 		 */
 		"""
 		if not os.path.exists(self.papers_path):
@@ -104,7 +120,9 @@ class ArxivVLACollector:
 		with open(self.papers_path, "r", encoding="utf-8") as f:
 			for line in f:
 				for m in link_pattern.findall(line):
-					links.add(m)
+					# 规范化链接（去掉版本号）后再加入集合
+					normalized = self._normalize_link(m)
+					links.add(normalized)
 		return links
 
 	def _format_row(self, r: arxiv.Result) -> str:
@@ -117,7 +135,8 @@ class ArxivVLACollector:
 		"""
 		date_str = r.published.strftime("%Y-%m-%d") if isinstance(r.published, datetime) else ""
 		title = (r.title or "").replace("|", "\\|").strip()
-		link = r.entry_id
+		# 规范化链接，去掉版本号
+		link = self._normalize_link(r.entry_id)
 		summary_cell = self._default_summary_cell()
 		return f"| {date_str} | {title} | {link} | {summary_cell} |\n"
 
@@ -149,7 +168,9 @@ class ArxivVLACollector:
 		results = self._filter_categories(self._search(self.init_results))
 		rows: List[str] = []
 		for r in results:
-			if r.entry_id in existing:
+			# 使用规范化链接进行去重比较
+			normalized_link = self._normalize_link(r.entry_id)
+			if normalized_link in existing:
 				continue
 			rows.append(self._format_row(r))
 		if rows:
@@ -168,7 +189,9 @@ class ArxivVLACollector:
 		results = self._filter_categories(self._search(self.daily_results))
 		rows: List[str] = []
 		for r in results:
-			if r.entry_id in existing:
+			# 使用规范化链接进行去重比较
+			normalized_link = self._normalize_link(r.entry_id)
+			if normalized_link in existing:
 				continue
 			rows.append(self._format_row(r))
 		if rows:

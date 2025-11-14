@@ -25,9 +25,6 @@ INPUT_MD = PROJECT_ROOT / "papers.md"
 SITE_DIR = PROJECT_ROOT / "site"
 ASSETS_DIR = SITE_DIR / "assets"
 
-# GitHub Pages 子路径配置
-BASE_PATH = "/daily-arxiv-vla"  # 仓库名对应的路径
-
 
 def read_text(path: Path) -> str:
     with path.open("r", encoding="utf-8") as f:
@@ -80,41 +77,65 @@ def extract_details(cell_html: str) -> str:
     content = m.group(1) if m else cell_html
     # 去掉 <summary>...</summary>
     content = re.sub(r"<summary>[\s\S]*?</summary>", "", content, flags=re.IGNORECASE)
+    # 将 <br> 标签转换回换行符，以便 Markdown 渲染器正确处理
+    content = content.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
     # 去掉包裹空白
     return content.strip()
 
 
 def auto_add_linebreaks(text: str) -> str:
     """
-    自动添加换行符的启发式规则：
-    - 标题前换行：在 "###" 等子标题前插入换行
+    自动添加换行符的启发式规则（仅在换行已丢失时使用）：
+    - 标题前换行：在 "#" 等子标题前插入换行（如果紧跟在其他内容后）
     - 项目符号：将内嵌的 " - "/" – " 转为行首列表项
     - 有序列表："1. ", "2. " 等编号若非行首，则前置换行
     - 水平分割线：在 --- 周围添加换行
     - 粗体小节：将 " - **小节**" 等模式置于新行
+    
+    注意：如果文本中已经包含换行符（从 <br> 转换而来），则跳过大部分启发式规则
     """
     t = text
+    
+    # 如果文本中已经有换行符，说明换行信息已保留，只需做轻微规范化
+    has_linebreaks = "\n" in t
+    
+    if has_linebreaks:
+        # 已有换行，只需规范化
+        # 确保标题前有换行（如果紧跟在其他非空白内容后）
+        # 使用负向前瞻确保不会拆分行首的标题
+        # 匹配：非换行、非#的字符，后面跟着 #（且不在行首）
+        t = re.sub(r"([^\n\s#])\s*(?=#+\s)", r"\1\n", t)
+        # 确保水平线前后有换行
+        t = re.sub(r"([^\n])\s*---\s*([^\n])", r"\1\n---\n\2", t)
+        # 合并多余空行为最多两个
+        t = re.sub(r"\n{3,}", "\n\n", t)
+    else:
+        # 没有换行，使用完整的启发式规则恢复
+        # 标题前强制换行（但不要拆分行首的标题）
+        # 只在非行首的 # 前添加换行
+        t = re.sub(r"([^\n\s#])\s*(?=#+\s)", r"\1\n", t)
+        # 如果文本开头没有换行，确保标题在行首
+        if not t.startswith("#"):
+            t = re.sub(r"^\s*(#+\s+)", r"\1", t)
 
-    # 标题前强制换行
-    t = re.sub(r"\s*(#+\s*)", lambda m: "\n" + m.group(1), t)
+        # 水平线周围换行
+        t = re.sub(r"\s*---\s*", "\n---\n", t)
 
-    # 水平线周围换行
-    t = re.sub(r"\s*---\s*", "\n---\n", t)
+        # 列表项前换行（无序）
+        t = re.sub(r"\s+[-–]\s+", "\n- ", t)
 
-    # 列表项前换行（无序）
-    t = re.sub(r"\s+[-–]\s+", "\n- ", t)
+        # 有序列表：将内联的 " 1. " 变为换行起始
+        # 但不要匹配在 **粗体** 内部的数字（如 **1. 标题**）
+        t = re.sub(r"(?<!\n)(?<!\*\*)(\s*)(\d+\.\s+)", lambda m: "\n" + m.group(2), t)
 
-    # 有序列表：将内联的 " 1. " 变为换行起始
-    t = re.sub(r"(?<!\n)(\s*)(\d+\.\s+)", lambda m: "\n" + m.group(2), t)
+        # 粗体小节项：" - **...**" → 换行
+        t = re.sub(r"\s+-\s+\*\*(.+?)\*\*", lambda m: "\n- **" + m.group(1) + "**", t)
 
-    # 粗体小节项：" - **...**" → 换行
-    t = re.sub(r"\s+-\s+\*\*(.+?)\*\*", lambda m: "\n- **" + m.group(1) + "**", t)
+        # 在中文句号+标题锚点之间分段（谨慎）
+        t = re.sub(r"([。！？；])\s*(#+\s+)", r"\1\n\2", t)
 
-    # 在中文句号+标题锚点之间分段（谨慎）
-    t = re.sub(r"([。！？；])\s*(###)\s*", r"\1\n\2 ", t)
-
-    # 合并多余空行为最多两个
-    t = re.sub(r"\n{3,}", "\n\n", t)
+        # 合并多余空行为最多两个
+        t = re.sub(r"\n{3,}", "\n\n", t)
 
     return t.strip()
 
@@ -146,13 +167,13 @@ def markdown_to_html(md: str) -> str:
             i += 1
             continue
 
-        # 标题
-        if line.startswith("### "):
-            html_lines.append(f"<h3>{render_inline(line[4:].strip())}</h3>")
-            i += 1
-            continue
-        if line.startswith("#### "):
-            html_lines.append(f"<h4>{render_inline(line[5:].strip())}</h4>")
+        # 标题 - 支持所有级别的标题（#、##、###、####）
+        # 使用正则匹配，确保格式正确（# 后必须有空格）
+        title_match = re.match(r"^(#{1,4})\s+(.+)$", line)
+        if title_match:
+            level = len(title_match.group(1))
+            title_text = title_match.group(2).strip()
+            html_lines.append(f"<h{level}>{render_inline(title_text)}</h{level}>")
             i += 1
             continue
         if line.strip() == "---":
@@ -170,14 +191,30 @@ def markdown_to_html(md: str) -> str:
             continue
 
         # 列表（有序）
+        # 避免将 "1. 论文研究单位" 这样的标题误识别为列表
+        # 判断标准：只有当下一行也是列表项时，才当作列表处理
+        # 这样可以避免将单独的编号标题误识别为列表
         if re.match(r"^\d+\. ", line):
-            ol_items: List[str] = []
-            while i < len(lines) and re.match(r"^\d+\. ", lines[i]):
-                item_txt = re.sub(r"^\d+\. ", "", lines[i]).strip()
-                ol_items.append(f"<li>{render_inline(item_txt)}</li>")
-                i += 1
-            html_lines.append("<ol>" + "".join(ol_items) + "</ol>")
-            continue
+            # 检查下一行是否也是列表项（且不是空行）
+            next_is_list = False
+            if i + 1 < len(lines):
+                next_line = lines[i + 1].strip()
+                if next_line and re.match(r"^\d+\. ", next_line):
+                    next_is_list = True
+            
+            # 只有当下一行也是列表项时，才当作列表处理
+            if next_is_list:
+                ol_items: List[str] = []
+                while i < len(lines) and re.match(r"^\d+\. ", lines[i]):
+                    item_txt = re.sub(r"^\d+\. ", "", lines[i]).strip()
+                    ol_items.append(f"<li>{render_inline(item_txt)}</li>")
+                    i += 1
+                    # 如果下一行不是列表项，停止收集
+                    if i >= len(lines) or not lines[i].strip() or not re.match(r"^\d+\. ", lines[i]):
+                        break
+                if ol_items:
+                    html_lines.append("<ol>" + "".join(ol_items) + "</ol>")
+                    continue
 
         # 普通段落
         html_lines.append(f"<p>{render_inline(line)}</p>")
@@ -221,7 +258,7 @@ def generate_index_html() -> str:
     <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />
     <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />
     <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap\" rel=\"stylesheet\" />
-    <link rel=\"stylesheet\" href=\"{BASE_PATH}/assets/style.css\" />
+    <link rel=\"stylesheet\" href=\"assets/style.css\" />
   </head>
   <body>
     <header class=\"container\">
@@ -235,17 +272,18 @@ def generate_index_html() -> str:
       <section id=\"groups\"></section>
     </main>
 
-    <div id=\"modal\" class=\"modal hidden\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"modal-title\"> 
-      <div class=\"modal-backdrop\"></div>
-      <div class=\"modal-content\">
-        <button id=\"modal-close\" class=\"icon-btn\" aria-label=\"关闭\">✕</button>
-        <h2 id=\"modal-title\"></h2>
-        <div id=\"modal-meta\" class=\"muted\"></div>
-        <article id=\"modal-body\"></article>
+    <div id=\"detail-view\" class=\"detail-view hidden\">
+      <div class=\"detail-header\">
+        <button id=\"detail-back\" class=\"back-btn\" aria-label=\"返回\">← 返回</button>
+      </div>
+      <div class=\"detail-content\">
+        <h2 id=\"detail-title\"></h2>
+        <div id=\"detail-meta\" class=\"muted\"></div>
+        <article id=\"detail-body\"></article>
       </div>
     </div>
 
-    <script src=\"{BASE_PATH}/assets/app.js\"></script>
+    <script src=\"assets/app.js\"></script>
   </body>
 </html>
 """.strip()
@@ -272,11 +310,18 @@ input[type=search]{flex:1;min-width:260px;padding:12px 14px;border-radius:10px;b
 .btn.primary:hover{filter:brightness(1.05)}
 .icon-btn{appearance:none;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px}
 .icon-btn:hover{color:#fff}
-.modal{position:fixed;inset:0;display:none}
-.modal:not(.hidden){display:block}
-.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px)}
-.modal-content{position:relative;max-width:860px;margin:6vh auto;background:#0f1422;border:1px solid #1c2540;border-radius:14px;padding:20px}
-#modal-close{position:absolute;top:10px;right:10px}
+.detail-view{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.detail-view.hidden{display:none}
+.detail-header{position:sticky;top:0;border-bottom:1px solid #1b2233;padding:12px 24px;z-index:10;backdrop-filter:blur(8px);background:rgba(11,13,18,0.95)}
+.back-btn{appearance:none;background:transparent;border:1px solid #2b3a66;color:var(--text);padding:8px 16px;border-radius:10px;cursor:pointer;transition:.2s;font-size:14px}
+.back-btn:hover{border-color:#3b5bdd;background:#0f1630}
+.detail-content{flex:1;max-width:860px;width:100%;margin:0 auto;padding:24px;padding-bottom:40px}
+#detail-title{margin:0 0 12px;font-size:24px;line-height:1.3}
+@media (max-width: 768px) {{
+  .detail-header{{padding:12px 16px}}
+  .detail-content{{padding:16px;padding-bottom:32px}}
+  #detail-title{{font-size:20px}}
+}}
 .muted{color:var(--muted);font-size:13px;margin-bottom:8px}
 article h3{margin:16px 0 8px}
 article h4{margin:14px 0 6px}
@@ -301,11 +346,12 @@ def generate_app_js() -> str:
   const $ = (sel) => document.querySelector(sel);
   const groupsEl = $('#groups');
   const searchEl = $('#search');
-  const modal = $('#modal');
-  const modalTitle = $('#modal-title');
-  const modalMeta = $('#modal-meta');
-  const modalBody = $('#modal-body');
-  const modalClose = $('#modal-close');
+  const detailView = $('#detail-view');
+  const detailTitle = $('#detail-title');
+  const detailMeta = $('#detail-meta');
+  const detailBody = $('#detail-body');
+  const detailBack = $('#detail-back');
+  let currentItem = null;
 
   /**
    * @param {{Array}} items
@@ -353,7 +399,7 @@ def generate_app_js() -> str:
         const detailBtn = document.createElement('button');
         detailBtn.className = 'btn primary';
         detailBtn.textContent = '详情';
-        detailBtn.onclick = ()=> openModal(it);
+        detailBtn.onclick = ()=> openDetail(it);
         btnRow.appendChild(viewBtn);
         btnRow.appendChild(detailBtn);
         card.appendChild(title);
@@ -369,25 +415,54 @@ def generate_app_js() -> str:
   /**
    * @param {{title:string,date:string,summary_html:string,link:string}} it
    */
-  function openModal(it){{
-    modalTitle.textContent = it.title;
-    modalMeta.innerHTML = `${{it.date}} · <a href="${{it.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
-    modalBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
-    modal.classList.remove('hidden');
+  function openDetail(it){{
+    currentItem = it;
+    detailTitle.textContent = it.title;
+    detailMeta.innerHTML = `${{it.date}} · <a href="${{it.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+    detailBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
+    detailView.classList.remove('hidden');
+    // 使用 pushState 添加历史记录，但不改变 URL
+    history.pushState({{ view: 'detail', item: it }}, '', window.location.href);
+    // 滚动到顶部
+    window.scrollTo(0, 0);
   }}
 
-  function closeModal(){{ modal.classList.add('hidden'); }}
+  function closeDetail(){{ 
+    detailView.classList.add('hidden');
+    currentItem = null;
+    // 如果当前在详情页面状态，替换为列表状态（不跳转）
+    if (history.state && history.state.view === 'detail') {{
+      history.replaceState({{ view: 'list' }}, '', window.location.href);
+    }}
+  }}
 
   function sync(){{
     const items = filterItems(DATA, searchEl.value);
     renderGroups(items);
   }}
 
-  modalClose.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e)=>{{ if(e.target.classList.contains('modal-backdrop')) closeModal(); }});
+  detailBack.addEventListener('click', closeDetail);
+  
+  // 监听浏览器前进/后退事件
+  window.addEventListener('popstate', (e) => {{
+    if (e.state && e.state.view === 'detail' && e.state.item) {{
+      // 前进到详情页面（不添加新的历史记录）
+      currentItem = e.state.item;
+      detailTitle.textContent = e.state.item.title;
+      detailMeta.innerHTML = `${{e.state.item.date}} · <a href="${{e.state.item.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+      detailBody.innerHTML = e.state.item.summary_html;
+      detailView.classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }} else {{
+      // 返回到列表页面（包括 view 为 'list' 或 null 的情况）
+      detailView.classList.add('hidden');
+      currentItem = null;
+    }}
+  }});
+
   searchEl.addEventListener('input', sync);
 
-  fetch('{BASE_PATH}/assets/data.json').then(r=>r.json()).then(arr=>{{ DATA = arr; sync(); }});
+  fetch('assets/data.json').then(r=>r.json()).then(arr=>{{ DATA = arr; sync(); }});
 }})();
 """.strip()
 
