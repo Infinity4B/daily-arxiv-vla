@@ -1,5 +1,7 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2025-11-14 | Rethinking Progression of Memory State in Robotic Manipulation: An Object-Centric Perspective | http://arxiv.org/abs/2511.11478 | <details><summary>展开</summary>待生成</details> |
+| 2025-11-14 | Experiences from Benchmarking Vision-Language-Action Models for Robotic Manipulation | http://arxiv.org/abs/2511.11298 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-13 | OmniVGGT: Omni-Modality Driven Visual Geometry Grounded | http://arxiv.org/abs/2511.10560 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-13 | SemanticVLA: Semantic-Aligned Sparsification and Enhancement for Efficient Robotic Manipulation | http://arxiv.org/abs/2511.10518 | <details><summary>展开</summary>待生成</details> |
 | 2025-11-13 | Phantom Menace: Exploring and Enhancing the Robustness of VLA Models against Physical Sensor Attacks | http://arxiv.org/abs/2511.10008 | <details><summary>展开</summary>待生成</details> |
