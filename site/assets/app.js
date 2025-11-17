@@ -15,6 +15,7 @@
   const detailBody = $('#detail-body');
   const detailBack = $('#detail-back');
   let currentItem = null;
+  let lastScrollY = 0;
 
   /**
    * @param {Array} items
@@ -79,6 +80,7 @@
    * @param {title:string,date:string,summary_html:string,link:string} it
    */
   function openDetail(it){
+    lastScrollY = window.scrollY || 0;
     currentItem = it;
     detailTitle.textContent = it.title;
     detailMeta.innerHTML = `${it.date} · <a href="${it.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
@@ -93,6 +95,7 @@
   function closeDetail(){ 
     detailView.classList.add('hidden');
     currentItem = null;
+    requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
     // 如果当前在详情页面状态，替换为列表状态（不跳转）
     if (history.state && history.state.view === 'detail') {
       history.replaceState({ view: 'list' }, '', window.location.href);
@@ -120,6 +123,7 @@
       // 返回到列表页面（包括 view 为 'list' 或 null 的情况）
       detailView.classList.add('hidden');
       currentItem = null;
+      requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
     }
   });
 
