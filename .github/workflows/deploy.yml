@@ -46,23 +46,22 @@ jobs:
         env:
           MODELSCOPE_ACCESS_TOKEN: ${{ secrets.MODELSCOPE_ACCESS_TOKEN }}
           
+      - name: 构建网站
+        run: |
+          python scripts/build_site.py
+
       - name: 提交更改
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add papers.md
+          git add papers.md site
           if git diff --staged --quiet; then
             echo "没有更改需要提交"
           else
-            # 获取当前日期
             CURRENT_DATE=$(date '+%Y-%m-%d')
             git commit -m "自动更新：爬取新论文并生成摘要 - $CURRENT_DATE [skip ci]"
             git push
           fi
-          
-      - name: 构建网站
-        run: |
-          python scripts/build_site.py
           
       - name: 设置 Pages
         uses: actions/configure-pages@v5
