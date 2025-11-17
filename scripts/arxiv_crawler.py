@@ -6,12 +6,13 @@ from typing import List, Set
 import arxiv
 
 
-class ArxivVLACollector:
+class ArxivCollector:
 	"""
 	/**
-	 * @class ArxivVLACollector
-	 * @description 每日自动获取 arXiv 上包含 "VLA" 关键词的论文，并维护项目根目录下的
+	 * @class ArxivCollector
+	 * @description 每日自动获取 arXiv 上包含指定关键词的论文，并维护项目根目录下的
 	 * `papers.md` 表格（列：日期、标题、链接）。首次运行无数据时执行初始化，之后每日增量并去重。
+	 * 关键词可通过环境变量 ARXIV_QUERY_KEYWORD 配置，默认为 "VLA"。
 	 */
 	"""
 
@@ -25,18 +26,20 @@ class ArxivVLACollector:
 		"cs.RO",
 	}
 
-	def __init__(self, papers_path: str, init_results: int = 500, daily_results: int = 20):
+	def __init__(self, papers_path: str, init_results: int = 500, daily_results: int = 20, query_keyword: str = None):
 		"""
 		/**
 		 * @constructor
 		 * @param {str} papers_path - `papers.md` 绝对路径
 		 * @param {int} init_results - 初始化抓取的最大论文数
 		 * @param {int} daily_results - 每日增量抓取的最大论文数
+		 * @param {str} query_keyword - arXiv 搜索关键词，如果为 None 则从环境变量 ARXIV_QUERY_KEYWORD 读取，默认为 "VLA"
 		 */
 		"""
 		self.papers_path = papers_path
 		self.init_results = init_results
 		self.daily_results = daily_results
+		self.query_keyword = query_keyword or os.getenv("ARXIV_QUERY_KEYWORD", "VLA")
 		self._client = arxiv.Client()
 
 	def _search(self, max_results: int) -> List[arxiv.Result]:
@@ -48,7 +51,7 @@ class ArxivVLACollector:
 		 */
 		"""
 		search = arxiv.Search(
-			query="VLA",
+			query=self.query_keyword,
 			max_results=max_results,
 			sort_by=arxiv.SortCriterion.SubmittedDate,
 			sort_order=arxiv.SortOrder.Descending,
@@ -215,7 +218,7 @@ if __name__ == "__main__":
 	import sys
 	
 	papers_md = _default_papers_path()
-	collector = ArxivVLACollector(papers_md)
+	collector = ArxivCollector(papers_md)
 	
 	# 检查是否已有 papers.md 文件，决定运行模式
 	if os.path.exists(papers_md) and os.path.getsize(papers_md) > 0:

@@ -10,7 +10,7 @@
 - 🔍 实时搜索功能
 - 📱 响应式设计，支持移动端
 - 🎨 现代化暗色主题界面
-- 📄 论文详情弹窗展示
+- 📄 论文详情全屏视图展示
 - ⏰ **定时任务**: 每日中午12点自动更新内容
 
 ## 本地开发
@@ -134,7 +134,7 @@ arxiv/
 
 - **后端**: Python 3.9+
 - **爬虫**: arxiv Python库
-- **AI摘要**: ModelScope API (DeepSeek-R1模型)
+- **AI摘要**: ModelScope API
 - **前端**: 原生 HTML/CSS/JavaScript
 - **部署**: GitHub Pages + GitHub Actions
 - **定时任务**: GitHub Actions Cron

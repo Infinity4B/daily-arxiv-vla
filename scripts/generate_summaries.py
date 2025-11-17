@@ -81,7 +81,7 @@ def rebuild_line(date_str: str, title: str, link: str, summary_html: str) -> str
     return f"| {date_str} | {safe_title} | {link} | {safe_summary} |\n"
 
 
-def generate_summary_for_link(client: OpenAI, link: str, model: str = "MiniMax/MiniMax-M2") -> str:
+def generate_summary_for_link(client: OpenAI, link: str, model: str = "ZhipuAI/GLM-4.6") -> str:
     """
     /**
      * @function generate_summary_for_link
@@ -120,7 +120,14 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = "MiniMax/M
         ],
         stream=False,
     )
-    text = getattr(response.choices[0].message, "content", "") if response.choices else ""
+    # print(response)
+    if not response.choices:
+        print(f"警告: API返回无choices，链接: {link}")
+        return ""
+    text = getattr(response.choices[0].message, "content", "")
+    if not text:
+        print(f"警告: API返回content为空，链接: {link}")
+        return ""
     text = text.strip()
     # 移除模型可能输出的 <think>...</think> 思考内容
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
@@ -133,6 +140,8 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = "MiniMax/M
     text = re.sub(r" +\n", "\n", text)
     # 4. 将换行符转换为 <br> 标签以便在 Markdown 表格中存储
     text = text.replace("\n", "<br>")
+    if not text:
+        print(f"警告: 处理后文本为空，链接: {link}")
     return text
 
 
@@ -201,6 +210,7 @@ def update_papers_md() -> Tuple[int, int]:
             summary_text = generate_summary_for_link(client, link)
             if not summary_text:
                 # 无内容则跳过，不覆盖占位
+                print(f"警告: 生成摘要为空，跳过: {link}")
                 continue
             new_summary_cell = wrap_in_details(summary_text)
             new_line = rebuild_line(date_str, title, link, new_summary_cell)
@@ -212,7 +222,7 @@ def update_papers_md() -> Tuple[int, int]:
             progress_bar.set_postfix({"成功": success_count})
         except Exception as e:
             # 单条失败跳过，不中断整体
-            print(f"生成摘要失败: {link}: {e}")
+            print(f"生成摘要失败: {link}: {repr(e)}")
 
     return need_count, success_count
 
