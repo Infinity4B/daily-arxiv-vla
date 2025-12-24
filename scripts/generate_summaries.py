@@ -81,7 +81,7 @@ def rebuild_line(date_str: str, title: str, link: str, summary_html: str) -> str
     return f"| {date_str} | {safe_title} | {link} | {safe_summary} |\n"
 
 
-def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-ai/DeepSeek-V3.2-Exp") -> str:
+def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-ai/DeepSeek-V3.2") -> str:
     """
     /**
      * @function generate_summary_for_link
