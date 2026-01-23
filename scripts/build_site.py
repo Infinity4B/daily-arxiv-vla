@@ -414,13 +414,32 @@ def generate_app_js() -> str:
   }}
 
   /**
+   * 从 arxiv.org 链接中提取论文 ID，并生成幻觉翻译链接
+   * @param {{string}} link
+   * @returns {{string|null}} 幻觉翻译链接，如果不是 arxiv 链接则返回 null
+   */
+  function getTranslationLink(link){{
+    // 匹配 arxiv.org/abs/ 或 arxiv.org/pdf/ 等格式
+    const match = link.match(/arxiv\\.org\\/(?:abs|pdf)\\/([\\d.]+)/i);
+    if(match && match[1]){{
+      return `https://hjfy.top/arxiv/${{match[1]}}`;
+    }}
+    return null;
+  }}
+
+  /**
    * @param {{title:string,date:string,summary_html:string,link:string}} it
    */
   function openDetail(it){{
     lastScrollY = window.scrollY || 0;
     currentItem = it;
     detailTitle.textContent = it.title;
-    detailMeta.innerHTML = `${{it.date}} · <a href="${{it.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+    const translationLink = getTranslationLink(it.link);
+    let metaHtml = `${{it.date}} · <a href="${{it.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+    if(translationLink){{
+      metaHtml += ` · <a href="${{translationLink}}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
+    }}
+    detailMeta.innerHTML = metaHtml;
     detailBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
     detailView.classList.remove('hidden');
     // 使用 pushState 添加历史记录，但不改变 URL
@@ -452,7 +471,12 @@ def generate_app_js() -> str:
       // 前进到详情页面（不添加新的历史记录）
       currentItem = e.state.item;
       detailTitle.textContent = e.state.item.title;
-      detailMeta.innerHTML = `${{e.state.item.date}} · <a href="${{e.state.item.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+      const translationLink = getTranslationLink(e.state.item.link);
+      let metaHtml = `${{e.state.item.date}} · <a href="${{e.state.item.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+      if(translationLink){{
+        metaHtml += ` · <a href="${{translationLink}}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
+      }}
+      detailMeta.innerHTML = metaHtml;
       detailBody.innerHTML = e.state.item.summary_html;
       detailView.classList.remove('hidden');
       window.scrollTo(0, 0);
