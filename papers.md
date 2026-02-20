@@ -1,5 +1,7 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2026-02-19 | When Vision Overrides Language: Evaluating and Mitigating Counterfactual Failures in VLAs | http://arxiv.org/abs/2602.17659 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-19 | FRAPPE: Infusing World Modeling into Generalist Policies via Multiple Future Representation Alignment | http://arxiv.org/abs/2602.17259 | <details><summary>展开</summary>待生成</details> |
 | 2026-02-18 | EgoScale: Scaling Dexterous Manipulation with Diverse Egocentric Human Data | http://arxiv.org/abs/2602.16710 | <details><summary>展开</summary>待生成</details> |
 | 2026-02-18 | RoboGene: Boosting VLA Pre-training via Diversity-Driven Agentic Framework for Real-World Task Generation | http://arxiv.org/abs/2602.16444 | <details><summary>展开</summary>待生成</details> |
 | 2026-02-17 | World Action Models are Zero-shot Policies | http://arxiv.org/abs/2602.15922 | <details><summary>展开</summary>待生成</details> |
