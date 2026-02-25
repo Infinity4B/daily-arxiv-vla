@@ -1,5 +1,20 @@
 | 日期 | 标题 | 链接 | 简要总结 |
 | --- | --- | --- | --- |
+| 2026-02-24 | NoRD: A Data-Efficient Vision-Language-Action Model that Drives without Reasoning | http://arxiv.org/abs/2602.21172 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-24 | ActionReasoning: Robot Action Reasoning in 3D Space with LLM for Robotic Brick Stacking | http://arxiv.org/abs/2602.21161 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-24 | HALO: A Unified Vision-Language-Action Model for Embodied Multimodal Chain-of-Thought Reasoning | http://arxiv.org/abs/2602.21157 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-24 | Notes-to-Self: Scratchpad Augmented VLAs for Memory Dependent Manipulation Tasks | http://arxiv.org/abs/2602.21013 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-24 | IG-RFT: An Interaction-Guided RL Framework for VLA Models in Long-Horizon Robotic Manipulation | http://arxiv.org/abs/2602.20715 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-24 | Recursive Belief Vision Language Model | http://arxiv.org/abs/2602.20659 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-24 | An interactive enhanced driving dataset for autonomous driving | http://arxiv.org/abs/2602.20575 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-24 | BFA++: Hierarchical Best-Feature-Aware Token Prune for Multi-View Vision Language Action Model | http://arxiv.org/abs/2602.20566 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-23 | QuantVLA: Scale-Calibrated Post-Training Quantization for Vision-Language-Action Models | http://arxiv.org/abs/2602.20309 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-23 | UniLACT: Depth-Aware RGB Latent Action Learning for Vision-Language-Action Models | http://arxiv.org/abs/2602.20231 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-23 | Universal Pose Pretraining for Generalizable Vision-Language-Action Policies | http://arxiv.org/abs/2602.19710 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-22 | TOPReward: Token Probabilities as Hidden Zero-Shot Rewards for Robotics | http://arxiv.org/abs/2602.19313 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-22 | The Price Is Not Right: Neuro-Symbolic Methods Outperform VLAs on Structured Long-Horizon Manipulation Tasks with Significantly Lower Energy Consumption | http://arxiv.org/abs/2602.19260 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-22 | Global Prior Meets Local Consistency: Dual-Memory Augmented Vision-Language-Action Model for Efficient Robotic Manipulation | http://arxiv.org/abs/2602.20200 | <details><summary>展开</summary>待生成</details> |
+| 2026-02-21 | Habilis-$β$: A Fast-Motion and Long-Lasting On-Device Vision-Language-Action Model | http://arxiv.org/abs/2602.18813 | <details><summary>展开</summary>待生成</details> |
 | 2026-02-20 | How Fast Can I Run My VLA? Demystifying VLA Inference Performance with VLA-Perf | http://arxiv.org/abs/2602.18397 | <details><summary>展开</summary>待生成</details> |
 | 2026-02-20 | SimVLA: A Simple VLA Baseline for Robotic Manipulation | http://arxiv.org/abs/2602.18224 | <details><summary>展开</summary>待生成</details> |
 | 2026-02-20 | UAOR: Uncertainty-aware Observation Reinjection for Vision-Language-Action Models | http://arxiv.org/abs/2602.18020 | <details><summary>展开</summary>待生成</details> |
