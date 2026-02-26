@@ -242,6 +242,8 @@ def update_papers_md() -> Tuple[int, int]:
 
     need_count = len(entries_to_update)
     success_count = 0
+    batch_size = int(os.getenv("BATCH_WRITE_SIZE", "5"))
+    updates_since_last_write = 0
 
     progress_bar = tqdm(entries_to_update, desc="生成简要总结", unit="篇")
 
@@ -249,20 +251,36 @@ def update_papers_md() -> Tuple[int, int]:
         try:
             summary_text = generate_summary_for_link(client, link)
             if not summary_text:
-                # 无内容则跳过，不覆盖占位
                 print(f"警告: 生成摘要为空，跳过: {link}")
                 continue
             new_summary_cell = wrap_in_details(summary_text)
             new_line = rebuild_line(date_str, title, link, new_summary_cell)
-            # 立即写回：更新内存中的行并写入文件
+            # 更新内存中的行
             body[idx] = new_line
+            success_count += 1
+            updates_since_last_write += 1
+            progress_bar.set_postfix({"成功": success_count})
+
+            # 批量写入：每处理 batch_size 篇就写一次文件
+            if updates_since_last_write >= batch_size:
+                try:
+                    with open(papers_md, "w", encoding="utf-8") as f:
+                        f.writelines(header + body)
+                    updates_since_last_write = 0
+                except Exception as e:
+                    print(f"警告: 写入文件失败: {repr(e)}")
+
+        except Exception as e:
+            print(f"生成摘要失败: {link}: {repr(e)}")
+
+    # 最后写入一次，确保所有更改都保存
+    if updates_since_last_write > 0:
+        try:
             with open(papers_md, "w", encoding="utf-8") as f:
                 f.writelines(header + body)
-            success_count += 1
-            progress_bar.set_postfix({"成功": success_count})
         except Exception as e:
-            # 单条失败跳过，不中断整体
-            print(f"生成摘要失败: {link}: {repr(e)}")
+            print(f"错误: 最终写入文件失败: {repr(e)}")
+            raise
 
     return need_count, success_count
 

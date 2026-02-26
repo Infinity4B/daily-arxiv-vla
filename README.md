@@ -43,6 +43,7 @@ cp .env.example .env
 - `HTTP_TIMEOUT`: HTTP 请求超时时间（秒，默认：30）
 - `HTML_MAX_CHARS`: HTML 内容最大字符数（默认：180000）
 - `API_MAX_RETRIES`: API 调用重试次数（默认：3）
+- `BATCH_WRITE_SIZE`: 批量写入大小，每生成 N 篇摘要写入一次文件（默认：5）
 
 ### 爬取论文数据
 
