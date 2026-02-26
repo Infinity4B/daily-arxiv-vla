@@ -17,12 +17,32 @@
 
 ### 环境配置
 
-首先需要配置ModelScope API密钥：
+首先需要配置环境变量：
 
 ```bash
-# 创建.env文件
-echo "MODELSCOPE_ACCESS_TOKEN=你的API密钥" > .env
+# 复制示例配置文件
+cp .env.example .env
+
+# 编辑 .env 文件，填入你的 API 密钥
+# MODELSCOPE_ACCESS_TOKEN=你的API密钥
 ```
+
+可配置的环境变量：
+
+**必需配置：**
+- `MODELSCOPE_ACCESS_TOKEN`: ModelScope API 密钥
+
+**可选配置：**
+- `MODELSCOPE_BASE_URL`: API 基础 URL（默认：https://api-inference.modelscope.cn/v1/）
+- `MODELSCOPE_MODEL`: 使用的模型（默认：deepseek-ai/DeepSeek-V3.2）
+- `ARXIV_QUERY_KEYWORD`: 搜索关键词（默认：VLA）
+- `ARXIV_INIT_RESULTS`: 初始化抓取数量（默认：500）
+- `ARXIV_DAILY_RESULTS`: 每日抓取数量（默认：20）
+- `ARXIV_MAX_RETRIES`: arXiv 搜索重试次数（默认：3）
+- `HTTP_MAX_RETRIES`: HTTP 请求重试次数（默认：3）
+- `HTTP_TIMEOUT`: HTTP 请求超时时间（秒，默认：30）
+- `HTML_MAX_CHARS`: HTML 内容最大字符数（默认：180000）
+- `API_MAX_RETRIES`: API 调用重试次数（默认：3）
 
 ### 爬取论文数据
 
@@ -66,7 +86,24 @@ npx serve site
 ### 2. 配置环境变量
 
 在仓库设置中添加以下Secret：
-- `MODELSCOPE_ACCESS_TOKEN`: 你的ModelScope API密钥
+- `MODELSCOPE_ACCESS_TOKEN`: 你的ModelScope API密钥（必需）
+
+**可选配置：** 如果需要修改默认配置（如搜索关键词、模型等），可以在 `.github/workflows/deploy.yml` 中添加环境变量：
+
+```yaml
+- name: 运行 arXiv 爬虫
+  run: python scripts/arxiv_crawler.py
+  env:
+    MODELSCOPE_ACCESS_TOKEN: ${{ secrets.MODELSCOPE_ACCESS_TOKEN }}
+    ARXIV_QUERY_KEYWORD: "your_keyword"  # 可选：修改搜索关键词
+    ARXIV_DAILY_RESULTS: "30"            # 可选：修改每日抓取数量
+```
+
+默认配置：
+- 搜索关键词：VLA
+- 每日抓取：20篇
+- 模型：deepseek-ai/DeepSeek-V3.2
+- 其他配置见 `.env.example`
 
 ### 3. 自动部署
 

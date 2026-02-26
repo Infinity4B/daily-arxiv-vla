@@ -27,19 +27,17 @@ class ArxivCollector:
 		"cs.RO",
 	}
 
-	def __init__(self, papers_path: str, init_results: int = 500, daily_results: int = 20, query_keyword: str = None):
+	def __init__(self, papers_path: str, init_results: int = None, daily_results: int = None, query_keyword: str = None):
 		"""
-		/**
-		 * @constructor
-		 * @param {str} papers_path - `papers.md` 绝对路径
-		 * @param {int} init_results - 初始化抓取的最大论文数
-		 * @param {int} daily_results - 每日增量抓取的最大论文数
-		 * @param {str} query_keyword - arXiv 搜索关键词，如果为 None 则从环境变量 ARXIV_QUERY_KEYWORD 读取，默认为 "VLA"
-		 */
+		初始化 ArxivCollector
+		参数可通过环境变量配置：
+		- ARXIV_QUERY_KEYWORD: 搜索关键词（默认 "VLA"）
+		- ARXIV_INIT_RESULTS: 初始化抓取数量（默认 500）
+		- ARXIV_DAILY_RESULTS: 每日抓取数量（默认 20）
 		"""
 		self.papers_path = papers_path
-		self.init_results = init_results
-		self.daily_results = daily_results
+		self.init_results = init_results or int(os.getenv("ARXIV_INIT_RESULTS", "500"))
+		self.daily_results = daily_results or int(os.getenv("ARXIV_DAILY_RESULTS", "20"))
 		self.query_keyword = query_keyword or os.getenv("ARXIV_QUERY_KEYWORD", "VLA")
 		self._client = arxiv.Client()
 
@@ -47,7 +45,7 @@ class ArxivCollector:
 		"""
 		搜索 arXiv 论文，带重试机制
 		"""
-		max_retries = 3
+		max_retries = int(os.getenv("ARXIV_MAX_RETRIES", "3"))
 
 		for attempt in range(max_retries):
 			try:

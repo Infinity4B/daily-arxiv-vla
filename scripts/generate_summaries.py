@@ -20,17 +20,15 @@ from tqdm import tqdm
 
 def get_client() -> OpenAI:
     """
-    /**
-     * @function get_client
-     * @description 构造 OpenAI 客户端（ModelScope），从环境变量读取 `MODELSCOPE_ACCESS_TOKEN`。
-     * @returns {OpenAI} 已初始化的客户端
-     */
+    构造 OpenAI 客户端（ModelScope），从环境变量读取配置。
     """
     load_dotenv()
     api_key = os.getenv("MODELSCOPE_ACCESS_TOKEN")
     if not api_key:
         raise RuntimeError("缺少环境变量 MODELSCOPE_ACCESS_TOKEN")
-    return OpenAI(api_key=api_key, base_url="https://api-inference.modelscope.cn/v1/")
+
+    base_url = os.getenv("MODELSCOPE_BASE_URL", "https://api-inference.modelscope.cn/v1/")
+    return OpenAI(api_key=api_key, base_url=base_url)
 
 
 def get_papers_md_path() -> str:
@@ -82,21 +80,26 @@ def rebuild_line(date_str: str, title: str, link: str, summary_html: str) -> str
     return f"| {date_str} | {safe_title} | {link} | {safe_summary} |\n"
 
 
-def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-ai/DeepSeek-V3.2") -> str:
+def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> str:
     """
     抓取 arXiv HTML 原文并让模型基于 HTML 生成简要总结。
     包含重试机制和错误处理。
     """
+    # 从环境变量读取模型配置，如果未指定则使用默认值
+    if model is None:
+        model = os.getenv("MODELSCOPE_MODEL", "deepseek-ai/DeepSeek-V3.2")
+
     # 将 /abs/ 链接转换为 /html/ 页面
     html_url = re.sub(r"/abs/", "/html/", link)
 
     # 抓取 HTML 文本（带重试）
-    max_retries = 3
+    max_retries = int(os.getenv("HTTP_MAX_RETRIES", "3"))
+    timeout = int(os.getenv("HTTP_TIMEOUT", "30"))
     html_content = None
 
     for attempt in range(max_retries):
         try:
-            resp = requests.get(html_url, timeout=30)
+            resp = requests.get(html_url, timeout=timeout)
             resp.raise_for_status()
             html_content = resp.text
             break
@@ -123,12 +126,13 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-
         return ""
 
     # 按需截断，避免上下文过长
-    max_chars = 180000
+    max_chars = int(os.getenv("HTML_MAX_CHARS", "180000"))
     if len(html_content) > max_chars:
         html_content = html_content[:max_chars]
 
     # API 调用（带重试）
-    for attempt in range(max_retries):
+    api_max_retries = int(os.getenv("API_MAX_RETRIES", "3"))
+    for attempt in range(api_max_retries):
         try:
             response = client.chat.completions.create(
                 model=model,
@@ -171,8 +175,8 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-
             return text
 
         except Exception as e:
-            if attempt < max_retries - 1:
-                print(f"API调用失败，重试 {attempt + 1}/{max_retries}: {link}")
+            if attempt < api_max_retries - 1:
+                print(f"API调用失败，重试 {attempt + 1}/{api_max_retries}: {link}")
                 time.sleep(2 ** attempt)
             else:
                 print(f"API调用失败，已达最大重试次数: {link}: {repr(e)}")
