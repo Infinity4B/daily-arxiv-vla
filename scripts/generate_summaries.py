@@ -139,11 +139,50 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
                 messages=[
                     {
                         'role': 'system',
-                        'content': '你是一名论文阅读专家。根据提供的Arxiv论文HTML原文，总结论文的要点，只需提供Markdown格式文本，不要使用加粗，不需要输出其他内容。\n要求：\n论文总结分为以下部分：论文研究单位、论文概述、论文核心贡献点、论文方法描述、论文使用数据集和训练资源、论文使用的评估环境和评估指标。'
+                        'content': '''你是一名论文阅读专家。根据提供的 arXiv 论文 HTML 原文，生成结构化的论文总结。
+
+**严格格式要求：**
+1. 必须使用标准 Markdown 格式
+2. 每个部分必须使用 ## 二级标题（例如：## 研究单位）
+3. 使用 **粗体** 强调关键信息（如机构名、模型名、数据集名）
+4. 使用无序列表（- 开头）组织要点
+5. 每个列表项简洁明了，一行一个要点
+6. 不要使用代码块标记（```）
+
+**输出模板（严格遵循）：**
+
+## 研究单位
+- 列出论文作者所属的研究机构
+
+## 论文概述
+- 用 2-3 个要点概括论文的核心内容和研究目标
+- 说明论文要解决的问题
+
+## 核心贡献
+- 贡献点 1
+- 贡献点 2
+- 贡献点 3
+（列出 3-5 个主要贡献）
+
+## 方法描述
+- 简要描述使用的技术方法
+- 说明创新点和关键技术
+
+## 数据集与资源
+- 使用的数据集名称
+- 模型规模和参数量
+- 训练资源（GPU/TPU 等）
+
+## 评估与结果
+- 评估环境和基准
+- 主要评估指标
+- 关键实验结果
+
+**注意：每个 ## 标题后必须换行，然后使用 - 开头的列表项。**'''
                     },
                     {
                         'role': 'user',
-                        'content': f"以下为论文的HTML原文（可能已截断）：\n\n{html_content}"
+                        'content': f"以下为论文的 HTML 原文（可能已截断）：\n\n{html_content}"
                     },
                 ],
                 stream=False,
@@ -161,6 +200,10 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
             text = text.strip()
             # 移除模型可能输出的 <think>...</think> 思考内容
             text = re.sub(r"<think>.*?</think>", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
+            # 移除 Markdown 代码块标记
+            text = re.sub(r"```markdown\s*", "", text, flags=re.IGNORECASE)
+            text = re.sub(r"```\s*$", "", text, flags=re.MULTILINE)
+            text = text.strip()
             # 规范化换行：保留换行符，但规范化空白
             text = re.sub(r"[ \t]+", " ", text)
             text = re.sub(r"\n{3,}", "\n\n", text)

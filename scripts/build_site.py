@@ -142,19 +142,21 @@ def auto_add_linebreaks(text: str) -> str:
 
 def markdown_to_html(md: str) -> str:
     """
-    极简 Markdown 渲染器（覆盖本项目所需）：
-    - ###, #### -> h3/h4
-    - 无序列表/有序列表
-    - 行内加粗 **text**、行内代码 `code`
-    - 链接 [text](url)
-    - 段落/换行
+    改进的 Markdown 渲染器，支持：
+    - 所有级别标题 (#, ##, ###, ####)
+    - 无序列表和有序列表（支持多行）
+    - 行内格式：**粗体**、`代码`、[链接](url)
+    - 段落和换行
     """
     lines = md.splitlines()
     html_lines: List[str] = []
 
     def render_inline(s: str) -> str:
+        # 代码块
         s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+        # 粗体
         s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+        # 链接
         s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"<a href=\"\2\" target=\"_blank\" rel=\"noopener noreferrer\">\1</a>", s)
         return s
 
@@ -167,54 +169,58 @@ def markdown_to_html(md: str) -> str:
             i += 1
             continue
 
-        # 标题 - 支持所有级别的标题（#、##、###、####）
-        # 使用正则匹配，确保格式正确（# 后必须有空格）
-        title_match = re.match(r"^(#{1,4})\s+(.+)$", line)
+        # 标题 - 支持所有级别（#, ##, ###, ####）
+        title_match = re.match(r"^(#{1,6})\s+(.+)$", line)
         if title_match:
             level = len(title_match.group(1))
+            # 限制最大级别为 h4
+            level = min(level, 4)
+            # h2 添加特殊类名用于样式
             title_text = title_match.group(2).strip()
-            html_lines.append(f"<h{level}>{render_inline(title_text)}</h{level}>")
+            class_attr = ' class="section-title"' if level == 2 else ''
+            html_lines.append(f"<h{level}{class_attr}>{render_inline(title_text)}</h{level}>")
             i += 1
             continue
+
+        # 水平线
         if line.strip() == "---":
             html_lines.append("<hr/>")
             i += 1
             continue
 
-        # 列表（无序）
-        if re.match(r"^- ", line):
+        # 无序列表
+        if re.match(r"^[-*]\s+", line):
             ul_items: List[str] = []
-            while i < len(lines) and re.match(r"^- ", lines[i]):
-                ul_items.append(f"<li>{render_inline(lines[i][2:].strip())}</li>")
-                i += 1
-            html_lines.append("<ul>" + "".join(ul_items) + "</ul>")
+            while i < len(lines):
+                curr_line = lines[i].rstrip()
+                if not curr_line:
+                    break
+                if re.match(r"^[-*]\s+", curr_line):
+                    item_text = re.sub(r"^[-*]\s+", "", curr_line).strip()
+                    ul_items.append(f"<li>{render_inline(item_text)}</li>")
+                    i += 1
+                else:
+                    break
+            if ul_items:
+                html_lines.append("<ul>" + "".join(ul_items) + "</ul>")
             continue
 
-        # 列表（有序）
-        # 避免将 "1. 论文研究单位" 这样的标题误识别为列表
-        # 判断标准：只有当下一行也是列表项时，才当作列表处理
-        # 这样可以避免将单独的编号标题误识别为列表
-        if re.match(r"^\d+\. ", line):
-            # 检查下一行是否也是列表项（且不是空行）
-            next_is_list = False
-            if i + 1 < len(lines):
-                next_line = lines[i + 1].strip()
-                if next_line and re.match(r"^\d+\. ", next_line):
-                    next_is_list = True
-            
-            # 只有当下一行也是列表项时，才当作列表处理
-            if next_is_list:
-                ol_items: List[str] = []
-                while i < len(lines) and re.match(r"^\d+\. ", lines[i]):
-                    item_txt = re.sub(r"^\d+\. ", "", lines[i]).strip()
-                    ol_items.append(f"<li>{render_inline(item_txt)}</li>")
+        # 有序列表
+        if re.match(r"^\d+\.\s+", line):
+            ol_items: List[str] = []
+            while i < len(lines):
+                curr_line = lines[i].rstrip()
+                if not curr_line:
+                    break
+                if re.match(r"^\d+\.\s+", curr_line):
+                    item_text = re.sub(r"^\d+\.\s+", "", curr_line).strip()
+                    ol_items.append(f"<li>{render_inline(item_text)}</li>")
                     i += 1
-                    # 如果下一行不是列表项，停止收集
-                    if i >= len(lines) or not lines[i].strip() or not re.match(r"^\d+\. ", lines[i]):
-                        break
-                if ol_items:
-                    html_lines.append("<ol>" + "".join(ol_items) + "</ol>")
-                    continue
+                else:
+                    break
+            if ol_items:
+                html_lines.append("<ol>" + "".join(ol_items) + "</ol>")
+            continue
 
         # 普通段落
         html_lines.append(f"<p>{render_inline(line)}</p>")
@@ -229,6 +235,7 @@ def markdown_to_html(md: str) -> str:
             continue
         out.append(h)
         prev_blank = is_blank
+
     return "\n".join(out).strip()
 
 
@@ -672,6 +679,26 @@ input[type=search]::placeholder {
   color: var(--accent-hover);
 }
 
+article h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 40px 0 20px;
+  color: var(--text);
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  position: relative;
+}
+
+article h2.section-title::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gradient-from), var(--gradient-to));
+}
+
 article h3, article h4 {
   margin: 32px 0 16px;
   color: var(--text);
@@ -679,11 +706,11 @@ article h3, article h4 {
 }
 
 article h3 {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 article h4 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 article p {
@@ -693,13 +720,32 @@ article p {
 }
 
 article ul, article ol {
-  margin: 16px 0 16px 24px;
+  margin: 16px 0;
+  padding-left: 28px;
   line-height: 1.8;
-  color: var(--text-secondary);
 }
 
 article li {
-  margin: 8px 0;
+  margin: 10px 0;
+  color: var(--text-secondary);
+}
+
+article ul li {
+  list-style-type: disc;
+}
+
+article ol li {
+  list-style-type: decimal;
+}
+
+article li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+article strong {
+  color: var(--text);
+  font-weight: 600;
 }
 
 article code {
@@ -709,6 +755,7 @@ article code {
   border-radius: 6px;
   font-size: 14px;
   font-family: 'Courier New', monospace;
+  color: var(--accent);
 }
 
 article a {
