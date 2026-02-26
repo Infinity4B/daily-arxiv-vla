@@ -1,5 +1,6 @@
 import os
 import re
+import time
 from typing import List, Tuple
 
 import requests
@@ -83,66 +84,101 @@ def rebuild_line(date_str: str, title: str, link: str, summary_html: str) -> str
 
 def generate_summary_for_link(client: OpenAI, link: str, model: str = "deepseek-ai/DeepSeek-V3.2") -> str:
     """
-    /**
-     * @function generate_summary_for_link
-     * @description 抓取 arXiv HTML 原文并让模型基于 HTML 生成简要总结。
-     * @param {OpenAI} client - OpenAI 客户端
-     * @param {str} link - arXiv 链接
-     * @param {str} model - ModelScope 模型 ID
-     * @returns {str} 简要总结文本
-     */
+    抓取 arXiv HTML 原文并让模型基于 HTML 生成简要总结。
+    包含重试机制和错误处理。
     """
     # 将 /abs/ 链接转换为 /html/ 页面
     html_url = re.sub(r"/abs/", "/html/", link)
 
-    # 抓取 HTML 文本
-    resp = requests.get(html_url, timeout=30)
-    resp.raise_for_status()
-    html_content = resp.text
+    # 抓取 HTML 文本（带重试）
+    max_retries = 3
+    html_content = None
+
+    for attempt in range(max_retries):
+        try:
+            resp = requests.get(html_url, timeout=30)
+            resp.raise_for_status()
+            html_content = resp.text
+            break
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                print(f"警告: HTML页面不存在，尝试使用PDF: {link}")
+                # 如果HTML不存在，尝试获取摘要（fallback）
+                return ""
+            elif attempt < max_retries - 1:
+                print(f"HTTP错误 {e.response.status_code}，重试 {attempt + 1}/{max_retries}: {link}")
+                time.sleep(2 ** attempt)
+            else:
+                print(f"HTTP请求失败，已达最大重试次数: {link}")
+                return ""
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                print(f"网络错误，重试 {attempt + 1}/{max_retries}: {link}")
+                time.sleep(2 ** attempt)
+            else:
+                print(f"网络请求失败: {link}: {repr(e)}")
+                return ""
+
+    if not html_content:
+        return ""
 
     # 按需截断，避免上下文过长
     max_chars = 180000
     if len(html_content) > max_chars:
         html_content = html_content[:max_chars]
 
-    # 与 test_api.py 保持一致的提示风格（基于 HTML）
-    response = client.chat.completions.create(
-        model=model,
-        messages=[
-            {
-                'role': 'system',
-                'content': '你是一名论文阅读专家。根据提供的Arxiv论文HTML原文，总结论文的要点，只需提供Markdown格式文本，不要使用加粗，不需要输出其他内容。\n要求：\n论文总结分为以下部分：论文研究单位、论文概述、论文核心贡献点、论文方法描述、论文使用数据集和训练资源、论文使用的评估环境和评估指标。'
-            },
-            {
-                'role': 'user',
-                'content': f"以下为论文的HTML原文（可能已截断）：\n\n{html_content}"
-            },
-        ],
-        stream=False,
-    )
-    # print(response)
-    if not response.choices:
-        print(f"警告: API返回无choices，链接: {link}")
-        return ""
-    text = getattr(response.choices[0].message, "content", "")
-    if not text:
-        print(f"警告: API返回content为空，链接: {link}")
-        return ""
-    text = text.strip()
-    # 移除模型可能输出的 <think>...</think> 思考内容
-    text = re.sub(r"<think>.*?</think>", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
-    # 规范化换行：保留换行符，但规范化空白
-    # 1. 将多个连续空格（非换行空白）合并为单个空格
-    text = re.sub(r"[ \t]+", " ", text)
-    # 2. 将多个连续换行合并为最多两个换行
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    # 3. 移除行尾空格
-    text = re.sub(r" +\n", "\n", text)
-    # 4. 将换行符转换为 <br> 标签以便在 Markdown 表格中存储
-    text = text.replace("\n", "<br>")
-    if not text:
-        print(f"警告: 处理后文本为空，链接: {link}")
-    return text
+    # API 调用（带重试）
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {
+                        'role': 'system',
+                        'content': '你是一名论文阅读专家。根据提供的Arxiv论文HTML原文，总结论文的要点，只需提供Markdown格式文本，不要使用加粗，不需要输出其他内容。\n要求：\n论文总结分为以下部分：论文研究单位、论文概述、论文核心贡献点、论文方法描述、论文使用数据集和训练资源、论文使用的评估环境和评估指标。'
+                    },
+                    {
+                        'role': 'user',
+                        'content': f"以下为论文的HTML原文（可能已截断）：\n\n{html_content}"
+                    },
+                ],
+                stream=False,
+            )
+
+            if not response.choices:
+                print(f"警告: API返回无choices，链接: {link}")
+                return ""
+
+            text = getattr(response.choices[0].message, "content", "")
+            if not text:
+                print(f"警告: API返回content为空，链接: {link}")
+                return ""
+
+            text = text.strip()
+            # 移除模型可能输出的 <think>...</think> 思考内容
+            text = re.sub(r"<think>.*?</think>", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
+            # 规范化换行：保留换行符，但规范化空白
+            text = re.sub(r"[ \t]+", " ", text)
+            text = re.sub(r"\n{3,}", "\n\n", text)
+            text = re.sub(r" +\n", "\n", text)
+            # 将换行符转换为 <br> 标签以便在 Markdown 表格中存储
+            text = text.replace("\n", "<br>")
+
+            if not text:
+                print(f"警告: 处理后文本为空，链接: {link}")
+                return ""
+
+            return text
+
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"API调用失败，重试 {attempt + 1}/{max_retries}: {link}")
+                time.sleep(2 ** attempt)
+            else:
+                print(f"API调用失败，已达最大重试次数: {link}: {repr(e)}")
+                return ""
+
+    return ""
 
 
 def default_summary_cell() -> str:

@@ -1,5 +1,6 @@
 import os
 import re
+import time
 from datetime import datetime
 from typing import List, Set
 
@@ -44,19 +45,28 @@ class ArxivCollector:
 
 	def _search(self, max_results: int) -> List[arxiv.Result]:
 		"""
-		/**
-		 * @private
-		 * @param {int} max_results - 最大返回数量
-		 * @returns {List[Result]} arxiv 结果列表（按提交时间降序）
-		 */
+		搜索 arXiv 论文，带重试机制
 		"""
-		search = arxiv.Search(
-			query=self.query_keyword,
-			max_results=max_results,
-			sort_by=arxiv.SortCriterion.SubmittedDate,
-			sort_order=arxiv.SortOrder.Descending,
-		)
-		return list(self._client.results(search))
+		max_retries = 3
+
+		for attempt in range(max_retries):
+			try:
+				search = arxiv.Search(
+					query=self.query_keyword,
+					max_results=max_results,
+					sort_by=arxiv.SortCriterion.SubmittedDate,
+					sort_order=arxiv.SortOrder.Descending,
+				)
+				return list(self._client.results(search))
+			except Exception as e:
+				if attempt < max_retries - 1:
+					print(f"arXiv搜索失败，重试 {attempt + 1}/{max_retries}: {repr(e)}")
+					time.sleep(2 ** attempt)
+				else:
+					print(f"arXiv搜索失败，已达最大重试次数: {repr(e)}")
+					return []
+
+		return []
 
 	def _filter_categories(self, results: List[arxiv.Result]) -> List[arxiv.Result]:
 		"""
@@ -110,22 +120,25 @@ class ArxivCollector:
 
 	def _load_existing_links(self) -> Set[str]:
 		"""
-		/**
-		 * 解析 `papers.md` 已有的 arXiv 链接集合，用于去重。
-		 * 返回规范化后的链接（去掉版本号），避免同一论文的不同版本被重复添加。
-		 * @returns {Set[str]} 已存在的规范化链接集合
-		 */
+		解析 papers.md 已有的 arXiv 链接集合，用于去重。
+		返回规范化后的链接（去掉版本号）。
 		"""
 		if not os.path.exists(self.papers_path):
 			return set()
+
 		links: Set[str] = set()
 		link_pattern = re.compile(r"https?://arxiv\.org/abs/[\w\-\.\/]+", re.IGNORECASE)
-		with open(self.papers_path, "r", encoding="utf-8") as f:
-			for line in f:
-				for m in link_pattern.findall(line):
-					# 规范化链接（去掉版本号）后再加入集合
-					normalized = self._normalize_link(m)
-					links.add(normalized)
+
+		try:
+			with open(self.papers_path, "r", encoding="utf-8") as f:
+				for line in f:
+					for m in link_pattern.findall(line):
+						normalized = self._normalize_link(m)
+						links.add(normalized)
+		except Exception as e:
+			print(f"警告: 读取 papers.md 失败: {repr(e)}")
+			return set()
+
 		return links
 
 	def _format_row(self, r: arxiv.Result) -> str:
@@ -145,19 +158,26 @@ class ArxivCollector:
 
 	def _append_rows(self, rows: List[str]) -> None:
 		"""
-		/**
-		 * 将若干行插入到表头之后（保持最新内容靠前）。
-		 * @param {List[str]} rows - 需要追加的行（已按时间降序）
-		 */
+		将若干行插入到表头之后（保持最新内容靠前）。
 		"""
 		self._ensure_md_header()
-		with open(self.papers_path, "r", encoding="utf-8") as f:
-			lines = f.readlines()
-		# 寻找表头分隔线所在索引（第二行）
+
+		try:
+			with open(self.papers_path, "r", encoding="utf-8") as f:
+				lines = f.readlines()
+		except Exception as e:
+			print(f"错误: 读取 papers.md 失败: {repr(e)}")
+			raise
+
 		insert_idx = 2 if len(lines) >= 2 else len(lines)
 		new_lines = lines[:insert_idx] + rows + lines[insert_idx:]
-		with open(self.papers_path, "w", encoding="utf-8") as f:
-			f.writelines(new_lines)
+
+		try:
+			with open(self.papers_path, "w", encoding="utf-8") as f:
+				f.writelines(new_lines)
+		except Exception as e:
+			print(f"错误: 写入 papers.md 失败: {repr(e)}")
+			raise
 
 	def initialize(self) -> int:
 		"""
