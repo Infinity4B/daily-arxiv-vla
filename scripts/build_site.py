@@ -850,6 +850,28 @@ def generate_app_js() -> str:
   }
 
   /**
+   * 提取论文概述部分作为预览
+   * @param {string} markdown
+   * @returns {string}
+   */
+  function extractOverview(markdown){
+    // 尝试提取 "## 论文概述" 部分
+    const overviewMatch = markdown.match(/##\\s*论文概述[\\s\\S]*?(?=##|$)/);
+    if(overviewMatch){
+      // 移除标题行和标记符号，只保留内容
+      let content = overviewMatch[0]
+        .replace(/##\\s*论文概述\\s*/, '')
+        .replace(/#+\\s+/g, '')
+        .replace(/\\*\\*/g, '')
+        .replace(/`/g, '')
+        .trim();
+      return content.substring(0, 200);
+    }
+    // 回退：如果找不到论文概述，使用原有逻辑
+    return markdown.replace(/#+\\s+/g, '').replace(/\\*\\*/g, '').substring(0, 200);
+  }
+
+  /**
    * @param {Array} items  已过滤后的项目
    */
   function renderGroups(items){
@@ -877,7 +899,7 @@ def generate_app_js() -> str:
 
         const preview = document.createElement('div');
         preview.className = 'summary-preview';
-        preview.textContent = it.summary_markdown.replace(/#+\\s+/g, '').replace(/\\*\\*/g, '').substring(0, 200);
+        preview.textContent = extractOverview(it.summary_markdown);
 
         const footer = document.createElement('div');
         footer.className = 'card-footer';
