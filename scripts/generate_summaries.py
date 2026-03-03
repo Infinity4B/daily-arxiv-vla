@@ -80,14 +80,33 @@ def rebuild_line(date_str: str, title: str, link: str, summary_html: str) -> str
     return f"| {date_str} | {safe_title} | {link} | {safe_summary} |\n"
 
 
+def get_model_list() -> List[str]:
+    """
+    从环境变量读取模型列表，按优先级排序。
+    支持逗号分隔的多个模型，如: model1,model2,model3
+    """
+    models_str = os.getenv("MODELSCOPE_MODELS", "")
+    if models_str:
+        # 解析逗号分隔的模型列表，去除空白
+        models = [m.strip() for m in models_str.split(",") if m.strip()]
+        if models:
+            return models
+
+    # 如果未配置 MODELSCOPE_MODELS，回退到单个模型配置
+    single_model = os.getenv("MODELSCOPE_MODEL", "deepseek-ai/DeepSeek-V3.2")
+    return [single_model]
+
+
 def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> str:
     """
     抓取 arXiv HTML 原文并让模型基于 HTML 生成简要总结。
-    包含重试机制和错误处理。
+    包含模型回退机制和重试机制。
     """
-    # 从环境变量读取模型配置，如果未指定则使用默认值
+    # 获取模型列表
     if model is None:
-        model = os.getenv("MODELSCOPE_MODEL", "deepseek-ai/DeepSeek-V3.2")
+        model_list = get_model_list()
+    else:
+        model_list = [model]
 
     # 将 /abs/ 链接转换为 /html/ 页面
     html_url = re.sub(r"/abs/", "/html/", link)
@@ -130,16 +149,21 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
     if len(html_content) > max_chars:
         html_content = html_content[:max_chars]
 
-    # API 调用（带重试）
+    # 遍历模型列表，依次尝试
     api_max_retries = int(os.getenv("API_MAX_RETRIES", "3"))
-    for attempt in range(api_max_retries):
-        try:
-            response = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {
-                        'role': 'system',
-                        'content': '''你是一名论文阅读专家。根据提供的 arXiv 论文 HTML 原文，生成结构化的论文总结。
+
+    for model_idx, current_model in enumerate(model_list):
+        print(f"尝试使用模型 [{model_idx + 1}/{len(model_list)}]: {current_model}")
+
+        # 对当前模型进行重试
+        for attempt in range(api_max_retries):
+            try:
+                response = client.chat.completions.create(
+                    model=current_model,
+                    messages=[
+                        {
+                            'role': 'system',
+                            'content': '''你是一名论文阅读专家。根据提供的 arXiv 论文 HTML 原文，生成结构化的论文总结。
 
 **严格格式要求：**
 1. 必须使用标准 Markdown 格式
@@ -179,52 +203,77 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
 - 关键实验结果
 
 **注意：每个 ## 标题后必须换行，然后使用 - 开头的列表项。**'''
-                    },
-                    {
-                        'role': 'user',
-                        'content': f"以下为论文的 HTML 原文（可能已截断）：\n\n{html_content}"
-                    },
-                ],
-                stream=False,
-            )
+                        },
+                        {
+                            'role': 'user',
+                            'content': f"以下为论文的 HTML 原文（可能已截断）：\n\n{html_content}"
+                        },
+                    ],
+                    stream=False,
+                )
 
-            if not response.choices:
-                print(f"警告: API返回无choices，链接: {link}")
-                return ""
+                if not response.choices:
+                    print(f"警告: API返回无choices，链接: {link}")
+                    if attempt < api_max_retries - 1:
+                        time.sleep(2 ** attempt)
+                        continue
+                    else:
+                        break  # 尝试下一个模型
 
-            text = getattr(response.choices[0].message, "content", "")
-            if not text:
-                print(f"警告: API返回content为空，链接: {link}")
-                return ""
+                text = getattr(response.choices[0].message, "content", "")
+                if not text:
+                    print(f"警告: API返回content为空，链接: {link}")
+                    if attempt < api_max_retries - 1:
+                        time.sleep(2 ** attempt)
+                        continue
+                    else:
+                        break  # 尝试下一个模型
 
-            text = text.strip()
-            # 移除模型可能输出的 <think>...</think> 思考内容
-            text = re.sub(r"<think>.*?</think>", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
-            # 移除 Markdown 代码块标记
-            text = re.sub(r"```markdown\s*", "", text, flags=re.IGNORECASE)
-            text = re.sub(r"```\s*$", "", text, flags=re.MULTILINE)
-            text = text.strip()
-            # 规范化换行：保留换行符，但规范化空白
-            text = re.sub(r"[ \t]+", " ", text)
-            text = re.sub(r"\n{3,}", "\n\n", text)
-            text = re.sub(r" +\n", "\n", text)
-            # 将换行符转换为 <br> 标签以便在 Markdown 表格中存储
-            text = text.replace("\n", "<br>")
+                text = text.strip()
+                # 移除模型可能输出的 <think>...</think> 思考内容
+                text = re.sub(r"<think>.*?</think>", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
+                # 移除 Markdown 代码块标记
+                text = re.sub(r"```markdown\s*", "", text, flags=re.IGNORECASE)
+                text = re.sub(r"```\s*$", "", text, flags=re.MULTILINE)
+                text = text.strip()
+                # 规范化换行：保留换行符，但规范化空白
+                text = re.sub(r"[ \t]+", " ", text)
+                text = re.sub(r"\n{3,}", "\n\n", text)
+                text = re.sub(r" +\n", "\n", text)
+                # 将换行符转换为 <br> 标签以便在 Markdown 表格中存储
+                text = text.replace("\n", "<br>")
 
-            if not text:
-                print(f"警告: 处理后文本为空，链接: {link}")
-                return ""
+                if not text:
+                    print(f"警告: 处理后文本为空，链接: {link}")
+                    if attempt < api_max_retries - 1:
+                        time.sleep(2 ** attempt)
+                        continue
+                    else:
+                        break  # 尝试下一个模型
 
-            return text
+                # 成功生成摘要
+                print(f"✓ 使用模型 {current_model} 成功生成摘要")
+                return text
 
-        except Exception as e:
-            if attempt < api_max_retries - 1:
-                print(f"API调用失败，重试 {attempt + 1}/{api_max_retries}: {link}")
-                time.sleep(2 ** attempt)
-            else:
-                print(f"API调用失败，已达最大重试次数: {link}: {repr(e)}")
-                return ""
+            except Exception as e:
+                error_msg = str(e).lower()
+                # 检查是否是配额用完的错误
+                is_quota_error = any(keyword in error_msg for keyword in [
+                    'quota', 'rate limit', 'insufficient', 'exceeded', 'balance'
+                ])
 
+                if is_quota_error:
+                    print(f"✗ 模型 {current_model} 配额已用完")
+                    break  # 直接尝试下一个模型，不重试
+                elif attempt < api_max_retries - 1:
+                    print(f"API调用失败，重试 {attempt + 1}/{api_max_retries}: {repr(e)}")
+                    time.sleep(2 ** attempt)
+                else:
+                    print(f"✗ 模型 {current_model} 调用失败，已达最大重试次数: {repr(e)}")
+                    break  # 尝试下一个模型
+
+    # 所有模型都失败
+    print(f"✗ 所有模型都无法生成摘要: {link}")
     return ""
 
 
