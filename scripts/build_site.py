@@ -489,15 +489,16 @@ input[type=search]::placeholder {
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: 24px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  min-height: 220px;
 }
 
 .card::before {
@@ -506,72 +507,78 @@ input[type=search]::placeholder {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 5px;
   background: linear-gradient(90deg, var(--gradient-from), var(--gradient-to));
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
+  border-radius: 24px 24px 0 0;
 }
 
 .card:hover {
   background: var(--card-hover);
   border-color: var(--accent);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px var(--shadow);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.3);
 }
 
 .card:hover::before {
   opacity: 1;
 }
 
+.card:active {
+  transform: translateY(-4px) scale(1.01);
+}
+
 .title {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
   color: var(--text);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-bottom: 8px;
 }
 
-.btn-row {
-  display: flex;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.btn {
-  appearance: none;
-  border: 1px solid var(--border);
-  background: var(--bg-secondary);
-  color: var(--text);
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
+.summary-preview {
   font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: inline-flex;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  opacity: 0.8;
+  flex: 1;
+}
+
+.card-footer {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
-.btn:hover {
-  border-color: var(--accent);
-  background: var(--card-hover);
+.read-more {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.3s ease;
 }
 
-.btn.primary {
-  background: linear-gradient(135deg, var(--gradient-from), var(--gradient-to));
-  border-color: var(--accent);
-  color: white;
-  font-weight: 600;
+.card:hover .read-more {
+  gap: 10px;
 }
 
-.btn.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+.read-more::after {
+  content: '→';
+  font-size: 16px;
 }
 
 .footer {
@@ -808,13 +815,13 @@ hr {
 
 
 def generate_app_js() -> str:
-    return f"""
+    return """
 /**
  * @file app.js
  * @description 前端逻辑：加载 data.json，渲染卡片、搜索、日期筛选、详情弹窗。
  */
-(function(){{
-  /** @type {{Array<{{date:string,title:string,link:string,summary_markdown:string,summary_html:string}}>}} */
+(function(){
+  /** @type {Array<{date:string,title:string,link:string,summary_markdown:string,summary_html:string}>} */
   let DATA = [];
 
   const $ = (sel) => document.querySelector(sel);
@@ -829,143 +836,146 @@ def generate_app_js() -> str:
   let lastScrollY = 0;
 
   /**
-   * @param {{Array}} items
-   * @param {{string}} q
-   * @param {{string|null}} date
+   * @param {Array} items
+   * @param {string} q
+   * @param {string|null} date
    */
-  function filterItems(items, q){{
+  function filterItems(items, q){
     const kw = (q||'').trim().toLowerCase();
-    return items.filter(it => {{
+    return items.filter(it => {
       if(!kw) return true;
       const hay = (it.title + ' ' + it.summary_markdown).toLowerCase();
       return hay.includes(kw);
-    }});
-  }}
+    });
+  }
 
   /**
-   * @param {{Array}} items  已过滤后的项目
+   * @param {Array} items  已过滤后的项目
    */
-  function renderGroups(items){{
+  function renderGroups(items){
     // 分组：按日期降序
     const map = new Map();
-    items.forEach(it=>{{ if(!map.has(it.date)) map.set(it.date, []); map.get(it.date).push(it); }});
+    items.forEach(it=>{ if(!map.has(it.date)) map.set(it.date, []); map.get(it.date).push(it); });
     const dates = Array.from(map.keys()).sort((a,b)=> b.localeCompare(a));
 
     groupsEl.innerHTML = '';
-    dates.forEach(d => {{
+    dates.forEach(d => {
       const group = document.createElement('section');
       group.className = 'group';
       const h = document.createElement('h2');
       h.textContent = d;
       const grid = document.createElement('div');
       grid.className = 'grid';
-      map.get(d).forEach(it => {{
+      map.get(d).forEach(it => {
         const card = document.createElement('div');
         card.className = 'card';
+        card.onclick = ()=> openDetail(it);
+
         const title = document.createElement('div');
         title.className = 'title';
         title.textContent = it.title;
-        const btnRow = document.createElement('div');
-        btnRow.className = 'btn-row';
-        const viewBtn = document.createElement('a');
-        viewBtn.className = 'btn';
-        viewBtn.href = it.link; viewBtn.target = '_blank'; viewBtn.rel = 'noopener noreferrer';
-        viewBtn.textContent = '查看原文';
-        const detailBtn = document.createElement('button');
-        detailBtn.className = 'btn primary';
-        detailBtn.textContent = '详情';
-        detailBtn.onclick = ()=> openDetail(it);
-        btnRow.appendChild(viewBtn);
-        btnRow.appendChild(detailBtn);
+
+        const preview = document.createElement('div');
+        preview.className = 'summary-preview';
+        preview.textContent = it.summary_markdown.replace(/#+\\s+/g, '').replace(/\\*\\*/g, '').substring(0, 200);
+
+        const footer = document.createElement('div');
+        footer.className = 'card-footer';
+        const readMore = document.createElement('div');
+        readMore.className = 'read-more';
+        readMore.textContent = '阅读详情';
+
+        footer.appendChild(readMore);
         card.appendChild(title);
-        card.appendChild(btnRow);
+        card.appendChild(preview);
+        card.appendChild(footer);
         grid.appendChild(card);
-      }});
+      });
       group.appendChild(h);
       group.appendChild(grid);
       groupsEl.appendChild(group);
-    }});
-  }}
+    });
+  }
 
   /**
    * 从 arxiv.org 链接中提取论文 ID，并生成幻觉翻译链接
-   * @param {{string}} link
-   * @returns {{string|null}} 幻觉翻译链接，如果不是 arxiv 链接则返回 null
+   * @param {string} link
+   * @returns {string|null} 幻觉翻译链接，如果不是 arxiv 链接则返回 null
    */
-  function getTranslationLink(link){{
+  function getTranslationLink(link){
     // 匹配 arxiv.org/abs/ 或 arxiv.org/pdf/ 等格式
     const match = link.match(/arxiv\\.org\\/(?:abs|pdf)\\/([\\d.]+)/i);
-    if(match && match[1]){{
-      return `https://hjfy.top/arxiv/${{match[1]}}`;
-    }}
+    if(match && match[1]){
+      return `https://hjfy.top/arxiv/${match[1]}`;
+    }
     return null;
-  }}
+  }
 
   /**
-   * @param {{title:string,date:string,summary_html:string,link:string}} it
+   * @param {title:string,date:string,summary_html:string,link:string} it
    */
-  function openDetail(it){{
+  function openDetail(it){
     lastScrollY = window.scrollY || 0;
     currentItem = it;
     detailTitle.textContent = it.title;
     const translationLink = getTranslationLink(it.link);
-    let metaHtml = `${{it.date}} · <a href="${{it.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
-    if(translationLink){{
-      metaHtml += ` · <a href="${{translationLink}}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
-    }}
+    let metaHtml = `${it.date} · <a href="${it.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+    if(translationLink){
+      metaHtml += ` · <a href="${translationLink}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
+    }
     detailMeta.innerHTML = metaHtml;
     detailBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
     detailView.classList.remove('hidden');
     // 使用 pushState 添加历史记录，但不改变 URL
-    history.pushState({{ view: 'detail', item: it }}, '', window.location.href);
+    history.pushState({ view: 'detail', item: it }, '', window.location.href);
     // 滚动到顶部
     window.scrollTo(0, 0);
-  }}
+  }
 
-  function closeDetail(){{ 
+  function closeDetail(){
     detailView.classList.add('hidden');
     currentItem = null;
     requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
     // 如果当前在详情页面状态，替换为列表状态（不跳转）
-    if (history.state && history.state.view === 'detail') {{
-      history.replaceState({{ view: 'list' }}, '', window.location.href);
-    }}
-  }}
+    if (history.state && history.state.view === 'detail') {
+      history.replaceState({ view: 'list' }, '', window.location.href);
+    }
+  }
 
-  function sync(){{
+  function sync(){
     const items = filterItems(DATA, searchEl.value);
     renderGroups(items);
-  }}
+  }
 
   detailBack.addEventListener('click', closeDetail);
-  
+
   // 监听浏览器前进/后退事件
-  window.addEventListener('popstate', (e) => {{
-    if (e.state && e.state.view === 'detail' && e.state.item) {{
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.view === 'detail' && e.state.item) {
       // 前进到详情页面（不添加新的历史记录）
       currentItem = e.state.item;
       detailTitle.textContent = e.state.item.title;
       const translationLink = getTranslationLink(e.state.item.link);
-      let metaHtml = `${{e.state.item.date}} · <a href="${{e.state.item.link}}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
-      if(translationLink){{
-        metaHtml += ` · <a href="${{translationLink}}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
-      }}
+      let metaHtml = `${e.state.item.date} · <a href="${e.state.item.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
+      if(translationLink){
+        metaHtml += ` · <a href="${translationLink}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
+      }
       detailMeta.innerHTML = metaHtml;
       detailBody.innerHTML = e.state.item.summary_html;
       detailView.classList.remove('hidden');
       window.scrollTo(0, 0);
-    }} else {{
+    } else {
       // 返回到列表页面（包括 view 为 'list' 或 null 的情况）
       detailView.classList.add('hidden');
       currentItem = null;
       requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
-    }}
-  }});
+    }
+  });
 
   searchEl.addEventListener('input', sync);
 
-  fetch('assets/data.json').then(r=>r.json()).then(arr=>{{ DATA = arr; sync(); }});
-}})();
+  fetch('assets/data.json').then(r=>r.json()).then(arr=>{ DATA = arr; sync(); });
+})();
 """.strip()
 
 

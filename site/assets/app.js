@@ -51,23 +51,26 @@
       map.get(d).forEach(it => {
         const card = document.createElement('div');
         card.className = 'card';
+        card.onclick = ()=> openDetail(it);
+
         const title = document.createElement('div');
         title.className = 'title';
         title.textContent = it.title;
-        const btnRow = document.createElement('div');
-        btnRow.className = 'btn-row';
-        const viewBtn = document.createElement('a');
-        viewBtn.className = 'btn';
-        viewBtn.href = it.link; viewBtn.target = '_blank'; viewBtn.rel = 'noopener noreferrer';
-        viewBtn.textContent = '查看原文';
-        const detailBtn = document.createElement('button');
-        detailBtn.className = 'btn primary';
-        detailBtn.textContent = '详情';
-        detailBtn.onclick = ()=> openDetail(it);
-        btnRow.appendChild(viewBtn);
-        btnRow.appendChild(detailBtn);
+
+        const preview = document.createElement('div');
+        preview.className = 'summary-preview';
+        preview.textContent = it.summary_markdown.replace(/#+\s+/g, '').replace(/\*\*/g, '').substring(0, 200);
+
+        const footer = document.createElement('div');
+        footer.className = 'card-footer';
+        const readMore = document.createElement('div');
+        readMore.className = 'read-more';
+        readMore.textContent = '阅读详情';
+
+        footer.appendChild(readMore);
         card.appendChild(title);
-        card.appendChild(btnRow);
+        card.appendChild(preview);
+        card.appendChild(footer);
         grid.appendChild(card);
       });
       group.appendChild(h);
@@ -111,7 +114,7 @@
     window.scrollTo(0, 0);
   }
 
-  function closeDetail(){ 
+  function closeDetail(){
     detailView.classList.add('hidden');
     currentItem = null;
     requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
@@ -127,7 +130,7 @@
   }
 
   detailBack.addEventListener('click', closeDetail);
-  
+
   // 监听浏览器前进/后退事件
   window.addEventListener('popstate', (e) => {
     if (e.state && e.state.view === 'detail' && e.state.item) {
