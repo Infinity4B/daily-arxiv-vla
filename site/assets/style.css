@@ -27,6 +27,10 @@ html, body {
   overflow-x: hidden;
 }
 
+body.detail-open {
+  overflow: hidden;
+}
+
 .bg-gradient {
   position: fixed;
   top: 0;
@@ -128,6 +132,62 @@ input[type=search]::placeholder {
   padding-bottom: 80px;
 }
 
+.status-panel.hidden {
+  display: none;
+}
+
+.status-card {
+  background: rgba(15, 20, 25, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.status-card[data-state="loading"] {
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.status-card[data-state="error"] {
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.status-card[data-state="empty"] {
+  border-color: rgba(148, 163, 184, 0.32);
+}
+
+.status-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.status-text {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.status-action {
+  margin-top: 16px;
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-action:hover,
+.status-action:focus-visible {
+  border-color: var(--accent);
+  background: var(--card-hover);
+}
+
 .group {
   margin: 48px 0;
 }
@@ -156,6 +216,7 @@ input[type=search]::placeholder {
 }
 
 .card {
+  appearance: none;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 24px;
@@ -168,6 +229,9 @@ input[type=search]::placeholder {
   position: relative;
   overflow: hidden;
   min-height: 220px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
 }
 
 .card::before {
@@ -198,6 +262,28 @@ input[type=search]::placeholder {
   transform: translateY(-4px) scale(1.01);
 }
 
+.card:focus-visible,
+.back-btn:focus-visible,
+.detail-toc-link:focus-visible,
+input[type=search]:focus-visible,
+.status-action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16);
+}
+
+.group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.group-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 .title {
   font-weight: 600;
   font-size: 18px;
@@ -208,6 +294,31 @@ input[type=search]::placeholder {
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 8px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.card-tag.primary {
+  color: var(--text);
+  border-color: rgba(99, 102, 241, 0.28);
+  background: rgba(99, 102, 241, 0.1);
 }
 
 .summary-preview {
@@ -323,10 +434,21 @@ input[type=search]::placeholder {
 
 .detail-content {
   flex: 1;
-  max-width: 900px;
+  max-width: 1180px;
   width: 100%;
   margin: 0 auto;
   padding: 40px 24px 80px;
+}
+
+.detail-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 40px;
+  align-items: start;
+}
+
+.detail-main {
+  min-width: 0;
 }
 
 #detail-title {
@@ -353,6 +475,46 @@ input[type=search]::placeholder {
 
 .detail-meta a:hover {
   color: var(--accent-hover);
+}
+
+.detail-toc {
+  position: sticky;
+  top: 92px;
+  background: rgba(15, 20, 25, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.detail-toc.hidden {
+  display: none;
+}
+
+.detail-toc-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.detail-toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-toc-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.detail-toc-link:hover {
+  color: var(--text);
+  transform: translateX(2px);
 }
 
 article h2 {
@@ -478,5 +640,24 @@ hr {
 
   .detail-content {
     padding: 24px 16px 60px;
+  }
+
+  .status-card {
+    padding: 20px;
+  }
+
+  .group-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .detail-shell {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .detail-toc {
+    position: static;
+    order: -1;
   }
 }

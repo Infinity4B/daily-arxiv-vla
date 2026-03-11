@@ -296,6 +296,7 @@ def generate_index_html() -> str:
     </header>
 
     <main class=\"container main-content\">
+      <section id=\"status\" class=\"status-panel hidden\" aria-live=\"polite\"></section>
       <section id=\"groups\"></section>
     </main>
 
@@ -315,9 +316,17 @@ def generate_index_html() -> str:
         </button>
       </div>
       <div class=\"detail-content\">
-        <h2 id=\"detail-title\"></h2>
-        <div id=\"detail-meta\" class=\"detail-meta\"></div>
-        <article id=\"detail-body\"></article>
+        <div class=\"detail-shell\">
+          <div class=\"detail-main\">
+            <h2 id=\"detail-title\"></h2>
+            <div id=\"detail-meta\" class=\"detail-meta\"></div>
+            <article id=\"detail-body\"></article>
+          </div>
+          <aside id=\"detail-toc\" class=\"detail-toc hidden\" aria-label=\"内容目录\">
+            <p class=\"detail-toc-title\">内容目录</p>
+            <nav id=\"detail-toc-nav\" class=\"detail-toc-nav\"></nav>
+          </aside>
+        </div>
       </div>
     </div>
 
@@ -356,6 +365,10 @@ html, body {
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+body.detail-open {
+  overflow: hidden;
 }
 
 .bg-gradient {
@@ -459,6 +472,62 @@ input[type=search]::placeholder {
   padding-bottom: 80px;
 }
 
+.status-panel.hidden {
+  display: none;
+}
+
+.status-card {
+  background: rgba(15, 20, 25, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.status-card[data-state="loading"] {
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.status-card[data-state="error"] {
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.status-card[data-state="empty"] {
+  border-color: rgba(148, 163, 184, 0.32);
+}
+
+.status-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.status-text {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.status-action {
+  margin-top: 16px;
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-action:hover,
+.status-action:focus-visible {
+  border-color: var(--accent);
+  background: var(--card-hover);
+}
+
 .group {
   margin: 48px 0;
 }
@@ -487,6 +556,7 @@ input[type=search]::placeholder {
 }
 
 .card {
+  appearance: none;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 24px;
@@ -499,6 +569,9 @@ input[type=search]::placeholder {
   position: relative;
   overflow: hidden;
   min-height: 220px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
 }
 
 .card::before {
@@ -529,6 +602,28 @@ input[type=search]::placeholder {
   transform: translateY(-4px) scale(1.01);
 }
 
+.card:focus-visible,
+.back-btn:focus-visible,
+.detail-toc-link:focus-visible,
+input[type=search]:focus-visible,
+.status-action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16);
+}
+
+.group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.group-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 .title {
   font-weight: 600;
   font-size: 18px;
@@ -539,6 +634,31 @@ input[type=search]::placeholder {
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 8px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.card-tag.primary {
+  color: var(--text);
+  border-color: rgba(99, 102, 241, 0.28);
+  background: rgba(99, 102, 241, 0.1);
 }
 
 .summary-preview {
@@ -654,10 +774,21 @@ input[type=search]::placeholder {
 
 .detail-content {
   flex: 1;
-  max-width: 900px;
+  max-width: 1180px;
   width: 100%;
   margin: 0 auto;
   padding: 40px 24px 80px;
+}
+
+.detail-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 40px;
+  align-items: start;
+}
+
+.detail-main {
+  min-width: 0;
 }
 
 #detail-title {
@@ -684,6 +815,46 @@ input[type=search]::placeholder {
 
 .detail-meta a:hover {
   color: var(--accent-hover);
+}
+
+.detail-toc {
+  position: sticky;
+  top: 92px;
+  background: rgba(15, 20, 25, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.detail-toc.hidden {
+  display: none;
+}
+
+.detail-toc-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.detail-toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-toc-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.detail-toc-link:hover {
+  color: var(--text);
+  transform: translateX(2px);
 }
 
 article h2 {
@@ -810,6 +981,25 @@ hr {
   .detail-content {
     padding: 24px 16px 60px;
   }
+
+  .status-card {
+    padding: 20px;
+  }
+
+  .group-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .detail-shell {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .detail-toc {
+    position: static;
+    order: -1;
+  }
 }
 """.strip()
 
@@ -818,27 +1008,30 @@ def generate_app_js() -> str:
     return """
 /**
  * @file app.js
- * @description 前端逻辑：加载 data.json，渲染卡片、搜索、日期筛选、详情弹窗。
+ * @description 前端逻辑：加载 data.json，渲染卡片、搜索、状态反馈、详情目录与键盘交互。
  */
 (function(){
   /** @type {Array<{date:string,title:string,link:string,summary_markdown:string,summary_html:string}>} */
   let DATA = [];
 
   const $ = (sel) => document.querySelector(sel);
+  const statusEl = $('#status');
   const groupsEl = $('#groups');
   const searchEl = $('#search');
   const detailView = $('#detail-view');
   const detailTitle = $('#detail-title');
   const detailMeta = $('#detail-meta');
   const detailBody = $('#detail-body');
+  const detailToc = $('#detail-toc');
+  const detailTocNav = $('#detail-toc-nav');
   const detailBack = $('#detail-back');
   let currentItem = null;
   let lastScrollY = 0;
+  let lastFocusedCard = null;
 
   /**
    * @param {Array} items
    * @param {string} q
-   * @param {string|null} date
    */
   function filterItems(items, q){
     const kw = (q||'').trim().toLowerCase();
@@ -847,6 +1040,77 @@ def generate_app_js() -> str:
       const hay = (it.title + ' ' + it.summary_markdown).toLowerCase();
       return hay.includes(kw);
     });
+  }
+
+  function extractSectionBlock(markdown, title){
+    const escaped = title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');
+    const match = markdown.match(new RegExp(`##\\\\s*${escaped}[\\\\s\\\\S]*?(?=##|$)`));
+    return match ? match[0] : '';
+  }
+
+  function extractResearchUnit(markdown){
+    const block = extractSectionBlock(markdown, '研究单位');
+    if(!block){
+      return '';
+    }
+
+    const firstBullet = block
+      .split('\\n')
+      .map((line) => line.trim())
+      .find((line) => line.startsWith('- '));
+
+    if(!firstBullet){
+      return '';
+    }
+
+    return firstBullet
+      .replace(/^-\\s*/, '')
+      .replace(/\\*\\*/g, '')
+      .replace(/`/g, '')
+      .replace(/作者主要来自/g, '')
+      .replace(/作者来自/g, '')
+      .trim();
+  }
+
+  function getArxivId(link){
+    const match = link.match(/arxiv\\.org\\/(?:abs|pdf)\\/([^/?#]+)/i);
+    return match ? match[1] : '';
+  }
+
+  function clearStatus(){
+    statusEl.innerHTML = '';
+    statusEl.classList.add('hidden');
+  }
+
+  function renderStatus(state, title, text, action){
+    statusEl.classList.remove('hidden');
+    statusEl.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.className = 'status-card';
+    card.dataset.state = state;
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'status-title';
+    titleEl.textContent = title;
+
+    const textEl = document.createElement('div');
+    textEl.className = 'status-text';
+    textEl.textContent = text;
+
+    card.appendChild(titleEl);
+    card.appendChild(textEl);
+
+    if(action){
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'status-action';
+      button.textContent = action.label;
+      button.addEventListener('click', action.onClick);
+      card.appendChild(button);
+    }
+
+    statusEl.appendChild(card);
   }
 
   /**
@@ -875,7 +1139,11 @@ def generate_app_js() -> str:
    * @param {Array} items  已过滤后的项目
    */
   function renderGroups(items){
-    // 分组：按日期降序
+    if(!items.length){
+      groupsEl.innerHTML = '';
+      return;
+    }
+
     const map = new Map();
     items.forEach(it=>{ if(!map.has(it.date)) map.set(it.date, []); map.get(it.date).push(it); });
     const dates = Array.from(map.keys()).sort((a,b)=> b.localeCompare(a));
@@ -884,18 +1152,49 @@ def generate_app_js() -> str:
     dates.forEach(d => {
       const group = document.createElement('section');
       group.className = 'group';
+
+      const heading = document.createElement('div');
+      heading.className = 'group-heading';
+
       const h = document.createElement('h2');
       h.textContent = d;
+
+      const count = document.createElement('div');
+      count.className = 'group-count';
+      count.textContent = `${map.get(d).length} 篇`;
+
       const grid = document.createElement('div');
       grid.className = 'grid';
+
       map.get(d).forEach(it => {
-        const card = document.createElement('div');
+        const card = document.createElement('button');
+        card.type = 'button';
         card.className = 'card';
-        card.onclick = ()=> openDetail(it);
+        card.setAttribute('aria-label', `查看论文：${it.title}`);
+        card.addEventListener('click', ()=> openDetail(it, card));
 
         const title = document.createElement('div');
         title.className = 'title';
         title.textContent = it.title;
+
+        const tags = document.createElement('div');
+        tags.className = 'card-tags';
+
+        const researchUnit = extractResearchUnit(it.summary_markdown);
+        if(researchUnit){
+          const orgTag = document.createElement('div');
+          orgTag.className = 'card-tag primary';
+          orgTag.textContent = researchUnit;
+          tags.appendChild(orgTag);
+        }
+
+        const arxivId = getArxivId(it.link);
+        if(arxivId){
+          const idTag = document.createElement('div');
+          idTag.className = 'card-tag';
+          idTag.textContent = arxivId;
+          tags.appendChild(idTag);
+        }
 
         const preview = document.createElement('div');
         preview.className = 'summary-preview';
@@ -908,12 +1207,17 @@ def generate_app_js() -> str:
         readMore.textContent = '阅读详情';
 
         footer.appendChild(readMore);
+        if(tags.childNodes.length){
+          card.appendChild(tags);
+        }
         card.appendChild(title);
         card.appendChild(preview);
         card.appendChild(footer);
         grid.appendChild(card);
       });
-      group.appendChild(h);
+      heading.appendChild(h);
+      heading.appendChild(count);
+      group.appendChild(heading);
       group.appendChild(grid);
       groupsEl.appendChild(group);
     });
@@ -933,70 +1237,182 @@ def generate_app_js() -> str:
     return null;
   }
 
-  /**
-   * @param {title:string,date:string,summary_html:string,link:string} it
-   */
-  function openDetail(it){
-    lastScrollY = window.scrollY || 0;
+  function renderDetailMeta(it){
+    detailMeta.innerHTML = '';
+    detailMeta.append(document.createTextNode(it.date));
+
+    const sourceLink = document.createElement('a');
+    sourceLink.href = it.link;
+    sourceLink.target = '_blank';
+    sourceLink.rel = 'noopener noreferrer';
+    sourceLink.textContent = '原文链接';
+
+    detailMeta.append(document.createTextNode(' · '));
+    detailMeta.appendChild(sourceLink);
+
+    const translationLink = getTranslationLink(it.link);
+    if(translationLink){
+      const translated = document.createElement('a');
+      translated.href = translationLink;
+      translated.target = '_blank';
+      translated.rel = 'noopener noreferrer';
+      translated.textContent = '幻觉翻译';
+      detailMeta.append(document.createTextNode(' · '));
+      detailMeta.appendChild(translated);
+    }
+  }
+
+  function slugifyHeading(text, index){
+    const slug = (text || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^\\w\\u4e00-\\u9fff]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    return slug ? `section-${index}-${slug}` : `section-${index}`;
+  }
+
+  function buildDetailToc(){
+    detailTocNav.innerHTML = '';
+    const headings = Array.from(detailBody.querySelectorAll('h2'));
+
+    if(!headings.length){
+      detailToc.classList.add('hidden');
+      return;
+    }
+
+    headings.forEach((heading, index) => {
+      if(!heading.id){
+        heading.id = slugifyHeading(heading.textContent, index + 1);
+      }
+      const link = document.createElement('a');
+      link.className = 'detail-toc-link';
+      link.href = `#${heading.id}`;
+      link.textContent = heading.textContent || `章节 ${index + 1}`;
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      detailTocNav.appendChild(link);
+    });
+
+    detailToc.classList.remove('hidden');
+  }
+
+  function showDetail(it){
     currentItem = it;
     detailTitle.textContent = it.title;
-    const translationLink = getTranslationLink(it.link);
-    let metaHtml = `${it.date} · <a href="${it.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
-    if(translationLink){
-      metaHtml += ` · <a href="${translationLink}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
-    }
-    detailMeta.innerHTML = metaHtml;
+    renderDetailMeta(it);
     detailBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
+    buildDetailToc();
     detailView.classList.remove('hidden');
-    // 使用 pushState 添加历史记录，但不改变 URL
-    history.pushState({ view: 'detail', item: it }, '', window.location.href);
-    // 滚动到顶部
+    document.body.classList.add('detail-open');
     window.scrollTo(0, 0);
+    detailBack.focus();
+  }
+
+  function openDetail(it, card){
+    lastScrollY = window.scrollY || 0;
+    lastFocusedCard = card || document.activeElement;
+    showDetail(it);
+    history.pushState({ view: 'detail', item: it }, '', window.location.href);
+  }
+
+  function hideDetail(){
+    detailView.classList.add('hidden');
+    detailToc.classList.add('hidden');
+    detailTocNav.innerHTML = '';
+    currentItem = null;
+    document.body.classList.remove('detail-open');
+  }
+
+  function restoreListState(){
+    requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
+    if(lastFocusedCard && typeof lastFocusedCard.focus === 'function'){
+      lastFocusedCard.focus();
+    }
   }
 
   function closeDetail(){
-    detailView.classList.add('hidden');
-    currentItem = null;
-    requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
-    // 如果当前在详情页面状态，替换为列表状态（不跳转）
-    if (history.state && history.state.view === 'detail') {
-      history.replaceState({ view: 'list' }, '', window.location.href);
+    if(history.state && history.state.view === 'detail'){
+      history.back();
+      return;
     }
+    hideDetail();
+    restoreListState();
   }
 
   function sync(){
     const items = filterItems(DATA, searchEl.value);
+
+    if(!DATA.length){
+      renderGroups([]);
+      renderStatus('empty', '还没有论文数据', '当前数据集中没有可展示的论文。等抓取任务跑完后，这里会自动显示。');
+      return;
+    }
+
+    if(!items.length){
+      renderGroups([]);
+      renderStatus(
+        'empty',
+        '没有找到匹配结果',
+        `试试换个关键词，当前一共收录了 ${DATA.length} 篇论文。`,
+        {
+          label: '清空搜索',
+          onClick: () => {
+            searchEl.value = '';
+            sync();
+            searchEl.focus();
+          }
+        }
+      );
+      return;
+    }
+
+    clearStatus();
     renderGroups(items);
   }
 
   detailBack.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', (event) => {
+    if(event.key === 'Escape' && !detailView.classList.contains('hidden')){
+      event.preventDefault();
+      closeDetail();
+    }
+  });
 
-  // 监听浏览器前进/后退事件
   window.addEventListener('popstate', (e) => {
     if (e.state && e.state.view === 'detail' && e.state.item) {
-      // 前进到详情页面（不添加新的历史记录）
-      currentItem = e.state.item;
-      detailTitle.textContent = e.state.item.title;
-      const translationLink = getTranslationLink(e.state.item.link);
-      let metaHtml = `${e.state.item.date} · <a href="${e.state.item.link}" target="_blank" rel="noopener noreferrer">原文链接</a>`;
-      if(translationLink){
-        metaHtml += ` · <a href="${translationLink}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>`;
-      }
-      detailMeta.innerHTML = metaHtml;
-      detailBody.innerHTML = e.state.item.summary_html;
-      detailView.classList.remove('hidden');
-      window.scrollTo(0, 0);
+      showDetail(e.state.item);
     } else {
-      // 返回到列表页面（包括 view 为 'list' 或 null 的情况）
-      detailView.classList.add('hidden');
-      currentItem = null;
-      requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
+      hideDetail();
+      restoreListState();
     }
   });
 
   searchEl.addEventListener('input', sync);
 
-  fetch('assets/data.json').then(r=>r.json()).then(arr=>{ DATA = arr; sync(); });
+  async function loadData(){
+    renderStatus('loading', '正在加载论文列表', '页面正在读取静态数据并构建卡片，你可以稍后直接开始搜索。');
+    try{
+      const response = await fetch('assets/data.json');
+      if(!response.ok){
+        throw new Error(`HTTP ${response.status}`);
+      }
+      DATA = await response.json();
+      sync();
+    } catch (error) {
+      console.error(error);
+      renderGroups([]);
+      renderStatus(
+        'error',
+        '论文数据加载失败',
+        '无法读取 data.json。你可以刷新页面重试，或者确认静态资源是否已成功构建。',
+        { label: '重新加载', onClick: loadData }
+      );
+    }
+  }
+
+  loadData();
 })();
 """.strip()
 
@@ -1022,5 +1438,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
