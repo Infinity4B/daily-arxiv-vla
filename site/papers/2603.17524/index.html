@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KineVLA: Towards Kinematics-Aware Vision-Language-Action Models with Bi-Level Action Decomposition - VLA 论文精选</title>
+    <meta name="description" content="论文提出了一种新的运动学丰富的视觉-语言-动作（VLA）任务，旨在解决现有 VLA 模型对细粒度运动指令（如方向、轨迹、姿态）不敏感的问题 研究目标是让机器人在保持任务目标不变的情况下，根据指令中的运动学约束执行多样化的精确操作轨迹 论文提出了 KineVLA 框架，通过双层动作分解和双层推理令牌，实现了语义目标与运动细节的解耦与对齐" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.17524">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">KineVLA: Towards Kinematics-Aware Vision-Language-Action Models with Bi-Level Action Decomposition</h1>
+          <div class="detail-meta">2026-03-18 · <a href="http://arxiv.org/abs/2603.17524" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.17524" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.17524</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>论文原文片段未明确列出作者所属的具体研究机构</li><li>论文作者名单：<strong>Gaoge Han, Zhengqing Gao, Ziwen Li, Jiaxin Huang, Shaoli Huang, Fakhri Karray, Mingming Gong, Tongliang Liu</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了一种新的运动学丰富的视觉-语言-动作（VLA）任务，旨在解决现有 VLA 模型对细粒度运动指令（如方向、轨迹、姿态）不敏感的问题</li><li>研究目标是让机器人在保持任务目标不变的情况下，根据指令中的运动学约束执行多样化的精确操作轨迹</li><li>论文提出了 <strong>KineVLA</strong> 框架，通过双层动作分解和双层推理令牌，实现了语义目标与运动细节的解耦与对齐</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>Kinematics-Rich Manipulation Task</strong>，定义了“目标不变、运动学多变”的机器人操作任务新设定</li><li>设计了 <strong>KineVLA</strong> 模型，采用双层向量量化动作表示（Bi-Level VQ），将动作分解为粗粒度的目标级和细粒度的运动学级</li><li>构建了三个新的 <strong>Kinematics-Aware Manipulation Datasets</strong>，涵盖仿真和真实机器人场景，包含细粒度的空间和运动约束标注</li><li>引入了双层推理令牌和互信息正则化机制，增强了语言指令与动作生成之间的语义一致性</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>双层动作表示</strong>：使用残差向量量化变分自编码器（<strong>RVQ-VAE</strong>）将动作序列离散化。设计了两个码本：<strong>目标级码本 ($E_l$)</strong> 捕捉低频任务目标，<strong>运动学级码本 ($E_h$)</strong> 捕捉高频运动细节</li><li><strong>两阶段训练策略</strong>：第一阶段在 Open X-Embodiment 等大规模数据上预训练粗粒度路径；第二阶段冻结粗粒度参数，在构建的运动学数据集上微调细粒度码本</li><li><strong>双层生成与推理</strong>：模型基于 <strong>OpenVLA (Prismatic-7B)</strong> 架构，先生成双层推理文本（粗粒度目标描述 + 细粒度运动参数），再生成双层动作令牌，通过互信息最大化（$I(\text{Reasoning};\text{Action}\|C)$）对齐推理与动作空间</li><li>使用 <strong>LoRA (rank=32)</strong> 对基础视觉语言模型进行微调，以适应新的动作空间</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>LIBERO-Goal-Relabeled</strong>：仿真数据集，从 LIBERO-GOAL 重新标注而来，包含 <strong>63K</strong> 帧运动学丰富的指令</li><li><strong>Kine-LIBERO</strong>：仿真数据集，包含 266K 帧细粒度运动学标注（如物体部位、动作约束、目标关系）</li><li><strong>Kine-Realman</strong>：真实世界数据集，使用 <strong>Realman-75</strong> 机械臂采集，包含 <strong>49K</strong> 帧，涵盖 7 种精细操作任务</li><li><strong>训练资源</strong>：RVQ-VAE 在单张 <strong>A100 GPU</strong> 上训练；VLA 模型微调使用 <strong>4 张 A100 GPUs</strong></li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境</strong>：LIBERO 仿真平台和 Realman-75 真实机器人平台</li><li><strong>基准模型</strong>：<strong>OpenVLA</strong>, <strong>$\pi_{0.5}$</strong>, <strong>VQ-VLA</strong></li><li><strong>评估指标</strong>：目标成功率、运动学成功率、BLEU、BERTScore 以及干预实验</li><li><strong>关键结果</strong>：<strong>KineVLA</strong> 在运动学成功率上显著优于基准模型（如在 LIBERO-Goal-Relabeled 上达到 <strong>76.5%</strong>），而基准模型在处理细粒度运动指令时性能大幅下降</li><li><strong>消融实验</strong>：证明了双层动作表示、双层推理令牌和互信息正则化对模型性能提升均有重要贡献；干预实验表明替换推理令牌会导致运动学成功率显著下降</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

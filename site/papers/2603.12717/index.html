@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Altered Thoughts, Altered Actions: Probing Chain-of-Thought Vulnerabilities in VLA Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="研究 Vision-Language-Action（VLA）模型中 chain-of-thought（CoT）推理轨迹的安全漏洞，探索攻击者仅通过篡改中间推理文本而保持视觉输入和任务指令不变，是否能影响机器人执行物理任务的成功率 在 DeepThinkVLA（2.9B参数推理VLA）上系统评估七种文本 corruption 类型，测试其在 LIBERO 桌面操作基准（40个任务）上的影响 核心发现" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.12717">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Altered Thoughts, Altered Actions: Probing Chain-of-Thought Vulnerabilities in VLA Robotic Manipulation</h1>
+          <div class="detail-meta">2026-03-13 · <a href="http://arxiv.org/abs/2603.12717" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.12717" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.12717</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>莫纳什大学（Monash University）计算机学院 - Tuan Duong Trinh, Naveed Akhtar, Basim Azam</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>研究 Vision-Language-Action（VLA）模型中 chain-of-thought（CoT）推理轨迹的安全漏洞，探索攻击者仅通过篡改中间推理文本而保持视觉输入和任务指令不变，是否能影响机器人执行物理任务的成功率</li><li>在 <strong>DeepThinkVLA</strong>（2.9B参数推理VLA）上系统评估七种文本 corruption 类型，测试其在 <strong>LIBERO</strong> 桌面操作基准（40个任务）上的影响</li><li>核心发现：只有 <strong>entity-reference swapping</strong>（替换物体名称）导致显著性能下降（-8.3pp），而句子重排、空间方向反转、token噪声、甚至70B参数LLM生成的对抗性推理都影响甚微（±4pp内）</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>首次系统研究 VLA 机器人操控中的 reasoning trace 攻击，将 CoT 攻击文献从语言模型安全扩展到具身AI的物理故障</li><li>发现 <strong>选择性因果敏感性</strong>（selective causal sensitivity）：CoT中的实体引用（entity grounding）是行动解码器的关键依赖，而句子顺序、空间方向术语、token噪声均非关键</li><li>揭示 <strong>能力倒转</strong>（capability inversion）：LLM生成的对抗性重写（-0.5pp）反而不如简单的实体名称替换（-8.3pp）</li><li>证明 CoT 攻击具有 <strong>隐蔽性</strong>（对输入验证防御不可见），而指令级攻击虽更有效（-85pp）但可被检测</li><li>提供双重解离控制：CoT 攻击仅影响推理增强的 VLA，非推理 VLA（如 OpenVLA-OFT）完全免疫</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>威胁模型</strong>：攻击者拦截 reasoning module 与 action decoder 之间的文本通道，替换 chain-of-thought 文本，无需模型权重、梯度或训练数据访问权限</li><li><strong>CoT 注入机制</strong>：两阶段诊断方法——首先生成干净 CoT，然后应用 corruption 函数替换后重新注入，强制 action decoder 使用被篡改的推理</li><li><strong>七种 corruption 分类</strong>（三层次）：</li></ul>
+<p> - Tier 1（噪声）：random_tokens（50% token随机替换）、padding（填充符）</p>
+<p> - Tier 2（机械语义）：shuffled（句子重排）、entity_swap（物体名称替换）、negation_flip（空间方向反转）</p>
+<p> - Tier 3（LLM自适应）：llm_adversarial（Llama-3.1-70B生成看似合理但错误的推理）</p>
+<ul><li><strong>剂量响应分析</strong>：测试 0%, 25%, 50%, 75%, 100% token 替换比例</li><li><strong>推理特异性控制</strong>：对比非推理 VLA（OpenVLA-OFT）和推理 VLA（DeepThinkVLA）在相同攻击下的表现差异</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>数据集</strong>：LIBERO 基准（40个桌面操控任务，分4个suite：Object/Spatial/Goal/Long各10个任务）</li><li><strong>模型</strong>：</li></ul>
+<p> - DeepThinkVLA（2.9B参数，推理VLA，基线成功率95.4%）</p>
+<p> - OpenVLA-OFT（非推理VLA，基线成功率52.2%）</p>
+<p> - OpenVLA（零样本，0%）</p>
+<ul><li><strong>训练资源</strong>：NVIDIA H100 GPU；Llama-3.1-70B-Instruct（via vLLM）用于 LLM-adversarial 攻击</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估指标</strong>：任务成功率（Success Rate, SR），以 percentage points（pp）表示相对退化</li><li><strong>主要结果</strong>：</li></ul>
+<p> - entity_swap 导致整体 SR 从 95.4% 降至 87.0%（-8.3pp，p<0.0001，Cohen's d=0.74）</p>
+<p> - LIBERO-Goal 受影响最严重（-19.3pp，d=1.67），单个任务"put wine bottle on rack"下降达 -45pp</p>
+<p> - 其他六种 corruption 条件影响均在 ±4pp 内（可忽略）</p>
+<p> - LLM-adversarial 攻击仅 -0.5pp（不显著），远弱于 entity_swap</p>
+<p> - 剂量响应在 LIBERO-Goal 上呈线性（每25%约 -4pp，Spearman ρ=-0.95）</p>
+<ul><li><strong>双重解离验证</strong>：</li></ul>
+<p> - 指令级 entity swap 攻击同时降低 DeepThinkVLA 和 OpenVLA-OFT 性能</p>
+<p> - CoT 攻击仅影响 DeepThinkVLA，OpenVLA-OFT 完全免疫</p>
+<ul><li><strong>关键洞察</strong>：action decoder 依赖 CoT 中的实体引用进行场景 grounding，但依靠视觉输入进行空间推理</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

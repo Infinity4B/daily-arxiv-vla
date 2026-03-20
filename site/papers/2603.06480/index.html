@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>History-Conditioned Spatio-Temporal Visual Token Pruning for Efficient Vision-Language Navigation - VLA 论文精选</title>
+    <meta name="description" content="针对 Vision-Language-Action (VLA) 模型在视觉语言导航 (VLN) 中计算成本高、推理延迟大从而限制实时部署的问题，提出了一种无需训练的时空视觉 Token 剪枝框架。 该框架对当前帧和历史帧采取差异化处理策略：对当前观测进行空间 Token 选择以保持空间覆盖，对历史记忆进行时空压缩以减少冗余计算，支持高效的长视距推理。 利用基于注意力的 Token 重要性和查询引导" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.06480">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">History-Conditioned Spatio-Temporal Visual Token Pruning for Efficient Vision-Language Navigation</h1>
+          <div class="detail-meta">2026-03-06 · <a href="http://arxiv.org/abs/2603.06480" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.06480" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.06480</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>特拉华大学</strong> (University of Delaware) 计算机与信息科学系</li><li><strong>马里兰大学</strong> (University of Maryland) 计算机科学系</li><li><strong>穆罕默德·本·扎耶德人工智能大学</strong> (Mohamed bin Zayed University of Artificial Intelligence)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>针对 <strong>Vision-Language-Action (VLA)</strong> 模型在视觉语言导航 (VLN) 中计算成本高、推理延迟大从而限制实时部署的问题，提出了一种无需训练的时空视觉 Token 剪枝框架。</li><li>该框架对当前帧和历史帧采取差异化处理策略：对当前观测进行空间 Token 选择以保持空间覆盖，对历史记忆进行时空压缩以减少冗余计算，支持高效的长视距推理。</li><li>利用基于注意力的 Token 重要性和查询引导的时空过滤技术，该方法无需重新训练或修改预训练模型即可即插即用地集成到现有 VLA 系统中。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>探索了 VLA 模型在 VLN 任务中如何进行高效视觉 Token 剪枝这一尚未充分研究的问题，强调了保留时空信息对历史条件决策的重要性。</li><li>提出了一种无需训练的时空 Token 剪枝框架，明确区分了当前帧的空间 Token 选择和历史帧的时空记忆压缩。</li><li>设计了 <strong>自适应最大边际相关性</strong> 策略，动态平衡 Token 的语义显著性和空间多样性，有效提取代表性视觉 Token 子集。</li><li>引入了 <strong>查询引导重加权</strong> 机制，利用当前帧的修剪特征引导历史帧的选择，构建紧凑且信息丰富的记忆池。</li><li>在标准 VLN 基准上显著优于现有剪枝方法，并在 <strong>Unitree Go2</strong> 四足机器人上验证了真实世界的低延迟部署能力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>特征提取与重要性计算</strong>：利用视觉编码器计算全局 <strong>[CLS] Token</strong> 与空间块 Token 之间的余弦相似度，将其归一化作为基础重要性分数。</li><li><strong>当前帧 Token 选择</strong>：应用 <strong>A-MMR</strong> 策略，通过迭代优化目标函数，联合最大化 Token 的基础重要性（语义显著性）和其与已选 Token 集合的差异性（空间多样性），避免硬编码的 Token 分割。</li><li><strong>历史帧 Token 选择</strong>：首先计算历史 Token 与当前帧选定 Token 之间的 <strong>时空相关性</strong>，据此对历史 Token 的重要性分数进行重加权；随后应用相同的 <strong>A-MMR</strong> 策略筛选历史 Token，构建紧凑记忆池。</li><li><strong>动作预测</strong>：将筛选后的高度信息量 Token 输入模态投影仪和 LLM，预测最终的导航动作序列，整个过程保持预训练参数不变。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用数据集：<strong>Room-to-Room (R2R)</strong> 和 <strong>Room-Across-Room (RxR)</strong> (基于 VLN-CE 基准)。</li><li>基础模型：<strong>StreamVLN</strong> (一种专为 VLN 设计的 VLA 模型)。</li><li>实验环境：</li></ul>
+<p> - R2R 数据集评估使用 <strong>NVIDIA H100 GPU</strong>。</p>
+<p> - RxR 数据集评估使用 <strong>NVIDIA A100 GPU</strong>。</p>
+<p> - 消融研究与效率分析使用 <strong>NVIDIA RTX 4090 GPU</strong>。</p>
+<p> - 真实世界机器人部署使用 <strong>NVIDIA Jetson Thor T5000</strong>。</p>
+<ul><li>剪枝设置：评估了 70%、80% 和 90% 三种剪枝比率。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估基准：在 R2R 和 RxR 数据集的 "val-unseen" 验证集上进行评估。</li><li>主要指标：成功率 (SR)、路径长度加权成功率 (SPL)、Oracle 成功率 (OS)、导航误差 (NE)、归一化动态时间规整。</li><li>效率指标：推理吞吐量 (FPS)、浮点运算次数、CUDA 推理延迟。</li><li>关键结果：</li></ul>
+<p> - 在 90% 极限剪枝比率下，该方法在 <strong>R2R</strong> 数据集上的 SPL 分别比 <strong>SparseVLM</strong>、<strong>DivPrune</strong> 和 <strong>VisPruner</strong> 高出 5.28%、17.81% 和 7.09%。</p>
+<p> - 在 <strong>RxR</strong> 数据集 90% 剪枝比率下，SPL 分别比上述基线方法提升 12.04%、18.35% 和 7.57%。</p>
+<p> - 效率方面，该方法实现了最高的 FPS (4.68) 和最低的延迟 (213.40 ms)，优于其他剪枝策略。</p>
+<p> - 真实世界部署显示，剪枝后模型推理速度从 0.70 FPS 提升至 0.80 FPS，验证了在移动机器人平台上的低延迟特性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

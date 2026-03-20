@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLASCD: A Visual Language Action Model for Simultaneous Chatting and Decision Making - VLA 论文精选</title>
+    <meta name="description" content="本文提出MIMO-VLA（VLASCD），一个统一的多输入多输出（MIMO）训练架构，用于同时进行对话生成和决策制定。研究发现现有的多输入单输出（MISO）架构（如LLMs和VLAs）在MIMO场景中存在根本限制，任务间会因共享输出通道产生相互排斥效应，导致优化不平衡和性能下降。MIMO-VLA通过并行多任务输出消除了任务间干扰，支持高效并行处理，在CARLA自动驾驶平台上验证了其有效性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2410.15885">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VLASCD: A Visual Language Action Model for Simultaneous Chatting and Decision Making</h1>
+          <div class="detail-meta">2024-10-21 · <a href="http://arxiv.org/abs/2410.15885" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2410.15885" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2410.15885</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>浙江大学计算机科学与技术学院、中国电信数字生活科技有限公司、浙江实验室、都柏林三一学院</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出MIMO-VLA（VLASCD），一个统一的多输入多输出（MIMO）训练架构，用于同时进行对话生成和决策制定。研究发现现有的多输入单输出（MISO）架构（如LLMs和VLAs）在MIMO场景中存在根本限制，任务间会因共享输出通道产生相互排斥效应，导致优化不平衡和性能下降。MIMO-VLA通过并行多任务输出消除了任务间干扰，支持高效并行处理，在CARLA自动驾驶平台上验证了其有效性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>首次证明现有MISO模型（如LLMs和VLAs）在处理MIMO任务时存在根本性缺陷</li><li>提出MIMO-VLA统一MIMO训练架构，集成多项技术：</li></ol>
+<p> - 生成连续动作值的计算模块和损失项</p>
+<p> - 利用丰富视觉信息的图像重建损失</p>
+<p> - 保持对话能力同时增强决策准确性的标签平滑策略</p>
+<ol><li>广泛实验证明MIMO-VLA在决策准确性上超越SOTA基线，同时完全保留实时对话功能</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>模型架构：</p>
+<ul><li>基于LLaMA-7B骨干网络，支持文本、图像和数值向量三种输入模态</li><li>图像分割为补丁通过2D卷积编码，动作值通过MLP编码</li><li>文本使用预训练嵌入层，所有模态嵌入按固定顺序拼接</li><li>输出端支持文本响应和连续动作决策两种模态</li></ul>
+
+<p>训练过程：</p>
+<ul><li>使用LoRA微调，仅更新Q和V投影模块（占0.06%参数）</li><li>联合训练三个损失函数：</li></ul>
+<p> - 文本生成：采用标签平滑的交叉熵损失防止过拟合</p>
+<p> - 动作预测：直接预测连续动作值的MSE损失</p>
+<p> - 图像重建：像素级欧氏距离的辅助损失</p>
+<ul><li>实现梯度空间隔离机制，不同损失影响不同位置编码</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：</p>
+<ul><li>在CARLA 0.9.10平台使用EGADS框架收集专家轨迹数据</li><li>总量5.69GB，包含13,761帧驾驶场景</li><li>每帧配有从50个预设问题中随机选择的问答对</li></ul>
+
+<p>训练资源：</p>
+<ul><li>使用LoRA技术高效微调大型语言模型</li><li>在town03地图上采集训练数据</li><li>动作空间为2维（加速度和转向），范围分别为[-3,3]和[-0.2,0.2]</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：</p>
+<ul><li>gym-carla环境（基于CARLA 0.9.10的OpenAI Gym兼容环境）</li><li>训练集town03，测试集包括town03和town04（泛化测试）</li></ul>
+
+<p>评估指标：</p>
+<p>对话能力评估：</p>
+<ul><li>GPT-4o对50个随机环境-问题对进行评分（0-10分）</li><li>分级标准：不可接受(<3)、可接受(3≤score<6)、良好(≥6)</li></ul>
+
+<p>决策能力评估：</p>
+<ul><li>碰撞率(CR, %, ↓)</li><li>偏离道路率(OR, %, ↓)</li><li>任务完成率(ER, %, ↑)</li><li>平均安全驾驶距离(ASD, 米, ↑)</li><li>平均奖励(AR, 分数, ↑)</li><li>驾驶分数(DS = ER × AR, ↑)</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

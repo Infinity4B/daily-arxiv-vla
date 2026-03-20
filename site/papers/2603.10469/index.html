@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DepthCache: Depth-Guided Training-Free Visual Token Merging for Vision-Language-Action Model Inference - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 DepthCache，一个无需训练的视觉令牌压缩框架，旨在加速 视觉-语言-动作 (VLA) 模型的推理。 该框架利用深度图作为结构先验，对视觉令牌进行空间差异化合并，以保留近场工作空间的细节，同时压缩远距离背景。 论文旨在解决现有VLA模型因处理大量视觉令牌而导致的推理延迟高的问题，并克服现有剪枝或合并方法破坏空间推理能力的缺陷。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.10469">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">DepthCache: Depth-Guided Training-Free Visual Token Merging for Vision-Language-Action Model Inference</h1>
+          <div class="detail-meta">2026-03-11 · <a href="http://arxiv.org/abs/2603.10469" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.10469" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.10469</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>华中科技大学</strong> 人工智能与自动化学院</li><li><strong>华中科技大学</strong> 机械科学与工程学院</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>DepthCache</strong>，一个无需训练的视觉令牌压缩框架，旨在加速 <strong>视觉-语言-动作 (VLA)</strong> 模型的推理。</li><li>该框架利用<strong>深度图</strong>作为结构先验，对视觉令牌进行空间差异化合并，以保留近场工作空间的细节，同时压缩远距离背景。</li><li>论文旨在解决现有VLA模型因处理大量视觉令牌而导致的推理延迟高的问题，并克服现有剪枝或合并方法破坏空间推理能力的缺陷。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>首次将<strong>深度信息</strong>用作外部结构先验，引导VLA模型推理时的空间差异化视觉令牌压缩。</li><li>提出了<strong>时间上连贯的压缩流水线</strong>，将令牌合并分布在连续帧中，并耦合深度比例分区与双重语义-几何保护机制。</li><li>在三个架构迥异的VLA模型 <strong>(π₀.₅, OpenVLA, GR00T)</strong> 上验证了方法的有效性，在 <strong>LIBERO</strong> 基准上实现高达 <strong>1.28×</strong> 的推理加速，且平均成功率下降小于 <strong>1%</strong>。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>技术方法分为<strong>主视图流水线</strong>和<strong>辅助视图流水线</strong>。主视图处理外部相机，通过深度引导进行渐进令牌合并；辅助视图处理腕部相机，根据末端执行器运动动态调整压缩。</li><li><strong>主视图流水线</strong>包括：1) <strong>场景初始化</strong>：基于LLM交叉注意力和深度梯度确定需保护的令牌集合；2) <strong>基于深度的区域划分</strong>：使用K-Means对非保护令牌进行聚类，并按深度比例分配合并比率；3) <strong>渐进令牌合并</strong>：在时间窗口内逐步执行合并，并监测深度变化以动态恢复区域分辨率；4) <strong>重新初始化</strong>：在场景显著变化时重置流程。</li><li><strong>辅助视图流水线</strong>使用一个轻量级状态机，根据夹爪开合状态和末端运动幅度，在“合并”与“全视图”状态间切换。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>LIBERO</strong> 仿真基准，包含四个任务套件共40个任务。</li><li><strong>PIPER</strong> 6自由度机械臂和 <strong>Intel RealSense D435</strong> RGB-D相机，用于真实世界实验。</li><li>评估了三个VLA模型：<strong>π₀.₅ (3.3B)</strong>, <strong>OpenVLA (7B)</strong>, <strong>GR00T (2.2B)</strong>。</li><li>实验在单块 <strong>NVIDIA RTX 4090 GPU (24 GB)</strong> 上进行。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估在仿真环境 <strong>LIBERO</strong> 和真实机器人平台 <strong>(PIPER机械臂)</strong> 上进行，以任务成功率 (SR) 和推理加速比为核心指标。</li><li>在LIBERO基准上，DepthCache为三个VLA模型带来 <strong>1.07×</strong> 至 <strong>1.28×</strong> 的加速，同时平均SR损失均小于 <strong>1%</strong>，显著优于现有的 <strong>FastV</strong> (剪枝) 和 <strong>ToSA</strong> (合并) 基线。</li><li>在真实世界的核心任务中，DepthCache维持了与基线相当的成功率 (总成功率 55/60 vs 52/60)，并实现了 <strong>1.33×</strong> 的平均推理加速。</li><li>在扩展场景中，DepthCache将多物体排序任务完成时间缩短了 <strong>22.7%</strong>，并将干扰恢复时间减少了 <strong>21.3%</strong>。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

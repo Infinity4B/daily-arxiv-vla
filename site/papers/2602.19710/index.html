@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Universal Pose Pretraining for Generalizable Vision-Language-Action Policies - VLA 论文精选</title>
+    <meta name="description" content="提出了一种名为 Pose-VLA 的解耦学习范式，用于构建可泛化的视觉-语言-动作模型。 旨在解决现有 VLA 模型因感知与稀疏动作监督纠缠而导致的特征崩溃和训练效率低下问题，并缓解视觉-语言模型在高层语义识别和机器人任务所需细粒度三维状态感知之间的错位。 核心思想是通过统一的姿态表示（姿态令牌）和两阶段训练，分离空间先验学习与具身对齐。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.19710">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Universal Pose Pretraining for Generalizable Vision-Language-Action Policies</h1>
+          <div class="detail-meta">2026-02-23 · <a href="http://arxiv.org/abs/2602.19710" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.19710" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.19710</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Tencent Robotics X</strong></li><li><strong>The Hong Kong University of Science and Technology</strong></li><li><strong>Fudan University</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了一种名为 <strong>Pose-VLA</strong> 的解耦学习范式，用于构建可泛化的视觉-语言-动作模型。</li><li>旨在解决现有 VLA 模型因感知与稀疏动作监督纠缠而导致的<strong>特征崩溃</strong>和<strong>训练效率低下</strong>问题，并缓解视觉-语言模型在高层语义识别和机器人任务所需<strong>细粒度三维状态感知</strong>之间的错位。</li><li>核心思想是通过<strong>统一的姿态表示</strong>（姿态令牌）和<strong>两阶段训练</strong>，分离空间先验学习与具身对齐。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一个将RGB图像、深度图和相机内参（射线图）统一整合的<strong>VLM框架</strong>，以注入内在的3D感知，促进视觉-语言知识向机器人控制的有效迁移。</li><li>引入了<strong>离散姿态令牌</strong>作为一种通用接口，在统一的相机中心观测空间中，用于对齐和吸收来自异构非机器人3D数据和专用机器人演示的空间先验。</li><li>构建了一个综合的<strong>预训练语料库</strong>，包含140万张图像和650万个3D标注用于空间感知，以及约155万条机器人轨迹用于运动对齐。</li><li>实验证明，<strong>Pose-VLA</strong> 在 <strong>RoboTwin 2.0</strong> 上达到79.5%的平均成功率（SOTA），在 <strong>LIBERO</strong> 上达到96.0%的竞争性性能，并在真实世界任务中仅需每个任务100个演示就能实现强大的泛化能力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>基于 <strong>PaliGemma</strong> 架构，采用解耦的两阶段训练策略：1）<strong>预训练阶段</strong>：在统一的相机中心空间中，利用大规模3D数据集（目标检测、6D姿态估计）和机器人轨迹数据，通过下一个令牌预测损失提取通用3D空间先验。2）<strong>后训练阶段</strong>：附加一个轻量级<strong>动作专家模块</strong>（使用流匹配目标）进行具身对齐，将预训练表示映射到机器人特定命令。</li><li>关键创新在于<strong>离散姿态令牌</strong>（<code><trans_xy></code>, <code><trans_z></code>, <code><rot></code>, <code><size></code>）作为通用表示，统一了物体和末端执行器的3D状态与运动轨迹。同时整合了<strong>相机射线编码</strong>和<strong>深度先验</strong>作为附加空间信息，采用模态掩码策略确保推理时对不同传感器输入的鲁棒性。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>空间感知预训练数据集</strong>：总计约 <strong>140万张图像</strong>，包含 <strong>650万个3D标注</strong>，来自 <strong>Omni3D</strong>、<strong>Omni6DPose</strong> 和 <strong>BOP Challenge</strong> 等多个数据集。</li><li><strong>机器人轨迹预训练数据集</strong>：约 <strong>155万条轨迹</strong>，来自 <strong>AgibotWorld Beta</strong>（真实机器人，100万台）和 <strong>InternData-A1</strong>（仿真，多平台）。</li><li><strong>模型规模</strong>：基于3B参数的 <strong>PaliGemma</strong> 模型。</li><li><strong>训练资源</strong>：在 <strong>16 块 NVIDIA H20 GPU</strong> 上进行训练，使用 bfloat16 精度。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：</li></ul>
+<p> - <strong>3D空间感知基准</strong>：在 <strong>Omni3D</strong> 的 <strong>SUN-RGBD</strong> 和 <strong>Objectron</strong> 子集上评估。</p>
+<p> - <strong>仿真基准</strong>：在 <strong>RoboTwin 2.0</strong> 和 <strong>LIBERO</strong> 四个任务套件上进行评估。</p>
+<p> - <strong>真实世界实验</strong>：在包含刚性、关节式和可变形物体的多样化任务上评估。</p>
+<ul><li><strong>主要评估指标</strong>：</li></ul>
+<p> - <strong>3D感知</strong>：采用 <strong>mAP@0.15</strong>（AP15）。</p>
+<p> - <strong>机器人任务</strong>：<strong>平均成功率</strong>。</p>
+<ul><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>3D感知</strong>：在 <strong>Objectron</strong> 数据集上达到 <strong>87.3 AP15</strong>，显著超越 <strong>Qwen3-VL</strong>、<strong>Seed1.5-VL</strong> 等基线模型。</p>
+<p> - <strong>RoboTwin 2.0</strong>：在 <strong>Hard</strong> 设置下平均成功率达 <strong>79.1%</strong>，超越 <strong>π₀</strong>（65.1%）和 <strong>PaliGemma_expert</strong>（33.4%）基线。</p>
+<p> - <strong>LIBERO</strong>：平均成功率达 <strong>96.0%</strong>，与最先进的 <strong>π₀.₅</strong>（96.8%）性能相当，展现出强大的跨任务泛化能力。</p>
+<p> - <strong>真实世界</strong>：单一多任务模型仅需<strong>每个任务100个演示</strong>，就能在多样化物体上实现鲁棒泛化。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

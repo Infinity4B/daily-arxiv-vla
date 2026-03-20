@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beyond Short-Horizon: VQ-Memory for Robust Long-Horizon Manipulation in Non-Markovian Simulation Benchmarks - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 RuleSafe，一个新的、可扩展的铰接物体操作基准测试，用于评估非马尔可夫、长时序任务中的时序建模和规划能力。 论文提出了 VQ-Memory，一种紧凑且结构化的时序记忆表示方法，用于增强机器人策略对长时序任务的执行能力。 论文旨在解决现有基准测试集中在短时序简单任务、忽略真实世界任务中非马尔可夫特性与复杂铰接物体交互的问题。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.09513">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Beyond Short-Horizon: VQ-Memory for Robust Long-Horizon Manipulation in Non-Markovian Simulation Benchmarks</h1>
+          <div class="detail-meta">2026-03-10 · <a href="http://arxiv.org/abs/2603.09513" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.09513" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.09513</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>清华大学</strong></li><li><strong>复旦大学</strong></li><li><strong>中国电信人工智能研究院 (Institute of Artificial Intelligence, China Telecom)</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>RuleSafe</strong>，一个新的、可扩展的铰接物体操作基准测试，用于评估非马尔可夫、长时序任务中的时序建模和规划能力。</li><li>论文提出了 <strong>VQ-Memory</strong>，一种紧凑且结构化的时序记忆表示方法，用于增强机器人策略对长时序任务的执行能力。</li><li>论文旨在解决现有基准测试集中在短时序简单任务、忽略真实世界任务中非马尔可夫特性与复杂铰接物体交互的问题。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>RuleSafe</strong> 基准，包含多种锁机制（如钥匙锁、密码锁、逻辑锁），需要多阶段推理和操作策略，任务具有非马尔可夫性。</li><li>提出了 <strong>VQ-Memory</strong> 模块，通过向量量化变分自编码器（VQ-VAE）将历史关节状态编码为离散潜在标记，提供紧凑且鲁棒的时序线索。</li><li>验证了 <strong>VQ-Memory</strong> 是一种模型无关的模块，可无缝集成到多种主流 <strong>VLA模型</strong> 和 <strong>扩散策略</strong> 中，并显著提升其长时序规划与泛化能力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>RuleSafe</strong> 基准包含锁机制生成和演示生成两个部分。锁机制基于部件阶段和任务阶段设计，并通过 <strong>LLM</strong> 辅助生成规则与可执行判断程序。演示数据通过扩展 <strong>HumanoidGen</strong> 框架生成，包含任务分解与空间标注。</li><li><strong>VQ-Memory</strong> 方法首先使用 <strong>VQ-VAE</strong> 将连续的机器人关节状态轨迹编码并量化为离散的潜在标记。然后，对学习到的码本应用 <strong>K-means聚类</strong>，合并冗余代码，形成更紧凑、语义更一致的词汇表，从而过滤低级噪声并保留高级任务阶段上下文。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用 <strong>RuleSafe</strong> 自建基准，包含 <strong>20条锁规则</strong> 和 <strong>10种保险箱类型</strong>。</li><li>机器人平台为 <strong>Unitree H1-2</strong> 人形机器人（每臂7自由度，每手6自由度，共13维动作空间）。</li><li>实验使用 <strong>4块 NVIDIA A100 GPU</strong> 进行训练。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在 <strong>RuleSafe</strong> 基准上进行评估，采用 <strong>成功率</strong> 和 <strong>过程分数</strong> 作为指标。</li><li>在单任务设置中，集成了 <strong>VQ-Memory</strong> 的 <strong>π0</strong> 模型在 <code>rule_001</code> 任务上成功率从30.0%提升至80.0%，在长时序 <code>rule_020</code> 任务上从0.0%提升至45.0%。</li><li>在多任务设置中，集成 <strong>VQ-Memory</strong> 后，平均成功率从25.0%显著提升至56.3%，平均过程分数从48.8%提升至76.5%。</li><li>方法在 <strong>DP3</strong>、<strong>RDT</strong>、<strong>CogACT</strong> 等多种基座模型上均取得了性能提升，证明了其通用性。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

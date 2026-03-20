@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>H-WM: Robotic Task and Motion Planning Guided by Hierarchical World Model - VLA 论文精选</title>
+    <meta name="description" content="提出一个层次化世界模型 (Hierarchical World Model, H-WM)，通过联合预测逻辑和视觉状态转移，为视觉-语言-动作模型在执行长视距任务时提供中间指导。 旨在解决现有方法（如端到端VLA模型、基于LLM的分层规划、传统任务与运动规划）在长视距任务中表现不佳的问题，如错误累积、目标不明确以及符号推理与视觉感知脱节。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.11291">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">H-WM: Robotic Task and Motion Planning Guided by Hierarchical World Model</h1>
+          <div class="detail-meta">2026-02-11 · <a href="http://arxiv.org/abs/2602.11291" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.11291" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.11291</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>华为诺亚方舟实验室 (Huawei Noah’s Ark Lab)</strong></li><li><strong>多伦多大学 (University of Toronto)</strong></li><li><strong>麦吉尔大学 (McGill University)</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出一个<strong>层次化世界模型 (Hierarchical World Model, H-WM)</strong>，通过联合预测逻辑和视觉状态转移，为视觉-语言-动作模型在执行长视距任务时提供中间指导。</li><li>旨在解决现有方法（如端到端VLA模型、基于LLM的分层规划、传统任务与运动规划）在长视距任务中表现不佳的问题，如错误累积、目标不明确以及符号推理与视觉感知脱节。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一个<strong>层次化世界模型 (H-WM)</strong> 的训练流程，能够同时在多个抽象层次上预测世界动态，将长视距的逻辑状态转移与视觉状态演变对齐。</li><li>引入了<strong>逻辑世界模型</strong>，通过对LLM进行微调以实现符号规划，内化了长视距规划行为，提供了全局一致、可解释的任务级指导。</li><li>开发了<strong>基于潜在特征的视觉世界模型</strong>，以预测的逻辑状态和动作为条件，生成紧凑的潜在视觉子目标，提供稳定且丰富的视觉引导。</li><li>提出了一个<strong>系统化流程</strong>，将逻辑和视觉引导集成到VLA模型中，使底层策略能够灵活地基于逻辑动作、逻辑状态、视觉子目标或其组合进行执行。</li><li>构建并发布了包含机器人动作、符号状态与视觉观测对齐的训练数据集 <strong>LIBERO-Logic</strong>。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>方法核心是一个双层框架：高层的<strong>逻辑世界模型</strong>和低层的<strong>视觉世界模型</strong>。</li><li><strong>逻辑世界模型</strong>：基于LLM微调，学习符号规划动态，能够进行长视距推理，预测符号状态序列和动作序列，并提供规划和奖励评估双重功能。</li><li><strong>视觉世界模型</strong>：由一个理解专家和一个预测专家组成。它以前一观察、执行的逻辑动作和预测的下一个逻辑状态为条件，在共享特征空间中生成一个潜在的视觉子目标特征（而非像素图像），为底层控制提供稳定的感知目标。</li><li><strong>引导流程</strong>：逻辑世界模型生成符号计划；视觉世界模型为每个子任务生成视觉子目标；一个专门的<strong>子目标VLA策略</strong>综合当前观察、符号任务规范和视觉子目标，产生低层机器人动作。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要数据集：<strong>LIBERO-Logic</strong>（基于<strong>LIBERO</strong>基准构建），包含超过98万高质量图像-逻辑对，帧级对齐了机器人状态、视觉观测、逻辑状态和逻辑动作。</li><li>评估基准：<strong>LIBERO-LoHo</strong>，一个从LIBERO衍生的长视距基准，包含5个任务类型，任务视距约为原任务的两倍。</li><li>模型规模：未在提供的原文中明确说明具体参数量，但方法涉及微调LLM（逻辑世界模型）和使用基于Transformer的专家模型（视觉世界模型和子目标VLA）。</li><li>训练资源：未在提供的原文中明确说明。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：在<strong>LIBERO-LoHo</strong>长视距机器人操作基准上进行。</li><li>主要评估指标：<strong>Q-Score</strong>（已完成子目标数与总子目标数之比）和<strong>Success Rate</strong>（完全成功完成的任务百分比）。</li><li>关键实验结果：H-WM引导的 <strong>π₀.₅</strong> 模型在所有任务上显著优于所有基线方法（包括端到端 <strong>π₀</strong>、<strong>π₀.₅</strong>，以及语言引导和纯逻辑引导的分层方法）。在平均成功率上，H-WM (64.8%) 远超纯逻辑引导 (48.4%) 和语言引导 (26.8%)。消融研究证实了视觉引导对于将符号计划落地到感知空间、减少错误累积至关重要。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

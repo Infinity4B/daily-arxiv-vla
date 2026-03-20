@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fast-WAM: Do World Action Models Need Test-time Future Imagination? - VLA 论文精选</title>
+    <meta name="description" content="研究探讨了世界行动模型的核心问题：其性能提升主要源于训练时的视频建模，还是测试时的显式未来想象。 提出了 Fast-WAM 架构，在训练时保留视频协同训练，但在测试时跳过未来视频预测，直接从潜在世界表示生成动作。 旨在解耦训练时的视频建模目标与测试时的未来生成，以确定WAMs收益的真正来源。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.16666">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Fast-WAM: Do World Action Models Need Test-time Future Imagination?</h1>
+          <div class="detail-meta">2026-03-17 · <a href="http://arxiv.org/abs/2603.16666" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.16666" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.16666</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>IIIS, Tsinghua University</strong></li><li><strong>Galaxea AI</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>研究探讨了世界行动模型的核心问题：其性能提升主要源于训练时的视频建模，还是测试时的显式未来想象。</li><li>提出了 <strong>Fast-WAM</strong> 架构，在训练时保留视频协同训练，但在测试时跳过未来视频预测，直接从潜在世界表示生成动作。</li><li>旨在解耦训练时的视频建模目标与测试时的未来生成，以确定WAMs收益的真正来源。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>识别并研究了WAMs中的一个基本问题：其增益主要来自训练时的视频建模还是测试时的显式未来想象。</li><li>提出了 <strong>Fast-WAM</strong>，一种在测试时无需未来想象的WAM架构，实现了实时推理（190ms延迟）。</li><li>通过在共享框架下实现控制变体（如 <strong>Fast-WAM-Joint</strong>、<strong>Fast-WAM-IDM</strong> 和无视频协同训练版本），系统性解耦并对比了两个因素的影响。</li><li>实验证明，移除视频协同训练导致的性能下降远大于省去测试时未来想象的影响。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>基于 <strong>Wan2.2-5B</strong> 视频扩散Transformer构建世界建模骨干网络。</li><li>采用 <strong>Mixture-of-Transformer</strong> 架构，包含一个视频DiT和一个动作专家DiT，两者通过共享注意力连接。</li><li>训练时使用联合流匹配目标，同时优化动作分块生成和未来视频潜变量预测。</li><li>测试时仅使用第一帧的干净潜在标记，通过视频骨干网络单次前向传播获得潜在世界表示，用于动作去噪，避免了迭代式的未来视频生成。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集：<strong>LIBERO</strong> (模拟基准)、<strong>RoboTwin 2.0</strong> (模拟基准)、真实世界叠毛巾任务数据集。</li><li>模型规模：骨干网络为5B参数的视频DiT，新增1B参数的动作专家，总参数量为 <strong>6B</strong>。</li><li>训练资源：使用 <strong>NVIDIA RTX 5090D V2 32GB GPU</strong> 进行训练和延迟测量。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：<strong>LIBERO</strong> (4个任务套件，40个任务)、<strong>RoboTwin 2.0</strong> (超过50个双臂操作任务)、真实世界叠毛巾任务。</li><li>主要评估指标：任务成功率、平均完成时间、推理延迟。</li><li>关键实验结果：</li></ul>
+<p> - 在 <strong>LIBERO</strong> 上，Fast-WAM 平均成功率达 <strong>97.6%</strong>，与预训练的WAM基线（如LingBot-VA的98.5%）有竞争力。</p>
+<p> - 在 <strong>RoboTwin 2.0</strong> 上，Fast-WAM 平均成功率达 <strong>91.8%</strong>，超越所有无预训练基线，并与最优预训练WAM（92.2%）相当。</p>
+<p> - 控制对比实验表明，Fast-WAM 与想象-执行变体性能接近，但移除视频协同训练会导致成功率大幅下降（例如在RoboTwin上降至83.8%）。</p>
+<p> - 真实世界任务中，Fast-WAM 以 <strong>190ms</strong> 的延迟运行，比想象-执行变体 <strong>Fast-WAM-IDM (810ms)</strong> 快超过4倍，同时保持了有竞争力的成功率。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

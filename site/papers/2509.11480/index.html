@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cross-Platform Scaling of Vision-Language-Action Models from Edge to Cloud GPUs - VLA 论文精选</title>
+    <meta name="description" content="该论文系统地评估了五种视觉-语言-动作模型在不同硬件平台（从边缘设备到数据中心GPU）以及不同功率预算下的性能缩放情况。通过在LIBERO基准上测试，作者测量了模型的准确率、延迟、吞吐量和峰值内存使用等指标，旨在揭示模型架构、硬件类别和功耗限制之间的相互作用，并为不同部署场景下的模型选择和优化提供实践指导。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.11480">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Cross-Platform Scaling of Vision-Language-Action Models from Edge to Cloud GPUs</h1>
+          <div class="detail-meta">2025-09-15 · <a href="http://arxiv.org/abs/2509.11480" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.11480" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.11480</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>东北大学电气与计算机工程系</li><li>EmbodyX Inc.</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>该论文系统地评估了五种视觉-语言-动作模型在不同硬件平台（从边缘设备到数据中心GPU）以及不同功率预算下的性能缩放情况。通过在LIBERO基准上测试，作者测量了模型的准确率、延迟、吞吐量和峰值内存使用等指标，旨在揭示模型架构、硬件类别和功耗限制之间的相互作用，并为不同部署场景下的模型选择和优化提供实践指导。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>对VLA模型在边缘和数据中心GPU上的跨平台性能进行了首次系统性评估。</li><li>识别了关键的缩放趋势：架构选择（如动作分块大小、模型骨干尺寸）显著影响吞吐量和内存占用；功率受限的边缘设备表现出非线性的性能退化；高吞吐量模型可以在不显著牺牲准确率的情况下实现。</li><li>提出了一个挑战性观点：现代高端边缘设备（如Jetson AGX Orin）在特定配置下的性能可以超越旧款的数据中心GPU（如V100）。</li><li>提供了可操作的见解，用于在不同部署约束下选择和优化VLA模型。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>论文评估了五个VLA模型，包括三个基线模型和两个新提出的架构。这些模型在语言骨干、视觉编码器和动作头设计上有所不同。</p>
+<ul><li><strong>评估模型</strong>：OpenVLA (7B), SpatialVLA (4B), OpenVLA-OFT (7B), VOTE (7B, 包含1T, 2T, MLP4三种配置) 和 QwenVLA (2.6B)。</li><li><strong>新架构</strong>：VOTE模型通过使用特殊动作令牌（ST）来减少输出令牌数量，从而降低延迟。QwenVLA模型采用更小的语言骨干，以探索模型尺寸与效率的权衡。</li><li><strong>实验方法</strong>：在所有硬件平台上，对每个模型运行基准测试，测量生成一个动作块的平均延迟和每秒生成的动作数。在测量前进行预热，并记录100次连续推理的时间以确保稳定性。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：LIBERO基准，该基准包含四个任务套件，分别测试模型在空间关系、物体类型、任务导向行为和长时任务上的泛化能力。</li><li><strong>训练资源</strong>：新提出的VOTE和QwenVLA模型在LIBERO基准上进行微调。优化器为AdamW，VOTE和QwenVLA的学习率分别为1e-4和1e-3。使用了低秩自适应进行参数高效微调，LoRA的秩为32，alpha为16。VOTE和QwenVLA的全局批处理大小分别为40和64。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> * <strong>边缘平台</strong>：NVIDIA Jetson AGX Orin，在四种功率模式下运行（15W, 30W, 50W, MAX），以模拟不同的功耗约束。</p>
+<p> * <strong>数据中心平台</strong>：四款NVIDIA数据中心GPU，包括H100 (Hopper架构)、A100 (Ampere架构)、A6000 (Ampere架构) 和 V100 (Volta架构)。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> * <strong>准确率</strong>：在LIBERO基准的四个任务套件上的任务成功率（Success Rate, SR）。</p>
+<p> * <strong>延迟</strong>：生成一个动作块所需的平均时间（毫秒）。</p>
+<p> * <strong>吞吐量</strong>：每秒生成的动作数量。</p>
+<p> * <strong>峰值内存使用</strong>：模型推理时占用的最大显存（GB）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

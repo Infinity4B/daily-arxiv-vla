@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OG-VLA: 3D-Aware Vision Language Action Model via Orthographic Image Generation - VLA 论文精选</title>
+    <meta name="description" content="OG-VLA 是一种结合视觉语言动作模型 (VLA) 泛化能力与 3D 感知策略鲁棒性的新型架构和学习框架。该方法旨在解决将自然语言指令和一个或多个 RGBD 观测映射到准静态机器人动作的挑战。通过利用语言和视觉基础模型中的先验知识，OG-VLA 提升了 3D 感知关键帧策略的泛化能力，同时保持精确控制。核心创新是将输入观测反投影为点云并从正交视图渲染，确保输入视图不变性，并通过视觉骨干网络、LL" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2506.01196">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">OG-VLA: 3D-Aware Vision Language Action Model via Orthographic Image Generation</h1>
+          <div class="detail-meta">2025-06-01 · <a href="http://arxiv.org/abs/2506.01196" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2506.01196" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2506.01196</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><ul><li><strong>论文研究单位</strong></li></ul>
+<p> - 南加州大学 (University of Southern California)</p>
+<p> - NVIDIA</p>
+
+<ul><li><strong>论文概述</strong></li></ul>
+<p> - OG-VLA 是一种新颖的架构和学习框架，结合了视觉语言动作模型 (VLA) 的泛化能力和 3D 感知策略的鲁棒性。</p>
+<p> - 该方法解决了将自然语言指令和一个或多个 RGBD 观测映射到准静态机器人动作的挑战。</p>
+<p> - 通过利用语言和视觉基础模型中的先验知识，提升了 3D 感知关键帧策略的泛化能力。</p>
+<p> - 核心创新是将输入观测反投影为点云，并从正交视图渲染，确保输入视图不变性和输入输出空间一致性。</p>
+<p> - 实验表明，在 Arnold 和 Colosseum 基准测试中，对未见过环境的泛化能力有超过 40% 的相对提升，同时在已见设置中保持鲁棒性能。</p>
+
+<ul><li><strong>论文核心贡献点</strong></li></ul>
+<p> - 提出了一种结合 VLA 泛化能力与 3D 感知策略鲁棒性的新型架构 OG-VLA。</p>
+<p> - 引入正交图像生成机制，通过将 RGBD 输入转换为点云并渲染正交视图，实现输入视图不变性。</p>
+<p> - 使用视觉骨干网络、LLM 和图像扩散模型生成编码末端执行器位置和方向的图像。</p>
+<p> - 在 Arnold 和 Colosseum 基准测试中实现了最先进的泛化性能，相对提升超过 40%。</p>
+<p> - 展示了真实机器人上的快速适应能力，仅需 3-5 个演示即可学习任务。</p>
+
+<ul><li><strong>论文方法描述</strong></li></ul>
+<p> - 系统输入为语言指令和一组带姿态的 RGBD 观测，输出为末端执行器状态（位置和旋转）。</p>
+<p> - 点云渲染：将多视角输入观测反投影为点云，再从固定正交视图（如前、上、左、右）渲染场景。</p>
+<p> - 多模态处理：使用视觉编码器处理正交视图，生成 CLS 和块嵌入。</p>
+<p> - LLM 处理：将嵌入投影到 LLM 空间，与指令提示拼接后输入 LLM，生成动作 token。</p>
+<p> - 图像生成：使用 Stable Diffusion 1.5 将动作 token 解码为正交视图上的热图，编码位置和旋转。</p>
+<p> - 3D 姿态解码：通过优化问题从热图中解码 3D 位置和欧拉角，并处理夹爪状态。</p>
+<p> - 训练细节：冻结视觉编码器，使用 DeepSpeed 训练 LLM、投影层和图像生成器，采用 SE(3) 数据增强。</p>
+
+<ul><li><strong>论文使用数据集和训练资源</strong></li></ul>
+<p> - 数据集：Arnold（8 个任务，约 500 个演示/任务，2 关键帧/演示）和 Colosseum（20 个任务，100 个演示/任务）。</p>
+<p> - 训练资源：8 × A100 GPU，批量大小 64；Arnold 训练 30k 次迭代（1.5 天）或 100k 次（5 天），Colosseum 训练 250k 次；真实世界微调使用 4 × L40 GPU。</p>
+
+<ul><li><strong>论文使用的评估环境和评估指标</strong></li></ul>
+<p> - 评估环境：模拟环境（Arnold 和 Colosseum 基准）及真实世界（Franka Emika Panda 机械臂）。</p>
+<p> - 评估指标：成功率（%），覆盖任务完成统计；Arnold 测试分 Novel Pose、Object、Scene、State；Colosseum 测试集为 all perturbation；真实世界测试 novel object 和 scene 变体。</p>
+<p> - 额外指标：模型延迟（秒/步、步数/回合、总时间），与基线（如 π₀-FAST、PerAct）比较。</think></p>
+<h2 class="section-title">论文研究单位</h2>
+<p>南加州大学 (University of Southern California)</p>
+<p>NVIDIA</p>
+<h2 class="section-title">论文概述</h2>
+<p>OG-VLA 是一种结合视觉语言动作模型 (VLA) 泛化能力与 3D 感知策略鲁棒性的新型架构和学习框架。该方法旨在解决将自然语言指令和一个或多个 RGBD 观测映射到准静态机器人动作的挑战。通过利用语言和视觉基础模型中的先验知识，OG-VLA 提升了 3D 感知关键帧策略的泛化能力，同时保持精确控制。核心创新是将输入观测反投影为点云并从正交视图渲染，确保输入视图不变性，并通过视觉骨干网络、LLM 和图像扩散模型生成编码末端执行器状态的动作图像。实验在 Arnold 和 Colosseum 基准测试中展示了最先进的泛化性能，相对提升超过 40%，并在真实机器人上实现了 3-5 个演示的快速适应。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出 OG-VLA 架构，融合 VLA 的泛化优势与 3D 感知策略的鲁棒性。</li><li>引入正交图像生成机制：将 RGBD 输入转换为点云，渲染正交视图（如前、上、左、右），实现输入视图不变性和空间一致性。</li><li>使用视觉骨干网络、LLM 和图像扩散模型生成动作图像，编码末端执行器的位置、方向和夹爪状态。</li><li>在 Arnold 和 Colosseum 基准测试中，对未见过环境的泛化成功率达相对提升超过 40%，同时保持已见环境的鲁棒性。</li><li>展示真实机器人适应能力：仅需 3-5 个演示即可学习新任务，并在未见过物体和场景中泛化。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>系统输入为自然语言指令和多视角 RGBD 观测，输出为末端执行器 6-DOF 姿态（位置和旋转）。流程包括：</p>
+<ol><li><strong>点云渲染</strong>：将所有输入观测反投影为点云，在固定参考系中聚合，并从一组正交相机（前、左、右、上）渲染正交 RGB 图像。</li><li><strong>多模态处理</strong>：使用视觉编码器（如 ImageBind）处理正交视图，生成 CLS token 和块嵌入，通过投影层映射到 LLM 空间。</li><li><strong>LLM 推理</strong>：将嵌入与指令提示拼接后输入 LLM（如 Vicuna-7B），输出动作 token 序列，结合文本响应。</li><li><strong>图像生成</strong>：使用图像扩散模型（如 Stable Diffusion 1.5）将动作 token 解码为热图图像，覆盖在正交视图上，通过颜色编码位置（红）、旋转（黄、蓝、绿）和夹爪状态（左上角颜色）。</li><li><strong>3D 姿态解码</strong>：从热图解码 3D 位置（优化多视图概率积）和旋转（计算相对于水平线的角度），结合夹爪开闭状态。</li><li><strong>训练细节</strong>：冻结视觉编码器，使用 DeepSpeed 训练 LLM、投影层和图像生成器；采用 SE(3) 数据增强（平移 ±0.1m，旋转 ±90°）；Arnold 训练 30k 或 100k 次迭代，Colosseum 训练 250k 次。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - <strong>Arnold</strong>：8 个任务（如抓取、开门、倒水），每个任务约 500 个演示，每个演示 2 个关键帧，总计约 7100 关键帧。测试分 Novel Pose、Object、Scene、State。</p>
+<p> - <strong>Colosseum</strong>：20 个桌面任务（如关箱、洗碗机），每个任务 100 个演示，平均 6 个关键帧。测试集为 all perturbation，同时改变物体、光照、相机姿态和干扰物。</p>
+<p> - <strong>真实世界</strong>：4 个任务（抓取、放物、开抽屉、关抽屉），共 22 个演示（3-5 个/任务），使用单相机。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 模拟训练：8 × A100 GPU，批量大小 64；Arnold 训练 30k 次（1.5 天）或 100k 次（5 天），Colosseum 训练 250k 次。</p>
+<p> - 真实世界微调：从 Arnold 预训练检查点微调 10k 次；VLA 基线（如 π₀-FAST）使用 4 × L40 GPU，LoRA 微调 0.5 天，全微调 2 天。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>模拟环境</strong>：Arnold 和 Colosseum 基准测试，在 Isaac Gym 中运行，包含多相机观测和运动规划器。</p>
+<p> - <strong>真实世界</strong>：Franka Emika Panda 机械臂，桌面设置，单前置相机，使用运动规划器（如 Viola）执行关键帧。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>成功率 (%)</strong>：任务完成比例，Arnold 每测试集 20 个回合，Colosseum 25 个，真实世界 10 个，报告均值和标准差。</p>
+<p> - <strong>模型延迟</strong>：单步推理时间（秒）、每回合推理步数、总回合时间（含环境执行）。</p>
+<p> - <strong>泛化测试</strong>：包括 Arnold 的 Novel Pose（未见过物体/机器人位姿）、Novel Object（未见过物体）、Novel Scene（未见过场景）、Novel State（未见过目标状态）；Colosseum 的 all perturbation；真实世界的 novel object 和 scene 变体。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LIBERO-Plus: In-depth Robustness Analysis of Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="针对视觉‑语言‑动作（VLA）模型在标准基准上表现优异，却在真实场景中易受扰动的现象，本文在 LIBERO 仿真基准上系统地进行鲁棒性评估。通过在七种维度（对象布局、相机视角、机器人初始姿态、语言指令、光照、背景纹理、传感器噪声）上施加可控扰动，揭示模型的脆弱性：对视角和初始状态的微小变化即可导致成功率从 95% 下降到 30% 以下；而语言变化对整体表现影响最小，进一步实验表明多数模型并未真正依" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.13626">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">LIBERO-Plus: In-depth Robustness Analysis of Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-10-15 · <a href="http://arxiv.org/abs/2510.13626" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.13626" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.13626</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>复旦大学</li><li>同济大学</li><li>上海创新研究院</li><li>新加坡国立大学</li></ul>
+
+<p>（作者分别隶属上述单位，属于跨机构合作研究）</p>
+<h2 class="section-title">论文概述</h2>
+<p>针对视觉‑语言‑动作（VLA）模型在标准基准上表现优异，却在真实场景中易受扰动的现象，本文在 LIBERO 仿真基准上系统地进行鲁棒性评估。通过在七种维度（对象布局、相机视角、机器人初始姿态、语言指令、光照、背景纹理、传感器噪声）上施加可控扰动，揭示模型的脆弱性：对视角和初始状态的微小变化即可导致成功率从 95% 下降到 30% 以下；而语言变化对整体表现影响最小，进一步实验表明多数模型并未真正依赖语言信号。研究还发现模型存在位置偏置、忽略视觉语义以及对组合扰动的负交互效应。为解决这些问题，文中提出了 LIBERO‑Plus 基准、组合泛化差距的统计定义以及基于大规模扰动数据的通用微调方案，实现了显著鲁棒性提升。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>系统性脆弱性分析</strong>：在七种单一维度扰动下对 10 种 VLA 模型进行评估，量化每类扰动的绝对性能跌幅（表 1）。</li><li><strong>诊断框架</strong>：定义扰动随机变量与成功指示器，提出条件成功率、组合概率及协方差形式的组合泛化差距 Δij，并用 χ² 检验显著性。</li><li><strong>深度洞见</strong>：揭示模型对视觉‑动作的固定映射依赖、语言利用率低、位置记忆偏置以及对组合扰动的负交互效应。</li><li><strong>LIBERO‑Plus 基准</strong>：自动化生成 10,030 任务，涵盖七大扰动因子及 21 子组件，按多模型成功率划分为 Level‑1–Level‑5 五级难度（图 5‑6）。</li><li><strong>通用训练策略</strong>：构建超过 20,000 条扰动成功轨迹的通用训练集，对 OpenVLA‑OFT_m 进行混合微调，整体成功率提升至 79.6%（视角扰动 92.8%）。</li><li><strong>开源资源</strong>：公开评估脚本、任务生成代码、难度划分方法及训练配置，便于后续研究复用。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>扰动维度</strong></li></ol>
+<p> - 对象布局（添加干扰对象、目标位移）</p>
+<p> - 相机视角（视角/视野变化）</p>
+<p> - 机器人初始姿态（关节角度/位置扰动）</p>
+<p> - 语言指令（语义改写、句式变换）</p>
+<p> - 光照（强度、方向、颜色、阴影）</p>
+<p> - 背景纹理（桌面/场景材质）</p>
+<p> - 传感器噪声（光度失真、抖动、模糊）</p>
+
+<ol><li><strong>模型集合</strong></li></ol>
+<p> OpenVLA、OpenVLA‑OFT（含_oft_w、_oft_m）、π₀、π₀‑fast、Nora、WorldVLA、UniVLA、RIPT‑VLA 等，涵盖自回归与扩散两大范式。</p>
+
+<ol><li><strong>单维度扰动实验</strong></li></ol>
+<p> 对每种扰动在 LIBERO 四套任务上评估成功率，记录绝对跌幅（表 1），并分析模型之间的鲁棒差异。</p>
+
+<ol><li><strong>视觉注意分析</strong></li></ol>
+<p> 将对象布局扰动拆分为“添加干扰对象”与“目标位移”，对比成功率（图 1），验证模型是否聚焦任务关键对象。</p>
+
+<ol><li><strong>光照鲁棒性极端消融</strong></li></ol>
+<p> - <strong>全黑</strong>：所有相机输入置黑。</p>
+<p> - <strong>第三视角黑</strong>：仅第三人称视角黑掉，保留腕部相机。</p>
+<p> 通过成功率差异解释腕部相机提供的光照不敏感几何线索（图 2）。</p>
+
+<ol><li><strong>语言利用实验</strong></li></ol>
+<p> - <strong>空指令</strong>：完全删除语言输入。</p>
+<p> - <strong>目标替换</strong>：将指令中的目标对象替换为同场景的其它对象。</p>
+<p> 观察成功率变化（图 3），判断模型是否真正依赖语言。</p>
+
+<ol><li><strong>组合泛化差距定义</strong></li></ol>
+<p> 设 D_i 为第 i 种扰动是否施加的二值随机变量，Y 为任务成功指示器，定义条件成功率 s(D_i=d_i,D_j=d_j)=P(Y=1\|D_i=d_i,D_j=d_j)。组合差距 Δ_ij = Cov(D_i,D_j\|Y=1) = p(D_i=1,D_j=1\|Y=1) - p(D_i=1\|Y=1)p(D_j=1\|Y=1)。通过 2000 次独立实验估计概率，构建热图并进行 χ² 显著性检验（附录 F）。</p>
+
+<ol><li><strong>LIBERO‑Plus 基准构建</strong></li></ol>
+<p> - 自动生成任务 → 过滤平衡 → 按四模型成功率划分为五级难度。</p>
+<p> - 任务规模：10,030，七扰动因子，21 子组件（图 5‑6）。</p>
+
+<ol><li><strong>通用训练与微调</strong></li></ol>
+<p> - 基于原始 LIBERO 轨迹扩增 20,000+ 条成功扰动轨迹。</p>
+<p> - 以 OpenVLA‑OFT_m 预训练权重为起点进行混合微调。</p>
+<p> - 在 LIBERO‑Plus 上评估，实现跨扰动显著提升（表 2）。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>基础数据</strong>：LIBERO 基准（4 套任务），每个套件提供对象、语言指令和标准成功轨迹。</li><li><strong>扰动生成</strong>：自动化在七大扰动维度上生成场景与轨迹，筛选后形成 10,030 评估任务。</li><li><strong>训练集</strong>：超过 20,000 条成功扰动轨迹，覆盖对象布局、相机、光照、背景、噪声等多维变化。轨迹统一保存格式（附录 D）。</li><li><strong>微调配置</strong>：使用官方 OpenVLA‑OFT_m 权重进行混合微调；具体超参数与训练过程详见附录 D。</li><li><strong>计算资源</strong>：所有实验在 LIBERO 仿真平台完成，未在文中披露具体硬件，但规模要求大量随机生成的评估样本。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：LIBERO 仿真平台，支持第三人称视角与腕部相机（如模型使用）。</li><li><strong>模型评估</strong>：</li></ul>
+<p> 1. <strong>单维度扰动</strong>：在 4 套标准任务上分别施加七种扰动，记录原始成功率及绝对跌幅（表 1）。</p>
+<p> 2. <strong>组合扰动</strong>：对选定模型在两两扰动组合下进行 2000 次试验，估计联合概率并计算 Δ_ij（热图（图 4））。</p>
+<p> 3. <strong>极端消融</strong>：全黑与第三人称视角黑掉两种场景，检验视觉依赖。</p>
+<p> 4. <strong>语言实验</strong>：空指令与目标替换任务，评估语言利用率。</p>
+<ul><li><strong>指标</strong>：</li></ul>
+<p> - <strong>成功率（%）</strong>——任务执行成功的比例。</p>
+<p> - <strong>绝对跌幅</strong>——相对原始成功率的下降低点（表 1）。</p>
+<p> - <strong>组合泛化差距 Δ_ij</strong>——协方差形式的交互效应度量。</p>
+<p> - <strong>χ² 检验</strong>——Δ_ij 的统计显著性（附录 F）。</p>
+<p> - <strong>难度分级</strong>——基于多模型成功率分布的任务划分（Level‑1至Level‑5）。</p>
+<p> - <strong>综合成功率</strong>——所有扰动维度的平均表现（表 2）。</p>
+
+<p>（所有图表与实验细节均可在正文相应章节及附录中查阅）</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

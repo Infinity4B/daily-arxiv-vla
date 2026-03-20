@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RoboMamba: Efficient Vision-Language-Action Model for Robotic Reasoning and Manipulation - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了RoboMamba，一个高效的视觉-语言-行动（VLA）模型，用于机器人推理和操作。RoboMamba基于Mamba架构，旨在解决现有VLA模型在复杂任务推理能力不足和计算成本高的问题。模型集成了视觉编码器和Mamba语言模型，通过两阶段训练策略，使其同时具备通用常识、机器人相关推理能力和低级操作技能，并保持了高效的微调和推理速度。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2406.04339">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">RoboMamba: Efficient Vision-Language-Action Model for Robotic Reasoning and Manipulation</h1>
+          <div class="detail-meta">2024-06-06 · <a href="http://arxiv.org/abs/2406.04339" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2406.04339" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2406.04339</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>北京大学、AI²Robotics、北京智源人工智能研究院（BAAI）</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了RoboMamba，一个高效的视觉-语言-行动（VLA）模型，用于机器人推理和操作。RoboMamba基于Mamba架构，旨在解决现有VLA模型在复杂任务推理能力不足和计算成本高的问题。模型集成了视觉编码器和Mamba语言模型，通过两阶段训练策略，使其同时具备通用常识、机器人相关推理能力和低级操作技能，并保持了高效的微调和推理速度。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出RoboMamba，一个高效的端到端机器人VLA模型，它将视觉编码器与线性复杂度的Mamba语言模型相结合。</li><li>设计了一个高效的微调策略，仅通过微调一个简单的策略头（约占模型总参数的0.1%）即可赋予模型SE(3)姿态预测能力。</li><li>实验表明，RoboMamba在多个通用和机器人推理基准上表现出色，并在模拟和真实世界实验中展示了令人印象深刻的姿态预测结果，推理速度是现有VLA模型的3倍。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>RoboMamba的架构包括CLIP视觉编码器、一个多层感知机（MLP）作为跨模态连接器，以及一个Mamba语言模型。训练分为两个阶段：</p>
+<ol><li><strong>阶段一：通用和机器人相关推理训练</strong></li></ol>
+<p> - <strong>1.1 对齐预训练</strong>：冻结CLIP编码器和Mamba，仅使用558K图像-文本对数据集训练MLP连接器，对齐视觉特征与语言嵌入。</p>
+<p> - <strong>1.2 指令协同训练</strong>：解冻Mamba和连接器，结合通用指令数据集（如LLaVA混合指令数据集）和机器人指令数据集（如RoboVQA）进行训练，提升模型的视觉常识和机器人相关推理能力。</p>
+<ol><li><strong>阶段二：机器人操作微调</strong></li></ol>
+<p> - 冻结RoboMamba的所有参数，仅添加一个简单的策略头（包含两个MLP，分别用于预测末端执行器的位置和方向），该策略头仅占模型总参数的0.1%。</p>
+<p> - 使用SAPIEN模拟器生成的10K末端执行器姿态预测数据集进行微调，采用位置L1损失和方向反余弦损失。该过程仅需几分钟即可在单个A100 GPU上完成。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p><strong>数据集</strong>:</p>
+<ul><li><strong>阶段一</strong>：LLaVA-LCS 558K（对齐预训练）、LLaVA混合指令数据集、ShareGPT4V-SFT数据集、LLaVA-Next数据集（指令协同训练）、300K RoboVQA样本（指令协同训练）。</li><li><strong>阶段二</strong>：使用SAPIEN模拟器和PartNet-Mobility数据集收集的10K末端执行器姿态预测数据，用于操作微调。</li><li><strong>评估</strong>：推理评估在VQAv2、OKVQA、RoboVQA、GQA等多个基准上进行；操作评估在SAPIEN模拟器中进行，测试集包含1.1K样本（20个已见任务和10个未见任务）。</li></ul>
+<p><strong>训练资源</strong>:</p>
+<ul><li>所有实验均在NVIDIA A100 GPU上进行。</li><li>阶段一训练使用AdamW优化器，学习率4e-5，混合精度（fp16）。</li><li>阶段二微调学习率1e-5，权重衰减0.1，使用fp32精度。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p><strong>评估环境</strong>:</p>
+<ul><li><strong>模拟环境</strong>：使用SAPIEN物理模拟引擎，与PartNet-Mobility数据集中的可动物体进行交互。机器人模型为配备吸盘夹爪的Franka Panda机器人。</li><li><strong>真实世界环境</strong>：使用真实的Franka Panda机器人对多个可动物体进行操作。</li></ul>
+<p><strong>评估指标</strong>:</p>
+<ul><li><strong>推理能力</strong>：在多个视觉问答基准上使用标准指标（如BLEU-4用于RoboVQA）进行评估。</li><li><strong>操作能力</strong>：</li></ul>
+<p> - <strong>成功率</strong>：在模拟环境中，成功操作样本数占总测试样本数的比例。一个操作被视为成功，当且仅当物体交互前后的关节状态变化超过0.1米的阈值。</p>
+<p> - <strong>位置误差（L1 loss）</strong>：预测位置与真实位置之间的平均绝对误差。</p>
+<p> - <strong>方向误差</strong>：预测旋转矩阵与真实旋转矩阵之间的反余弦误差。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

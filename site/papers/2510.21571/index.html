@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scalable Vision-Language-Action Model Pretraining for Robotic Manipulation with Real-Life Human Activity Videos - VLA 论文精选</title>
+    <meta name="description" content="本文提出了一种将无脚本真实生活人类手部活动视频转换为视觉-语言-动作（VLA）数据格式的新方法，用于预训练机器人操作VLA模型。该方法将人类手部视为灵巧机器人末端执行器，通过开发全自动化的人类活动分析框架，将&quot;野生&quot;第一人称人类视频转换为与现有机器人VLA训练数据完全对齐的数据格式，无需任何注释。最终构建了包含100万片段和2600万帧的大规模手部VLA数据集，并设计了灵巧手部VLA模型。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.21571">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Scalable Vision-Language-Action Model Pretraining for Robotic Manipulation with Real-Life Human Activity Videos</h1>
+          <div class="detail-meta">2025-10-24 · <a href="http://arxiv.org/abs/2510.21571" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.21571" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.21571</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+
+<p>清华大学、微软亚洲研究院</p>
+<h2 class="section-title">论文概述</h2>
+
+<p>本文提出了一种将无脚本真实生活人类手部活动视频转换为视觉-语言-动作（VLA）数据格式的新方法，用于预训练机器人操作VLA模型。该方法将人类手部视为灵巧机器人末端执行器，通过开发全自动化的人类活动分析框架，将"野生"第一人称人类视频转换为与现有机器人VLA训练数据完全对齐的数据格式，无需任何注释。最终构建了包含100万片段和2600万帧的大规模手部VLA数据集，并设计了灵巧手部VLA模型。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+
+<ol><li><strong>首个VLA预训练方法</strong>：首次将非结构化人类视频转换为与机器人VLA训练数据完全对齐的数据格式，无需人工注释</li></ol>
+
+<ol><li><strong>自动化分析框架</strong>：开发了全自动化的人类活动分析框架，包含三维运动标注、原子动作分割和指令标注三个阶段</li></ol>
+
+<ol><li><strong>大规模数据集构建</strong>：构建了包含100万片段和2600万帧的手部VLA数据集，覆盖广泛的对象、概念、技能和环境变化</li></ol>
+
+<ol><li><strong>VLA模型架构</strong>：设计了由VLM骨干网和扩散动作专家组成的灵巧手部VLA模型，支持统一的单双hand动作预测</li></ol>
+
+<ol><li><strong>零样本泛化能力</strong>：模型在完全未见过的真实世界观察中展现出强大的零样本能力</li></ol>
+
+<ol><li><strong>缩放行为验证</strong>：证明了模型任务性能随预训练数据规模的清晰缩放行为</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<h2 class="section-title">数据转换框架</h2>
+
+<p><strong>三维运动标注</strong>：采用单目三维相机和手部姿态跟踪方法，利用深度视觉SLAM、深度估计和手部重建技术，估计相机内参和帧级手部姿态（基于6D手腕姿态和完整关节角度）</p>
+
+<p><strong>原子动作分割</strong>：通过检测世界空间中3D手部手腕的速度最小值作为切割点，将长视频分割为原子级手部动作序列，遵循机器人VLA数据的粒度要求</p>
+
+<p><strong>指令标注</strong>：从每个片段均匀采样8帧，在帧上叠加手部轨迹投影，使用GPT-4.1为每个片段生成动作的描述性语言指令</p>
+<h2 class="section-title">VLA模型设计</h2>
+
+<p><strong>模型架构</strong>：由PaliGemma-2 VLM骨干网和DiT-Base扩散Transformer动作专家组成，添加可学习的认知token作为条件输入</p>
+
+<p><strong>动作空间</strong>：在相机坐标系中预测手部动作，包含左右手的手腕平移、旋转和15个关节的欧拉角</p>
+
+<p><strong>统一预测</strong>：通过动作掩码机制处理单双hand动作的统一预测，使用因果注意机制进行动作去噪</p>
+
+<p><strong>训练策略</strong>：采用轨迹感知数据增强，随机裁剪和透视变换，同时变换对应的动作序列</p>
+<h2 class="section-title">机器人微调</h2>
+
+<p>将人类手部动作空间映射到机器人手部，通过关节拓扑对应关系进行简单的映射策略，对模型进行微调以适应真实机器人操作</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<h2 class="section-title">预训练数据集</h2>
+
+<p><strong>数据来源</strong>：处理了来自Ego4D（77%）、Epic-Kitchen（12%）、EgoExo4D（6%）和Something-Something-V2（5%）的第一人称人类视频</p>
+
+<p><strong>数据规模</strong>：100万片段，2600万帧，覆盖烹饪、清洁、建筑、维修、手工和绘画等真实生活活动</p>
+
+<p><strong>数据多样性</strong>：与OpenImages数据集相比具有更高的视觉多样性，包含更丰富的语言指令多样性（名词、动词、形容词）</p>
+<h2 class="section-title">训练资源</h2>
+
+<p><strong>预训练</strong>：在8个NVIDIA H100 GPU上训练2天，批量大小512，学习率1e-4和1e-5</p>
+
+<p><strong>微调</strong>：在8个NVIDIA H100 GPU上训练8小时，批量大小256，学习率1e-5</p>
+<h2 class="section-title">机器人数据</h2>
+
+<p>收集了1.2K条遥操作轨迹用于四个任务的微调：一般拾取放置、功能抓取、倒水和清扫</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<h2 class="section-title">人类手部动作预测评估</h2>
+
+<p><strong>评估环境</strong>：</p>
+<ul><li>抓取任务：在47个未见过的环境中使用Azure Kinect捕获RGB-D图像</li><li>一般动作任务：在117个未见过的真实生活环境中进行用户研究</li></ul>
+
+<p><strong>评估指标</strong>：</p>
+<ul><li>抓取任务：手-物体最小距离（$d_{\text{hand-obj}}$）评估动作合理性</li><li>一般动作：23名参与者对30个随机场景的top-3动作进行排名打分</li></ul>
+<h2 class="section-title">真实机器人灵巧操作评估</h2>
+
+<p><strong>评估环境</strong>：</p>
+<ul><li>Realman机器人配备12-DoF XHand灵巧手和RealSense头部相机</li><li>桌面环境设置，使用遥操作系统收集训练数据</li></ul>
+
+<p><strong>评估任务</strong>：</p>
+<ul><li>拾取放置：移动物体到盒子中（3-4个随机干扰物）</li><li>功能抓取：在功能位置抓取物体（如手柄）</li><li>倒水：抓取瓶子，将内容倒入另一容器，放回桌面</li><li>扫帚清扫：从篮子中拿起扫帚，将垃圾扫入簸箕，归位扫帚</li></ul>
+
+<p><strong>评估指标</strong>：</p>
+<ul><li>任务成功率：在可见和不可见物体/背景下的成功率百分比</li><li>对比基线：与VPP和π₀等代表性方法的性能比较</li><li>缩放行为：不同数据规模下的性能变化趋势</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

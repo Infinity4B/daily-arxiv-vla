@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLA Model Post-Training via Action-Chunked PPO and Self Behavior Cloning - VLA 论文精选</title>
+    <meta name="description" content="本文提出了一种基于动作分块近端策略优化（PPO）和自监督行为克隆的VLA（视觉-语言-动作）模型后训练方法。该方法针对强化学习在VLA模型后训练中面临的稀疏奖励和不稳定训练挑战，通过将连续动作聚合为动作分块来提高策略的时间一致性和反馈密度，同时结合动态更新的演示缓冲区进行自监督行为克隆辅助训练。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.25718">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VLA Model Post-Training via Action-Chunked PPO and Self Behavior Cloning</h1>
+          <div class="detail-meta">2025-09-30 · <a href="http://arxiv.org/abs/2509.25718" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.25718" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.25718</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">VLA模型通过动作分块PPO和自监督行为克隆的后训练</h2>
+<h2 class="section-title">论文研究单位</h2>
+<ul><li>中国科学院自动化研究所多模态人工智能系统国家重点实验室</li><li>中国科学院大学人工智能学院</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了一种基于动作分块近端策略优化（PPO）和自监督行为克隆的VLA（视觉-语言-动作）模型后训练方法。该方法针对强化学习在VLA模型后训练中面临的稀疏奖励和不稳定训练挑战，通过将连续动作聚合为动作分块来提高策略的时间一致性和反馈密度，同时结合动态更新的演示缓冲区进行自监督行为克隆辅助训练。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>开发了用于VLA模型后训练的动作分块PPO算法，增加了有效的信息反馈密度</li><li>构建了基于动态演示缓冲区的自监督行为克隆辅助损失，在训练过程中持续收集高质量任务轨迹</li><li>实验表明，该方法仅用10个演示就超过了使用100个演示的监督微调性能，成功率达0.93，步数减少到42.17</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<h2 class="section-title">动作分块PPO</h2>
+<ul><li>将连续动作聚合为长度为h≥1的动作分块，提高奖励反馈频率</li><li>在actor-critic架构上实现PPO框架，使用截断代理目标限制策略差异</li><li>通过广义优势估计（GAE）计算优势函数</li></ul>
+<h2 class="section-title">自监督行为克隆</h2>
+<ul><li>初始化时使用专家轨迹构建动态演示缓冲区</li><li>训练过程中将高质量成功轨迹加入缓冲区</li><li>使用轨迹长度作为质量代理指标，较短轨迹表示更高质量</li><li>构建辅助监督损失L_BC进行策略优化</li></ul>
+<h2 class="section-title">在线后训练</h2>
+<ul><li>总损失函数为加权组合：L_online = β_t * L_PPO + L_BC</li><li>β_t采用渐进调度：β_t = tanh(t/T_warmup)，实现从监督学习到强化学习的平滑过渡</li><li>早期训练完全由行为克隆驱动，随训练进展逐步强调PPO目标</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：MetaWorld环境中的MT10基准，包含10个单任务环境</li><li><strong>演示数据</strong>：每个任务使用规则策略收集演示轨迹，每条轨迹限制200步</li><li><strong>模型基础</strong>：Octo-small作为VLA模型骨干网络</li><li><strong>训练配置</strong>：</li></ul>
+<p> - 优化器：AdamW，学习率10^-5</p>
+<p> - GAE λ=0.99，折扣因子γ=0.99</p>
+<p> - PPO截断ε=0.2，值损失权重=0.5，熵损失权重=0.0</p>
+<p> - 动作分块长度h=4，预热步数T_warmup=40k</p>
+<p> - 批次大小16，总训练步数500k</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：MetaWorld MT10基准测试</li><li><strong>评估配置</strong>：每任务评估128个回合，使用统一随机种子</li><li><strong>评估指标</strong>：</li></ul>
+<p> - 平均成功率（Acc.）：128个回合的成功率</p>
+<p> - 轨迹长度分布的第10百分位数（Len.）</p>
+<p> - 最短10%轨迹的平均长度（Avg(l).）</p>
+<ul><li><strong>对比基线</strong>：</li></ul>
+<p> - SFT：10个演示的监督微调</p>
+<p> - SFT_100：100个演示的监督微调</p>
+<p> - 标准PPO：无额外演示的标准PPO</p>
+<ul><li><strong>评估结果</strong>：提出的方法在平均性能和大多数单任务指标上均排名第一，证明了RL后训练的可行性和有效性</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

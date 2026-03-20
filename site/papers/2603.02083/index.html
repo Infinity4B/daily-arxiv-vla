@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>$π$-StepNFT: Wider Space Needs Finer Steps in Online RL for Flow-based VLAs - VLA 论文精选</title>
+    <meta name="description" content="论文提出 π-StepNFT，一种针对基于流的视觉语言动作模型的无评论家、无似然在线强化学习框架，旨在解决标准ODE采样探索空间窄而SDE采样在更具探索性的同时导致监督不匹配的问题。 核心研究问题是：如何在保证更宽探索空间的同时，提供更精细的步骤级监督，以实现对专家轨迹邻域的鲁棒性扩展，从而提升在线RL对VLA模型的微调效果。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.02083">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">$π$-StepNFT: Wider Space Needs Finer Steps in Online RL for Flow-based VLAs</h1>
+          <div class="detail-meta">2026-03-02 · <a href="http://arxiv.org/abs/2603.02083" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.02083" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.02083</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>作者列表显示为匿名，因此具体研究机构信息未在提供的原文中明确列出。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出 <strong>π-StepNFT</strong>，一种针对基于流的视觉语言动作模型的无评论家、无似然在线强化学习框架，旨在解决标准ODE采样探索空间窄而SDE采样在更具探索性的同时导致监督不匹配的问题。</li><li>核心研究问题是：如何在保证<strong>更宽探索空间</strong>的同时，提供<strong>更精细的步骤级监督</strong>，以实现对专家轨迹邻域的鲁棒性扩展，从而提升在线RL对VLA模型的微调效果。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>π-StepNFT</strong> 框架，它无需训练辅助价值网络（这些网络容易对多模态特征过拟合），并且每个优化步骤只需要一次前向传播。</li><li>揭示了在SDE引入的更宽探索空间中，需要<strong>更精细的步骤级指导</strong>来确保对齐。通过将监督目标从最终输出转移到即时下一个去噪步骤，并引入<strong>逻辑对比排序目标</strong>，解决了监督不匹配问题，并强化了成功的探索。</li><li>在 <strong>LIBERO</strong> 和 <strong>ManiSkill</strong> 基准上进行了广泛的实验验证。在LIBERO的少样本设置中，<strong>π-StepNFT</strong> 比监督微调（SFT）性能提升32.9%；在ManiSkill的分布外泛化场景中，通过防止评论家诱导的多模态过拟合，<strong>π-StepNFT</strong> 比基于评论家的基线方法高出11.1%，展示了其在复杂现实应用中的潜力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>方法核心是利用<strong>SDE采样</strong>来扩大策略探索的行为流形，同时将监督信号锚定在<strong>步骤级</strong>。这通过将预测目标从最终去噪输出 <code>x₀</code> 转移到下一个即时去噪步骤 <code>x_t⁻</code> 来实现。</li><li>关键创新包括：<strong>步骤级对比排序目标</strong>，它构造两个围绕旧策略速度对称的“镜像”分支，并使用softplus损失函数根据情节的成功/失败标签来对这两个分支进行排序，从而建立明确的偏好分离。</li><li>该方法消除了类似方法（如Diffusion-NFT的加权MSE目标）中存在的“隐式分离惩罚”，实现了更清晰、更激进的“推-拉”策略更新动力学。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集为 <strong>LIBERO</strong> 和 <strong>ManiSkill</strong>。</li><li>模型基于<strong>基于流的VLA策略</strong>，具体模型名称未在摘要中明确，但提及了相关工作（如π0等）。</li><li>训练资源在提供的摘要部分未明确说明。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境为 <strong>LIBERO</strong> 和 <strong>ManiSkill</strong> 基准测试。</li><li>主要评估指标是<strong>任务成功率</strong>。</li><li>关键实验结果：在LIBERO少样本设置中，<strong>π-StepNFT</strong> 相比SFT带来 <strong>32.9%</strong> 的性能提升。在ManiSkill的分布外泛化场景中，它超越了基于评论家的基线方法 <strong>11.1%</strong>。这些结果突显了该方法在探索和泛化方面的有效性。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

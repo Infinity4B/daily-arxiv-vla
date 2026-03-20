@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Balancing Signal and Variance: Adaptive Offline RL Post-Training for VLA Flow Models - VLA 论文精选</title>
+    <meta name="description" content="针对基于流匹配的视觉-语言-行动（VLA）模型在复杂任务中行动准确性不足的问题，论文提出了一种离线强化学习后训练方法 ARFM（自适应强化流匹配）。该方法通过在 VLA 流模型损失中引入自适应缩放因子，理论构建了一个权衡偏差-方差的优化目标，以平衡强化学习信号和梯度方差影响，从而实现更稳定和高效的微调过程。实验表明 ARFM 在泛化、鲁棒性、少样本学习和持续学习方面表现优异。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.04063">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Balancing Signal and Variance: Adaptive Offline RL Post-Training for VLA Flow Models</h1>
+          <div class="detail-meta">2025-09-04 · <a href="http://arxiv.org/abs/2509.04063" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.04063" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.04063</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>论文作者包括 Hongyin Zhang, Shiyuan Zhang, Junxi Jin, Qixin Zeng, Yifan Qiao, Hongchao Lu, Donglin Wang。单位信息部分缺失，但通讯作者 Donglin Wang 来自西湖大学。</p>
+<h2 class="section-title">论文概述</h2>
+<p>针对基于流匹配的视觉-语言-行动（VLA）模型在复杂任务中行动准确性不足的问题，论文提出了一种离线强化学习后训练方法 ARFM（自适应强化流匹配）。该方法通过在 VLA 流模型损失中引入自适应缩放因子，理论构建了一个权衡偏差-方差的优化目标，以平衡强化学习信号和梯度方差影响，从而实现更稳定和高效的微调过程。实验表明 ARFM 在泛化、鲁棒性、少样本学习和持续学习方面表现优异。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出 ARFM 方法，一种用于 VLA 流模型的新型离线强化学习后训练方法，能够自适应调整数据质量分布。</li><li>理论建立缩放因子 α 的优化目标，并诱导二分迭代算法进行实时更新，实现高效 VLA 流模型微调。</li><li>通过仿真和真实机器人操作任务实验，验证 ARFM 在泛化能力、对动态扰动的鲁棒性、少样本学习和持续学习场景中的卓越性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>方法基于能量加权流匹配（EWFM）框架：</p>
+<ul><li><strong>能量加权 VLA 流模型</strong>：构建能量引导分布 π(A_t\|o_t) ∝ p(A_t\|o_t) exp(α R*(A_t, o_t))，其中 R* 为标准化强化学习优势，α 为缩放因子。使用条件能量加权流匹配（CEFM）损失优化向量场，学习策略分布。</li><li><strong>自适应缩放因子 α 调整</strong>：通过最小化目标函数 J(α) = Var(ĝ(α)) - λ S(α) 实现信号与方差的权衡，其中 ĝ(α) 是损失梯度，S(α) 是强化学习优势评分函数。基于高斯假设，推导出 J(α) 的具体形式，并通过二分迭代算法（Algorithm 1）实时求解最优 α*。最终算法（Algorithm 2）集成到 VLA 流模型微调中。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：使用 LIBERO 仿真基准（包括 Object、Long、Spatial 和 Goal 四个任务套件）和真实世界 UR5 机器人平台（三个抓取和放置任务）。</li><li><strong>训练资源</strong>：论文未明确指定硬件资源，但假设采用标准计算环境（如 GPU）进行仿真和实验。模型基于流匹配实现，训练过程涉及数据采样和损失优化。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>： LIBERO 仿真环境和 UR5 真实机器人实验平台。</li><li><strong>评估指标</strong>：主要使用成功率（Success Rate, SR）衡量任务完成度；在动作扰动实验中，添加高斯噪声（0.1 至 0.3 级别）评估鲁棒性，通过扰动后成功率评估性能。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

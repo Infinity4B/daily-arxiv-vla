@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ContextVLA: Vision-Language-Action Model with Amortized Multi-Frame Context - VLA 论文精选</title>
+    <meta name="description" content="论文总结 论文研究单位： KAIST（韩国科学技术院）、RLWRLD、加州大学伯克利分校 论文概述： 针对部分可观察机器人任务中时序上下文缺失导致的策略性能不稳定问题，提出ContextVLA框架。该框架基于预训练视觉语言模型（VLM）的视觉语言动作模型（VLA），通过将历史多帧观测压缩为单一上下文令牌来高效利用时序信息，同时避免直接处理高维视频序列的计算开销。与传统多帧训练策略不同，该方法利用V" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.04246">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">ContextVLA: Vision-Language-Action Model with Amortized Multi-Frame Context</h1>
+          <div class="detail-meta">2025-10-05 · <a href="http://arxiv.org/abs/2510.04246" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.04246" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.04246</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+
+<p><strong>论文研究单位：</strong></p>
+<p>KAIST（韩国科学技术院）、RLWRLD、加州大学伯克利分校</p>
+
+<p><strong>论文概述：</strong></p>
+<p>针对部分可观察机器人任务中时序上下文缺失导致的策略性能不稳定问题，提出ContextVLA框架。该框架基于预训练视觉语言模型（VLM）的视觉语言动作模型（VLA），通过将历史多帧观测压缩为单一上下文令牌来高效利用时序信息，同时避免直接处理高维视频序列的计算开销。与传统多帧训练策略不同，该方法利用VLM的时序理解能力，在模拟和真实机器人任务中均显著提升策略性能。</p>
+
+<p><strong>论文核心贡献点：</strong></p>
+<ol><li><strong>揭示关键瓶颈</strong>：系统性分析发现VLA架构在利用多帧观测方面优于传统策略，原因在于预训练VLM具备的时序理解能力；</li><li><strong>创新压缩机制</strong>：提出分两阶段处理策略——前半段VLM层保留多帧输入以提取时序特征，后半段将历史帧聚合为单令牌（平均池化），实现高效时序上下文融合；</li><li><strong>通用适配性</strong>：支持自回归和扩散式动作解码器，可直接增强现有VLA模型（如π₀、GR00T N1.5）；</li><li><strong>显著性能提升</strong>：</li></ol>
+<p> - 模拟任务：Libero基准平均提升1.9%，Simpler-WidowX提升14.4%（41.8%→56.2%）</p>
+<p> - 真实任务：长时序"Pick-and-Place Twice"任务从25%提升至65%</p>
+
+<p><strong>论文方法描述：</strong></p>
+<ul><li><strong>观测压缩流程</strong>：</li></ul>
+<p> 1. 用视觉编码器处理8帧历史观测得到视觉特征</p>
+<p> 2. 在VLM第2层对历史帧隐藏状态执行平均池化生成上下文令牌m</p>
+<p> 3. 用m替代后续VLM层中的历史帧令牌，仅保留当前帧令牌</p>
+<ul><li><strong>动作生成</strong>：上下文令牌与VLM当前层特征共同输入动作解码器，支持自回归（令牌化动作）或扩散式生成</li><li><strong>高效推理</strong>：结合因果注意力掩码与KV缓存机制，在t-1步预计算历史令牌和KV缓存，t步仅处理当前观测和上下文令牌</li></ul>
+
+<p><strong>论文使用数据集和训练资源：</strong></p>
+<ul><li><strong>模拟数据集</strong>：Libero（40个任务）、Simpler-WidowX（4任务）、Robocasa（24任务）</li><li><strong>真实数据集</strong>：Bridge v2、3类长时序操作任务（抓取-放置-两次、覆盖-堆叠）</li><li><strong>训练配置</strong>：</li></ul>
+<p> - 60K迭代，批量32，优化器AdamW</p>
+<p> - 8帧历史观测，在第2层VLM块执行压缩（n=2）</p>
+<p> - 硬件：NVIDIA A100 80GB GPU（4卡并行训练，单卡推理）</p>
+
+<p><strong>论文使用的评估环境和评估指标：</strong></p>
+<ul><li><strong>环境</strong>：</li></ul>
+<p> - 模拟任务：Libero（4子基准）、Simpler-WidowX（4任务）、Robocasa（24任务）</p>
+<p> - 真实机器人任务：3类时序敏感操作（抓取-放置序列、手部开合等）</p>
+<ul><li><strong>指标</strong>：</li></ul>
+<p> - <strong>性能</strong>：任务成功率（%）</p>
+<p> - <strong>效率</strong>：训练墙钟时间（基于π₀在Libero的60K迭代训练）、推理延迟（ms/8帧2视角输入）</p>
+<ul><li><strong>关键结果</strong>：</li></ul>
+<p> - 在Simpler-WidowX实现14.4%平均提升</p>
+<p> - 推理时间从227.2ms（未压缩）降至96.3ms（压缩+KV缓存）</p>
+<p> - 长时序真实任务成功率最高达80%</p>
+<hr/>
+<p>注：该论文在ICLR/NeurIPS等多帧机器人策略研究基础上，通过VLM时序建模和计算优化，首次系统解决了多帧观测在VLA中的高效利用难题。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

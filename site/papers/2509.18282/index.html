@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PEEK: Guiding and Minimal Image Representations for Zero-Shot Generalization of Robot Manipulation Policies - VLA 论文精选</title>
+    <meta name="description" content="当前机器人操控策略往往同时学习“关注哪里（where）”“做什么（what）”“如何执行（how）”，导致泛化能力受限。该论文提出将“where/what”的高层语义推理交由视觉语言模型（VLM）承担，使低层策略专注“how”。为此提出了PEEK（Policy-agnostic Extraction of Essential Keypoints），一个策略无关的最小中间表示框架：由VLM预测2D末" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.18282">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">PEEK: Guiding and Minimal Image Representations for Zero-Shot Generalization of Robot Manipulation Policies</h1>
+          <div class="detail-meta">2025-09-22 · <a href="http://arxiv.org/abs/2509.18282" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.18282" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.18282</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>University of Washington, NVIDIA, University of Southern California, Allen Institute for AI。</p>
+<h2 class="section-title">论文概述</h2>
+<p>当前机器人操控策略往往同时学习“关注哪里（where）”“做什么（what）”“如何执行（how）”，导致泛化能力受限。该论文提出将“where/what”的高层语义推理交由视觉语言模型（VLM）承担，使低层策略专注“how”。为此提出了PEEK（Policy-agnostic Extraction of Essential Keypoints），一个策略无关的最小中间表示框架：由VLM预测2D末端执行器路径（what）与任务相关掩蔽点（where），并将标注直接叠加到观测图像上，再由任意RGB/RGB-D策略进行训练与推理。在535次真实世界评估中，PEEK显著提升零样本泛化，包括模拟训练的3D策略在真实场景中成功率提升41.4倍，以及对大型VLA与小型操控策略分别带来2–3.5倍增益。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>统一的点式中间表示：将“路径+掩蔽点”作为策略输入，实现策略无关、可迁移的表示。</li><li>可扩展标注流水线：自动从机器人视频中提取任务相关点与末端执行器路径，支持不同视角与小目标。</li><li>多策略与多具身验证：在2D/3D、不同规模策略与两种真实机械臂系统上统一验证。</li><li>零样本泛化实证：面对视觉干扰与语义新任务大幅提升成功率与鲁棒性。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>目标表示：联合预测两个点集——末端执行器的2D轨迹点 p_t 与任务相关掩蔽点 m_t，两者作为自然语言响应由VLM输出。</li><li>VLM微调：以VILA-1.5-3B为基座，整合机器人与通用点预测/VQA数据；联合优化路径与掩蔽点预测，训练约20小时（A100×8）。</li><li>数据标注流水线：先用点跟踪（CoTracker3）识别场景中显著移动的点集作为“任务相关点”，再以检测器+掩蔽机制构建末端执行器路径；通过“停止点数”K-Means将长轨迹切分为更短的“子轨迹”，以提高表示的最小性与可预测性。</li><li>策略接口：推理时每隔H步查询VLM，将路径与掩蔽点以可视化方式叠加到观测图像上，供任意RGB或RGB-D策略训练与执行。掩蔽通过对预测点为中心的8%边长区域开窗；路径以随时间颜色渐变的线段表示。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据来源：Open X-Embodiment（OXE）20+子数据集、DROID、LIBERO-90、BRIDGE-v2、RoboPoint；总计2M+问答/点预测对、148k轨迹、9种具身。</li><li>训练资源：VLM微调在8×NVIDIA A100上约20小时；推理在RTX 3090上单次查询约4–6秒。</li><li>工具/模型：CoTracker3点跟踪、Detectron2末端执行器检测、FoundationStereo深度估计。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境：</li></ul>
+<p> - Franka（Sim-to-Real）：仿真采集2.5k条“堆叠彩色方块”轨迹；真实世界Zed 2立体相机+FoundationStereoDepth；评估Basic/Clutter/Semantic三类任务。</p>
+<p> - WidowX（BRIDGE）：单目RGB环境，改换桌面与背景；在Basic/Clutter/Semantic三类任务上评估。</p>
+<ul><li>评估指标：任务完成率与成功率（平均与分项），包含抓取/到达的Partial Credit；零样本跨场景与跨语义泛化能力；消融实验使用路径/掩蔽的组合成功率；VLM质量使用DTW、起点/终点L2、IoU。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

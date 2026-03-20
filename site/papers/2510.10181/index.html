@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dejavu: Post-Deployment Learning for Embodied Agents via Experience Feedback - VLA 论文精选</title>
+    <meta name="description" content="论文提出Dejavu框架，用于具身代理的后部署学习。该框架通过经验反馈网络（EFN）增强冻结的视觉-语言-行动（VLA）策略。EFN检索与当前上下文相关的历史成功行动经验，并预测残差行动来修正基础策略输出。在部署期间，EFN持续从新经验中学习，尽管基础策略权重固定，但能提升代理的适应性和成功率。实验基于LIBERO模拟器和AgiBot G1机器人，涵盖OpenVLA、UniVLA和GO-1骨干，显" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.10181">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Dejavu: Post-Deployment Learning for Embodied Agents via Experience Feedback</h1>
+          <div class="detail-meta">2025-10-11 · <a href="http://arxiv.org/abs/2510.10181" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.10181" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.10181</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>上海交通大学计算机科学学院</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出Dejavu框架，用于具身代理的后部署学习。该框架通过经验反馈网络（EFN）增强冻结的视觉-语言-行动（VLA）策略。EFN检索与当前上下文相关的历史成功行动经验，并预测残差行动来修正基础策略输出。在部署期间，EFN持续从新经验中学习，尽管基础策略权重固定，但能提升代理的适应性和成功率。实验基于LIBERO模拟器和AgiBot G1机器人，涵盖OpenVLA、UniVLA和GO-1骨干，显示EFN显著改善部署时性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>引入EFN作为以经验为中心的部署时机制，结合实时体验库和轻量级控制器，改进冻结VLA策略，无需梯度重训练。</li><li>形式化体验为同步视觉-语言-行动轨迹，并实现语言条件视觉相似度的检索机制。</li><li>将EFN集成至OpenVLA、UniVLA和GO-1骨干，在模拟和真实环境中实现一致的部署时改进。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>体验库设计</strong>：存储步骤级轨迹（图像、视觉令牌、潜在行动），通过均值-最大融合构造紧凑关键向量，采用余弦相似度的概率top-k检索。</li><li><strong>残差策略学习</strong>：使用软演员-评论家（SAC）算法训练EFN，以预测残差行动；奖励函数基于语义相似度（当前观察与检索经验的下一观察匹配），并包含反空闲惩罚。</li><li><strong>部署时机制</strong>：指令过滤候选集、步进检索与效率优先（倾向短轨迹）、行动修正和执行、在线体验增长（将成功轨迹加入库）。</li><li><strong>训练细节</strong>：EFN输入包括当前观察、基础行动和检索经验；上下文编码后通过行动者网络输出残差，评论家网络评估修正行动；损失函数基于SAC目标。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：模拟实验使用LIBERO数据集；真实实验基于AgiBot G1机器人。</li><li><strong>训练资源</strong>：VLA骨干包括OpenVLA、UniVLA和GO-1；使用Prismatic预训练管道、Flash Attention；LIBERO模拟器用于模拟，AgiBot G1硬件用于现实实验；EFN训练在模拟环境中进行，依赖CUDA加速。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：模拟实验在LIBERO平台上进行；真实实验在AgiBot G1机器人上进行。</li><li><strong>评估指标</strong>：主要指标为成功率（Success Rate）和成功时的平均步数（Steps）；例如，LIBERO四子任务（Spatial、Object、Goal、Long）的成功率提升和步数减少；真实世界任务（PutBottle、SortItem、AddGoods）显示类似改进。基准比较包括EFN与OpenVLA/UniVLA/GO-1的对比，以及不同体验库容量（Volume 100-1000）的消融研究。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

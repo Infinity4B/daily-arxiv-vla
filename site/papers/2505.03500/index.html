@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Task Reconstruction and Extrapolation for $π_0$ using Text Latent - VLA 论文精选</title>
+    <meta name="description" content="该论文研究了视觉-语言-动作模型在任务外推方面的局限性，发现这些模型虽然在演示过的任务上表现良好，但在需要组合不同任务中的技能以解决新任务时常常失败。作者提出了一种名为“text latent”的方法，这是一种从模型内部隐藏状态中提取的任务特定向量。通过将“text latent”注入模型的残差流，可以重构相应的任务行为。进一步地，通过线性插值混合不同任务的“text latent”（Text L" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2505.03500">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Task Reconstruction and Extrapolation for $π_0$ using Text Latent</h1>
+          <div class="detail-meta">2025-05-06 · <a href="http://arxiv.org/abs/2505.03500" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2505.03500" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2505.03500</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Independent</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文研究了视觉-语言-动作模型在任务外推方面的局限性，发现这些模型虽然在演示过的任务上表现良好，但在需要组合不同任务中的技能以解决新任务时常常失败。作者提出了一种名为“text latent”的方法，这是一种从模型内部隐藏状态中提取的任务特定向量。通过将“text latent”注入模型的残差流，可以重构相应的任务行为。进一步地，通过线性插值混合不同任务的“text latent”（Text Latent Interpolation, TLI），可以组合子技能以生成新颖的行为，从而实现任务外推。研究揭示了π₀模型内部编码了独立且可组合的技能表示，但其本身无法自主地组合这些表示。此外，论文还提出并验证了一个新的基准测试集libero-ood，并发现当前最先进的VLAs普遍存在“空间过拟合”问题，即将对象名称与其在演示场景中的空间位置相关联，而非真正理解对象。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>引入“text latent”</strong>：提出并验证了一种从模型文本标记的隐藏状态中提取的任务特定向量，它编码了完成任务所需的核心语义知识。</li><li><strong>任务重构</strong>：证明了通过将“text latent”注入模型的残差流，可以在没有原始任务提示的情况下重构任务行为，成功率超过80%。</li><li><strong>提出Text Latent Interpolation (TLI)</strong>：开发了一种通过在时间步上线性插值两个“text latent”来组合不同任务技能的方法，使得模型能够完成需要技能拼接的泛化任务。</li><li><strong>提出libero-ood基准</strong>：创建了一个包含20个外推任务的新基准测试集，用于评估VLAs的组合泛化能力，这些任务需要模型拼接已学习但未曾组合过的子轨迹。</li><li><strong>显著提升外推性能</strong>：通过应用TLI方法，将π₀模型在libero-ood基准上的成功率从9%提升至83%，证明了其内在的可组合潜力。</li><li><strong>发现VLAs的共性缺陷</strong>：通过在多个SOTA VLAs上测试，发现它们普遍存在“空间过拟合”问题，即模型将对象名称与训练数据中的特定空间位置绑定，缺乏真正的对象和目标理解能力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>Preliminary</strong>：首先阐述了基于Transformer的VLAs的工作原理，即视觉、语言和本体感觉信息被编码为嵌入，并依次通过L层Transformer，最终由这些嵌入和隐藏状态生成动作。</li><li><strong>Text Latent 提取</strong>：对于一个给定的任务，通过运行模型在多个演示轨迹上，收集所有时间步和所有Transformer层中对应文本标记的隐藏状态。然后对这些状态进行元素平均，得到一个形状为 <code>(L-1) x \|T\|x d</code> 的张量，即该任务的“text latent”。</li><li><strong>Text Latent Interpolation (TLI)</strong>：为了解决需要组合两个基础任务技能的新任务，该方法在每个时间步 <code>i</code> 计算一个插值系数 <code>α = i / λ</code>（其中 <code>λ</code> 是预设的过渡步数）。然后，将两个基础任务的“text latent” (<code>𝒯¹</code>, <code>𝒯²</code>) 按该系数进行加权，并将结果注入到当前文本标记的隐藏状态中。这使得模型在任务开始时执行任务1的行为，随着时间推进，行为逐渐平滑过渡到任务2。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：</li></ol>
+<p> * <strong>标准基准</strong>：LIBERO仿真环境中的三个任务套件，包括 <code>libero-goal</code>, <code>libero-object</code>, <code>libero-spatial</code>。</p>
+<p> * <strong>新基准</strong>：作者提出的 <code>libero-ood</code>，包含 <code>libero-goal-ood</code> 和 <code>libero-spatial-ood</code> 两个子集，共20个任务。这些任务的设计理念是，完成任务所需的抓取和放置动作分别在训练任务中出现过，但它们的组合是全新的。</p>
+<ol><li><strong>训练/计算资源</strong>：</li></ol>
+<p> * “text latent” 的提取基于每个任务的20个演示轨迹。</p>
+<p> * 所有实验均在 <strong>Nvidia RTX 4090</strong> GPU上完成。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：所有实验均在 <strong>LIBERO仿真环境</strong>中进行。</li><li><strong>评估指标</strong>：</li></ol>
+<p> * 主要指标为 <strong>任务成功率</strong>。对于每个任务，执行10次独立的评估（使用不同随机种子）。每个任务套体的最终成功率是总100次尝试中成功次数的比例。</p>
+<p> * 辅以 <strong>定性分析</strong>，通过可视化模型的行为轨迹来分析其决策过程，特别是“空间过拟合”现象。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

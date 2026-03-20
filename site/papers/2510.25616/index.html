@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Don&#x27;t Blind Your VLA: Aligning Visual Representations for OOD Generalization - VLA 论文精选</title>
+    <meta name="description" content="该论文研究了视觉-语言-动作模型（VLA）在动作微调过程中视觉表示退化的问题。通过系统性分析，作者发现标准的监督微调（SFT）会导致视觉表示崩溃、注意力分散和领域特定遗忘。为解决这一问题，论文提出了一种轻量级的视觉表示对齐方法，将VLA的视觉特征锚定到预训练的教师模型上，从而保留多模态理解能力并提升分布外（OOD）泛化性能。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.25616">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Don&#x27;t Blind Your VLA: Aligning Visual Representations for OOD Generalization</h1>
+          <div class="detail-meta">2025-10-29 · <a href="http://arxiv.org/abs/2510.25616" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.25616" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.25616</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Cognitive AI Lab, IAI MIPT, Moscow, Russia</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文研究了视觉-语言-动作模型（VLA）在动作微调过程中视觉表示退化的问题。通过系统性分析，作者发现标准的监督微调（SFT）会导致视觉表示崩溃、注意力分散和领域特定遗忘。为解决这一问题，论文提出了一种轻量级的视觉表示对齐方法，将VLA的视觉特征锚定到预训练的教师模型上，从而保留多模态理解能力并提升分布外（OOD）泛化性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>表示退化分析</strong>：通过注意力图可视化和t-SNE分析，系统证明VLA微调会导致视觉表示崩溃和注意力分散，相较于原始VLM丧失语义一致性。</li><li><strong>VL-Think任务套件</strong>：设计了一个诊断基准，包含8个视觉-语言任务（如形状、颜色、交通符号识别），用于量化VLA从VLM继承的VL知识迁移效果，揭示动作微调引起的领域遗忘。</li><li><strong>视觉对齐方法</strong>：提出一种基于柏拉图表示假说的轻量级方法，通过正则化损失将VLA的中间特征对齐到教师模型，无需额外计算开销即可恢复语义表示，提升OOD泛化。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>视觉对齐机制</strong>：在VLA的Transformer主干中选择中间层 \(i^{\star}\)，提取视觉token \(h^{i^{\star}}_{1:k}\)，通过可训练投影器 \(P_{\varphi}\) 映射到教师特征空间（如C-RADIOv3），最小化负相似度损失 \(\mathcal{L}_{\text{align}}\)。</li><li><strong>总损失函数</strong>：结合标准动作损失 \(\mathcal{L}_{\text{VLA}}\) 与对齐损失 \(\mathcal{L}_{\text{align}}\)：\(\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{VLA}} + \lambda \mathcal{L}_{\text{align}}\)，其中 \(\lambda > 0\) 平衡策略学习与语义保留。</li><li><strong>实现细节</strong>：使用LoRA适配器微调OpenVLA，投影器为冻结MLP以防止特征退化，教师模型冻结作为语义锚点。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：基于Simpler基准的1400条专家演示轨迹，涵盖16种物体和16种桌面，用于任务特定微调；VL-Think任务套件含8个视觉-语言任务；ImageNet-100用于线性探测。</li><li><strong>训练资源</strong>：使用MPLib运动规划器生成轨迹，训练采用LoRA适配器，硬件未明确说明（开源代码未提供细节）。</li><li><strong>教师模型</strong>：C-RADIOv3作为主要视觉教师，对比DINOv2、SigLIP、Theia等。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：Simpler基准的OOD变体，包括：</li></ul>
+<p> - <strong>视觉扰动</strong>：动态纹理（Tex03/Tex05）、图像噪声。</p>
+<p> - <strong>语义变化</strong>：新物体、新容器、指令改写。</p>
+<p> - <strong>执行变化</strong>：随机初始位姿、中途物体重定位。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>任务成功率</strong>：在128个随机种子上取平均值及标准差（SD），衡量放置动作正确性。</p>
+<p> - <strong>VL-Think准确率</strong>：视觉-语言理解的零样本准确率。</p>
+<p> - <strong>线性探测准确率</strong>：ImageNet-100上训练线性分类器的分类精度。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

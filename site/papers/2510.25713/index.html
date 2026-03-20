@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robotic Assistant: Completing Collaborative Tasks with Dexterous Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="针对机器人与人类在协作任务中的自然交互挑战，论文提出基于预训练视觉语言动作模型（VLA）的改进方案。核心思想是通过运动线索（而非语言提示）实现隐式意图理解，使机器人能实时响应人类动作并完成协作任务。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.25713">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Robotic Assistant: Completing Collaborative Tasks with Dexterous Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-10-29 · <a href="http://arxiv.org/abs/2510.25713" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.25713" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.25713</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Soft Robotics Lab, ETHz（苏黎世联邦理工学院软机器人实验室）</p>
+<h2 class="section-title">论文概述</h2>
+<p>针对机器人与人类在协作任务中的自然交互挑战，论文提出基于预训练视觉语言动作模型（VLA）的改进方案。核心思想是通过运动线索（而非语言提示）实现隐式意图理解，使机器人能实时响应人类动作并完成协作任务。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li><strong>FiLM条件化</strong>：在视觉编码器中插入FiLM层，增强文本-视觉对齐能力</li><li><strong>辅助损失设计</strong>：添加并行预测头（手部姿态和目标物体）以隐式学习人类意图</li><li><strong>动作后处理优化</strong>：通过增量坐标、旋转向量及手部关节PCA降维（保留96%方差）重构低维动作流形</li><li><strong>方向性损失</strong>（实验效果负向）：提出方向对齐损失，但未提升性能</li><li><strong>推理系统集成</strong>：构建实时硬件-模型接口，实现长任务动态提示切换</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p><strong>模型架构</strong>：基于Open-VLA改进（SigLIP+DINOv2视觉编码器+LLaMA2-7B语言模型），集成FiLM条件化和辅助预测头。</p>
+<p><strong>数据收集流程</strong>：双角色协作采集（操作者穿戴动作捕捉手套控制机器人，协作者在共享空间交互），10Hz采样并同步多模态数据，附文本指令和手部姿态标注。</p>
+<p><strong>训练策略</strong>：4×H100 GPU分布式训练（批量24，LoRA rank=32，20轮迭代），采用复合损失（动作+辅助损失）。</p>
+<p><strong>推理系统</strong>：硬件接口（绿色）→模型推理（蓝色）→高层规划（红色）的三层架构，0.3秒端到端延迟。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>协作任务数据</strong>：</li></ul>
+<p> - "Pick up cube"任务：120条轨迹（红蓝立方体各60条）</p>
+<p> - "Pass cube"任务：260条轨迹（红立方体200条，蓝立方体60条）</p>
+<p> - 辅助标签：手部3D姿态（MediaPipe）、目标物体索引</p>
+<ul><li><strong>训练资源</strong>：4×H100 GPU集群，平均训练时长12小时</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>动作空间分析</strong>：</li></ul>
+<p> - 端 effector增量坐标分布更接近高斯（vs原始坐标非凸性）</p>
+<p> - 手部关节PCA保留4个主成分解释96%方差</p>
+<ul><li><strong>消融实验</strong>：</li></ul>
+<p> - 动作后处理贡献最大（各指标显著提升）</p>
+<p> - 辅助损失提供稳定增益</p>
+<p> - 方向性损失和FiLM在不同损失下呈负向效果</p>
+<ul><li><strong>真实世界评估</strong>：</li></ul>
+<p> - 场景：桌面临场交互（多摄像头）</p>
+<p> - 长任务成功率：10次试验中1次成功</p>
+<p> - 失败原因：协作对象与训练者不同时出现"训练员过拟合"（模型对特定操作者行为过拟合）</p>
+<ul><li><strong>评估指标</strong>：L2损失、PCA重构误差、方向对齐误差、真实任务完成率</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

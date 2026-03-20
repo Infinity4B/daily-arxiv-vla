@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Empowering Visual Creativity: A Vision-Language Assistant to Image Editing Recommendations - VLA 论文精选</title>
+    <meta name="description" content="本文旨在解决现有基于文本的图像编辑方法在处理用户模糊、高层次的编辑意图（称为&quot;编辑提示&quot;）时效果不佳的问题，这种情况下存在从抽象意图到具体指令的&quot;创造力差距&quot;。为此，论文提出了一个新任务——图像编辑推荐（IER），其目标是从一张输入图像和一个简单的编辑提示出发，自动生成一组多样化且具创意的编辑指令。为了实现该任务，作者构建了一个名为Creativity-Vision Language Assist" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2406.00121">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Empowering Visual Creativity: A Vision-Language Assistant to Image Editing Recommendations</h1>
+          <div class="detail-meta">2024-05-31 · <a href="http://arxiv.org/abs/2406.00121" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2406.00121" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2406.00121</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>CUHK, ByteDance Inc., University of California, Merced</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文旨在解决现有基于文本的图像编辑方法在处理用户模糊、高层次的编辑意图（称为"编辑提示"）时效果不佳的问题，这种情况下存在从抽象意图到具体指令的"创造力差距"。为此，论文提出了一个新任务——图像编辑推荐（IER），其目标是从一张输入图像和一个简单的编辑提示出发，自动生成一组多样化且具创意的编辑指令。为了实现该任务，作者构建了一个名为Creativity-Vision Language Assistant (Creativity-VLA)的多模态框架，并引入了一个独特的"token-for-localization"机制，以同时支持全局和局部编辑推荐。实验证明，该模型能生成既富有创意又与图像内容和用户初始提示高度相关的编辑建议。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了图像编辑推荐（IER）任务，旨在将用户模糊的编辑意图转化为多样化且可执行的创意编辑指令。</li><li>构建了一个包含16,000个样本的专用创意指令数据集，该数据集通过结合GPT-4的思维链（CoT）提示技术与人工校对流程创建，旨在激发模型的发散性想象。</li><li>开发了Creativity-VLA模型，这是一个基于LLaVA的视觉语言助手，它将模型的输出解耦为文本建议和编辑位置，并引入"token-for-localization"机制，使模型能够为编辑指令推荐具体的图像区域，从而支持全局和局部两种编辑模式。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>Creativity-VLA模型基于LLaVA-7B构建。其核心创新在于将模型的输出解耦为两个部分：文本编辑建议（<code>O_sug</code>）和编辑位置（<code>O_loc</code>）。为实现这一点，模型在词汇表中引入了一个特殊标记<code><EDIT></code>。在生成过程中，模型首先输出文本建议，然后输出<code><EDIT></code>标记。该标记的嵌入向量会输入一个专门的定位解码器，该解码器由一个MLP投影层和一个三层Transformer组成。定位解码器将<code><EDIT></code>标记的嵌入与来自CLIP视觉编码器的图像特征进行交叉注意力计算，最终预测出执行编辑的边界框位置。模型采用端到端方式训练，总损失函数由文本生成的交叉熵损失和定位的L1损失与GIoU损失加权组成，其中视觉编码器参数被冻结。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>论文构建了一个包含16,000个编辑指令的内部数据集，内容涵盖人类、动物、室内外场景和商品特写等，其中全局和局部指令各占50%。数据集的构建分为四步：1）使用RAM、Grounding-DINO、SAM和BLIP-2进行详细的视觉理解；2）利用带思维链提示的GPT-4，根据编辑提示（如"奢华"）联想相关概念；3）提示GPT-4生成JSON格式的编辑指令；4）进行去重和人工整理，确保指令的有效性。训练时，模型基于LLaVA-7B架构，在自定义数据集上进行了3个epoch的微调。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境方面，论文使用InstructDiffusion作为全局编辑工具，GLIGEN作为局部编辑工具，以执行生成的编辑指令。对比基线包括直接编辑方法（MagicBrush, InstructDiffusion）和指令生成方法（LLaVA-v1.5, GPT-4V）。评估指标主要采用用户偏好评估，即由人工用户在提示对齐度、图像对齐度、视觉质量和多样性四个维度上对不同方法生成的编辑结果进行评分（分数越低表示越好）。此外，还使用CLIP分数作为辅助的自动化评估指标，用于衡量生成图像与文本指令之间的一致性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

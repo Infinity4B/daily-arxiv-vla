@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>InternData-A1: Pioneering High-Fidelity Synthetic Data for Pre-training Generalist Policy - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了InternData-A1，一个大规模、高保真的合成机器人操作数据集。论文旨在验证纯合成数据在预训练视觉-语言-动作（VLA）模型时的有效性。研究团队通过一个高度自动化、完全解耦和组合式的仿真流水线生成了该数据集，涵盖了4种机器人形态、18种技能、70个任务、227个场景，总计63万条轨迹和7433小时的数据，涉及刚性、铰接、柔性及流体物体的操作。核心发现是，一个仅使用InternDa" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.16651">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">InternData-A1: Pioneering High-Fidelity Synthetic Data for Pre-training Generalist Policy</h1>
+          <div class="detail-meta">2025-11-20 · <a href="http://arxiv.org/abs/2511.16651" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.16651" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.16651</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>上海人工智能实验室，北京大学</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了InternData-A1，一个大规模、高保真的合成机器人操作数据集。论文旨在验证纯合成数据在预训练视觉-语言-动作（VLA）模型时的有效性。研究团队通过一个高度自动化、完全解耦和组合式的仿真流水线生成了该数据集，涵盖了4种机器人形态、18种技能、70个任务、227个场景，总计63万条轨迹和7433小时的数据，涉及刚性、铰接、柔性及流体物体的操作。核心发现是，一个仅使用InternData-A1预训练的π0模型，其性能可以媲美甚至超过在闭源的真实数据集π-dataset上预训练的官方π0模型，并且在多项任务上表现出惊人的零样本仿真到真实世界的迁移能力。论文将开源该数据集及其生成流水线，以降低机器人研究的数据获取门槛。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>首次证明了纯合成数据可以匹敌最强的真实机器人数据集在VLA模型预训练上的效果，揭示了大规模仿真的巨大潜力。</li><li>推出了InternData-A1，一个具有高物理保真度和照片级渲染效果的合成数据集，其规模（63万轨迹）和多样性（4种机器人、70任务、227场景，覆盖刚性、铰接、柔性、流体物体）均处于领先地位。</li><li>提出了一种高度自动化、完全解耦、组合式的数据合成流水线，支持长时程技能组合、灵活的任务组装和异构机器人，实现了最少人工干预下的高效数据生成（每段轨迹成本低于0.003美元）。</li><li>展示了强大的Sim-to-Real迁移能力，在多个具有挑战性的真实任务上实现了超过50%的零样本迁移成功率，验证了数据的高保真度。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>论文的数据合成流程分为四个主要阶段：</p>
+<ol><li>环境构建：从资产库中检索并配置机器人、场景（来自GRUtopia）和物体。物体库包含刚性、�接、柔性和流体四类，所有资产都带有详细的物理和功能注释。</li><li>技能组合：任务由模块化的原子技能（如抓取、放置、推动）组合而成。每个技能是一个脚本化策略，输入物体和机器人状态，输出一系列末端执行器的路径点。用户通过配置文件顺序或并行地组织这些技能以构建复杂任务。</li><li>领域随机化：对相机视角（±5°旋转，±5cm平移）、光照（174种环境图）、物体位姿、接触区域等进行随机化，以增强视觉和轨迹的多样性。</li><li>生成与存储：使用CuRobo运动规划器在技能生成的路径点之间插值出密集的关节空间动作。成功验证的轨迹会被记录，包括多视角RGB图像、机器人状态、动作标签等，并转换为LeRobot标准格式。</li></ol>
+<p>此外，论文还介绍了框架层面的多级系统优化，通过将轨迹规划与视觉渲染解耦、动态资源调度和引入堆叠渲染技术，实现了2-3倍的端到端性能提升。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：</p>
+<ul><li>名称：InternData-A1</li><li>规模：包含637,498条轨迹，401,430,981帧，总计7,433.91小时。</li><li>内容：覆盖4种机器人形态（AgiBot Genie-1, Franka Panda, AgileX Split Aloha, ARX Lift-2），70个任务（分为基础、抓取放置、铰接操作、长时程四类），18种技能，227个室内场景。</li><li>物体：包含3,185个刚性物体，321个铰接物体，20件服装以及流体物体。</li></ul>
+<p>训练资源：</p>
+<ul><li>预训练：使用32个A100 GPU，在InternData-A1上训练68万步，以匹配官方π0的训练量。</li><li>微调：常规任务和Sim-to-Real任务使用8个GPU进行3万步微调，灵巧任务进行10万步微调。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：</p>
+<ul><li>仿真评估：使用RoboTwin 2.0基准，包含49个双手操作任务，在“简单”（干净）和“困难”（杂乱）两种模式下进行测试。</li><li>真实机器人常规任务评估：在Genie-1、ARX Lift-2两种机器人上测试5个任务（如放置马克笔、传递瓶子、加热三明治）。</li><li>真实机器人灵巧任务评估：在一种全新的机器人ARX AC One上测试4个长时程灵巧任务（如折叠衣物、拉开拉链袋）。</li><li>Sim-to-Real零样本迁移评估：在10个选定的真实任务上，仅使用500-1600条仿真轨迹进行微调，然后测试其在真实世界中的表现。</li></ul>
+<p>基线模型：</p>
+<ul><li>官方π0模型（在闭源π-dataset上训练）。</li><li>从头开始训练的π0模型（无预训练）。</li><li>在OXE、Agibot-World、RoboCasa等开源数据集上预训练的模型。</li></ul>
+<p>评估指标：</p>
+<ul><li>平均成功率：所有评估的核心指标，报告在多次试验中的平均任务成功率。</li><li>试验次数：仿真任务每个评估100次试验，真实世界和Sim-to-Real任务每个评估30次试验。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 Generative Control as Optimization (GeCO) 框架，将机器人控制中的动作生成从基于固定时间表的轨迹积分范式，转变为在静态速度场上的迭代优化过程。 核心目标是解决现有扩散模型和流匹配方法中，推理计算量固定、无法根据状态复杂度自适应调整的结构性低效问题。 论文同时利用静态场的几何特性，提供了一种无需额外训练的内在安全信号，用于检测分布外场景。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.17834">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control</h1>
+          <div class="detail-meta">2026-03-18 · <a href="http://arxiv.org/abs/2603.17834" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.17834" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.17834</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>HTML原文中未明确列出论文作者所属的具体研究机构。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>Generative Control as Optimization (GeCO)</strong> 框架，将机器人控制中的动作生成从基于固定时间表的轨迹积分范式，转变为在静态速度场上的迭代优化过程。</li><li>核心目标是解决现有扩散模型和流匹配方法中，推理计算量固定、无法根据状态复杂度自适应调整的结构性低效问题。</li><li>论文同时利用静态场的几何特性，提供了一种无需额外训练的内在安全信号，用于检测分布外场景。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>时间无条件</strong> 的流匹配框架，学习一个静态速度场，使专家行为成为稳定的吸引子。</li><li>实现了 <strong>自适应推理</strong> ，能够根据任务复杂度动态分配计算预算，对简单状态提前退出，对复杂状态进行更精细的优化。</li><li>提供了 <strong>内在的分布外检测</strong> 机制，利用优化后速度场的残差范数作为零样本安全信号，无需辅助网络或集成模型。</li><li>实现了与大型 <strong>视觉-语言-动作模型</strong> 的 <strong>即插即用</strong> 集成，仅需替换原有的流匹配头部，无需修改主干网络或损失函数。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>方法学习一个 <strong>静态速度场 f_θ(x, s_t)</strong> ，该场将噪声或次优动作序列引导至平衡点。</li><li>引入 <strong>速度重调度机制 c(γ)</strong> ，确保场在专家数据点附近消失，从而形成稳定的平衡点，将推理转化为优化问题。</li><li>推理时采用基于梯度的优化过程，通过监控速度场范数实现提前收敛和自适应计算。</li><li>分布外检测通过计算优化后动作点处的速度场范数实现，分布内样本范数低，异常样本范数高。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的基准数据集包括 <strong>LIBERO</strong>、<strong>RoboTwin 2.0</strong> 和 <strong>VLABench</strong>。</li><li>模型架构基于 <strong>Diffusion Transformers (DiT)</strong> 和 <strong>π₀ 系列 VLA 模型</strong>。</li><li>论文中未明确提及模型参数量及具体的训练资源（如GPU/TPU类型和数量）。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境为机器人模拟基准测试，基准方法包括 Diffusion Policy 和 Rectified Flow。</li><li>主要评估指标为任务成功率、平均函数评估次数。</li><li>关键结果：在 <strong>LIBERO</strong> 基准上，GeCO 仅用 5 步推理即达到 91.9% 成功率，超过 Rectified Flow 20 步的 90.0%。使用最大20步预算时，平均仅需 11.6 步即可达到 93.5% 的峰值成功率。</li><li>在 <strong>RoboTwin 2.0</strong> 和 <strong>VLABench</strong> 基准上，作为即插即用模块集成到 <strong>π₀</strong> 模型后，GeCO 提升了任务成功率，证明了其扩展性和有效性。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

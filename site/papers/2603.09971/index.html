@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TiPToP: A Modular Open-Vocabulary Planning System for Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 TiPToP，一个模块化的开放词汇机器人操作系统，结合预训练视觉基础模型与任务运动规划（TAMP）解决多步操作任务 系统旨在实现“开箱即用”：仅需相机标定即可在标准 DROID 平台上部署，适配新机器人本体只需极少工作量 核心目标是解决零机器人数据条件下的语言指令操作问题，并与需要大量示范数据的视觉-语言-动作（VLA）模型进行对比" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.09971">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">TiPToP: A Modular Open-Vocabulary Planning System for Robotic Manipulation</h1>
+          <div class="detail-meta">2026-03-10 · <a href="http://arxiv.org/abs/2603.09971" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.09971" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.09971</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>作者主要来自 <strong>麻省理工学院</strong> 和 <strong>宾夕法尼亚大学</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>TiPToP</strong>，一个模块化的开放词汇机器人操作系统，结合预训练视觉基础模型与任务运动规划（TAMP）解决多步操作任务</li><li>系统旨在实现“开箱即用”：仅需相机标定即可在标准 <strong>DROID</strong> 平台上部署，适配新机器人本体只需极少工作量</li><li>核心目标是解决零机器人数据条件下的语言指令操作问题，并与需要大量示范数据的视觉-语言-动作（VLA）模型进行对比</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>构建了一个完整的、可快速部署的机器人操作系统，无需本体特定训练数据即可运行</li><li>系统具有模块化架构，允许独立改进或替换各组件，便于故障诊断和模块调试</li><li>在28个桌面操作任务中，<strong>TiPToP</strong> 的性能匹配或优于经过350小时本体特定示范微调的VLA模型 <strong>π₀.₅-DROID</strong></li><li>开源了整个系统，支持真实世界部署和 <strong>Isaac Sim</strong> 仿真环境</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>感知模块</strong>：使用 <strong>FoundationStereo</strong> 进行立体深度估计，<strong>M2T2</strong> 预测6自由度抓取姿态，<strong>Gemini Robotics-ER 1.5</strong> 进行开放词汇目标检测与任务目标语言接地，<strong>SAM-2</strong> 进行分割</li><li><strong>规划模块</strong>：采用 <strong>cuTAMP</strong> 进行GPU并行任务运动规划，搜索离散任务骨架并优化连续参数（抓取姿态、放置位置、无碰撞轨迹）</li><li><strong>执行模块</strong>：使用关节阻抗控制器开环跟踪规划轨迹</li><li>创新点在于将基础模型感知、学习抓取预测与GPU加速规划器紧密集成，实现从RGB图像和语言指令到完整动作轨迹的端到端处理</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要在 <strong>DROID</strong> 硬件平台（Franka FR3 机械臂，Zed Mini立体相机）上进行真实世界评估</li><li>仿真实验使用 <strong>Isaac Sim</strong> 环境进行</li><li>未提及使用特定数据集进行训练，系统依赖预训练模型（<strong>FoundationStereo</strong>、<strong>M2T2</strong>、<strong>Gemini VLM</strong>、<strong>SAM-2</strong>）</li><li>额外在 <strong>UR5e</strong> 和 <strong>Trossen WidowX AI</strong> 机械臂上验证了跨本体部署能力</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在仿真、自有硬件和外部独立团队评估的 <strong>DROID</strong> 平台上，共测试了 <strong>28个</strong> 桌面操作任务</li><li>主要评估指标：<strong>成功率</strong> 和 <strong>任务进展</strong></li><li>关键结果：</li></ul>
+<p> - 在“干扰物”、“语义理解”和“多步”任务类别中，<strong>TiPToP</strong> 的成功率显著高于 <strong>π₀.₅-DROID</strong></p>
+<p> - 总体成功率：<strong>TiPToP</strong> 为 98/165 (59.4%)，<strong>π₀.₅-DROID</strong> 为 55/165 (33.3%)；总体任务进展：<strong>TiPToP</strong> 为74.6%，<strong>π₀.₅-DROID</strong> 为52.4%</p>
+<p> - <strong>TiPToP</strong> 的任务完成时间普遍短于 <strong>π₀.₅-DROID</strong></p>
+<ul><li>失败分析显示，主要失败模式是抓取失败（31/55），其次是场景补全误差、VLM检测误差和规划失败</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

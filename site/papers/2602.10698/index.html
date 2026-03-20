@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AugVLA-3D: Depth-Driven Feature Augmentation for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="提出 AugVLA-3D 框架，旨在解决现有 Vision-Language-Action (VLA) 模型主要依赖2D图像特征，缺乏3D空间理解能力的问题。 核心思路是利用深度估计从标准RGB图像中提取3D几何特征，增强VLA模型的空间感知能力，同时保持与大规模2D数据集训练的兼容性。 通过集成深度驱动的3D特征和引入一个新的 Action Assistant 模块作为正则化器，提升模型在复杂3" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.10698">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">AugVLA-3D: Depth-Driven Feature Augmentation for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2026-02-11 · <a href="http://arxiv.org/abs/2602.10698" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.10698" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.10698</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>广东省人工智能与数字经济实验室（深圳）</strong> (Guangdong Laboratory of Artificial Intelligence and Digital Economy (SZ))</li><li><strong>南方科技大学计算机科学与工程系</strong> (Southern University of Science and Technology)</li><li><strong>上海大学通信与信息工程学院</strong> (Shanghai University)</li><li><strong>卡尔顿大学信息技术学院</strong> (Carleton University)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>AugVLA-3D</strong> 框架，旨在解决现有 <strong>Vision-Language-Action (VLA)</strong> 模型主要依赖2D图像特征，缺乏3D空间理解能力的问题。</li><li>核心思路是利用深度估计从标准RGB图像中提取3D几何特征，增强VLA模型的空间感知能力，同时保持与大规模2D数据集训练的兼容性。</li><li>通过集成深度驱动的3D特征和引入一个新的 <strong>Action Assistant</strong> 模块作为正则化器，提升模型在复杂3D环境中的感知和动作推理能力。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出一种<strong>免传感器</strong>的3D特征提取方法，使用深度估计模型 <strong>VGGT</strong> 将2D RGB图像转换为点云，并用 <strong>PointNet</strong> 提取紧凑3D特征。</li><li>设计了一个新颖的 <strong>Action Assistant</strong> 模块，作为一种轻量级正则化器，利用动作先验约束学习到的3D特征表示，确保其与下游控制任务的一致性。</li><li>提出的 <strong>AugVLA-3D</strong> 框架实现了2D语义与3D几何的紧密融合，在真实世界和仿真环境中均显著提高了VLA模型的泛化能力和鲁棒性。</li><li>在资源受限的条件下（仅使用10%的数据训练1个周期）进行实验验证，证明了方法的有效性和潜力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>方法基于 <strong>GR00t</strong> 骨干网络，主要包含两个核心部分：</li></ul>
+<p> - <strong>基于深度估计的3D特征提取</strong>：使用 <strong>VGGT</strong> 模型从RGB图像估计密集深度图，并将其反投影为点云；然后利用 <strong>PointNet</strong> 编码器提取3D几何特征。</p>
+<p> - <strong>动作助手（Action Assistant）</strong>：一个轻量级、参数精简的辅助模块，结构上与主Action Expert相似。它将PointNet提取的3D特征转换为动作相关嵌入，并将其在多个层次上注入主网络，作为任务对齐的正则化信号。</p>
+<ul><li>关键技术点包括传感器式3D感知、层级的特征融合（公式2中的门控注入）以及利用Intropy框架进行理论分析。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集：<strong>PhysicalAI-Robotics-GR00T-X-Embodiment-Sim</strong> 数据集；仿真基准测试数据集 <strong>robocasa-gr1-tabletop-tasks</strong>。</li><li>在真实的灵巧手（<strong>ROH-A001</strong>，11关节6自由度）和<strong>RoboCasa</strong> 仿真环境中进行评估。</li><li>训练资源有限，仅在<strong>单个NVIDIA RTX 4090 GPU</strong>上完成训练。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：真实世界物理场景（5个任务）和 <strong>RoboCasa</strong> 仿真基准（24个桌面操作任务）。</li><li>主要评估指标：<strong>任务成功率</strong>。</li><li>关键实验结果：</li></ul>
+<p> - 在真实场景实验中，<strong>AugVLA-3D</strong> 在物体放置、遮挡、擦拭、取放和倒水等任务上，性能均优于 <strong>Diffusion Policy</strong> 和 <strong>Gr00t</strong> 基线模型。</p>
+<p> - 在仿真实验中（如表1所示），无论是30还是100个演示数据设置下，<strong>AugVLA-3D</strong> 在大多数任务上的平均成功率（46%/54%）均超过了 <strong>Diffusion Policy</strong>（21%/33%）和 <strong>Gr00t</strong>（43%/50%）。</p>
+<p> - 定性分析（图5）显示，AugVLA-3D在复杂双手协调操作（如将杯子放入抽屉）和需要精确深度判断的任务（如将面包放入锅中）中，表现出更好的空间对齐和运动轨迹平滑性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

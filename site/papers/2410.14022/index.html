@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vision-Language-Action Model and Diffusion Policy Switching Enables Dexterous Control of an Anthropomorphic Hand - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了一种结合微调的视觉-语言-动作（VLA）模型与扩散模型的混合控制方法，用于实现人形手的灵巧操作。VLA模型负责基于语言指令的高级规划，具有高泛化性；扩散模型则处理低级交互，为特定物体和环境提供所需的精度和鲁棒性。通过在训练数据中加入切换信号，实现了两个模型之间基于事件的转换，应用于通过语言指令指定目标物体和放置位置的抓取-放置任务。该方法在13自由度的ADAPT Hand 2上进行了部" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2410.14022">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Vision-Language-Action Model and Diffusion Policy Switching Enables Dexterous Control of an Anthropomorphic Hand</h1>
+          <div class="detail-meta">2024-10-17 · <a href="http://arxiv.org/abs/2410.14022" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2410.14022" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2410.14022</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>瑞士洛桑联邦理工学院机械工程学院</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了一种结合微调的视觉-语言-动作（VLA）模型与扩散模型的混合控制方法，用于实现人形手的灵巧操作。VLA模型负责基于语言指令的高级规划，具有高泛化性；扩散模型则处理低级交互，为特定物体和环境提供所需的精度和鲁棒性。通过在训练数据中加入切换信号，实现了两个模型之间基于事件的转换，应用于通过语言指令指定目标物体和放置位置的抓取-放置任务。该方法在13自由度的ADAPT Hand 2上进行了部署，这是首次将VLA模型应用于多指手。实验表明，该混合方法的成功率超过80%，而仅使用VLA模型的成功率低于40%。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了一种混合控制框架，结合了VLA模型的高级规划能力和扩散模型的低级精确控制能力。</li><li>设计了一种基于事件信号的模型切换机制，实现了VLA模型和扩散模型之间的无缝转换。</li><li>首次成功地将VLA模型应用于控制多指灵巧手。</li><li>在真实的抓取-放置任务中，验证了混合框架的有效性，成功率远超仅使用VLA模型的基线。</li><li>展示了系统具备多种期望行为：多模态抓取、错误恢复能力以及通过硬件柔顺性带来的交互稳定性。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>框架设计</strong>：系统在VLA模型和扩散策略模型之间切换。VLA模型（微调的openVLA）根据语言指令和视觉反馈控制手臂的运动，使手部接近目标物体，其输出中的一个标量信号（抓取百分比）被重新用作切换事件信号。扩散策略模型负责精确的抓取动作，当其完成抓取后，通过另一个事件信号将控制权交还给VLA模型。</li><li><strong>机器人平台</strong>：使用定制的ADAPT Hand 2，一个13自由度、具有串联弹性驱动（SEA）的拟人化灵巧手，安装在UR5机械臂上。这种柔顺性设计允许机器人安全地与环境和物体交互。</li><li><strong>模型输入</strong>：VLA模型的视觉输入是来自一个固定摄像头和一个手腕摄像头的两幅图像，经过缩放后垂直拼接成一幅图像输入。扩散策略同样使用这两个摄像头的图像作为输入。</li><li><strong>模型选择</strong>：扩散策略模型是针对特定物体训练的，因此系统使用一个基于语言输入的查找表来为每个物体选择对应的扩散策略模型。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：所有数据均通过真实机器人遥操作收集。</li></ol>
+<p> * <strong>VLA数据</strong>：记录完整的抓取-放置任务，但仅使用抓取动作前后的轨迹进行训练。针对每个物体和目标位置的组合，记录了20次试验。</p>
+<p> * <strong>扩散策略数据</strong>：仅记录抓取动作部分。对每个物体（辣椒、磁带、纸），记录了30到40次试验，包含不同的抓取策略（如滑动抓取、直接抓取）和失败恢复的演示。</p>
+<ol><li><strong>训练资源</strong>：</li></ol>
+<p> * <strong>VLA模型训练</strong>：在配备单个A100-80GB GPU的集群虚拟机上进行微调，直至动作精度超过95%。</p>
+<p> * <strong>扩散策略训练</strong>：在自定义GPU上训练1500个周期。</p>
+<p> * <strong>推理运行</strong>：在Nvidia RTX 4090 GPU上运行，实现约5Hz的控制频率。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：</li></ol>
+<p> * <strong>硬件</strong>：ADAPT Hand 2灵巧手与UR5机械臂。</p>
+<p> * <strong>任务</strong>：对三种不同几何形状的物体（红辣椒、磁带、一张纸）执行抓取-放置任务，放置到两个指定位置（黄色或紫色盘子）之一。</p>
+<p> * <strong>传感器</strong>：一个固定于世界坐标的摄像头和一个安装在手腕的摄像头。</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> * <strong>VLA接近精度</strong>：测量VLA控制手部移动到目标物体附近后，手部中心与物体中心在xy平面的偏移距离。</p>
+<p> * <strong>扩散策略成功率</strong>：测试当手部初始位置与物体有不同偏移（5, 10, 15cm）时的抓取成功率。</p>
+<p> * <strong>多模态抓取能力</strong>：评估模型能否根据物体在桌面上的不同位置选择合适的抓取策略（如滑动抓取或直接抓取）。</p>
+<p> * <strong>任务整体成功率</strong>：采用一个5级评分系统来评估完整的抓取-放置任务：1.00（完全成功）、0.75（未能放在正确盘子）、0.50（未能放在错误盘子）、0.25（未能抓取正确物体）、0.00（接近了错误物体）。</p>
+<p> * <strong>对比基准</strong>：将提出的VLA+扩散模型与仅使用VLA模型（使用预编程的抓取序列作为1-DoF夹爪代理）的方法进行对比。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

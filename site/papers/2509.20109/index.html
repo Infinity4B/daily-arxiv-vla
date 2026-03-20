@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Discrete Diffusion for Reflective Vision-Language-Action Models in Autonomous Driving - VLA 论文精选</title>
+    <meta name="description" content="本文针对端到端自动驾驶系统中模仿学习无法内在编码物理规则（如碰撞避免、遵守可行驶区域）的核心挑战，提出了一种名为 ReflectDrive 的创新框架。该框架将离散扩散模型应用于轨迹规划，并引入安全反射机制（Safety-Guided Regeneration），在推理阶段通过迭代局部搜索和安全锚点重绘，无需梯度计算即可实现轨迹的安全自校正，从而提升规划的可控性和可靠性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.20109">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Discrete Diffusion for Reflective Vision-Language-Action Models in Autonomous Driving</h1>
+          <div class="detail-meta">2025-09-24 · <a href="http://arxiv.org/abs/2509.20109" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.20109" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.20109</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li><strong>LiAuto</strong>（理想汽车）</li><li><strong>清华大学</strong>（Tsinghua University）</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>本文针对端到端自动驾驶系统中模仿学习无法内在编码物理规则（如碰撞避免、遵守可行驶区域）的核心挑战，提出了一种名为 <strong>ReflectDrive</strong> 的创新框架。该框架将离散扩散模型应用于轨迹规划，并引入<strong>安全反射机制</strong>（Safety-Guided Regeneration），在推理阶段通过迭代局部搜索和安全锚点重绘，无需梯度计算即可实现轨迹的安全自校正，从而提升规划的可控性和可靠性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>首次将离散扩散应用于端到端自动驾驶规划</strong>：将连续轨迹空间离散化为动作码本，利用预训练的扩散语言模型（DLM）进行微调，实现并行解码和双向特征融合。</li><li><strong>提出安全反射机制</strong>：在推理阶段结合目标条件生成（Goal-Conditioned Generation）和安全导向再生，通过局部搜索识别不安全点并替换为安全锚点，再利用扩散模型的修复能力（inpainting）重新生成轨迹。</li><li><strong>验证安全约束的有效性</strong>：在真实场景基准测试中，该框架在确保硬安全约束的同时，显著提升了轨迹质量，且性能接近人类驾驶水平。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>轨迹离散化（Trajectory Discretization）</strong>：</li></ol>
+<p> - 将二维驾驶空间中的连续坐标 <code>(x, y)</code> 分别映射到预定义的1D码本 \(\mathcal{A}\) 中，生成轨迹的离散化序列 \(\mathbf{y}\)。</p>
+<p> - 使用均匀网格量化坐标范围 \([-M, M]\)，分辨率 \(\Delta_g\) 可控，确保离散化后的轨迹可通过逆量化恢复为连续坐标。</p>
+
+<ol><li><strong>离散扩散模型（Discrete Diffusion Model）</strong>：</li></ol>
+<p> - 基于离散扩散框架（掩码-去噪），采用预训练的VLA模型（如LLaDA-V）作为主干网络。</p>
+<p> - 通过监督微调训练模型，使其具备根据场景上下文生成离散轨迹序列的能力。</p>
+
+<ol><li><strong>安全反射推理（Reflective Inference）</strong>：</li></ol>
+<p> - <strong>目标条件生成</strong>：对终点位置进行概率采样，应用非极大值抑制（NMS）获取空间多样化的目标点，生成多模态轨迹候选。</p>
+<p> - <strong>安全导向再生</strong>：</p>
+<p> - <strong>全局评分器</strong>：评估完整轨迹的安全性和质量。</p>
+<p> - <strong>安全评分器</strong>：定位不安全路标点。</p>
+<p> - <strong>局部搜索</strong>：在路标点附近（如曼哈顿距离 \(\delta \leq 10\)）搜索可行替代点作为“安全锚点”。</p>
+<p> - <strong>轨迹修复</strong>：固定安全锚点，通过扩散模型重绘周围轨迹段。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：基于大规模真实世界自动驾驶基准 <strong>NAVSIM</strong> 的数据。</li><li><strong>训练资源</strong>：</li></ul>
+<p> - 输入：前、左前、右前摄像头图像及语言指令（如“左转”）。</p>
+<p> - 模型初始化：预训练的扩散语言模型（如LLaDA-V）。</p>
+<p> - 训练方法：监督微调（SFT），批量大小为16，学习率 \(1 \times 10^{-5}\)，训练3轮。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>NAVSIM 基准</strong>：使用官方闭环仿真器进行评估。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>PDMS 分数</strong>（主要指标）：聚合5项指标（分数越高越好）：</p>
+<p> - <strong>NC</strong>（No-Collision）：无碰撞率（防止事故）。</p>
+<p> - <strong>DAC</strong>（Drivable Area Compliance）：可行驶区域合规性（遵守道路边界）。</p>
+<p> - <strong>TTC</strong>（Time-to-Collision）：碰撞时间安全性（避让反应时间）。</p>
+<p> - <strong>Comfort</strong>：舒适性（加速度/急动度受控）。</p>
+<p> - <strong>EP</strong>（Ego Progress）：ego进展（路径完成度）。</p>
+
+<p><strong>结果摘要</strong>（以相机输入为例）：</p>
+<p>\|方法 \|DAC ↑ \|TTC ↑ \|NC ↑ \|EP ↑ \|PDMS ↑ \|</p>
+<p>\|</p>
+<hr/>
+<p>--</p>
+<hr/>
+<p>--</p>
+<hr/>
+<p>--</p>
+<hr/>
+<p>-\|</p>
+<hr/>
+<p>----\|</p>
+<hr/>
+<p>----\|</p>
+<hr/>
+<p>---\|</p>
+<hr/>
+<p>---\|</p>
+<hr/>
+<p>--</p>
+<hr/>
+<p>\|</p>
+<p>\|ReflectDrive \|<strong>99.3%</strong> \|93.5% \|97.7% \|<strong>86.9%</strong> \|<strong>91.1</strong> \|</p>
+<p>\|ReflectDrive（无反射） \|95.4% \|92.2% \|96.9% \|79.0% \|84.8 \|</p>
+<p>\|<strong>人类表现</strong> \|100.0% \|100.0% \|100.0% \|87.5% \|94.8 \|</p>
+
+<p>> <strong>结论</strong>：ReflectDrive 的安全反射机制显著提升轨迹安全性（如 DAC 提升 +3.9）同时改善路径完成度（EP 提升 +7.9），接近人类驾驶水平。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

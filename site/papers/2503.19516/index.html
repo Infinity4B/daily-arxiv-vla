@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Boosting Robotic Manipulation Generalization with Minimal Costly Data - VLA 论文精选</title>
+    <meta name="description" content="机器人操纵任务中，视觉-语言-行动模型的性能依赖于大量多样化的演示数据，但数据收集成本高昂，特别是涉及物理交互的数据。论文发现，操纵任务中的空间推理阶段数据易于低成本收集，且对模型泛化至关重要。为解决数据成本和覆盖度不足的问题，论文提出了RoboTron-Craft，一个成本效益高的物理真实轨迹生成管道，以及RoboTron-Platter方法，该方法通过解耦任务阶段，利用大量低成本的空间推理阶段" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2503.19516">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Boosting Robotic Manipulation Generalization with Minimal Costly Data</h1>
+          <div class="detail-meta">2025-03-25 · <a href="http://arxiv.org/abs/2503.19516" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2503.19516" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2503.19516</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>美团</p>
+<h2 class="section-title">论文概述</h2>
+<p>机器人操纵任务中，视觉-语言-行动模型的性能依赖于大量多样化的演示数据，但数据收集成本高昂，特别是涉及物理交互的数据。论文发现，操纵任务中的空间推理阶段数据易于低成本收集，且对模型泛化至关重要。为解决数据成本和覆盖度不足的问题，论文提出了RoboTron-Craft，一个成本效益高的物理真实轨迹生成管道，以及RoboTron-Platter方法，该方法通过解耦任务阶段，利用大量低成本的空间推理阶段数据来增强模型泛化，从而最大化利用昂贵但稀缺的物理交互阶段数据。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了RoboTron-Craft，一个分阶段且具有成本效益的轨迹生成管道，并揭示了模型性能与轨迹多样性之间的缩放定律。</li><li>提出了RoboTron-Platter方法，利用额外的低成本空间推理阶段轨迹来提高模型在零样本场景中的泛化性能。</li><li>证明了空间推理阶段数据可以作为催化剂，最大化昂贵的物理交互阶段数据在VLA模型训练中的贡献。</li><li>实验表明该方法在零样本场景中将任务成功率提高了41%，并能有效将模型技能迁移到新目标物体上。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>RoboTron-Platter方法首先将机器人的完整任务轨迹根据末端执行器与目标的距离划分为两个阶段：空间推理阶段和物理交互阶段。然后，构建一个混合数据集，该数据集包含一定数量的完整轨迹和大量额外收集的独立空间推理阶段轨迹。通过调整这两类数据的比例，对VLA模型进行模仿学习训练。这种分阶段的训练策略使模型能更有效地学习空间搜索和物理操作两种不同模式的技能，从而提升泛化能力。空间推理阶段的数据通过在真实抓取姿态上添加随机偏移来生成，避免了耗时的物理仿真，大幅降低了数据收集成本。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>:</li></ol>
+<p> * <strong>自建数据集</strong>：通过RoboTron-Craft管道生成，包含多种几何形状的日常物品在不同场景下的拾取-放置任务轨迹。</p>
+<p> * <strong>CALVIN数据集</strong>：用于验证方法通用性的公开基准数据集。</p>
+<ol><li><strong>仿真环境</strong>:</li></ol>
+<p> * <strong>平台</strong>：NVIDIA Isaac Sim，配合Isaac Lab框架。</p>
+<p> * <strong>场景</strong>：包含多个工作台的房间，目标物体随机散落，场景纹理可随机化。</p>
+<p> * <strong>智能体</strong>：一个7-DoF Franka Emika Panda机械臂（固定基座）。</p>
+<p> * <strong>观察</strong>：使用手腕相机、头部相机和桌子相机的RGB图像，深度图仅在训练中用作监督。</p>
+<ol><li><strong>训练资源</strong>:</li></ol>
+<p> * 论文未明确指定GPU型号和训练时间等计算资源细节。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>:</li></ol>
+<p> * 在RoboTron-Craft基准提供的基于Isaac Sim的评估环境中进行。</p>
+<p> * 评估场景分为测试场景（模型见过的场景类型）和零样本场景（全新场景）。</p>
+<p> * 评估模型在分布外（OOD）的新目标物体上的泛化能力。</p>
+<ol><li><strong>评估指标</strong>:</li></ol>
+<p> * <strong>任务成功率</strong>：主要指标。一次尝试成功抓取并放置目标物体记为1分，搬运过程中掉落记为0.5分，否则为0分。报告平均成功率。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

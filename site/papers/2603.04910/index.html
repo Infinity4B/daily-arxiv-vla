@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VPWEM: Non-Markovian Visuomotor Policy with Working and Episodic Memory - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 VPWEM，一种具备工作记忆和情景记忆的非马尔可夫视觉运动策略，旨在解决现有方法在长时序依赖任务中表现不佳的问题。 现有的模仿学习方法通常依赖单步观测或短上下文历史，难以处理需要长期记忆的非马尔可夫任务，且简单扩大上下文窗口会导致计算成本高昂和因果混淆。 VPWEM 通过保留短期滑动窗口作为工作记忆，并引入 Transformer 架构的上下文记忆压缩器，将历史观测递归压缩为固定大小的" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.04910">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VPWEM: Non-Markovian Visuomotor Policy with Working and Episodic Memory</h1>
+          <div class="detail-meta">2026-03-05 · <a href="http://arxiv.org/abs/2603.04910" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.04910" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.04910</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>University of Hong Kong</strong> (School of Computing and Data Science)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>VPWEM</strong>，一种具备工作记忆和情景记忆的非马尔可夫视觉运动策略，旨在解决现有方法在长时序依赖任务中表现不佳的问题。</li><li>现有的模仿学习方法通常依赖单步观测或短上下文历史，难以处理需要长期记忆的非马尔可夫任务，且简单扩大上下文窗口会导致计算成本高昂和因果混淆。</li><li><strong>VPWEM</strong> 通过保留短期滑动窗口作为工作记忆，并引入 Transformer 架构的上下文记忆压缩器，将历史观测递归压缩为固定大小的情景记忆，从而在几乎恒定的计算和内存开销下利用长期信息。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一种新颖的框架，利用基于 Transformer 的上下文记忆压缩器将历史观测递归压缩为固定大小的记忆 Token，作为全轨迹历史的动态摘要。</li><li>将该方法在 <strong>DP</strong> (Diffusion Policy) 和 <strong>MaIL</strong> (Mamba Imitation Learning) 两个基线模型上进行实例化，重新设计了训练和推理流程，使动作生成同时基于长期情景记忆和短期工作记忆。</li><li>在三个基准测试上进行了广泛实验，证明了该方法在记忆密集型任务上显著提升了性能，并在马尔可夫任务中保持了基线模型的性能。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>工作记忆：</strong> 定义为滑动窗口内的观测 Token，通过 FIFO（先进先出）机制维护，用于捕获当前的短期上下文信息。</li><li><strong>情景记忆：</strong> 为了处理窗口外的长期信息，引入了一个上下文记忆压缩器。该压缩器包含自注意力层（与过去的摘要 Token 交互）和交叉注意力层（与历史观测 Token 交互），将观测压缩为固定数量的记忆 Token。</li><li><strong>动作生成：</strong> 基于扩散模型，通过 Transformer 解码器架构，利用工作记忆和情景记忆作为条件，迭代去噪生成动作序列。</li><li><strong>训练与推理：</strong> 训练时采用端到端优化，并切断历史缓存处的梯度以减少内存消耗；推理时动态更新观测缓存和摘要缓存，结合长短时记忆预测动作。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>MIKASA</strong>：包含两个记忆密集型桌面操作任务（ShellGameTouch-v0, RememberColor3-v0）。</li><li><strong>MoMaRT</strong>：包含五个长视界移动操作任务（如 Table Setup, Table Cleanup 等）。</li><li><strong>Robomimic</strong>：包含桌面操作任务（Square, Transport）和非马尔可夫任务。</li><li>实验使用单张 <strong>NVIDIA RTX 4090</strong> GPU。</li><li>模型参数量约为 52.98M（DP-VPWEM），使用 AdamW 优化器，Batch Size 为 64。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在 <strong>MIKASA</strong> 基准上，<strong>VPWEM</strong> 在记忆密集型任务中显著优于最先进的基线（包括扩散策略和 VLA 模型），性能提升超过 20%。</li><li>在 <strong>MoMaRT</strong> 基准上，该方法实现了平均 5% 的性能提升，证明了其在长视界非马尔可夫任务中的有效性。</li><li>在 <strong>Robomimic</strong> 基准上，<strong>VPWEM</strong> 在（近似）马尔可夫任务中表现与基线相当，证明了其不会损害常规任务的性能。</li><li>效率对比显示，相比于直接增加上下文长度的 <strong>DP-PTP</strong> 方法，<strong>VPWEM</strong> 在保持较低推理延迟和显存占用的同时实现了更高的成功率（58.3% vs 40.4% @ 128 context）。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

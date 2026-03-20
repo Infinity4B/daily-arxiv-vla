@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Conditioning Matters: Training Diffusion Policies is Faster Than You Think - VLA 论文精选</title>
+    <meta name="description" content="论文研究单位 天津大学 清华大学 华为诺亚方舟实验室 论文概述 该论文指出了在训练视觉-语言-动作（VLA）模型时，条件扩散策略存在的一个核心挑战：当生成条件难以区分时，训练目标会退化为建模边际动作分布，这一现象被称为“损失坍塌”。为解决此问题，论文提出了一种名为Cocos（condition-conditioned source distribution）的通用解决方案。该方法通过修改条件流匹配" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2505.11123">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Conditioning Matters: Training Diffusion Policies is Faster Than You Think</h1>
+          <div class="detail-meta">2025-05-16 · <a href="http://arxiv.org/abs/2505.11123" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2505.11123" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2505.11123</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>论文研究单位</p>
+<ul><li>天津大学</li><li>清华大学</li><li>华为诺亚方舟实验室</li></ul>
+
+<p>论文概述</p>
+<p>该论文指出了在训练视觉-语言-动作（VLA）模型时，条件扩散策略存在的一个核心挑战：当生成条件难以区分时，训练目标会退化为建模边际动作分布，这一现象被称为“损失坍塌”。为解决此问题，论文提出了一种名为Cocos（condition-conditioned source distribution）的通用解决方案。该方法通过修改条件流匹配中的源分布，使其依赖于条件输入，具体做法是利用一个自编码器从条件中提取语义，并将源分布的中心锚定在该语义上，同时保持固定的标准差。Cocos鼓励模型更强地整合条件信息，从而防止损失坍塌，显著提升了训练效率和最终性能。</p>
+
+<p>论文核心贡献点</p>
+<ul><li>构建了带生成条件的流匹配数学框架，并证明了当条件难以区分时，策略网络会主动忽略这些条件。</li><li>提出了Cocos方法，这是一种简单且有效的源分布修改技术，可以防止损失坍塌，并显著提高扩散策略的训练效率和性能。</li><li>建立了一个全面的评估基准，涵盖了从模拟（LIBERO, MetaWorld）到真实世界（低成本SO-100和高性能xArm机器人）的多种任务设置，验证了Cocos作为一种通用、即插即用解决方案的有效性。</li></ul>
+
+<p>论文方法描述</p>
+<p>Cocos的核心思想是替换标准条件流匹配中与条件无关的源分布（通常是标准高斯分布）。具体实现上，该方法使用一个视觉-语言自编码器来压缩条件（如观察图像和语言指令）的表示，将其作为均值来构建一个条件化的高斯源分布 q(z\|c)，其中c代表条件输入，而标准差则保持固定。通过这种方式，扩散过程的起点本身就包含了条件的语义信息，强制策略网络在训练的每一步都必须利用条件，从而从根本上解决了条件被忽略和损失坍塌的问题。</p>
+
+<p>论文使用数据集和训练资源</p>
+<ul><li>数据集:</li></ul>
+<p> - 模拟环境：LIBERO和MetaWorld基准中的70个任务。</p>
+<p> - 真实世界环境：在开源低成本SO-100机器人平台上的10个任务，以及在高性能xArm机器人平台上的10个任务。</p>
+<ul><li>训练资源:</li></ul>
+<p> - 计算资源：使用配备了8块NVIDIA A100 GPU的服务器进行实验。</p>
+
+<p>论文使用的评估环境和评估指标</p>
+<ul><li>评估环境:</li></ul>
+<p> - 模拟环境：LIBERO和MetaWorld。</p>
+<p> - 真实世界环境：配备摄像头的SO-100和xArm机器人手臂。</p>
+<ul><li>评估指标:</li></ul>
+<p> - 任务成功率：在不同任务上成功完成任务的比率。</p>
+<p> - 训练效率/收敛速度：达到特定性能水平（如π₀性能）所需的梯度步数或训练时间。论文中特别使用了达到目标性能所需的时间倍数来衡量加速比。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

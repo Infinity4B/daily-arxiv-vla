@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dual-Stream Diffusion for World-Model Augmented Vision-Language-Action Model - VLA 论文精选</title>
+    <meta name="description" content="本文提出了双流扩散（DUST）框架，一种用于增强视觉-语言-动作模型（VLA）的世界模型。DUST通过在多模态扩散Transformer中维护独立的模态流，同时通过跨模态注意力实现知识共享，解决了联合预测动作和未来观测时存在的模态冲突问题。该方法还包括解耦的训练算法和异步采样策略，支持推理时的扩展。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.27607">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Dual-Stream Diffusion for World-Model Augmented Vision-Language-Action Model</h1>
+          <div class="detail-meta">2025-10-31 · <a href="http://arxiv.org/abs/2510.27607" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.27607" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.27607</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>KAIST (韩国科学技术院) 和 RLWRLD</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了双流扩散（DUST）框架，一种用于增强视觉-语言-动作模型（VLA）的世界模型。DUST通过在多模态扩散Transformer中维护独立的模态流，同时通过跨模态注意力实现知识共享，解决了联合预测动作和未来观测时存在的模态冲突问题。该方法还包括解耦的训练算法和异步采样策略，支持推理时的扩展。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了双流扩散（DUST）框架，结合世界模型增强VLA，通过独立模态流和跨模态注意力解决模态冲突。</li><li>设计了多模态扩散Transformer（MMDiT）架构，分别处理动作和视觉流，实现双向信息传递。</li><li>开发了基于独立噪声调度的解耦训练算法，学习动作与视觉之间的因果关系。</li><li>引入了异步联合采样策略，允许视觉和动作标记以不同速率进行扩散，实现推理时的性能扩展。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>DUST架构包括：</p>
+<ol><li><strong>VLM主干网络</strong>：使用预训练的视觉-语言模型提取当前观测和指令的语义特征。</li><li><strong>多模态扩散Transformer（MMDiT）</strong>：包含12个MMDiT层和4个模态特定的DiT层。动作和视觉标记流在MMDiT层中通过共享交叉注意力层交互，但在其他操作中保持独立。</li><li><strong>解耦训练</strong>：动作和未来视觉观测分别添加独立噪声，使用模态特定的流匹配损失函数优化联合目标。</li><li><strong>异步采样</strong>：推理时，视觉标记以更高频率（如32步）去噪，动作标记以较低频率（如4步）去噪，平衡效率与精度。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - <strong>模拟环境</strong>：RoboCasa（24个厨房任务）和GR-1（24个人形机器人桌面任务）。</p>
+<p> - <strong>真实世界</strong>：Franka Research 3机械臂的4个取放任务。</p>
+<p> - <strong>迁移学习</strong>：使用BridgeV2的无动作视频进行预训练。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - VLM主干：冻结Eagle-2模型。</p>
+<p> - 扩散模型：使用Flow Matching目标，批大小未明确，迭代次数未明确。</p>
+<p> - 损失权重：\(\lambda_{\text{WM}} = 1.0\)。</p>
+<p> - 硬件：未明确说明。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>模拟</strong>：RoboCasa和GR-1基准，使用不同规模的演示数据（100、300、1000条/任务）。</p>
+<p> - <strong>真实世界</strong>：Franka Research 3机械臂在桌面场景执行取放任务。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>成功率（%）</strong>：任务完成的主要指标，涵盖不同任务类别（如取放、开合装置）。</p>
+<p> - <strong>平均成功率</strong>：跨任务类别的平均表现。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

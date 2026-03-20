@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NaVILA: Legged Robot Vision-Language-Action Model for Navigation - VLA 论文精选</title>
+    <meta name="description" content="NaVILA是一个用于腿式机器人导航的视觉-语言-动作模型，旨在解决视觉-语言导航问题。该模型采用两级框架：高级视觉-语言-动作（VLA）模型生成包含空间信息的中级动作（如“向前移动75cm”），低级视觉运动策略则执行这些动作。这种方法使机器人能够通过人类语言指令导航复杂场景，并在模拟和真实环境中实现了高性能，显著提升了现有基准的导航成功率。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2412.04453">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">NaVILA: Legged Robot Vision-Language-Action Model for Navigation</h1>
+          <div class="detail-meta">2024-12-05 · <a href="http://arxiv.org/abs/2412.04453" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2412.04453" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2412.04453</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>UC San Diego, USC, NVIDIA</p>
+<h2 class="section-title">论文概述</h2>
+<p>NaVILA是一个用于腿式机器人导航的视觉-语言-动作模型，旨在解决视觉-语言导航问题。该模型采用两级框架：高级视觉-语言-动作（VLA）模型生成包含空间信息的中级动作（如“向前移动75cm”），低级视觉运动策略则执行这些动作。这种方法使机器人能够通过人类语言指令导航复杂场景，并在模拟和真实环境中实现了高性能，显著提升了现有基准的导航成功率。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出了一个两级框架NaVILA，统一了VLA模型与运动技能，通过中级语言动作桥接高级推理和低级控制。</li><li>VLA模型输出自然语言形式的中级动作，而不是直接预测低级关节动作，增强了跨机器人平台的可移植性。</li><li>利用YouTube人类旅行视频数据训练模型，首次实现直接从真实视频中学习连续环境导航，提升泛化能力。</li><li>开发了新基准VLN-CE-Isaac，基于Isaac Sim，包含更现实的场景、低级控制和物理交互。</li><li>在真实机器人部署中取得88%的整体成功率，其中复杂指令成功率达75%，展示了在挑战环境中的鲁棒性。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>高级VLA模型</strong>：基于VILA视觉-语言模型，处理单视图图像和历史帧，生成导航动作。设计特定导航提示，区分当前观察和历史帧，使用文本描述内存信息。采用监督微调（SFT）混合数据，包括仿真数据、真实视频数据和一般VQA数据。</li><li><strong>从人类视频学习</strong>：处理2000个YouTube旅行视频，通过熵采样生成20K轨迹，使用MASt3R估计相机姿态，提取步进动作，并利用VLM和LLM生成自然语言指令。</li><li><strong>低级运动策略</strong>：使用PPO算法训练视觉运动策略，输入为LiDAR点云生成的身高图和本体感觉数据（如关节位置、速度），输出为期望关节位置。策略在Isaac Sim中通过Isaac Lab以单阶段方式训练，避免策略蒸馏，提高效率。身高图处理包括体素网格化和最大滤波，以增强环境感知。</li><li><strong>训练推理</strong>：VLA模型在VILA第二阶段基础上微调一个epoch，所有模块未冻结；推理时使用正则表达式解析器提取动作类型和参数。运动策略以高频率运行，支持实时控制。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 仿真导航数据：R2R-CE和RxR-CE，使用Habitat模拟器生成动作序列。</p>
+<p> - 真实视频数据：2000个YouTube人类旅行视频，处理成20K轨迹，通过MASt3R估计姿态。</p>
+<p> - 辅助导航数据：EnvDrop增强指令、ScanQA 3D扫描QA对、导航轨迹摘要任务。</p>
+<p> - 一般VQA数据：来自多个通用视觉问答数据集，以保持模型泛化能力。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - VLA训练：基于VILA模型，在混合数据上微调一个epoch，使用标准GPU资源（具体型号未提及）。</p>
+<p> - 运动策略训练：在Isaac Sim中使用Isaac Lab，采用PPO算法，在RTX 4090 GPU上达到60K FPS训练吞吐量。</p>
+<p> - 推理：VLA模型运行在低频率，运动策略实时运行，整体系统部署在机器人硬件上。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 经典VLN基准：R2R-CE和RxR-CE的Val-Unseen分割。</p>
+<p> - 新基准：VLN-CE-Isaac，基于Isaac Sim，包含详细机器人关节运动和物理交互。</p>
+<p> - 真实世界场景：在Unitree Go2、Unitree H1和Booster T1机器人上测试，包括实验室、住宅和户外不平地形。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 导航误差（NE，数值越低越好）。</p>
+<p> - 目标成功率（OS，数值越高越好）。</p>
+<p> - 成功率（SR，数值越高越好）。</p>
+<p> - 路径长度加权成功率（SPL，数值越高越好）。</p>
+<p> - nDTW（用于RxR-CE，数值越高越好）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

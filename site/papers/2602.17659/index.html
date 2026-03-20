@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>When Vision Overrides Language: Evaluating and Mitigating Counterfactual Failures in VLAs - VLA 论文精选</title>
+    <meta name="description" content="本文聚焦于视觉-语言-动作模型在机器人控制中普遍存在的一个失效模式：反事实失败。即模型会过度依赖数据集中的视觉偏见，忽视语言指令，转而执行训练数据中常见的、与场景强关联的动作。 研究目标是系统评估并缓解VLAs中的这种语言指令遵循失败问题。具体做法是：1）构建首个反事实评估基准；2）提出一种即插即用的推理方法。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.17659">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">When Vision Overrides Language: Evaluating and Mitigating Counterfactual Failures in VLAs</h1>
+          <div class="detail-meta">2026-02-19 · <a href="http://arxiv.org/abs/2602.17659" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.17659" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.17659</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>University of North Carolina at Chapel Hill</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>本文聚焦于<strong>视觉-语言-动作模型</strong>在机器人控制中普遍存在的一个失效模式：<strong>反事实失败</strong>。即模型会过度依赖数据集中的视觉偏见，忽视语言指令，转而执行训练数据中常见的、与场景强关联的动作。</li><li>研究目标是<strong>系统评估并缓解VLAs中的这种语言指令遵循失败问题</strong>。具体做法是：1）构建首个反事实评估基准；2）提出一种即插即用的推理方法。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>LIBERO-CF</strong>，这是第一个用于评估VLA语言遵循能力的<strong>反事实基准</strong>。</li><li>提出了 <strong>反事实动作引导</strong>，这是一种简单有效的<strong>双分支推理方案</strong>，可显式增强VLAs中的语言调节，而无需修改现有架构或预训练模型。</li><li>对VLAs中的<strong>视觉捷径</strong>和反事实失败进行了全面的分析，并通过实验证明所提方法在多种最先进的VLA模型上带来了一致性改进。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>核心方法是<strong>反事实动作引导</strong>，其灵感来源于图像生成中的无分类器引导技术。</li><li>通过构建一个<strong>双分支推理框架</strong>来增强语言调节：一个分支是标准的VLA策略，另一个分支是无语言条件的视觉-动作策略。</li><li>该方法的创新点在于：在推理时，通过混合两个分支的动作预测，显式地对比和增强语言指令的影响，从而<strong>减少对视觉捷径的依赖</strong>，提升对低观测任务的鲁棒性。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要使用的数据集是基于<strong>LIBERO</strong>构建的<strong>LIBERO-CF</strong> 基准，包含四个子集：<strong>CF-Spatial</strong>、<strong>CF-Object</strong>、<strong>CF-Long</strong> 和 <strong>CF-OOD</strong>。</li><li>评估了多个主流VLA模型，包括 <strong>OpenVLA-OFT</strong>、<strong>π0</strong> 和 <strong>π0.5</strong>，模型参数量级从<strong>3B到7B</strong>。</li><li>训练资源方面，论文使用了在<strong>Open-X-Embodiment</strong> 等大型机器人数据集上预训练的模型权重，并在LIBERO上进行了微调。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境主要在<strong>MuJoCo仿真环境</strong>中进行，并进行了真实的机器人实验。</li><li>主要评估指标包括<strong>语言接地率</strong>（衡量是否接触指令指定的目标物体）和<strong>任务成功率</strong>。</li><li>关键实验结果：在LIBERO-CF基准上，<strong>CAG方法</strong>显著提升了所有测试VLA的语言遵循能力。例如，仅使用无需训练的策略，就能将 <strong>π0.5</strong> 的语言接地率提升<strong>9.7%</strong>，任务成功率提升<strong>3.6%</strong>；若配合单独的VA模型，提升可达<strong>15.5%</strong> 和 <strong>8.5%</strong>。在真实世界实验中，CAG平均减少了<strong>9.4%</strong> 的反事实失败并提升了<strong>17.2%</strong> 的任务成功率。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

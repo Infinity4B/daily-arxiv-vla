@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EmbodiedOneVision: Interleaved Vision-Text-Action Pretraining for General Robot Control - VLA 论文精选</title>
+    <meta name="description" content="EO-1是上海人工智能实验室等机构提出的统一具身基础模型，通过交错视觉-文本-动作预训练实现通用机器人控制。该研究针对当前视觉-语言-动作(VLA)模型在开放世界泛化和交错推理能力方面的不足，提出了统一的模型架构和大规模多模态数据集，在具身推理和机器人控制任务中展现出显著优势。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.21112">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">EmbodiedOneVision: Interleaved Vision-Text-Action Pretraining for General Robot Control</h1>
+          <div class="detail-meta">2025-08-28 · <a href="http://arxiv.org/abs/2508.21112" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.21112" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.21112</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">EO-1: 通用机器人控制中的交错视觉-文本-动作预训练</h2>
+<h2 class="section-title">论文研究单位</h2>
+<p>Shanghai AI Laboratory, Fudan University, AgiBot, Northwestern Polytechnical University</p>
+<h2 class="section-title">论文概述</h2>
+<p>EO-1是上海人工智能实验室等机构提出的统一具身基础模型，通过交错视觉-文本-动作预训练实现通用机器人控制。该研究针对当前视觉-语言-动作(VLA)模型在开放世界泛化和交错推理能力方面的不足，提出了统一的模型架构和大规模多模态数据集，在具身推理和机器人控制任务中展现出显著优势。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>统一架构</strong>：EO-1采用单一统一解码器转换器，整合离散自回归解码与连续流匹配去噪，无需额外动作特定参数即可实现跨模态知识传递</li><li><strong>交错式具身数据集</strong>：构建包含150万样本的EO-Data1.5M数据集，专门针对交错视觉-文本-动作理解和学习</li><li><strong>真实世界泛化能力</strong>：在ERQA、LIBERO、SimplerEnv等多个开源基准测试中超越现有模型，展现出强大的开放世界理解和控制能力</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>EO-1基于预训练VLM构建统一解码器转换器架构，处理交错多模态输入序列：</p>
+<ul><li><strong>输入处理</strong>：文本标记器、视觉编码器、机器人状态投影器和动作去噪投影器将不同模态统一映射到R^d嵌入空间</li><li><strong>共享骨干</strong>：初始化自Qwen2.5-VL的转换器骨干，通过因果注意力处理整个交错序列</li><li><strong>输出机制</strong>：语言头用于文本解码，流头用于连续动作去噪生成</li><li><strong>交错修正采样</strong>：针对混合模态生成中的因果关系破坏问题，提出采样策略确保动作生成段的正确训练</li><li><strong>训练目标</strong>：结合自回归的下一个token预测和流匹配的向量场预测损失</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p><strong>数据规模</strong>：</p>
+<ul><li>网络多模态数据：570万样本，71亿tokens</li><li>机器人控制数据：120万 эпизод，1273亿tokens</li><li>交错具身数据：EO-Data1.5M，10亿tokens</li></ul>
+
+<p><strong>训练资源</strong>：</p>
+<ul><li>五个epoch训练，使用Flash-Attention变长打包</li><li>批量大小为1，平均序列长度16384</li><li>主干学习率5×10^-5，视觉编码器1×10^-5</li><li>DeepSpeed ZeRO-1优化器</li><li>推理时仅需6GB GPU内存</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p><strong>评估环境</strong>：</p>
+<ul><li><strong>具身推理基准</strong>：RoboVQA、ERQA、EO-Bench</li><li><strong>机器人控制基准</strong>：LIBERO、SimplerEnv</li><li><strong>真实世界评估</strong>：Franka Panda、WidowX 250S、Agibot G-1等多种机器人平台</li></ul>
+
+<p><strong>评估指标</strong>：</p>
+<ul><li><strong>具身推理</strong>：BLEU-4分数(RoboVQA)，准确率(ERQA)，多选VQA准确率(EO-Bench)</li><li><strong>机器人控制</strong>：成功率(SR)，在Google Robot基准中采用匹配和聚合两种评估方式</li><li><strong>多维度评估</strong>：空间理解、物理常识、任务推理、状态估计四个维度共648个QA对</li></ul>
+
+<p>EO-1在所有基准测试中均展现出优异性能，平均成功率达98.2%，显著超越OpenVLA、π₀等现有开源模型。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

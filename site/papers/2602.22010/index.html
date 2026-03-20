@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>World Guidance: World Modeling in Condition Space for Action Generation - VLA 论文精选</title>
+    <meta name="description" content="提出了一种名为 WoG (World Guidance) 的新框架，旨在解决现有视觉-语言-动作 (VLA) 模型在利用未来观测建模来提升动作生成能力时所面临的平衡难题。 核心目标是找到一个既易于预测又足够信息丰富的预测空间（即条件空间），以精确指导细粒度的动作生成，避免现有方法在预测冗余的未来表征和粗粒度的潜在动作之间的两难困境。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.22010">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">World Guidance: World Modeling in Condition Space for Action Generation</h1>
+          <div class="detail-meta">2026-02-25 · <a href="http://arxiv.org/abs/2602.22010" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.22010" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.22010</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>ByteDance Seed</strong></li><li><strong>The University of Hong Kong</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了一种名为 <strong>WoG (World Guidance)</strong> 的新框架，旨在解决现有<strong>视觉-语言-动作 (VLA)</strong> 模型在利用未来观测建模来提升动作生成能力时所面临的平衡难题。</li><li>核心目标是找到一个<strong>既易于预测又足够信息丰富</strong>的预测空间（即<strong>条件空间</strong>），以精确指导细粒度的动作生成，避免现有方法在预测冗余的未来表征和粗粒度的潜在动作之间的两难困境。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>WoG 框架</strong>，通过一个<strong>两阶段训练方案</strong>，将未来观测映射为动作推断流程中的紧凑条件表示，实现<strong>在条件空间中进行世界建模</strong>。</li><li>证明了<strong>建模和预测这个条件空间</strong>不仅能有效促进细粒度的动作生成，还展现出<strong>优越的泛化能力</strong>。</li><li>设计了一种<strong>可扩展的训练策略</strong>，能够有效地从大规模<strong>人类操作视频</strong>（包括带标注和不带标注的数据）以及<strong>UMI 数据集</strong>中学习未来条件。</li><li>在<strong>仿真和真实世界</strong>的广泛实验中，验证了 WoG 方法在多个基准任务上显著优于现有基于未来预测的方法。</li><li>提供了对<strong>未来编码器架构</strong>和<strong>预训练视觉编码器组合</strong>的深入消融研究，揭示了影响条件空间效率和模型性能的关键因素。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>核心技术方法</strong>：采用两阶段课程学习。第一阶段，使用一个可训练的 <strong>Q-Former 未来编码器</strong>从冻结的预训练视觉基础模型（如 <strong>DINOv2, Wan VAE</strong>）中查询和压缩未来观测，形成条件表示，并将其注入 <strong>DiT 动作头部</strong>来指导动作预测。第二阶段，冻结未来编码器，<strong>VLM 主干</strong>被训练同时<strong>预测这些未来的条件表示和对应的动作</strong>，将未来条件知识内化到模型中。</li><li><strong>创新点</strong>：该方法的核心创新在于<strong>将未来观测直接注入动作推断流程来定义和优化条件空间</strong>，而不是预测整个未来的视觉模态或学习粗粒度的潜在动作。这使得 VLA 模型能够学习到一个<strong>非冗余的、与动作高度相关的预测空间</strong>。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>主要使用数据集</strong>：<strong>OXE 数据集</strong>（用于预训练），以及从 <strong>SIMPLER 仿真环境</strong> 和 <strong>内部收集的真实世界专家演示</strong> 中获取的任务特定数据集。</li><li><strong>模型规模与参数</strong>：VLM 主干采用 <strong>Prismatic VLM</strong>（类似 OpenVLA），动作头采用 <strong>DiT</strong> 架构。未来编码器基于 <strong>Q-Former</strong>。</li><li><strong>训练资源</strong>：未在提供片段中明确说明，但根据实验规模推断，应使用了多块 <strong>GPU</strong>（例如，NVIDIA RTX 4090 用于推理和控制工作站）。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：</li></ul>
+<p> - <strong>仿真</strong>：在 <strong>SIMPLER</strong> 环境中对 <strong>Google Robot</strong> 和 <strong>WidowX</strong> 机器人进行闭环评估，涵盖多种拾放、移动和操作任务。</p>
+<p> - <strong>真实世界</strong>：在 <strong>UR5</strong> 机器人上评估<strong>拾放 (P&P)</strong>、<strong>关闭微波炉</strong> 和 <strong>折叠毛巾</strong> 三项任务，并设置了<strong>背景变化、光照变化、新物体</strong>等<strong>分布外 (OOD)</strong> 泛化场景。</p>
+<ul><li><strong>主要评估指标</strong>：<strong>任务成功率 (%)</strong>。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 在 <strong>SIMPLER 仿真</strong>中，WoG 在绝大多数任务上显著超越了 <strong>π0、OpenVLA、UniVLA、VITA、ViPRA、DeFI</strong> 等多种基线方法。</p>
+<p> - 在<strong>真实世界</strong>实验中，WoG 在所有三项任务上均优于 <strong>UniVLA</strong> 和 <strong>VPP</strong>。尤其在 OOD 场景下，WoG 表现出更强的<strong>泛化能力</strong>，性能下降幅度远小于基线。</p>
+<p> - <strong>消融实验</strong>表明，两阶段训练方案、未来编码器的使用以及整合人类视频数据都能带来显著的性能提升。例如，使用 <strong>DINOv2 + Wan VAE</strong> 编码器组合表现最佳。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

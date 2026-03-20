@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MinD: Learning A Dual-System World Model for Real-Time Planning and Implicit Risk Analysis - VLA 论文精选</title>
+    <meta name="description" content="论文提出MinD（Manipulate in Dream）框架，一个双系统世界模型，用于解决视频生成模型在机器人实时控制中的应用挑战。现有方法将VGMs仅用作特征提取器，未能充分利用其预测未来状态的能力。MinD通过结合低频视频生成和高频动作策略，实现实时规划和隐式风险分析，在RL-Bench上达到63%成功率，真实Franka机器人上达到60%成功率，以11.3 FPS运行。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2506.18897">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">MinD: Learning A Dual-System World Model for Real-Time Planning and Implicit Risk Analysis</h1>
+          <div class="detail-meta">2025-06-23 · <a href="http://arxiv.org/abs/2506.18897" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2506.18897" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2506.18897</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>论文作者来自多个机构，包括编号1、2、3所属的学术研究机构和企业研究部门（具体机构名称未在HTML中明确列出）。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出MinD（Manipulate in Dream）框架，一个双系统世界模型，用于解决视频生成模型在机器人实时控制中的应用挑战。现有方法将VGMs仅用作特征提取器，未能充分利用其预测未来状态的能力。MinD通过结合低频视频生成和高频动作策略，实现实时规划和隐式风险分析，在RL-Bench上达到63%成功率，真实Franka机器人上达到60%成功率，以11.3 FPS运行。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出MinD双系统扩散世界模型，统一低频视频想象过程与高频动作策略。</li><li>引入DiffMatcher模块，采用扩散强制（diffusion-forcing）协同训练策略，对齐异步视频和动作扩散过程。</li><li>实现最先进性能（RL-Bench 63%、真实任务60%），并能提前识别74%的潜在任务失败，为安全监控提供新范式。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>分层扩散框架：包括低频视频生成器（LoDiff-Visual）生成未来场景，高频动作策略（HiDiff-Policy）输出实时动作，通过DiffMatcher模块连接两者。</li><li>异步协同训练策略：联合优化三个损失函数（视频损失、动作损失、对齐损失），其中对齐损失强制DiffMatcher学习噪声不变表示。</li><li>单步预测推理：LoDiff-Visual仅执行单步去噪生成潜在特征，经DiffMatcher映射后 conditioning HiDiff-Policy，实现高效动作生成。</li><li>隐式风险评估：通过分析生成视频的潜在特征分布和视觉失败案例，预测任务执行风险。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 预训练：RT-1、Robomind、OXE的混合数据集。</p>
+<p> - 微调：RL-Bench（1000条轨迹，7任务）和真实世界Franka机器人任务（每任务100条演示）。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 硬件：4×A100 GPU。</p>
+<p> - 软件：PyTorch 2.5.1，CUDA 12.1。</p>
+<p> - 参数：AdamW优化器，学习率2e-5，批次大小16，预训练50k步，微调10k步。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 模拟：RL-Bench（CoppeliaSim环境，Franka Panda机器人）。</p>
+<p> - 真实世界：Franka Research 3机器人，配备前视和腕视相机。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 任务成功率（Success Rate）：主要指标，衡量任务完成百分比。</p>
+<p> - Fréchet Video Distance（FVD）：评估生成视频质量。</p>
+<p> - 推理速度（FPS）：衡量实时控制能力。</p>
+<p> - 风险识别率：通过生成视频预测失败的能力。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

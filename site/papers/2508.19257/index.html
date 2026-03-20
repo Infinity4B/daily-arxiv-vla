@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TTF-VLA: Temporal Token Fusion via Pixel-Attention Integration for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="当前视觉-语言-动作（VLA）模型在处理连续帧时缺乏时序信息整合，逐帧独立处理导致视觉噪声敏感性和时序关联丢失。论文提出TTF-VLA（时序令牌融合），通过融合历史与当前视觉特征增强VLA推理质量，在不训练的前提下改善机器人操作任务的鲁棒性和效率。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.19257">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">TTF-VLA: Temporal Token Fusion via Pixel-Attention Integration for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-08-15 · <a href="http://arxiv.org/abs/2508.19257" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.19257" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.19257</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>北京大学 (Peking University)</p>
+<h2 class="section-title">论文概述</h2>
+<p>当前视觉-语言-动作（VLA）模型在处理连续帧时缺乏时序信息整合，逐帧独立处理导致视觉噪声敏感性和时序关联丢失。论文提出TTF-VLA（时序令牌融合），通过融合历史与当前视觉特征增强VLA推理质量，在不训练的前提下改善机器人操作任务的鲁棒性和效率。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>双维度检测机制</strong>：提出结合灰度像素差异分析与注意力语义相关性的检测方法，用于识别视觉变化区域和任务关键区域</li><li><strong>硬融合策略与关键帧</strong>：采用二值令牌选择决策，并通过周期性关键帧重置防止误差累积</li><li><strong>跨模型适用性</strong>：验证在OpenVLA和VLA-Cache架构上的通用性，无需任务特定调参</li><li><strong>Query矩阵复用发现</strong>：揭示选择性Query矩阵复用可提升性能，提出KQV矩阵直接复用的潜在加速方向</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>时序令牌融合框架</strong></li></ol>
+<p> - 输入：当前帧I_t、历史帧I_{t-1}、历史令牌T_{t-1}、任务指令L_t</p>
+<p> - 输出：融合令牌T̃_t</p>
+<p> - 公式：T̃_t = F(T_t, T_{t-1}, I_t, I_{t-1}, L_t)</p>
+
+<ol><li><strong>硬融合决策</strong></li></ol>
+<p> - 对每个令牌i选择当前或历史令牌：</p>
+<p> t̃_t^(i) = t_t^(i) 若 m_i^fusion=1，否则 t_{t-1}^(i)</p>
+
+<ol><li><strong>关键帧机制</strong></li></ol>
+<p> - 定期重置所有令牌：IsKeyframe(t) = (t mod K=0) ∨ (T_{t-1}=∅)</p>
+<p> - 参数K=3平衡时序稳定性和响应速度</p>
+
+<ol><li><strong>双维度检测融合</strong></li></ol>
+<p> - 像素维度：计算灰度图绝对差异d_i^pixel = (1/196) ∑\|G_t(u,v)-G_{t-1}(u,v)\|</p>
+<p> - 注意力维度：提取文本-视觉和动作-视觉注意力S_text^((l))和S_action^((l))</p>
+<p> - 最终融合：m_i^fusion = m_i^pixel ∨ m_i^attention</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>仿真数据集</strong></li></ol>
+<p> - LIBERO：4套任务（Object/Spatial/Goal/Long），每套10任务×20 episodes</p>
+<p> - SimplerEnv：3任务（Move Near/Pick Coke/Drawer），总756 episodes</p>
+
+<ol><li><strong>真实机器人</strong></li></ol>
+<p> - 设备：Franka Research 3机械臂</p>
+<p> - 数据：3任务×80 demos，5Hz操作频率</p>
+
+<ol><li><strong>训练资源</strong></li></ol>
+<p> - 微调配置：OpenVLA-7B，20,000步，batch size=8，8×A100 GPUs</p>
+<p> - 推理部署：单A100 GPU，5Hz控制频率</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong></li></ol>
+<p> - 仿真：LIBERO基准套件 + SimplerEnv跨环境平台</p>
+<p> - 真实：Franka机械臂实验室场景</p>
+
+<ol><li><strong>评估指标</strong></li></ol>
+<p> - <strong>任务成功率</strong>：成功执行次数/总次数</p>
+<p> - <strong>时序融合率</strong>：复用历史令牌比例</p>
+<p> - <strong>计算效率</strong>：令牌复用带来的加速效果</p>
+
+<ol><li><strong>主要结果</strong></li></ol>
+<p> - LIBERO平均提升：OpenVLA +4.0pp (72.4% vs 68.4%)，VLA-Cache +2.7pp</p>
+<p> - SimplerEnv跨环境：+4.8%相对提升</p>
+<p> - 真实机器人：+8.7%相对提升，Pick-and-Place任务改善显著</p>
+<p> - 消融研究：双维度融合优于单一维度，关键帧K=3性能最优</p>
+
+<p>论文证明TTF-VLA能有效提升VLA模型在多环境下的操作能力，特别是在长序列任务和噪声场景中表现突出，为时序信息利用和计算加速提供了新方向。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

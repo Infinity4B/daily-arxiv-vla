@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How Fast Can I Run My VLA? Demystifying VLA Inference Performance with VLA-Perf - VLA 论文精选</title>
+    <meta name="description" content="论文针对视觉-语言-动作 (VLA) 模型在真实机器人部署中面临的实时推理性能挑战，提出了一个核心研究问题：未来应如何设计 VLA 模型和系统以支持实时推理？ 为了解决 VLA 模型架构与推理系统组合空间庞大的问题，论文引入了 VLA-Perf 这一基于屋顶线模型的分析性能模型，用于预测任意模型-系统组合的推理延迟和吞吐量。 通过 VLA-Perf，论文对 VLA 推理性能进行了首次系统性分析，从" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.18397">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">How Fast Can I Run My VLA? Demystifying VLA Inference Performance with VLA-Perf</h1>
+          <div class="detail-meta">2026-02-20 · <a href="http://arxiv.org/abs/2602.18397" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.18397" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.18397</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>NVIDIA Research</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文针对<strong>视觉-语言-动作 (VLA)</strong> 模型在真实机器人部署中面临的实时推理性能挑战，提出了一个核心研究问题：<strong>未来应如何设计 VLA 模型和系统以支持实时推理？</strong></li><li>为了解决 VLA 模型架构与推理系统组合空间庞大的问题，论文引入了 <strong>VLA-Perf</strong> 这一基于屋顶线模型的<strong>分析性能模型</strong>，用于预测任意模型-系统组合的推理延迟和吞吐量。</li><li>通过 <strong>VLA-Perf</strong>，论文对 VLA 推理性能进行了首次系统性分析，从<strong>模型设计</strong>（如模型缩放、架构选择、长上下文输入）和<strong>部署系统</strong>（如设备上/服务器端推理、硬件/网络性能）两个角度出发，提炼了 <strong>15 项关键性能启示</strong>，为未来 VLA 设计与部署提供实践指导。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>VLA-Perf</strong>，一个可分析任意 VLA 模型与推理系统组合性能的、基于屋顶线模型的<strong>分析性能模型</strong>。</li><li>利用 <strong>VLA-Perf</strong> 进行了<strong>首次对 VLA 推理性能景观的系统性研究</strong>，涵盖了模型设计、部署配置和网络环境等多个维度。</li><li>通过全面的评估，从结果中提炼出 <strong>15 项关键的性能启示</strong>，为未来 VLA 模型和推理系统的设计提供了<strong>实用的指导原则</strong>。</li><li>将 <strong>VLA-Perf</strong> 模型<strong>开源</strong>，以支持更广泛的性能分析。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>论文核心方法是开发了 <strong>VLA-Perf</strong>，这是一个基于屋顶线的分析性能模型。</li><li>创新点在于将复杂的 VLA 推理工作流抽象为一系列<strong>模型组件</strong>与<strong>数据移动阶段</strong>，并对每个模型组件的算子执行延迟使用屋顶线模型（计算与访存延迟取最大值）进行建模。</li><li>关键技术包括：对 VLA 推理过程进行建模与参数化；支持不同模型架构、长上下文、异步推理、双系统管道；支持不同部署位置（设备、服务器、混合）和网络配置的延迟计算。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>论文未使用特定数据集，其研究重点是性能分析与建模。</li><li>评估基于一系列<strong>模型变体</strong>，这些变体源自 <strong>π0</strong> 架构（总参数量 2.7B），包含 SigLIP 视觉编码器（0.4B）、Gemma VLM（2B）和扩散动作专家（0.3B）。并研究了扩展到 <strong>9.1B、16.7B、81.3B</strong> 的更大模型。</li><li>评估涵盖了多种<strong>推理硬件</strong>，包括边缘 GPU (<strong>Jetson Thor</strong>)、消费级 GPU (<strong>RTX 4090</strong>)、数据中心 GPU (<strong>A100, H100, B100</strong>)。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：使用 <strong>VLA-Perf</strong> 对广泛的模型变体和推理系统配置进行性能预测分析。</li><li>主要评估指标：<strong>端到端推理延迟</strong> 和<strong>推理频率（Hz）</strong>。</li><li>关键实验结果：</li></ul>
+<p> - <strong>基线分析</strong>：<strong>B100</strong> 等数据中心 GPU 可为小型 VLA 模型（如 π0）提供远超相机帧率的推理频率（最高 314 Hz），而边缘 GPU（Jetson Thor，19 Hz）性能受限。</p>
+<p> - <strong>组件瓶颈</strong>：动作预测在所有硬件上都是<strong>内存瓶颈</strong>，而视觉和 VLM 推理在除 Jetson Thor 外的大多数 GPU 上是<strong>计算瓶颈</strong>。</p>
+<p> - <strong>模型缩放</strong>：延迟随模型规模近似线性增长。数据中心 GPU（如 B100）可为<strong>大一个数量级</strong>（81B）的 VLA 模型保持实时推理（9.6 Hz），而边缘/消费级 GPU 则面临困难。</p>
+<p> - <strong>长上下文推理</strong>：数据中心 GPU 可支持长达 <strong>1K 个历史时间步</strong>的实时长上下文推理（11.7 Hz），而边缘/消费级 GPU 仅能支持约 <strong>100 步</strong>。</p>
+<p> - <strong>模型验证</strong>：在一个优化后的 <strong>π0 Triton 实现</strong>上进行验证，其实测性能达到了 <strong>VLA-Perf</strong> 预测屋顶线性能的 <strong>73-83%</strong>，证明了模型的有效性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

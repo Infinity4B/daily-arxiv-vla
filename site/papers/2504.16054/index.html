@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>$π_{0.5}$: a Vision-Language-Action Model with Open-World Generalization - VLA 论文精选</title>
+    <meta name="description" content="本文提出了一个名为 π₀.₅ 的视觉-语言-动作（VLA）模型，旨在通过在异构任务上进行协同训练，实现机器人在开放世界中的泛化能力。 模型的核心思想是结合来自多种信息源的知识，包括多种机器人平台的数据、网络数据、高级语义预测以及人类语言指令。 论文声称，π₀.₅ 是首个能够在训练中从未见过的全新家庭环境中，执行长达10到15分钟的长时程、灵巧操作任务（如清理厨房或卧室）的端到端学习系统。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2504.16054">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">$π_{0.5}$: a Vision-Language-Action Model with Open-World Generalization</h1>
+          <div class="detail-meta">2025-04-22 · <a href="http://arxiv.org/abs/2504.16054" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2504.16054" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2504.16054</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+<h2 class="section-title">论文研究单位</h2>
+<ul><li>Physical Intelligence</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>本文提出了一个名为 π₀.₅ 的视觉-语言-动作（VLA）模型，旨在通过在异构任务上进行协同训练，实现机器人在开放世界中的泛化能力。</li><li>模型的核心思想是结合来自多种信息源的知识，包括多种机器人平台的数据、网络数据、高级语义预测以及人类语言指令。</li><li>论文声称，π₀.₅ 是首个能够在训练中从未见过的全新家庭环境中，执行长达10到15分钟的长时程、灵巧操作任务（如清理厨房或卧室）的端到端学习系统。</li></ul>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出了一个新的 VLA 模型 π₀.₅ 及其相应的训练配方。</li><li>设计了一个协同训练框架，该框架能够有效地整合和利用异构数据源，以提升模型的泛化能力。</li><li>实现了一个层次化的推理架构，模型在执行任务时首先预测高级语义子任务，然后基于该子任务生成低级动作。</li><li>通过详尽的实验，首次在真实、未见过的家庭环境中，展示了端到端学习系统完成长时程复杂操作任务的能力。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>模型架构</strong>:</li></ul>
+<p> - 模型基于一个统一的 Transformer，能够处理多模态输入（图像、文本、机器人状态）并输出多模态结果（文本子任务、连续动作）。</p>
+<p> - 引入了“动作专家”模块，类似于混合专家模型，专门用于生成连续的动作序列，以提高效率和性能。</p>
+<p> - 将策略分解为 p(动作, 子任务 \|观测, 指令) = p(动作 \|观测, 子任务) * p(子任务 \|观测, 指令)，实现高层次与低层次推理的解耦。</p>
+<ul><li><strong>训练过程</strong>:</li></ul>
+<p> - <strong>第一阶段：预训练</strong></p>
+<p> - 目标：利用大规模多样化的数据混合来适应模型。</p>
+<p> - 数据来源：包括移动机械臂数据（约400小时）、其他非移动机器人数据、实验室跨具身数据、高级语义子任务预测数据、人类语言指令以及网络多模态数据。</p>
+<p> - 动作表示：在此阶段使用离散令牌来表示动作。</p>
+<p> - <strong>第二阶段：后训练</strong></p>
+<p> - 目标：专门针对移动操作任务进行微调。</p>
+<p> - 数据来源：专注于与任务最相关的移动机械臂数据和人类口头语言指令。</p>
+<p> - 动作表示：改用流匹配来表示连续的动作分布，并引入动作专家，以实现更精细的实时控制。</p>
+<ul><li><strong>推理过程</strong>:</li></ul>
+<p> - 采用层次化推理，模型在每一步首先预测一个高级语义子任务（如“拿起盘子”）。</p>
+<p> - 然后，模型以该子任务为条件，通过动作专家预测下一步的低级动作块。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>:</li></ul>
+<p> - 未使用单一命名数据集，而是采用异构数据混合。</p>
+<p> - 核心数据包括在多个真实家庭中收集的约400小时的移动机械臂操作数据。</p>
+<p> - 辅助数据包括：其他机器人数据、实验室跨具身任务数据、高级语义子任务预测数据、人类语言指令和网络数据（如图像说明、问答、对象定位）。</p>
+<ul><li><strong>训练资源</strong>:</li></ul>
+<p> - 论文未明确说明硬件配置，但训练如此规模的视觉-语言-动作模型和数据集需要大量的计算资源（如大规模GPU集群）。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>:</li></ul>
+<p> - 主要在真实世界的、全新的家庭环境中进行评估，这些环境在训练期间模型从未见过。</p>
+<p> - 测试场景包括全新的厨房和卧室。</p>
+<p> - 评估任务是长时程、多阶段的复杂操作，例如“清理整个厨房”。</p>
+<ul><li><strong>评估指标</strong>:</li></ul>
+<p> - 主要指标是任务成功率，通过一个详细的任务评估标准来判断。</p>
+<p> - 评估模型在执行长达10-15分钟任务中的表现。</p>
+<p> - 包含了与其他视觉-语言-动作（VLA）模型的定量比较，以评估其相对性能和泛化能力。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

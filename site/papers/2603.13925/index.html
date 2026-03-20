@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SmoothVLA: Aligning Vision-Language-Action Models with Physical Constraints via Intrinsic Smoothness Optimization - VLA 论文精选</title>
+    <meta name="description" content="提出了SmoothVLA，一个通过内在平滑性优化来对齐视觉-语言-动作(VLA)模型与物理约束的强化学习微调框架。 解决了现有VLA微调方法面临的“探索-稳定性悖论”：监督微调(SFT)受限于演示质量而缺乏泛化能力，而强化学习(RL)虽能提升探索但常导致违反物理约束的抖动轨迹。 核心目标是协同优化任务性能与运动平滑度，弥合神经网络高层输出与物理硬件运动学约束之间的鸿沟。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.13925">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">SmoothVLA: Aligning Vision-Language-Action Models with Physical Constraints via Intrinsic Smoothness Optimization</h1>
+          <div class="detail-meta">2026-03-14 · <a href="http://arxiv.org/abs/2603.13925" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.13925" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.13925</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>重庆邮电大学</strong></li><li><strong>中国科学院重庆绿色智能技术研究院</strong></li><li><strong>中国科学技术大学附属第一医院</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了<strong>SmoothVLA</strong>，一个通过内在平滑性优化来对齐视觉-语言-动作(VLA)模型与物理约束的强化学习微调框架。</li><li>解决了现有VLA微调方法面临的“探索-稳定性悖论”：监督微调(SFT)受限于演示质量而缺乏泛化能力，而强化学习(RL)虽能提升探索但常导致违反物理约束的抖动轨迹。</li><li>核心目标是协同优化任务性能与运动平滑度，弥合神经网络高层输出与物理硬件运动学约束之间的鸿沟。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>正式定义并量化了VLA强化学习中的“探索-稳定性悖论”，引入轨迹<strong>加加速度</strong>作为衡量神经动作与物理可行运动之间差距的数学框架。</li><li>提出了一种通用的RL后训练协议，其核心是一个<strong>内在的、物理信息奖励机制</strong>，无需外部环境建模或繁琐的奖励工程即可实现自主自我修正。</li><li>在<strong>LIBERO</strong>和<strong>LIBERO-Plus</strong>基准上进行了严格评估，证明了方法在平衡任务性能与执行质量方面的有效性，实现了<strong>13.8%</strong> 的平滑度提升和显著增强的泛化能力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>核心技术是一个<strong>物理信息混合奖励函数</strong>，将二元稀疏任务奖励与一个源自轨迹加加速度的连续密集项相结合。</li><li>加加速度通过机器人微分运动学理论，从策略展开的动作序列和本体感觉反馈中直接计算得出，该过程是内在的。</li><li>采用<strong>组相对策略优化(GRPO)</strong> 算法进行优化，通过比较同一指令下的一组轨迹来估计优势函数，避免了价值网络带来的计算负担。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要使用<strong>LIBERO</strong>基准（包含LIBERO-Goal, Spatial, Object, Long四个任务套件）进行评估，并使用<strong>LIBERO-Plus</strong>进行鲁棒性测试。</li><li>基础模型采用<strong>OpenVLA</strong>，使用<strong>LoRA</strong>进行微调。</li><li>训练使用<strong>AdamW</strong>优化器，监督微调阶段学习率为 <strong>4×10⁻⁵</strong>，偏好微调阶段学习率为 <strong>2×10⁻⁵</strong>，批大小均为16。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在<strong>LIBERO</strong>基准上，SmoothVLA-GRPO实现了<strong>80.5%</strong> 的平均成功率，比基线Octo高出<strong>6.6</strong>个百分点。</li><li>在平滑度指标上，SmoothVLA比传统SFT提升<strong>4.5%</strong>，比标准RL提升<strong>13.8%</strong>，验证了混合奖励函数的有效性。</li><li>在<strong>LIBERO-Plus</strong>鲁棒性测试中，SmoothVLA面对语言指令、光照、背景、布局等扰动时表现出更小的性能衰减，平均成功率比SFT方法高出<strong>24.2%</strong>，证明了更强的泛化能力。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

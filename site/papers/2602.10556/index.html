@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LAP: Language-Action Pre-Training Enables Zero-shot Cross-Embodiment Transfer - VLA 论文精选</title>
+    <meta name="description" content="提出语言-动作预训练（Language-Action Pre-training, LAP）方法，通过用自然语言描述机器人底层动作（语言-动作）来训练视觉-语言-动作模型（VLA），旨在解决VLA的零样本跨具身（Cross-Embodiment）迁移难题。 目标是使训练好的VLA策略能够零样本（无需微调） 部署到未见过的、物理形态（如机械臂、夹具、摄像头配置）不同的机器人上，从而降低新机器人的部署成" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.10556">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">LAP: Language-Action Pre-Training Enables Zero-shot Cross-Embodiment Transfer</h1>
+          <div class="detail-meta">2026-02-11 · <a href="http://arxiv.org/abs/2602.10556" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.10556" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.10556</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>普林斯顿大学</strong></li><li><strong>Physical Intelligence</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出<strong>语言-动作预训练（Language-Action Pre-training, LAP）</strong>方法，通过用自然语言描述机器人底层动作（语言-动作）来训练视觉-语言-动作模型（VLA），旨在解决VLA的零样本跨具身（Cross-Embodiment）迁移难题。</li><li>目标是使训练好的VLA策略能够<strong>零样本（无需微调）</strong> 部署到未见过的、物理形态（如机械臂、夹具、摄像头配置）不同的机器人上，从而降低新机器人的部署成本。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>LAP预训练方案</strong>，将低层机器人动作表示为结构化自然语言，让视觉语言模型（VLM）在语言建模中学习动作预测，缓解了传统VLA训练中的分布不匹配问题。</li><li>基于LAP方案，构建并开源了 <strong>LAP-3B</strong>模型，这是<strong>首个</strong>在真实机器人上实现<strong>实质性零样本跨具身迁移</strong>的VLA，在多个未见机器人上平均成功率超过<strong>50%</strong>，相比之前最好的VLA提升约<strong>2倍</strong>。</li><li>展示了LAP方案能实现<strong>高效微调</strong>，在新机器人或新任务上只需<strong>更少的数据和训练步数</strong>即可达到高性能，并且支持与<strong>视觉问答（VQA）任务协同训练</strong>以获得进一步提升。</li><li>深入分析了LAP方案如何学习到更具迁移性的表征，并通过实验证实了其<strong>稳定的训练动态</strong>和<strong>有利的模型规模扩展性</strong>。</li><li>开源了<strong>代码、检查点和数据配置</strong>，为相关研究提供了重要资源。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>核心思想：将机器人末端执行器的连续动作（平移、旋转）通过<strong>固定的坐标约定和模板</strong>，<strong>自动解析</strong>为结构化自然语言描述（例如 “move left 5 cm”），然后使用标准的<strong>条件语言建模</strong>目标训练VLM骨干网络。</li><li>模型架构：采用<strong>混合专家（Mixture-of-Transformers）</strong> 架构，将LAP训练的VLM骨干与一个轻量级的<strong>基于流匹配（Flow Matching）的动作专家</strong>结合，实现高效推理（25Hz）。训练时，VLM通过交叉熵损失预测语言-动作，动作专家通过流匹配损失预测连续动作块，并使用<strong>知识隔离</strong>技术阻止动作专家的梯度回传到VLM，保护其预训练知识。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的主要数据集：<strong>Open X-Embodiment (OXE)</strong> 和 <strong>MolmoAct</strong>。</li><li>模型规模与参数：主要模型 <strong>LAP-3B</strong> 的骨干网络为 <strong>PaliGemma-3B</strong>，总参数量约30亿。论文还探索了使用Gemma3骨干的 <strong>4B、12B、27B</strong> 版本。</li><li>训练资源：使用 <strong>64个TPU v6e芯片</strong>进行训练，全局批大小为 <strong>2048</strong>，训练约 <strong>15k步</strong>（约10个时钟小时）。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：在<strong>四个</strong>真实机器人平台（DROID（训练可见）、Custom Franka、YAM、Kinova（未见））和<strong>六个</strong>不同难度的真实世界操作任务（Pick and Place, Sort, Tissue, Put Towel, Pour）上评估零样本性能。同时在<strong>LIBERO</strong>仿真基准上进行微调效率评估。</li><li>主要评估指标：<strong>任务成功率</strong>（二元评估），使用具有统计意义的<strong>95%置信区间</strong>。</li><li>关键实验结果：</li></ul>
+<p> - <strong>零样本跨具身迁移</strong>：LAP-3B在三个未见机器人上实现了 <strong>>50%</strong> 的平均成功率，显著优于所有基线模型（包括π0.5-DROID, X-VLA, OpenVLA等），后者在未见机器人上接近零成功率。</p>
+<p> - <strong>微调效率</strong>：在LIBERO基准上，LAP-3B仅需<strong>1个epoch</strong>就达到78%成功率，6个epoch达96.8%，收敛速度快于基线。在真实机器人上，达到相同性能所需演示数据量减少约 <strong>2.5倍</strong>。</p>
+<p> - <strong>表征分析</strong>：t-SNE可视化表明LAP-3B学习到的特征在训练和未见机器人具身之间<strong>重叠度高</strong>，表明学到了更通用的表征。</p>
+<p> - <strong>协同训练</strong>：结合“运动预测”VQA任务进行协同训练，进一步提升了跨具身性能和微调收敛速度。</p>
+<p> - <strong>模型缩放</strong>：随着模型规模增大（4B到27B），LAP方案的验证损失持续下降，而基线方法（π0.5-replicated）则出现饱和甚至退化，表明LAP方案具有良好的可扩展性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

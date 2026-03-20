@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mimic Intent, Not Just Trajectories - VLA 论文精选</title>
+    <meta name="description" content="提出一个名为MINT（Mimic Intent, Not Just Trajectories）的新型模仿学习框架，核心思想是模仿行为意图，而不仅仅是轨迹。 旨在解决现有视觉-语言-动作（VLA）模型在适应环境变化和技能迁移方面的局限性，这些局限性源于仅模仿原始轨迹而未理解底层意图。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.08602">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Mimic Intent, Not Just Trajectories</h1>
+          <div class="detail-meta">2026-02-09 · <a href="http://arxiv.org/abs/2602.08602" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.08602" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.08602</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>上海交通大学</strong></li><li><strong>上海创新研究院</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出一个名为<strong>MINT</strong>（Mimic Intent, Not Just Trajectories）的新型模仿学习框架，核心思想是<strong>模仿行为意图，而不仅仅是轨迹</strong>。</li><li>旨在解决现有视觉-语言-动作（VLA）模型在适应环境变化和技能迁移方面的局限性，这些局限性源于仅模仿原始轨迹而未理解底层意图。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了<strong>基于频谱解耦的动作分词器（SDAT）</strong>，通过<strong>多尺度频域令牌化</strong>，将行为意图（低频全局结构）与执行细节（高频细节）显式地解耦。</li><li>引入<strong>意图令牌</strong>和<strong>执行令牌</strong>的层次化表示，并设计了<strong>逐级频谱重建</strong>目标，强制不同尺度的令牌学习不同频段的信息。</li><li>开发了<strong>MINT策略学习</strong>方法，采用<strong>跨尺度的自回归建模</strong>进行从意图到执行的渐进式推理。</li><li>实现了<strong>基于意图的动作集成</strong>，利用意图令牌的相似性来平滑不同时间步的动作预测，增强稳定性。</li><li>提出并验证了<strong>单样本技能迁移</strong>能力，通过从单次演示中提取意图令牌并注入到生成过程中，即可快速适应新任务、新布局和更长规划时域。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>这是一个两阶段框架：首先训练<strong>SDAT</strong>，它是一个结合了离散余弦变换（DCT）和多尺度残差矢量量化的变分自编码器，用于将连续动作轨迹分解为多尺度离散动作令牌。</li><li><strong>关键技术/创新点</strong>：在频域施加<strong>逐尺度重建损失</strong>，强制最粗的尺度（意图令牌）捕捉低频全局信息，而更精细的尺度（执行令牌）捕捉高频残差细节。</li><li>随后训练<strong>MINT策略</strong>，该策略基于视觉、语言和本体感觉输入，以自回归方式从粗到细预测多尺度动作令牌，最后通过SDAT的解码器生成连续轨迹。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集：<strong>LIBERO</strong>、<strong>CALVIN</strong>、<strong>MetaWorld</strong> 以及更具挑战性的 <strong>LIBERO-Plus</strong> 基准测试。</li><li>模型规模：提出两种变体，<strong>MINT-30M</strong>（约3千万参数）和 <strong>MINT-4B</strong>（约40亿参数，其中动作专家约3亿参数）。</li><li>训练资源：文中提到了两种模型的训练，<strong>MINT-4B</strong> 使用了预训练的 <strong>PaliGemma-2.6B</strong> 和 <strong>SigLIP</strong> 视觉编码器。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：在多个模拟机器人操作基准测试以及一个真实机器人系统上进行。</li><li>主要评估指标：<strong>任务成功率</strong>、<strong>长序列任务完成率</strong>、<strong>在多种扰动（相机视角、光照、布局等）下的鲁棒性</strong>。</li><li>关键实验结果：在<strong>LIBERO</strong>、<strong>CALVIN</strong>、<strong>MetaWorld</strong> 上达到或超过了现有最先进方法（如 <strong>π₀.₅</strong>、<strong>UniVLA</strong>、<strong>OpenVLA-OFT</strong>）的性能。</li><li>在<strong>LIBERO-Plus</strong> 鲁棒性测试中，<strong>MINT-4B</strong> 的平均成功率达到 <strong>80.1%</strong>，显著优于最强的基线模型 <strong>OpenVLA-OFT（71.4%）</strong> 和 <strong>π₀.₅（65.0%）</strong>。</li><li><strong>单样本迁移</strong>实验显示，通过意图令牌注入的方法（<strong>MINT-Zero-30M</strong>）在新任务、新布局和扩展时域任务上的平均成功率高达 <strong>77%</strong>，远超单样本微调的基线（<strong>17%</strong>）。</li><li>真实机器人实验在仅需约20次演示/任务的条件下，表现优于 <strong>π₀.₅</strong> 基线 <strong>29%</strong>。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

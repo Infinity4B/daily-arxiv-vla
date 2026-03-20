@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UP-VLA: A Unified Understanding and Prediction Model for Embodied Agent - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了UP-VLA (Unified Understanding and Prediction Model for Embodied Agent)，一种用于具身智能体的统一理解与预测模型。作者指出，现有的视觉-语言-动作 (VLA) 模型通常依赖于预训练的视觉-语言模型 (VLM)，虽然VLMs提供了丰富的语义知识，但它们往往关注高层语义内容而忽略了低层特征，限制了模型捕获对机器人控制至关重" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2501.18867">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">UP-VLA: A Unified Understanding and Prediction Model for Embodied Agent</h1>
+          <div class="detail-meta">2025-01-31 · <a href="http://arxiv.org/abs/2501.18867" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2501.18867" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2501.18867</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>论文作者为 Jianke Zhang, Yanjiang Guo, Yucheng Hu, Xiaoyu Chen, Xiang Zhu, Jianyu Chen。论文中未明确提及具体的研究单位或机构。</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了UP-VLA (Unified Understanding and Prediction Model for Embodied Agent)，一种用于具身智能体的统一理解与预测模型。作者指出，现有的视觉-语言-动作 (VLA) 模型通常依赖于预训练的视觉-语言模型 (VLM)，虽然VLMs提供了丰富的语义知识，但它们往往关注高层语义内容而忽略了低层特征，限制了模型捕获对机器人控制至关重要的详细视觉和空间信息的能力。为了解决这一问题，UP-VLA引入了一种新的训练范式，将多模态理解和未来预测目标相结合。该模型旨在同时增强高层语义理解和低层空间理解，实验证明其在模拟和真实世界的操作任务中均取得了显著的性能提升，特别是在Calvin ABC-D基准上相比之前的最先进方法实现了33%的改进。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>受近期对VLMs局限性研究的启发，将包含丰富细节信息和动态上下文的视频数据集集成到VLA模型的预训练中，以增强其能力。</li><li>引入了一种新的VLA模型训练范式，结合了视觉-语言理解和未来预测目标，使模型能够捕获具身智能体所需的高级语义和低层视觉模式。</li><li>在模拟和真实世界的操作任务中实现了成功率的显著提升。此外，通过消融研究验证了两种预训练方法的有效性。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>UP-VLA方法的核心是构建一个统一的模型，该模型能够处理多模态理解、视觉预测和动作学习。</p>
+<ol><li><strong>模型骨干</strong>:</li></ol>
+<p> - 使用Phi-1.5作为基础大语言模型。</p>
+<p> - 对于多模态理解任务，使用CLIP-ViT作为连续视觉编码器，将图像特征投影到语言嵌入空间。</p>
+<p> - 对于视觉预测任务，使用VQ-GAN作为离散图像编码器，直接预测未来的离散图像token。</p>
+
+<ol><li><strong>连接视觉预测与多模态理解</strong>:</li></ol>
+<p> - 通过统一的提示和注意力机制，使模型能够处理多种任务。</p>
+<p> - <strong>多模态理解</strong>: 图像的连续token被放置在语言token之前，并通过修改因果注意力掩码，使图像token之间可以相互关注。</p>
+<p> - <strong>未来视觉预测</strong>: 当前观测的离散图像token被放置在语言指令之后，使模型在关注所有先前信息后预测未来图像token。</p>
+
+<ol><li><strong>通过联合预测与理解增强动作学习</strong>:</li></ol>
+<p> - 模型在执行动作时，不仅输出动作序列，还输出对未来观测的预测。</p>
+<p> - 输入指令被扩展，加入了模型自身生成的场景描述 <code>L' = [E_1(O_t'), π_θ^{MMU}(O_t, L_prompt), L]</code>，使得动作决策能够同时利用高层次的语义理解和对当前场景的低层次描述。</p>
+<p> - 最终动作通过一个小型策略头生成，该策略头由一个单层注意力模块 (MAP) 和一个线性层 (MLP) 组成。</p>
+
+<ol><li><strong>训练策略</strong>:</li></ol>
+<p> - <strong>训练流程</strong>: 分为两个阶段。第一阶段是预测与理解预训练，混合使用机器人数据（Bridge数据集，25k演示）用于未来预测和图文对数据（LLaVA-tuning-665k）用于增强理解能力。第二阶段是带动作的微调，在下游具身任务上对模型进行微调，同时继续混合图文对数据以保留多模态理解能力。</p>
+<p> - <strong>训练目标</strong>: 包含三个建模目标：用于多模态理解的语言建模、用于视觉预测的图像建模、以及用于具身任务的动作建模。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>:</li></ul>
+<p> - <strong>预训练</strong>: 使用了Bridge数据集（包含25k个机械臂演示轨迹）进行未来预测任务的训练；使用了LLaVA-tuning-665k数据集（包含665k个图像-文本对）进行多模态理解能力的训练。</p>
+<p> - <strong>微调与评估</strong>: 在Calvin数据集上进行下游任务的微调和评估。附录中提到了一个用于真实世界评估的Manipulation Dataset。</p>
+<ul><li><strong>训练资源</strong>:</li></ul>
+<p> - 论文未明确提及所使用的具体硬件资源（如GPU类型和数量）。模型的骨干网络从Show-o模型进行初始化。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>:</li></ul>
+<p> - <strong>模拟环境</strong>: 在Calvin模拟环境中进行评估，具体测试了ABC->D和ABCD->D泛化基准。</p>
+<p> - <strong>真实世界环境</strong>: 在真实的机器人平台上进行评估，区分了<code>real-seen</code>（已见任务）、<code>real-unseen</code>（未见任务，测试语义泛化能力）和<code>real-precise</code>（需要精确控制的任务）三种设置。</p>
+<ul><li><strong>评估指标</strong>:</li></ul>
+<p> - <strong>成功率</strong>: 主要评估指标是任务执行的成功率。在Calvin基准上，衡量的是长序列任务的成功率；在真实世界任务中，衡量的是单个或序列任务的成功完成情况。论文报告的33%性能提升是在Calvin ABC-D基准上的成功率提升。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

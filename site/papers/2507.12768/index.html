@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AnyPos: Automated Task-Agnostic Actions for Bimanual Manipulation - VLA 论文精选</title>
+    <meta name="description" content="本文提出一种任务无关动作（task-agnostic action）范式，将动作执行与任务条件解耦，以提升可扩展性和效率。为此，设计了ATARA数据收集框架和AnyPos模型：ATARA通过脚本策略自动生成任务无关数据，收集速度比人工操作快30倍；AnyPos作为逆动力学模型，通过手臂解耦估计和方向感知解码器从任务无关数据学习动作预测。实验表明，该方法在动作预测准确率上提升51%，真实世界任务成功" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2507.12768">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">AnyPos: Automated Task-Agnostic Actions for Bimanual Manipulation</h1>
+          <div class="detail-meta">2025-07-17 · <a href="http://arxiv.org/abs/2507.12768" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2507.12768" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2507.12768</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>清华大学计算机科学与技术系、人工智能研究院、清华-博世联合机器学习中心</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出一种任务无关动作（task-agnostic action）范式，将动作执行与任务条件解耦，以提升可扩展性和效率。为此，设计了ATARA数据收集框架和AnyPos模型：ATARA通过脚本策略自动生成任务无关数据，收集速度比人工操作快30倍；AnyPos作为逆动力学模型，通过手臂解耦估计和方向感知解码器从任务无关数据学习动作预测。实验表明，该方法在动作预测准确率上提升51%，真实世界任务成功率提升30-40%。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>任务无关动作范式：解耦动作与特定任务，降低数据采集成本。</li><li>ATARA框架：自动化、可扩展的任务无关数据收集，无人工干预。</li><li>AnyPos模型：引入手臂解耦估计和方向感知解码器（DAD），提升学习效率和精度。</li><li>两阶段框架：结合视频生成模型（语义先验）和逆动力学模型（物理控制），实现跨任务泛化。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>任务无关动作数据</strong>：</li></ol>
+<p> - 定义为不依赖任务指令或奖励的轨迹，直接建模 \(p(\text{action} \mid \text{image})\)。</p>
+<p> - 理论推导：任务特定动作 \(p(a \mid x, l)\) 可分解为任务特定图像生成 \(p(x \mid x_0, l)\) 与任务无关动作 \(p(a \mid x)\) 的乘积（公式4）。</p>
+<ol><li><strong>ATARA数据收集</strong>：</li></ol>
+<p> - 使用脚本策略 uniformly 探索双臂机器人的立方工作空间，生成610k图像-动作对。</p>
+<ol><li><strong>AnyPos模型</strong>：</li></ol>
+<p> - <strong>手臂解耦估计</strong>：通过空间分割（flood-fill 和对称线）隔离单臂区域，减少假设空间，提升精度约20%。</p>
+<p> - <strong>方向感知解码器（DAD）</strong>：对齐视觉特征（DINOv2）与物理运动方向（关节角度、连杆方向），增强鲁棒性，再提升20%性能。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>训练数据</strong>：ATARA生成的610k图像-动作对（双臂14维动作空间）。</li><li><strong>测试数据</strong>：真实世界收集的2.5k图像-动作对（包含未见技能和物体）。</li><li><strong>训练资源</strong>：未明确细节，但涉及大规模数据集和预训练视觉骨干（如DINOv2），需高性能计算资源。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>动作预测评估</strong>：</li></ol>
+<p> - 环境：真实世界测试集（未见任务）。</p>
+<p> - 指标：动作预测准确率（AnyPos: 57.13%，比基线高51%）。</p>
+<ol><li><strong>真实世界重放评估</strong>：</li></ol>
+<p> - 环境：物理机器人执行提升、抓取、点击等任务。</p>
+<p> - 指标：任务成功率（AnyPos-ATARA: 92.59%，比人工数据高33%）。</p>
+<ol><li><strong>视频生成模型部署</strong>：</li></ol>
+<p> - 环境：结合扩散视频模型进行动作验证。</p>
+<p> - 指标：下游任务成功率（30-40%提升）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

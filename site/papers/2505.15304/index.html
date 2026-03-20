@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Saliency-Aware Quantized Imitation Learning for Efficient Robotic Control - VLA 论文精选</title>
+    <meta name="description" content="论文研究单位 Hanyang University, Hyundai Motor Company, Seoul, Republic of Korea 论文概述 本文提出显著性感知量化模仿学习（SQIL）方法，用于高效机器人控制。深度神经网络策略模型（如视觉-语言-动作模型）在复杂决策中表现出色，但模型规模扩大导致计算开销增加，难以在资源受限设备（如机器人操作、自动驾驶）上部署。SQIL结合量化感知" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2505.15304">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Saliency-Aware Quantized Imitation Learning for Efficient Robotic Control</h1>
+          <div class="detail-meta">2025-05-21 · <a href="http://arxiv.org/abs/2505.15304" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2505.15304" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2505.15304</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>论文研究单位</p>
+<p>Hanyang University, Hyundai Motor Company, Seoul, Republic of Korea</p>
+
+<p>论文概述</p>
+<p>本文提出显著性感知量化模仿学习（SQIL）方法，用于高效机器人控制。深度神经网络策略模型（如视觉-语言-动作模型）在复杂决策中表现出色，但模型规模扩大导致计算开销增加，难以在资源受限设备（如机器人操作、自动驾驶）上部署。SQIL结合量化感知训练与选择性损失加权策略，通过显著性分数识别任务关键状态并在训练损失中强调这些状态，从而在低比特精度下保持决策保真度。实验表明，SQIL在多个模拟基准、真实任务和跨域任务（自动驾驶、物理模拟）中恢复全精度性能：例如，在机器人操作LIBERO基准上，4-bit权重量化模型在边缘GPU实现2.5倍加速和2.5倍节能；在自动驾驶NoCrash基准上，4-bit权重和激活量化策略保持全精度性能，在低端GPU实现3.7倍加速和3.1倍节能，展示了其在资源受限设备上部署大规模策略的潜力。</p>
+
+<p>论文核心贡献点</p>
+<p>首次系统研究量化模仿学习，识别任务关键状态的重要性，发现量化策略失败主要源于物理交互中的粗粒度控制，解释朴素量化失败原因。</p>
+<p>提出基于策略的关键状态检测方法SIS，利用策略动作敏感性识别任务关键状态，超越传统视觉-语言关键帧检测器。</p>
+<p>设计SQIL框架，将4-bit量化感知训练与SIS加权损失结合，实现2-4倍加速和节能，同时成功率保持在全精度基线1%以内。</p>
+<p>在机器人操作、自动驾驶和MuJoCo控制等跨域任务中进行广泛验证，证实SQIL在模拟和真实环境中的通用性。</p>
+
+<p>论文方法描述</p>
+<p>SQIL包含两个核心组件：显著性状态重要性评分（SIS）和量化鲁棒动作蒸馏（QRD）。SIS通过测量视觉扰动下的动作差异量化状态重要性，公式为 $S_{\pi}(s_{t},k) = \frac{1}{2} \\|\pi(s_{t}) - \pi(\phi(s_{t},k)) \\|^{2}$，平均分数 $SIS^{s_{t}}_{\pi}$ 越高表示状态越关键，如抓取或释放物体时刻；QRD在量化感知训练中，对SIS识别的高重要性状态施加更高损失权重，使量化策略更贴近全精度策略在关键状态下的决策。训练时从全精度策略初始化量化策略，计算SIS后，循环N个epoch遍历专家数据，更新量化参数。</p>
+
+<p>论文使用数据集和训练资源</p>
+<p>数据集包括LIBERO机器人操作基准（1700个模拟episode用于微调OpenVLA）、NoCrash自动驾驶基准（用于CILRS模型）和D4RL物理模拟基准（用于MuJoCo控制），并涉及真实世界任务。训练资源使用预训练模型如OpenVLA（970k episode预训练后LoRA微调）、CILRS和D4RL策略，量化至4-bit权重或权重-激活；训练超参数（如学习率）与全精度训练一致，硬件未明确指定。</p>
+
+<p>论文使用的评估环境和评估指标</p>
+<p>评估环境涵盖模拟环境（LIBERO、NoCrash、D4RL）和真实机器人任务，硬件平台包括边缘GPU（机器人操作）和低端GPU（自动驾驶）。主要评估指标为成功率（如LIBERO平均成功率），次要指标包括动作差异（L2-norm）、推理速度加速比（如2.5x）和节能比（如2.5x），并测试环境变化下的泛化性能。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mantis: A Versatile Vision-Language-Action Model with Disentangled Visual Foresight - VLA 论文精选</title>
+    <meta name="description" content="本文提出了一种名为 Mantis 的视觉-语言-动作 (VLA) 模型，旨在解决现有 VLA 模型面临的挑战：直接预测高维视觉状态会分散模型容量并带来高昂的训练成本，而压缩视觉状态则会引入信息瓶颈，同时现有方法常因忽视语言监督而导致理解与推理能力不佳。Mantis 引入了核心创新——解耦视觉预测 (DVF)，通过结合元查询和扩散 Transformer (DiT) 头，将视觉预测任务与主干网络解耦" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.16175">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Mantis: A Versatile Vision-Language-Action Model with Disentangled Visual Foresight</h1>
+          <div class="detail-meta">2025-11-20 · <a href="http://arxiv.org/abs/2511.16175" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.16175" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.16175</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>上海交通大学 (SJTU), 上海人工智能实验室 (SII), 南京邮电大学 (NJUPT), 复旦大学 (FDU), BOSCH。</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了一种名为 Mantis 的视觉-语言-动作 (VLA) 模型，旨在解决现有 VLA 模型面临的挑战：直接预测高维视觉状态会分散模型容量并带来高昂的训练成本，而压缩视觉状态则会引入信息瓶颈，同时现有方法常因忽视语言监督而导致理解与推理能力不佳。Mantis 引入了核心创新——解耦视觉预测 (DVF)，通过结合元查询和扩散 Transformer (DiT) 头，将视觉预测任务与主干网络解耦。当前视觉状态通过残差连接提供给 DiT，使得元查询能自动捕捉描绘视觉轨迹的潜在动作，从而提升显式动作学习。这种解耦设计减轻了主干网络的负担，使其能通过语言监督保持理解和推理能力。实验表明，在 LIBERO 基准上微调后，Mantis 取得了 96.7% 的成功率，并在真实世界评估中表现出优于基线模型的指令跟随、泛化和推理能力。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出了解耦视觉预测 (DVF)，为动作预测提供简洁且具有指导性的前瞻线索，并构建了新的 VLA 模型 Mantis。</li><li>设计了用于模态融合的渐进式训练方案，使 Mantis 能够有效地整合动作预测与语言理解。</li><li>Mantis 在 LIBERO 基准上实现了 96.7% 的成功率，并在真实世界机器人实验中展示了卓越的指令跟随能力。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>Mantis 的方法论包含四个主要部分：</p>
+<ol><li><strong>模型概述</strong>：模型由一个 VLM 主干网络、一个连接器、一个 DVF 头和一个动作头组成。主干网络接收语言指令和当前视觉观察，并与可学习的潜在动作查询 ([LAT]) 交互。DVF 头接收主干网络输出和当前视觉状态（通过残差连接），用于预测未来的视觉状态。动作头使用可学习的动作查询 ([ACT]) 从输入和 [LAT] 查询中提取信息，以生成显式动作序列。</li><li><strong>模型规范</strong>：主干网络采用 Qwen2.5-VL。DVF 头采用高效的文本到图像生成模型 Sana (一个 DiT)。连接器包含 12 层 Transformer 编码器和一个投影层。动作头同样基于 DiT 结构。</li><li><strong>渐进式训练</strong>：训练分为三个阶段以稳定融合多模态信息。</li></ol>
+<p> - <strong>阶段1：多时差视觉训练</strong>：在 SSV2 人类操作视频数据集上预训练，仅训练 DVF 头和 [LAT] 查询，目标是预测未来帧，让模型学习通用操作技能。</p>
+<p> - <strong>阶段2：视觉-动作联合训练</strong>：在 DROID 机器人演示数据集上训练，引入动作损失，并解冻动作查询。</p>
+<p> - <strong>阶段3：语言监督混合训练</strong>：联合使用 38 个多模态数据集和 DROID 数据进行训练，解冻主干网络并引入语言损失，以保持模型的语义理解与推理能力。</p>
+<ol><li><strong>自适应时间集成 (ATE)</strong>：一种推理时优化策略，用于平衡计算效率和运动稳定性。它动态识别与指令相关的“目标补丁”和发生显著变化的“动态补丁”。当二者重叠时（表示精细操作），启用时间集成以增强稳定性；否则，跳过集成以节省计算开销。该模型变体称为 Mantis-ATE。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - <strong>预训练</strong>：SSV2 数据集（约 220K 个人类操作视频），DROID 数据集（76K 个机器人演示），以及 38 个多模态数据集（用于图像-文本对）。</p>
+<p> - <strong>微调</strong>：LIBERO 模拟基准数据集。</p>
+<p> - <strong>真实世界实验</strong>：在三个自定义场景中收集的 100 个远程操作演示数据集。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - <strong>模型规模</strong>：总计 58 亿参数（主干网络 3.7B，DVF 头 1.4B，动作头 0.3B，VAE 0.3B）。</p>
+<p> - <strong>优化器</strong>：使用 AdamW 优化器，权重衰减为 0.1，梯度裁剪为 0.5。</p>
+<p> - <strong>训练框架</strong>：使用 DeepSpeed 进行高效分布式训练。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>模拟环境</strong>：LIBERO 基准，包含四个任务套件（Spatial, Object, Goal, Long）。</p>
+<p> - <strong>真实世界环境</strong>：Agilex 机器人平台。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>LIBERO 基准</strong>：成功率 (Success Rate, SR)，范围为 0 到 100，越高越好。</p>
+<p> - <strong>真实世界实验</strong>：平均成功执行次数（每个指令执行 10 次，取平均成功数）。</p>
+<p> - <strong>Mantis-ATE 效率</strong>：推理次数 和成功率 (SR)，用于评估计算效率和任务性能。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

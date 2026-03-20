@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Team Xiaomi EV-AD VLA: Learning to Navigate Socially Through Proactive Risk Perception -- Technical Report for IROS 2025 RoboSense Challenge Social Navigation Track - VLA 论文精选</title>
+    <meta name="description" content="论文提出了基于主动风险感知的社交导航方法，针对动态室内环境中的机器人导航任务。该方法在Falcon框架基础上创新性地引入了主动风险感知模块（Proactive Risk Perception Module），通过预测周围人类的碰撞风险评分来增强机器人的空间感知能力。在IROS 2025 RoboSense挑战赛中，该方法获得第二名。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.07871">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Team Xiaomi EV-AD VLA: Learning to Navigate Socially Through Proactive Risk Perception -- Technical Report for IROS 2025 RoboSense Challenge Social Navigation Track</h1>
+          <div class="detail-meta">2025-10-09 · <a href="http://arxiv.org/abs/2510.07871" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.07871" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.07871</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li><strong>香港科技大学（广州）</strong></li><li><strong>清华大学</strong></li><li><strong>中国科学院自动化研究所</strong></li><li><strong>小米电动汽车</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了基于主动风险感知的社交导航方法，针对动态室内环境中的机器人导航任务。该方法在Falcon框架基础上创新性地引入了<strong>主动风险感知模块（Proactive Risk Perception Module）</strong>，通过预测周围人类的碰撞风险评分来增强机器人的空间感知能力。在IROS 2025 RoboSense挑战赛中，该方法获得<strong>第二名</strong>。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>创新性风险感知模块</strong>：提出基于距离的连续风险评分机制，将社交空间分为危险区、警告区和安全区</li><li><strong>辅助学习优化</strong>：通过密度监督信号提升传统强化学习在社交导航中的表现</li><li><strong>高效集成方案</strong>：风险模块与Falcon共享状态编码器，训练时提升导航能力，推理时零额外开销</li><li><strong>实际竞赛验证</strong>：在Social-HM3D数据集上优于Falcon基线方法7.46%</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<h2 class="section-title">核心架构</h2>
+<ul><li><strong>主策略网络</strong>：处理RGB-D观测和GPS+指南针信息，通过ResNet-50编码器提取视觉特征，2层LSTM处理时序依赖</li><li><strong>风险感知模块</strong>：轻量级神经网络(公式10)，基于LSTM隐藏状态预测风险分数</li><li><strong>风险评分公式</strong> (公式11)：</li></ul>
+<p> - 危险区(d<2m)：风险评分=1.0</p>
+<p> - 警告区(2m≤d<4m)：风险评分线性衰减</p>
+<p> - 安全区(d≥4m)：风险评分=0</p>
+<h2 class="section-title">训练优化</h2>
+<ul><li><strong>总损失函数</strong> (公式12)：结合主导航损失、Falcon辅助损失和风险感知损失</li><li><strong>DD-PPO算法</strong>：在4块A40 GPU上训练75M步</li><li><strong>风险权重β_risk=0.1</strong>：平衡风险感知与其他目标</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<h2 class="section-title">数据集</h2>
+<ul><li><strong>Social-HM3D</strong>：基于HM3D构建的844个真实室内场景</li><li><strong>数据特性</strong>：</li></ul>
+<p> - 人类数量按场景面积比例校准</p>
+<p> - 人类运动速度0.8-1.2倍机器人速度</p>
+<p> - 采用ORCA算法实现避障</p>
+<p> - 训练集/验证集/测试集比例为：大规模/1000 эпизодов/500 эпизодов</p>
+<h2 class="section-title">计算资源</h2>
+<ul><li><strong>4块NVIDIA A40 GPU</strong></li><li><strong>8并行环境训练</strong></li><li><strong>约75M训练步数</strong></li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<h2 class="section-title">评估环境</h2>
+<ul><li><strong>IROS 2025 RoboSense挑战赛</strong>：Track 2社交导航轨道</li><li><strong>测试数据</strong>：私有测试集约500个未见场景</li><li><strong>约束条件</strong>：</li></ul>
+<p> - 仅使用RGB-D观测和里程计</p>
+<p> - 无全局地图或特权信息</p>
+<p> - 禁止人类位置预测器</p>
+<h2 class="section-title">评估指标</h2>
+<ul><li><strong>成功率和路径效率</strong>：</li></ul>
+<p> - 成功率(SR)：到达目标1m内百分比</p>
+<p> - 加权路径长度(SPL)：相对最优路径的效率评估</p>
+<ul><li><strong>社交规范指标</strong>：</li></ul>
+<p> - 个人空间合规性(PSC)：与人类保持≥0.5m距离的时长百分比</p>
+<p> - 人类碰撞率(H-Coll)：发生人类碰撞的剧集百分比</p>
+<ul><li><strong>总成绩计算</strong> (公式14)：Total = 0.4×SR + 0.3×SPL + 0.3×PSC</li></ul>
+<h2 class="section-title">竞赛结果</h2>
+<ul><li>团队排名：<strong>16支队伍中第2名</strong></li><li>总分：0.6994（较Falcon基线(0.6248)提升11.94%）</li><li>核心指标：SR=0.656 \|SPL=0.5958 \|PSC=0.8608 \|H-Coll=0.33</li><li>最佳团队差距：仅0.0028分差</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

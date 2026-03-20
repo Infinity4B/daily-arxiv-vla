@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EvoVLA: Self-Evolving Vision-Language-Action Model - VLA 论文精选</title>
+    <meta name="description" content="论文提出EvoVLA框架，用于解决视觉-语言-行动（VLA）模型在长视野机器人操作中的“阶段幻觉”问题（即智能体通过利用粗糙的评估信号来走捷径多步骤任务，报告高进展但实际任务未完成）。该框架通过三个协同组件实现：阶段对齐奖励（SAR）使用Gemini生成的硬负例进行三元组对比学习；基于位姿的对象探索（POE）将好奇心锚定在相对对象-夹爪位姿而非像素上；以及具有选择性上下文和门控融合的长期记忆，用于" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.16166">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">EvoVLA: Self-Evolving Vision-Language-Action Model</h1>
+          <div class="detail-meta">2025-11-20 · <a href="http://arxiv.org/abs/2511.16166" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.16166" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.16166</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Peking University</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出EvoVLA框架，用于解决视觉-语言-行动（VLA）模型在长视野机器人操作中的“阶段幻觉”问题（即智能体通过利用粗糙的评估信号来走捷径多步骤任务，报告高进展但实际任务未完成）。该框架通过三个协同组件实现：阶段对齐奖励（SAR）使用Gemini生成的硬负例进行三元组对比学习；基于位姿的对象探索（POE）将好奇心锚定在相对对象-夹爪位姿而非像素上；以及具有选择性上下文和门控融合的长期记忆，用于稳定内在奖励塑造。在Discoverse-L基准测试（包含三个多阶段任务）上的评估表明，EvoVLA平均成功率比最强基线高10.2个百分点，达到69.2%，样本效率提高1.5倍，阶段幻觉率从38.5%降至14.8%。真实机器人部署的平均成功率为54.6%。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出自监督长视野学习方法EvoVLA，结合SAR与Gemini驱动的硬负例、POE提供密集且语义一致的内在反馈，无需额外标签即可实现可扩展的VLA微调。</li><li>通过上下文选择的长期记忆机制（含选择性注意和门控融合）解决长视野遗忘问题，并结合Discoverse-L基准（含三个多阶段操作任务，18–74阶段），为社区提供研究长视野操作记忆的方法和数据集。</li><li>广泛实验验证：EvoVLA在Discoverse-L上成功率69.2%（+10.2点 vs. OpenVLA-OFT），样本效率达1.5×，真实机器人成功率54.6%（+11.0点 vs. OpenVLA-OFT），幻觉率降至14.8%。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>阶段对齐奖励（SAR）</strong>：</li></ol>
+<p> - 三元组文本生成：使用Gemini 2.5 Pro为每阶段生成正例、互斥负例和反事实硬负例（如“抓取非目标对象”的谓词）。</p>
+<p> - 图像-文本对比评分：通过CLIP编码器计算阶段对齐分数 \( u_k(t) = \sigma(\tau[s_k^+(t) - \max\{s_k^-(t), s_k^h(t)\}]) \)，其中 \( s_k^+ \) 为正例得分，\( s_k^- \) 和 \( s_k^h \) 为负例和硬负例得分。</p>
+<p> - 时间平滑：维护滑动平均 \( \bar{u}_k(t) = (1-\alpha)\bar{u}_k(t-1) + \alpha u_k(t) \)，阶段奖励 \( r_t^{\text{stage}} = \bar{u}_{\kappa_t}(t) - \bar{u}_{\kappa_t}(t-1) \)，阈值触发阶段推进。</p>
+<ol><li><strong>基于位姿的对象探索（POE）</strong>：</li></ol>
+<p> - 潜在操作动力学：将操作状态表示为 \( z_t = \psi(T_{\text{ee}}^{-1}T_{\text{obj}}) \in \mathbb{R}^6 \)（相对位姿）。</p>
+<p> - 训练轻量级MLP前向/逆模型：\( \hat{z}_{t+1} = f_\phi(z_t, a_t) \) 和 \( \hat{a}_t = g_\psi(z_t, z_{t+1}) \)。</p>
+<p> - 任务相关内在奖励：好奇心奖励 \( r_t^{\text{cur}} = \frac{\eta}{2} \\|\text{sg}(\hat{z}_{t+1}) - z_{t+1}\\|_2^2 \)（sg为停止梯度），基础进展奖励 \( r_t^{\text{base}} = \text{ReLU}(\overline{\mathcal{L}_F}(t-1) - \overline{\mathcal{L}_F}(t)) \)。</p>
+<ol><li><strong>长期记忆</strong>：</li></ol>
+<p> - 上下文选择：通过注意力机制从记忆库 \( \mathcal{M} \) 中选择Top-K历史项作为上下文令牌。</p>
+<p> - 门控融合：计算门控信号 \( g_t^{\text{mem}} = \sigma(w_g^\top [\hat{h}_t; x_t]) \)，融合当前表征与上下文 \( \tilde{x}_t = (1-g_t^{\text{mem}})x_t + g_t^{\text{mem}}\hat{h}_t \)。</p>
+<p> - 奖励调制：进展奖励 \( r_t^{\text{prog}} = g_t^{\text{mem}} \cdot r_t^{\text{base}} \)，抑制不稳定模式的虚假信号。</p>
+<ol><li><strong>训练目标</strong>：联合优化PPO损失、世界模型损失和熵正则化：\( \mathcal{L} = \mathcal{L}_{\text{PPO}}(\tilde{r}) + \lambda_F \mathcal{L}_F + \lambda_I \mathcal{L}_I - \lambda_{\text{ent}} H(\pi) \)，其中组合奖励 \( \tilde{r}_t = r_t^e + \rho (r_t^{\text{stage}} + r_t^{\text{cur}} + r_t^{\text{prog}}) \)。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：Discoverse-L基准（基于DISCOVERSE模拟器和AIRBOT-Play平台），包含三个多阶段操作任务：</li></ul>
+<p> - Block Bridge（74阶段）：放置两根横杆形成桥状结构并填充积木。</p>
+<p> - Stack（18阶段）：顺序堆叠三个彩色积木。</p>
+<p> - Jujube-Cup（19阶段）：将枣放入杯子并移至盘子。</p>
+<p> 每任务生成50个随机初始条件的演示轨迹，存储于RLDS格式，阶段语义由Gemini 2.5 Pro通过视频驱动工作流生成。</p>
+<ul><li><strong>训练资源</strong>：硬件为4×NVIDIA H20 GPU（96GB VRAM），软件环境为8个并行DISCOVERSE环境，每个种子训练200万步，共3个随机种子，耗时约24小时/种子。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>仿真</strong>：DISCOVERSE模拟器中的Discoverse-L任务，每任务50个测试回合，固定回合预算400步（复杂任务约150–250步完成）。</p>
+<p> - <strong>真实世界</strong>：物理AIRBOT-Play机器人部署，包括Sim2Real迁移测试（三个任务）和新任务训练（堆叠四个杯子并插入香蕉形物体）。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>成功率（SR）</strong>：400步内完成任务的百分比。</p>
+<p> - <strong>样本效率</strong>：达到50%成功率所需的环境步数。</p>
+<p> - <strong>幻觉率（HR）</strong>：高VLM分数但实际未完成的阶段占比，公式为 \( \text{HR} = \frac{\mathbb{E}[\mathbb{1}\{u_k(t) > \theta \land c_k(t)=0\}]}{\mathbb{E}[\mathbb{1}\{u_k(t) > \theta\}]} \)，其中 \( \theta = 0.7 \)，\( c_k(t) \) 为地面真值完成指示器（仅用于评估）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

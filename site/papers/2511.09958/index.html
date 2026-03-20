@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Audio-VLA: Adding Contact Audio Perception to Vision-Language-Action Model for Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="本文提出了Audio-VLA，一种将接触音频感知融入视觉-语言-行动模型的多模态机器人操控策略。传统VLA模型仅依赖视觉感知，在感知接触事件和动态操作过程方面存在根本性局限。Audio-VLA通过引入接触音频来克服这一限制，利用音频信号提供视觉无法捕捉的物理交互信息，如接触质量和材料属性。此外，本文还提出了一种新的评估指标——任务完成率，用于更系统地评估机器人在动态操作过程中的感知能力。实验在LI" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.09958">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Audio-VLA: Adding Contact Audio Perception to Vision-Language-Action Model for Robotic Manipulation</h1>
+          <div class="detail-meta">2025-11-13 · <a href="http://arxiv.org/abs/2511.09958" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.09958" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.09958</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>华东师范大学, 复旦大学</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了Audio-VLA，一种将接触音频感知融入视觉-语言-行动模型的多模态机器人操控策略。传统VLA模型仅依赖视觉感知，在感知接触事件和动态操作过程方面存在根本性局限。Audio-VLA通过引入接触音频来克服这一限制，利用音频信号提供视觉无法捕捉的物理交互信息，如接触质量和材料属性。此外，本文还提出了一种新的评估指标——任务完成率，用于更系统地评估机器人在动态操作过程中的感知能力。实验在LIBERO、RLBench仿真环境以及两个真实世界任务中验证了Audio-VLA的优越性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了Audio-VLA模型，这是首个将接触音频感知集成到VLA框架中的多模态操控策略，旨在克服纯视觉模型的感知局限。</li><li>提出了任务完成率这一新的评估指标，用于量化机器人在操控过程中对动态过程的感知和理解能力，而不仅仅评估最终结果。</li><li>构建了音频增强的仿真环境，通过在LIBERO和RLBench中引入基于物理碰撞的音频生成，为模型训练和评估提供了更真实的声学反馈。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>Audio-VLA模型架构包含四个主要部分：</p>
+<ol><li>多模态编码器：使用预训练的DINOv2和SigLIP作为视觉编码器，处理第三人称和手腕相机图像；使用经过ManiWAV数据集微调的AudioCLIP作为音频编码器，处理高频率的接触音频信号；使用一个MLP层编码机器人本体感觉状态（如关节角度）。</li><li>多模态投影器：通过线性层和MLP将视觉、音频和本体感觉特征对齐到统一的文本特征空间，形成一个时序序列。</li><li>语言模块：采用7B参数的Llama2作为骨干网络，将多模态特征序列与语言指令结合，进行认知推理，并解码出包含动作信息的隐藏状态。</li><li>动作头：使用一个四层的MLP，根据解码出的隐藏状态生成连续的机器人动作序列。</li></ol>
+
+<p>模型的训练目标是最小化预测动作序列与专家演示动作之间的平均L1损失。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> * <strong>仿真环境</strong>：LIBERO官方数据集和RLBench任务数据集（每个任务100个演示）。</p>
+<p> * <strong>真实世界</strong>：为两个任务（擦白板和舀燕麦）通过遥操作方式收集了40个演示数据。</p>
+<p> * <strong>音频预训练</strong>：使用ManiWAV数据集对音频编码器进行额外的微调。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> * 使用2块NVIDIA H20 GPU进行训练。</p>
+<p> * LoRA秩设置为32，训练步数根据任务在5万到10万之间，批大小为8，学习率为1e-4并采用余弦退火策略。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> * <strong>仿真环境</strong>：在音频增强的LIBERO和RLBench环境中进行评估。评估分为两种条件：标准环境（与训练环境相同）和领域偏移环境（随机改变光照和桌面材质颜色）。</p>
+<p> * <strong>真实世界环境</strong>：在AgileX Mobile ALOHA平台上进行评估，该平台配备双7-DOF Piper机械臂、手腕相机和安装在夹爪上的压电接触麦克风。评估分为见过环境（与训练条件相同）和未见过环境（使用不同颜色的记号笔或不同特性的燕麦）。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> * <strong>成功率</strong>：标准的二元任务成功率指标。</p>
+<p> * <strong>任务完成率</strong>：本文提出的新指标，用于衡量任务的完成进度，计算公式为 <code>TCR = 已完成进度 / 任务目标</code>。它是一个连续值，能更细致地评估模型对动态过程的理解能力。例如，擦白板任务的TCR是擦除标记的面积，舀燕麦任务的TCR是舀取的燕麦重量。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

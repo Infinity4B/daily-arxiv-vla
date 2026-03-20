@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLA-Pruner: Temporal-Aware Dual-Level Visual Token Pruning for Efficient Vision-Language-Action Inference - VLA 论文精选</title>
+    <meta name="description" content="本文针对视觉-语言-动作（VLA）模型在处理连续视觉流时计算开销大的问题，提出了一种名为VLA-Pruner的免训练、即插即用的视觉令牌剪枝方法。该方法结合了VLA模型的双系统特性（高层语义理解与底层动作执行），并利用机器人操作中的时间连续性，实现了高效推理。实验表明，在多个VLA架构和机器人任务上，该方法在保持精度的同时显著提升了计算效率。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.16449">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VLA-Pruner: Temporal-Aware Dual-Level Visual Token Pruning for Efficient Vision-Language-Action Inference</h1>
+          <div class="detail-meta">2025-11-20 · <a href="http://arxiv.org/abs/2511.16449" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.16449" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.16449</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>上海交通大学人工智能学院、中国科学技术大学、哈尔滨工业大学（深圳）、北京智源人工智能研究院（BAAI）</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文针对视觉-语言-动作（VLA）模型在处理连续视觉流时计算开销大的问题，提出了一种名为VLA-Pruner的免训练、即插即用的视觉令牌剪枝方法。该方法结合了VLA模型的双系统特性（高层语义理解与底层动作执行），并利用机器人操作中的时间连续性，实现了高效推理。实验表明，在多个VLA架构和机器人任务上，该方法在保持精度的同时显著提升了计算效率。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>双层次重要性标准</strong>：同时考虑视觉-语言预填充注意力（语义级相关性）和动作解码注意力（动作级重要性）。</li><li><strong>时间平滑机制</strong>：利用动作解码注意力的时间连续性，通过衰减窗口平均估计当前动作注意力。</li><li><strong>双层次令牌选择策略</strong>：基于最小冗余最大相关性（mRMR）原则，通过相关性最大化合并和冗余最小化过滤，自适应保留信息量高且多样化的视觉令牌。</li><li><strong>即插即用设计</strong>：无需重新训练，兼容主流VLA架构（如OpenVLA、π₀等）。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>双层次重要性评估</strong>：</li></ol>
+<p> - 语义级重要性：使用视觉-语言预填充阶段的注意力分数（公式2）。</p>
+<p> - 动作级重要性：通过时间平滑（指数衰减窗口平均）估计动作解码注意力（公式7）。</p>
+<ol><li><strong>令牌选择流程</strong>：</li></ol>
+<p> - <strong>双层次Top-k选择</strong>：分别获取语义和动作级重要令牌子集。</p>
+<p> - <strong>相关性最大化合并</strong>：取两个子集的并集作为候选池。</p>
+<p> - <strong>冗余最小化过滤</strong>：求解最大-最小多样性问题（公式8），通过贪心算法基于余弦距离（公式9）选择最终令牌子集。</p>
+<ol><li><strong>实现细节</strong>：在第3层Transformer层剪枝；窗口大小w=3，衰减率γ=0.8；warm-up w步以收集动作注意力历史。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - LIBERO：模拟机器人操作任务套件。</p>
+<p> - SIMPLER：多场景机器人评估基准。</p>
+<p> - 真实机器人数据：6-DoF xArm6机器人部署数据。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 免训练方法，无需额外训练数据或资源。</p>
+<p> - 依赖历史动作注意力进行在线估计，warm-up阶段需w=3步。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 模拟环境：LIBERO和SIMPLER基准测试。</p>
+<p> - 真实环境：xArm6物理机器人。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 任务成功率（Success Rate, %）：LIBERO的Spatial/Object/Goal/Long任务平均值。</p>
+<p> - 计算效率：</p>
+<p> - FLOPs（T）：浮点运算量。</p>
+<p> - 推理延迟（ms/action或ms/action-chunk）。</p>
+<p> - 加速比（Speedup, ×）：相对于未剪枝模型的推理速度倍率。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

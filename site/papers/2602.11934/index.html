@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robot-DIFT: Distilling Diffusion Features for Geometrically Consistent Visuomotor Control - VLA 论文精选</title>
+    <meta name="description" content="论文提出Robot-DIFT框架，旨在解决接触式机器人操作中视觉表示不匹配的问题：主流的判别式视觉编码器（如CLIP、DINOv2）侧重于语义不变性，但抑制了精细几何敏感性，而这对于毫米级精度控制至关重要。 核心方法是流形蒸馏，将预训练的生成式扩散模型（如Stable Diffusion）中的丰富几何先验知识，蒸馏到一个确定性的空间-语义特征金字塔网络（S2-FPN）中，从而获得兼具几何精度、推理" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.11934">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Robot-DIFT: Distilling Diffusion Features for Geometrically Consistent Visuomotor Control</h1>
+          <div class="detail-meta">2026-02-12 · <a href="http://arxiv.org/abs/2602.11934" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.11934" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.11934</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>达姆施塔特工业大学</strong> (Technical University of Darmstadt)</li><li><strong>卡尔斯鲁厄理工学院</strong> (Karlsruhe Institute of Technology)</li><li><strong>伦敦国王学院</strong> (King’s College London)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出<strong>Robot-DIFT</strong>框架，旨在解决接触式机器人操作中<strong>视觉表示不匹配</strong>的问题：主流的判别式视觉编码器（如CLIP、DINOv2）侧重于语义不变性，但抑制了精细几何敏感性，而这对于毫米级精度控制至关重要。</li><li>核心方法是<strong>流形蒸馏</strong>，将预训练的生成式扩散模型（如Stable Diffusion）中的丰富几何先验知识，蒸馏到一个确定性的<strong>空间-语义特征金字塔网络（S2-FPN）</strong>中，从而获得兼具几何精度、推理速度和时间稳定性的视觉主干网络。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li><strong>揭示了机器人感知中的关键表示不匹配问题</strong>：指出判别式视觉主干由于其语义不变性目标，会抑制接触式精细控制所需的几何敏感性。</li><li><strong>提出了流形蒸馏方法和S2-FPN学生架构</strong>：通过冻结的扩散教师模型，将几何先验蒸馏到单前向传播的确定性学生网络中，解决了直接使用扩散模型带来的随机性、高延迟和表示漂移问题。</li><li><strong>提供了在大型机器人数据集DROID上预训练的通用视觉主干</strong>：该主干融合了像素级空间保真度和高层语义，适用于指令跟随任务。</li><li><strong>实验验证了方法在几何一致性和控制性能上的优越性</strong>：在<strong>RoboCasa</strong>和<strong>LIBERO-10</strong>等多个基准测试中，性能超过包括VLA模型在内的强判别式基线，并成功部署于真实机器人。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>核心技术</strong>：采用<strong>流形蒸馏</strong>，使用预训练的<strong>Stable Diffusion v2.1</strong> U-Net作为冻结教师，其多尺度解码器特征作为监督信号。学生网络具有相同的U-Net结构，并添加了<strong>S2-FPN</strong>进行多尺度特征融合。学生以干净的图像潜变量作为输入，通过训练匹配教师在随机噪声步长下的特征流形。</li><li><strong>创新点与关键技术</strong>：</li></ul>
+<p> - <strong>S2-FPN学生架构</strong>：通过全局到精细的特征融合，将粗粒度语义上下文注入细粒度几何特征中，平衡“做什么”和“在哪里做”的信息。</p>
+<p> - <strong>冻结教师约束</strong>：通过余弦相似度损失对齐学生和教师的所有解码器层特征，防止在策略微调时发生表示漂移。</p>
+<p> - <strong>对齐权重退火</strong>：训练初期使用较强对齐约束，后期逐渐减弱，以平衡几何先验保持和任务特定适应。</p>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>主要预训练数据集</strong>：<strong>DROID</strong> (一个大规模真实世界机器人操作数据集)。</li><li><strong>评估数据集</strong>：<strong>RoboCasa</strong> (大规模模拟日常操作任务)、<strong>LIBERO-10</strong> (语言条件的长视野任务)。</li><li><strong>模型规模</strong>：教师模型为<strong>Stable Diffusion v2.1</strong> (约8.6亿参数)。学生网络具有相同的U-Net结构，并增加了轻量级的S2-FPN和投影头。</li><li><strong>训练资源</strong>：未在提供的原文中明确指定，但此类工作通常使用多块<strong>GPU</strong>进行训练。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：在模拟器(<strong>RoboCasa</strong>, <strong>LIBERO-10</strong>)和真实机器人(<strong>Franka Emika Panda</strong>)上进行评估。主要与判别式视觉主干(<strong>CLIP, SigLIP, DINOv2/v3</strong>)、<strong>VLA模型(OpenVLA, π₀)</strong> 和<strong>视频动作模型(UVA, UniPi)</strong> 进行比较。</li><li><strong>主要评估指标</strong>：<strong>任务成功率</strong>、<strong>推理速度（延迟）</strong>。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 在<strong>RoboCasa</strong>的24个任务上，Robot-DIFT平均成功率达<strong>0.49</strong>，优于所有基线（DINOv3: 0.33， 纯扩散特征DIFT: 0.38），并在18个任务上取得最佳成绩。</p>
+<p> - 在<strong>LIBERO-10</strong>上，Robot-DIFT取得最高成功率(<strong>0.93</strong>)，同时推理速度最快(<strong>0.01秒/轨迹</strong>)，显著优于UVA(0.90, 0.23秒)和π₀(0.85, 0.09秒)等模型。</p>
+<p> - <strong>真实机器人实验</strong>在四个需要递增几何精度的任务上验证了方法的有效性，特别是在高精度的“插针”和“按开关”任务中表现出色。</p>
+<p> - <strong>消融实验</strong>证实了多尺度特征融合和对齐权重退火策略的必要性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

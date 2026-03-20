@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spatial Traces: Enhancing VLA Models with Spatial-Temporal Understanding - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了一种名为“Spatial Traces”的新方法，旨在增强视觉-语言-动作（VLA）模型。该方法通过将历史关键点的视觉轨迹投影到深度图上，将空间信息和时间信息集成到一个统一的视觉提示中。这种设计使得模型能够同时捕捉空间和时间上下文，从而提高在复杂操作任务中的性能。在SimplerEnv环境中的实验表明，该方法仅需最少的训练数据即可实现性能提升，其平均任务完成成功率比SpatialVLA" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.09032">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Spatial Traces: Enhancing VLA Models with Spatial-Temporal Understanding</h1>
+          <div class="detail-meta">2025-08-12 · <a href="http://arxiv.org/abs/2508.09032" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.09032" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.09032</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>莫斯科物理理工学院 (MIPT), 俄罗斯多尔戈普鲁德内, 141701</p>
+<p>人工智能研究所 (AIRI), 俄罗斯莫斯科, 121170</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了一种名为“Spatial Traces”的新方法，旨在增强视觉-语言-动作（VLA）模型。该方法通过将历史关键点的视觉轨迹投影到深度图上，将空间信息和时间信息集成到一个统一的视觉提示中。这种设计使得模型能够同时捕捉空间和时间上下文，从而提高在复杂操作任务中的性能。在SimplerEnv环境中的实验表明，该方法仅需最少的训练数据即可实现性能提升，其平均任务完成成功率比SpatialVLA高出4%，比TraceVLA高出19%。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了一种名为“Spatial Traces”的方法，该方法能够让VLA模型通过单张图像同时利用环境中的空间和时间信息。</li><li>在SimplerEnv中的实验表明，仅用52条训练轨迹进行微调，该方法相较于SpatialVLA提升了4%的任务成功率，相较于TraceVLA提升了19%，证明了在数据收集困难的真实世界应用中，融合空间和时间信息的价值。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>该方法的核心是构建一个融合了空间和时间信息的视觉表示。具体来说，它包含两个主要组成部分：深度信息和视觉轨迹。首先，使用一个深度估计模型（如ZoeDepth）从当前观察中预测深度图。接着，使用一个轨迹预测模型（如Co-Tracker）从过去一系列观察中追踪并生成关键点的视觉轨迹。然后，将这些二维轨迹投影到当前预测的深度图上，形成一个带有轨迹标记的深度图。最后，原始的RGB观察图像和这个带有轨迹的深度图分别通过各自的图像处理器（如Siglip和Ego3D Positional Encoder）转换成嵌入向量，并将这两个嵌入向量相加，生成最终的视觉嵌入。这个融合的视觉嵌入与文本指令的嵌入一起被输入到VLA模型（如PaliGemma2）中，以预测下一步的动作。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：Bridge数据集的一个子集，包含52条来自真实机器人操作的轨迹，总计1969个步骤。</p>
+<p>训练资源：模型在单个NVIDIA TITAN RTX GPU上进行训练。训练采用了LoRA适配器，应用于模型的所有线性层。训练参数设置如下：学习率为5e-5，批次大小为1，训练周期为2，LoRA秩为32，优化器为AdamW。完成一个模型的训练大约需要2小时。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：SimplerEnv，一个基于Robosuite构建的虚拟环境，专门用于机器人操作任务。评估选取了四个代表性任务：“Put Spoon”（放勺子）、“Put Carrot”（放胡萝卜）、“Stack Blocks”（堆叠积木）和“Put Eggplant”（放茄子）。</p>
+<p>评估指标：主要使用两个指标：</p>
+<ol><li>目标条件成功率（GCS）：衡量智能体是否成功达到基本的任务完成条件（例如，将目标物体从桌面上拿起）。</li><li>成功率（SR）：衡量整个任务是否完全成功完成，达到最终的目标状态。</li></ol></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

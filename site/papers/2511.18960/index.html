@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AVA-VLA: Improving Vision-Language-Action models with Active Visual Attention - VLA 论文精选</title>
+    <meta name="description" content="论文指出现有的视觉-语言-行动模型通常基于视觉-语言模型，将每个时间步的视觉输入作为独立帧处理，这种隐式的马尔可夫决策过程建模未能有效利用历史上下文，在动态的序列决策中是次优的。为解决此问题，论文从部分可观察马尔可夫决策过程的视角重新构建了问题，提出了AVA-VLA框架。该框架引入一个循环状态作为代理信念状态的神经网络近似，并设计了主动视觉注意模块，利用该循环状态动态调制当前帧的视觉处理，使模型能" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.18960">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">AVA-VLA: Improving Vision-Language-Action models with Active Visual Attention</h1>
+          <div class="detail-meta">2025-11-24 · <a href="http://arxiv.org/abs/2511.18960" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.18960" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.18960</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>LiAuto Inc., School of Information Science and Technology, Beijing University of Technology, School of Data Science, The Chinese University of Hong Kong, Shenzhen</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文指出现有的视觉-语言-行动模型通常基于视觉-语言模型，将每个时间步的视觉输入作为独立帧处理，这种隐式的马尔可夫决策过程建模未能有效利用历史上下文，在动态的序列决策中是次优的。为解决此问题，论文从部分可观察马尔可夫决策过程的视角重新构建了问题，提出了AVA-VLA框架。该框架引入一个循环状态作为代理信念状态的神经网络近似，并设计了主动视觉注意模块，利用该循环状态动态调制当前帧的视觉处理，使模型能基于历史上下文主动过滤无关信息并聚焦于任务关键特征。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了新颖的AVA-VLA框架，通过受POMDP启发的方法，首次显式地解决了基于MDP的VLA模型中缺乏历史上下文的关键限制。</li><li>引入了主动视觉注意模块，利用循环状态来动态调制当前帧的视觉处理，以进行动作预测。</li><li>在模拟和真实世界任务中进行了全面评估，证明了AVA-VLA框架提升了VLA性能，并在多个机器人任务上取得了最先进的结果。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>AVA-VLA框架包含三个核心部分：</p>
+<ol><li><strong>问题重构建</strong>：将机器人操作任务从MDP重构建为POMDP。引入一个循环状态 r^{t-1} 作为代理信念状态的神经近似，该状态由上一时间步 t-1 的模型中间输出计算得出。策略预测不仅基于当前观测 x^t，还显式地基于循环状态 r^{t-1}。</li><li><strong>主动视觉注意模块</strong>：该模块接收当前观测和循环状态，通过交叉注意力机制和自注意力层，计算视觉标记的软权重 ω^t。这些权重被应用于语言模型主干所有层的注意力矩阵，动态增强或减弱不同视觉标记的重要性，使模型能根据历史信念主动聚焦于任务相关区域。</li><li><strong>训练与推理</strong>：训练采用截断的反向传播时间策略，以平衡计算可行性。损失函数包括动作块的平均绝对误差损失和对软权重均值的L2正则化惩罚。推理时，模型以完全循环的方式运行，在每个时间步更新循环状态。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - LIBERO 和 LIBERO+ 基准</p>
+<p> - CALVIN 基准（ABC到D的零样本泛化设置）</p>
+<p> - 真实世界任务：基于Mobile ALOHA双臂机器人的四个操作任务</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 基础模型：OpenVLA-OFT</p>
+<p> - 计算平台：Nvidia A800 GPU</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 模拟环境：LIBERO（MuJoCo模拟器）和CALVIN的模拟环境。</p>
+<p> - 真实环境：一个桌置式双臂机器人平台。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 成功率：用于LIBERO、CALVIN和真实世界任务的主要评估指标。</p>
+<p> - 平均长度：用于CALVIN基准的补充指标，衡量任务完成的平均长度。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

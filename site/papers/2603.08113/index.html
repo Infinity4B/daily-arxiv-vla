@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SAMoE-VLA: A Scene Adaptive Mixture-of-Experts Vision-Language-Action Model for Autonomous Driving - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 SAMoE-VLA，一个用于自动驾驶的场景自适应混合专家视觉-语言-动作模型框架 研究旨在解决直接应用现有 token-level MoE 机制于 VLA 模型时，导致的性能不稳定与安全退化问题 核心思想是基于结构化场景表示（而非单个token嵌入）来驱动专家选择，实现场景依赖的专家加权和融合" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.08113">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">SAMoE-VLA: A Scene Adaptive Mixture-of-Experts Vision-Language-Action Model for Autonomous Driving</h1>
+          <div class="detail-meta">2026-03-09 · <a href="http://arxiv.org/abs/2603.08113" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.08113" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.08113</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>清华大学人工智能产业研究院 (AIR)</li><li>东南大学仪器科学与工程学院</li><li>清华大学致理书院</li><li>华中科技大学人工智能与自动化学院</li><li>中国科学技术大学自动化系</li><li>北京科技大学自动化系</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>SAMoE-VLA</strong>，一个用于自动驾驶的场景自适应混合专家视觉-语言-动作模型框架</li><li>研究旨在解决直接应用现有 <strong>token-level MoE</strong> 机制于 <strong>VLA</strong> 模型时，导致的性能不稳定与安全退化问题</li><li>核心思想是基于结构化场景表示（而非单个token嵌入）来驱动专家选择，实现场景依赖的专家加权和融合</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>SAMoE-VLA</strong> 框架，通过 <strong>条件跨模态因果注意力 (CMCA)</strong> 机制统一了世界、语言和规划空间</li><li>引入了 <strong>BEV引导的场景自适应MoE (SA-MoE)</strong>，由轻量级 <strong>变形场景编码器 (DSE)</strong> 路由，实现了可微分的场景感知专家融合</li><li>在 <strong>nuScenes</strong> 开环规划数据集和 <strong>LangAuto</strong> 闭环基准上进行了全面实验，以更少的参数量取得了最先进性能</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>模型架构包含两个功能性专家：<strong>世界-语言专家</strong>（处理语言、BEV标记和世界提示）和 <strong>规划专家</strong>（基于 <strong>SA-MoE</strong> 层生成轨迹）</li><li>提出 <strong>条件跨模态因果注意力 (CMCA)</strong>，将条件上下文（BEV、世界、语言、状态）作为静态全局可见上下文，确保生成过程中的时间因果性和跨模态一致性</li><li><strong>SA-MoE</strong> 通过 <strong>变形场景编码器 (DSE)</strong> 从 <strong>BEV</strong> 特征中提取路由信号，对专家权重进行软加权融合，避免了 <strong>token-level</strong> 路由在自动驾驶中破坏时空因果性的问题</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用 <strong>nuScenes</strong> 数据集（1000个场景，28万帧）进行开环规划评估</li><li>使用 <strong>LangAuto</strong> 闭环基准（基于CARLA模拟器，约64K多模态指令-传感器-控制片段）进行评估</li><li>模型基于 <strong>InternVL2-2B</strong> 初始化，总参数量为 <strong>3.6B</strong>，在 <strong>8张 NVIDIA A800 GPU</strong> 上训练</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在 <strong>nuScenes</strong> 开环规划上，<strong>SAMoE-VLA</strong> 取得最低平均 <strong>L2</strong> 误差 <strong>0.29 m</strong>，最佳平均碰撞率 <strong>0.26%</strong>，超越了现有 <strong>VLA</strong> 和世界模型方法</li><li>在 <strong>LangAuto</strong> 闭环基准上，<strong>SAMoE-VLA</strong> 在全部三项设置中均取得了最高的 <strong>驾驶分数 (DS)</strong> 和 <strong>路线完成度 (RC)</strong>，证明了其强大的闭环驾驶与指令跟随能力</li><li>消融实验证明，所提出的 <strong>SA-MoE</strong> 软加权融合机制显著优于 <strong>token-level</strong> 的稀疏或软路由 <strong>MoE</strong> 机制，后者会导致碰撞率大幅上升</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

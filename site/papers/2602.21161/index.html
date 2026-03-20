@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ActionReasoning: Robot Action Reasoning in 3D Space with LLM for Robotic Brick Stacking - VLA 论文精选</title>
+    <meta name="description" content="提出 ActionReasoning，一个LLM驱动的框架，用于在3D空间中执行机器人动作推理，以完成物理一致的机器人砖块堆叠操作。 旨在解决单纯依靠数据和参数扩展的Vision-Language-Action (VLA) 模型在机器人通用化（如跨任务、跨具身平台和长时程推理）方面存在的局限性。 探索如何利用大型语言模型（LLM）中已有的物理先验和世界知识，通过结构化提示和多智能体架构，将其转化为" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.21161">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">ActionReasoning: Robot Action Reasoning in 3D Space with LLM for Robotic Brick Stacking</h1>
+          <div class="detail-meta">2026-02-24 · <a href="http://arxiv.org/abs/2602.21161" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.21161" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.21161</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>University of Cambridge</strong> (CV4DT, CSIC, Department of Engineering)</li><li><strong>University of Oxford</strong> (Department of Engineering)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>ActionReasoning</strong>，一个<strong>LLM驱动</strong>的框架，用于在3D空间中执行机器人动作推理，以完成物理一致的机器人砖块堆叠操作。</li><li>旨在解决单纯依靠数据和参数扩展的<strong>Vision-Language-Action (VLA)</strong> 模型在机器人通用化（如跨任务、跨具身平台和长时程推理）方面存在的局限性。</li><li>探索如何利用大型语言模型（LLM）中已有的<strong>物理先验和世界知识</strong>，通过结构化提示和多智能体架构，将其转化为可直接在3D空间（SE(3)）中执行的动作规划，从而弥合机器人感知与执行之间的差距。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>引入了 <strong>ActionReasoning</strong> 框架，这是一个<strong>3D动作推理框架</strong>，通过高层级工具调用和提示工程实现机器人决策，无需为每个场景编写专用代码，展现了跨配置的泛化能力。</li><li>设计了一个<strong>多智能体LLM编排器</strong>，其中不同阶段的专用智能体将人类任务规范与世界模型输入融合，在SE(3)空间中进行推理，生成物理一致的动作规划。</li><li>通过<strong>模拟研究和消融实验</strong>表明，相比传统的、具有相似简单编程的控制方法，基于3D的LLM推理提高了鲁棒性，为未来LLM驱动的机器人物理推理奠定了基础。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>核心技术是<strong>基于LLM的多智能体动作推理框架</strong>。框架将堆叠任务分解为由六个专门的LLM智能体组成的序列管道，每个智能体负责一个阶段（如预抓取定位、下降、抓取闭合、安全提升、砖块放置、返回就绪位）。</li><li>创新点在于<strong>门控机制</strong>和<strong>结构化提示</strong>。每个智能体接收包含当前环境状态、记忆信息、角色定义、知识库、思维链和输出格式的结构化提示，输出可执行路径点或工具调用代码，并通过物理可行性检查（门控）决定是否进入下一阶段。</li><li>该方法将机器人控制建模为一个<strong>马尔可夫路径点闭环</strong>：LLM根据当前环境状态 <code>St</code> 和目标 <code>G</code> 生成下一个末端执行器目标位姿 <code>w(t+1)</code>，底层控制器执行插补轨迹，然后更新环境状态并重复此循环。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用<strong>自定义的砖块堆叠模拟环境</strong>进行评估，并未提及使用现有的公开大型数据集。</li><li>论文未明确说明具体使用的<strong>LLM模型名称、规模或参数量</strong>。</li><li>实验在<strong>PyBullet物理模拟器</strong>中进行，使用模拟的<strong>KUKA机器人手臂</strong>。训练/推理所使用的具体计算资源（GPU/TPU）未在提供的文本中明确说明。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：在PyBullet模拟器中，对两种堆叠模式（<strong>金字塔式</strong>和<strong>网格式</strong>）进行评估，每种模式进行10次随机初始位姿的试验。与<strong>经典控制器基线</strong>（手写脚本，无事件处理）和<strong>单智能体消融版本</strong>（合并所有智能体功能）进行比较。</li><li><strong>主要评估指标</strong>：<strong>位姿精度</strong>（旋转误差、中心偏移误差）和<strong>3D边界框交并比（IoU）</strong>。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>ActionReasoning</strong> 显著优于基线：平均旋转误差从1.004°降至0.703°，平均中心偏移从4.314厘米降至0.637厘米，3D IoU从38.38%提升至88.03%。</p>
+<p> - <strong>多智能体设计至关重要</strong>：单智能体消融版本表现不佳，经常碰撞并推倒已堆叠的结构，证明了分阶段角色专业化和门控验证的必要性。</p>
+<p> - 定性结果（图4、5）显示，所提方法实现了明显更整齐的砖块对齐和稳定的堆叠。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

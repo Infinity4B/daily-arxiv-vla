@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LLaDA-VLA: Vision Language Diffusion Action Models - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了LLaDA-VLA，这是首个基于预训练扩散视觉语言模型构建的视觉-语言-扩散-动作模型，用于机器人操作任务。为了解决预训练d-VLMs与机器人动作生成之间的领域差距以及掩码扩散范式在生成结构化动作序列方面的不足，论文引入了两个核心设计：一是局部化特殊令牌分类策略，通过将分类空间限制在特殊动作令牌上，降低了模型适应的难度；二是分层动作结构化解码策略，该策略在解码过程中显式地考虑动作内部和" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.06932">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">LLaDA-VLA: Vision Language Diffusion Action Models</h1>
+          <div class="detail-meta">2025-09-08 · <a href="http://arxiv.org/abs/2509.06932" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.06932" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.06932</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+
+<p>中国科学技术大学、南京大学、Dexmal</p>
+<h2 class="section-title">论文概述</h2>
+
+<p>该论文提出了LLaDA-VLA，这是首个基于预训练扩散视觉语言模型构建的视觉-语言-扩散-动作模型，用于机器人操作任务。为了解决预训练d-VLMs与机器人动作生成之间的领域差距以及掩码扩散范式在生成结构化动作序列方面的不足，论文引入了两个核心设计：一是局部化特殊令牌分类策略，通过将分类空间限制在特殊动作令牌上，降低了模型适应的难度；二是分层动作结构化解码策略，该策略在解码过程中显式地考虑动作内部和动作之间的依赖关系，生成了更连贯、精确的动作序列。大量的实验表明，LLaDA-VLA在模拟环境和真实机器人上的性能均显著优于现有的最先进视觉-语言-动作模型。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+
+<ol><li>提出了首个基于预训练d-VLMs构建的视觉-语言-扩散-动作模型LLaDA-VLA，为机器人策略学习建立了一个新范式。</li><li>设计了两种关键技术使掩码扩散模型适用于动作生成：用于简化领域适应的局部化特殊令牌分类策略，以及用于无缝集成到动作生成中的分层动作结构化解码策略。</li><li>在SimplerEnv和CALVIN模拟基准以及WidowX真实机器人上的广泛实验，验证了LLaDA-VLA的卓越性能，凸显了d-VLMs在机器人操作中的潜力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+
+<ol><li><strong>模型架构</strong>:</li></ol>
+<p> * 模型基于LLaDA-V预训练d-VLM，采用SigLIP-2作为视觉编码器，MLP作为投影器。</p>
+<p> * 输入为语言指令和RGB图像。图像通过视觉编码器提取特征，经投影后与文本令牌拼接，一同输入到大语言扩散模型中。</p>
+<p> * <strong>动作分词化</strong>: 将连续的动作值离散化为32个区间，并引入对应数量的特殊动作令牌。一个包含7维（3个位置、3个旋转、1个夹爪状态）的动作由7个特殊令牌表示。模型一次性预测一个包含K个时间步的动作块（K*D个令牌）。</p>
+<ol><li><strong>局部化特殊令牌分类</strong>:</li></ol>
+<p> * 在训练和推理时，模型不进行全词汇表分类，而是仅在新增的特殊动作令牌集合上进行分类。</p>
+<p> * 损失函数也相应修改，只计算在掩码位置上的动作令牌的交叉熵损失，忽略其他令牌。此举缩小了学习目标，使模型更容易适应机器人领域。</p>
+<ol><li><strong>分层动作结构化解码</strong>:</li></ol>
+<p> * 在标准的掩码扩散“预测-重掩码”流程基础上，引入了针对动作块的分层解码。</p>
+<p> * <strong>动作级解码</strong>: 每个迭代步骤，计算每个动作（包含D个令牌）的置信度分数（将内部令牌的置信度求和）。保留置信度最高的动作，将其他所有动作重新掩码。</p>
+<p> * <strong>令牌级解码</strong>: 在保留的动作内部，根据令牌级置信度进行排序，保留高置信度令牌，重掩码其余令牌。</p>
+<p> * 通过迭代此过程，模型能以动作为单位逐步完善输出，从而生成结构合理、前后一致的动作序列。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+
+<ul><li><strong>数据集</strong>:</li></ul>
+<p> * <strong>SimplerEnv</strong>: 使用WidowX机器人在Visual Matching设置下进行评估，包含4项操作任务。</p>
+<p> * <strong>CALVIN</strong>: 一个长视野、语言条件操作的基准。采用ABC-D协议，在A、B、C环境上训练，在D环境上评估泛化性能。</p>
+<p> * <strong>真实世界WidowX机器人</strong>: 使用WidowX 250S机器人，评估了4个域内任务和4个分布外（OOD）泛化任务。</p>
+<ul><li><strong>训练资源和细节</strong>:</li></ul>
+<p> * 基于开源的LLaDA-V预训练权重进行微调。</p>
+<p> * 训练3个周期，学习率为2e-5，批次大小为128。</p>
+<p> * 动作块大小K设置为5，预测的是增量动作。</p>
+<p> * 推理时使用10次迭代扩散步骤，并采用dllm-cache方法加速解码。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+
+<ul><li><strong>评估环境</strong>:</li></ul>
+<p> * <strong>模拟环境</strong>: SimplerEnv和CALVIN。</p>
+<p> * <strong>真实机器人</strong>: WidowX 250S机械臂。</p>
+<ul><li><strong>评估指标</strong>:</li></ul>
+<p> * <strong>SimplerEnv</strong>: 任务成功率（%）。</p>
+<p> * <strong>CALVIN</strong>: （1）连续完成1到5个任务的成功率（%）；（2）连续完成5个任务的平均长度。</p>
+<p> * <strong>真实机器人</strong>: 域内任务和分布外（OOD）任务的任务成功率（%）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

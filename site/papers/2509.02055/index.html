@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Align-Then-stEer: Adapting the Vision-Language Action Models through Unified Latent Guidance - VLA 论文精选</title>
+    <meta name="description" content="Vision-Language-Action（VLA）模型在预训练后能处理多任务机器人操作，但跨 embodiment（如单臂到双臂）和跨任务的适应常因动作分布不匹配而效率低下。本文提出Align-Then-stEer（ATE）框架，通过两阶段策略实现高效适应：先构建统一动作潜在空间桥接预训练和适应数据分布，再以分类器引导机制在潜在空间中引导VLA生成过程向目标域偏移。实验在仿真（RoboTwin" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.02055">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Align-Then-stEer: Adapting the Vision-Language Action Models through Unified Latent Guidance</h1>
+          <div class="detail-meta">2025-09-02 · <a href="http://arxiv.org/abs/2509.02055" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.02055" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.02055</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>Institute of Artificial Intelligence, China Telecom</li><li>Tsinghua University</li><li>The Chinese University of Hong Kong, Shenzhen</li><li>Northwestern Polytechnical University</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>Vision-Language-Action（VLA）模型在预训练后能处理多任务机器人操作，但跨 embodiment（如单臂到双臂）和跨任务的适应常因动作分布不匹配而效率低下。本文提出Align-Then-stEer（ATE）框架，通过两阶段策略实现高效适应：先构建统一动作潜在空间桥接预训练和适应数据分布，再以分类器引导机制在潜在空间中引导VLA生成过程向目标域偏移。实验在仿真（RoboTwin 1.0、ManiSkill3）和真实双臂机器人上验证，ATE显著提升成功率，仿真平均增益9.8%，真实跨 embodiment场景增益达32%。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出动作分布对齐策略，利用反向KL散度的模式寻求特性构建统一潜在空间，将适应动作嵌入预训练潜在分布模式中。</li><li>设计基于统一潜在空间的分类器引导机制，无缝集成至扩散/流匹配VLA训练目标，实现精确快速适应。</li><li>ATE为即插即用设计，模型无关且计算开销小，仅需训练两个轻量级VAEs。</li><li>跨 embodiment、任务和架构（扩散/流匹配）验证有效性，突出适应效率提升。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>ATE分两阶段：</p>
+<ol><li><strong>统一动作潜在空间对齐（Stage 1）</strong>：</li></ol>
+<p> - 预训练阶段：在预训练动作数据（如DROID、Open X-Embodiment）上训练InfoVAE（V_pretrain），学习潜在分布。</p>
+<p> - 适应阶段：在适应数据（目标 embodiment）上训练另一个InfoVAE（V_adaptation），通过最小化反向KL散度 D_KL(q_ψ(z\|ã) \|\|q_φ(z))，将适应潜在分布嵌入预训练潜在空间的特定模式，生成统一潜在空间Z。</p>
+<ol><li><strong>分类器引导适应（Stage 2）</strong>：</li></ol>
+<p> - 定义引导函数g = -∇\|\|E_ψ(â_t:t+h^k) - E_ψ(a_t:t+h^0)\|\|²，度量中间动作与目标动作在潜在空间中的距离。</p>
+<p> - 对扩散模型，修改噪声预测为 ε̂ = ε_θ - √(1-ā_k)g，并嵌入训练目标 L(θ) = E[\|\|ε - ε_θ(...) + √(1-ā_k)·λ·g\|\|²]。</p>
+<p> - 对流匹配模型，修改速度场为 v̂_θ = v_θ + ((1-τ)/τ)·λ·g，并嵌入训练目标。</p>
+<p> 引导机制确保VLA输出保持于统一潜在空间内，在适配中保留预训练知识。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集来源</strong>：</li></ul>
+<p> - 预训练：大规模机器人数据（如DROID、Open X-Embodiment子集、Kuka、ALOHA）。</p>
+<p> - 适应：仿真（RoboTwin 1.0含17任务，ManiSkill3含2任务）、真实（双RealMan 7-DoF机器人长期任务）。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - InfoVAE训练分两步：Step 1用通用数据（3000 episodes）训练潜在结构（约12小时）；Step 2用域特定数据微调（RoboTwin/ManiSkill每任务50-100轨迹，真实每任务50轨迹，约0.5小时）。</p>
+<p> - 潜在维度512，训练含互信息项以增强表示。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>仿真环境</strong>：</li></ul>
+<p> - RoboTwin 1.0基准：17项单/双臂任务（工具调整、双瓶拾取）。</p>
+<p> - ManiSkill3基准：2项接触丰富单臂操作（推立方体、拾取立方体）。</p>
+<ul><li><strong>真实环境</strong>：</li></ul>
+<p> - 双RealMan 7-DoF双臂机器人：4项长期任务（插入、协调操作）和工具使用任务。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 成功率（Success Rate）：以任务完成百分比衡量。</p>
+<p> - 样本效率：比较达到性能阈值所需训练步数（如RDT基线90k步 vs ATE 70k步）。</p>
+<p> - 泛化能力：在光照、物体位置、视觉干扰下测试鲁棒性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

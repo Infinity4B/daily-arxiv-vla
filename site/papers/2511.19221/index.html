@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Percept-WAM: Perception-Enhanced World-Awareness-Action Model for Robust End-to-End Autonomous Driving - VLA 论文精选</title>
+    <meta name="description" content="Percept-WAM是一种感知增强的世界-意识-动作模型，首次在单个视觉语言模型中隐式集成2D/3D场景理解能力。该模型通过World-PV和World-BEV token统一2D和3D感知任务，编码空间坐标和置信度。采用网格条件预测机制、IoU感知评分和平行自回归解码，提升长尾场景的稳定性。模型保留预训练VLM的通用智能能力，可直接输出感知结果和轨迹控制。实验表明Percept-WAM在下游感" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.19221">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Percept-WAM: Perception-Enhanced World-Awareness-Action Model for Robust End-to-End Autonomous Driving</h1>
+          <div class="detail-meta">2025-11-24 · <a href="http://arxiv.org/abs/2511.19221" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.19221" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.19221</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Yinwang Intelligent Technology Co. Ltd., Fudan University</p>
+<h2 class="section-title">论文概述</h2>
+<p>Percept-WAM是一种感知增强的世界-意识-动作模型，首次在单个视觉语言模型中隐式集成2D/3D场景理解能力。该模型通过World-PV和World-BEV token统一2D和3D感知任务，编码空间坐标和置信度。采用网格条件预测机制、IoU感知评分和平行自回归解码，提升长尾场景的稳定性。模型保留预训练VLM的通用智能能力，可直接输出感知结果和轨迹控制。实验表明Percept-WAM在下游感知基准匹配或超越经典检测器，并在nuScenes和NAVSIM上提升规划性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>感知增强的世界Token：首次通过World-PV和World-BEV token在单一VLM中统一2D/3D感知，编码度量坐标和校准置信度。</li><li>网格条件密集感知：引入网格条件预测头，结合IoU感知评分和平行AR解码，显著提升长尾、远距离和小物体感知的准确性和稳定性。</li><li>感知到动作范式：在nuScenes和NAVSIM上超越专业检测/分割基线，通过World-PV、World-BEV和World-Action token的对齐实现卓越规划性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>Percept-WAM包含三部分：1) VLM主干（InternVL2-8B）维持通用推理能力；2) 可学习BEV网格token隐式建模PV特征到BEV空间的映射；3) 动作专家头用于轨迹解码。World-PV分支处理透视视图感知，支持高分辨率输入和平行AR解码，输出序列格式为cls, <box>坐标</box>, <conf>置信度</conf>。World-BEV分支通过可学习查询token实现BEV空间感知，支持多模态融合。动作模块通过四组点级查询（Q_pv, Q_bev, Q_ego, Q_full）对齐多模态信息，使用MLP解码轨迹，并采用流式KV缓存策略提升效率。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：nuImages（2D检测/实例分割/语义分割）、nuScenes（3D检测/BEV分割/轨迹预测）、COCO（2D检测/实例分割/语义分割）、Waymo（3D检测）、RefCOCO系列（定位）、ADE20K（语义分割）、COCOStuff（语义分割）、NAVSIM（轨迹预测）、DriveLM-nuscenes（QA）等。训练使用AdamW优化器（基础学习率0.0002，权重衰减0.01），余弦衰减学习率，混合精度训练，梯度检查点。World-PV采用10×10网格，World-BEV检测使用40×40网格。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：nuScenes验证集（PV/BEV感知任务）、NAVSIM v1（闭环规划）、nuScenes开放环路指标（轨迹L2误差）。评估指标：2D/3D检测mAP、NDS（nuScenes检测分数）、实例分割mAP、语义分割mIoU、轨迹L2误差（1s/2s/3s）、NAVSIM闭环指标（NC碰撞率、DAC动态舒适度、TTC时间至碰撞、Comf舒适性、EP效率、PDMS规划得分）、帧延迟（ms）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

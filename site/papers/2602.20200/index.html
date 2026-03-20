@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Global Prior Meets Local Consistency: Dual-Memory Augmented Vision-Language-Action Model for Efficient Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 OptimusVLA，一个双记忆增强的视觉-语言-动作（VLA）框架，旨在解决机器人操作中动作生成过程的效率和鲁棒性瓶颈。 核心目标是解决现有分层VLA模型的两个主要问题：1）推理效率低，各向同性噪声先验与目标动作分布之间的差距大，导致去噪步骤多且容易产生不可行动作；2）鲁棒性差，策略仅以当前观测为条件，缺乏对任务进度和时序一致性的感知。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.20200">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Global Prior Meets Local Consistency: Dual-Memory Augmented Vision-Language-Action Model for Efficient Robotic Manipulation</h1>
+          <div class="detail-meta">2026-02-22 · <a href="http://arxiv.org/abs/2602.20200" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.20200" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.20200</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>哈尔滨工业大学（深圳）</strong></li><li><strong>鹏城实验室</strong></li><li><strong>深圳环路研究院</strong></li><li><strong>华为诺亚方舟实验室</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>OptimusVLA</strong>，一个双记忆增强的视觉-语言-动作（VLA）框架，旨在解决机器人操作中动作生成过程的效率和鲁棒性瓶颈。</li><li>核心目标是解决现有分层VLA模型的两个主要问题：1）<strong>推理效率低</strong>，各向同性噪声先验与目标动作分布之间的差距大，导致去噪步骤多且容易产生不可行动作；2）<strong>鲁棒性差</strong>，策略仅以当前观测为条件，缺乏对任务进度和时序一致性的感知。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>全局先验记忆</strong>，通过从语义相似的轨迹中检索任务级别的先验，替换高斯噪声，从而缩小先验-目标分布差距，显著减少所需函数评估次数并降低采样风险。</li><li>设计了 <strong>局部一致性记忆</strong>，一个轻量级的工作记忆模块，通过动态建模近期动作序列，注入一致性约束，为VLA模型提供任务进度感知和时序平滑性，且计算开销可忽略。</li><li>提出了双记忆驱动的 <strong>OptimusVLA</strong> 框架，将GPM和LCM有机结合，在多个仿真和现实世界基准测试中实现了更高的性能以及显著的推理加速。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>采用了分层VLA架构，包括<strong>视觉-语言主干网络</strong>、<strong>流匹配策略</strong>，以及新提出的<strong>GPM</strong>和<strong>LCM</strong>。</li><li><strong>GPM</strong> 的核心在于将先验初始化视为一个记忆驱动的检索问题。它由<strong>先验头</strong>、<strong>记忆库</strong>和<strong>先验感知采样器</strong>组成，根据当前多模态表示检索相似任务的轨迹，并构造一个任务级先验分布，并自适应地注入噪声和选择NFE。</li><li><strong>LCM</strong> 通过一个<strong>一致性层</strong>（自注意力）和<strong>动态感知模块</strong>（Mamba结构）对历史动作序列进行建模，学习一个残差偏差，作为约束注入到策略输入中，确保动作的时序一致性和平滑性。</li><li>训练分为三个阶段：分层VLA预训练、GPM训练、以及LCM训练。GPM使用InfoNCE损失学习判别性表示，LCM使用L2损失学习预测动作真值与GPM先验均值之间的残差。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>在三个仿真基准上进行评估：<strong>LIBERO</strong>、<strong>CALVIN</strong>和<strong>RoboTwin 2.0</strong>。</li><li>模型使用与 <strong>π₀.₅</strong> 相似的架构进行预训练。未在提供的文本中明确说明具体参数量和预训练数据集。</li><li>训练资源未在提供的HTML片段中明确说明，但通常这类模型使用大量GPU进行训练。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估基准</strong>：LIBERO、CALVIN、RoboTwin 2.0的Hard设置，以及真实世界评估套件（Generalization和Long-horizon）。</li><li><strong>主要指标</strong>：任务成功率、平均完成长度、推理速度。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - <strong>LIBERO</strong>：平均成功率高达 <strong>98.6%</strong>，超越所有对比基线。</p>
+<p> - <strong>CALVIN</strong>：平均完成长度为 <strong>4.45</strong>，相比 <strong>π₀</strong> 提升了13.5%。</p>
+<p> - <strong>RoboTwin 2.0 Hard</strong>：在展示的7个任务中取得最佳或次佳排名，平均成功率约为 <strong>38%</strong>。</p>
+<p> - <strong>真实世界</strong>：在Generalization和Long-horizon套件中分别超越 <strong>π₀</strong> 42.9%和52.4%，同时实现了 <strong>2.9倍</strong> 的推理加速。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

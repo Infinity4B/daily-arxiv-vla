@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLA-JEPA: Enhancing Vision-Language-Action Model with Latent World Model - VLA 论文精选</title>
+    <meta name="description" content="提出 VLA-JEPA 框架，旨在解决现有视觉-语言-动作模型在利用无标注视频进行潜在动作预训练时存在的缺陷。 核心问题是：传统的基于像素或帧差分的潜在动作学习目标容易学习到外观变化、相机运动等与动作无关的噪声，而非与可控状态转移相关的语义信息。 论文目标是设计一种无信息泄漏的潜在状态预测方法，学习对控制鲁棒且具有语义抽象能力的动作相关状态转移动态。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.10098">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VLA-JEPA: Enhancing Vision-Language-Action Model with Latent World Model</h1>
+          <div class="detail-meta">2026-02-10 · <a href="http://arxiv.org/abs/2602.10098" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.10098" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.10098</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>中国科学技术大学</strong></li><li><strong>北京中关村科学院</strong></li><li><strong>上海交通大学</strong></li><li><strong>清华大学</strong></li><li><strong>宁波东方理工学院</strong></li><li><strong>中国科学院大学</strong></li><li><strong>南开大学</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>VLA-JEPA</strong> 框架，旨在解决现有视觉-语言-动作模型在利用无标注视频进行潜在动作预训练时存在的缺陷。</li><li>核心问题是：传统的基于像素或帧差分的潜在动作学习目标容易学习到外观变化、相机运动等与动作无关的噪声，而非与可控状态转移相关的语义信息。</li><li>论文目标是设计一种<strong>无信息泄漏的潜在状态预测</strong>方法，学习对控制鲁棒且具有语义抽象能力的动作相关状态转移动态。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li><strong>深入分析了现有潜在动作预训练的缺陷</strong>，包括对像素变化的偏见、对真实世界视频中冗余运动的敏感性、因未来信息泄露导致的潜在动作语义空洞以及多阶段训练流程的复杂性。</li><li><strong>提出了VLA-JEPA框架</strong>：一种基于<strong>联合嵌入预测架构</strong> 的预训练方法，通过预测并对齐未来潜在状态来学习动作相关的转移语义，避免了像素重建和信息泄露，简化了训练流程。</li><li><strong>实现了显著提升的泛化性、鲁棒性和更简化的流程</strong>：在多个仿真和真实世界基准测试中，VLA-JEPA取得了优于现有方法的性能，同时将复杂的多阶段流程简化为两阶段（JEPA预训练 + 动作头微调）。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>核心架构基于<strong>Qwen3-VL</strong>大型视觉语言模型，并引入可学习的潜在动作和状态令牌。</li><li>关键技术是 <strong>“无泄漏状态预测”</strong>：一个冻结的<strong>V-JEPA2</strong>编码器将未来帧编码为潜在状态作为监督目标，而学生路径（VLM主干）仅观察当前时刻信息。一个世界模型根据历史状态和预测的潜在动作来预测未来潜在状态，并通过JEPA对齐损失进行训练，确保未来信息永远不会泄漏到预测器的输入中。</li><li>使用<strong>条件流匹配</strong>作为动作头，以学习到的潜在动作表示为条件生成连续的动作轨迹。</li><li>支持在无动作标注的人体视频和带动作标签的机器人数据上进行统一联合训练，损失函数结合了世界建模损失和流匹配损失。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>预训练数据集</strong>：使用了大规模人体动作视频数据集<strong>Something-Something-v2</strong>（22万个视频）和机器人数据集<strong>Droid</strong>（7.6万条高质量演示轨迹）。</li><li><strong>微调数据集</strong>：使用了<strong>LIBERO</strong>、<strong>SimplerEnv</strong>（Fractal和BridgeV2数据集）以及一个包含100条演示轨迹的自收集真实世界数据集。</li><li><strong>模型规模</strong>：核心VLM主干采用<strong>Qwen3-VL</strong>（基于SigLIP-2视觉编码器和Qwen3语言模型），参数量未在提供片段中明确说明，但属于大规模VLM。</li><li><strong>训练资源</strong>：所有实验在<strong>8块NVIDIA A100 GPU</strong>上进行。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估基准</strong>：在<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>SimplerEnv</strong>（Google Robot和WidowX Robot）三个仿真基准以及真实世界Franka机械臂任务上进行评估。</li><li><strong>评估指标</strong>：主要使用<strong>任务成功率</strong>作为评估指标。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 在<strong>LIBERO</strong>上，VLA-JEPA在四个任务组中的两个上达到最优，并取得最高的平均成功率（97.2%）。</p>
+<p> - 在<strong>SimplerEnv</strong>上，VLA-JEPA在Google Robot和WidowX Robot上的多个任务中表现优异，在Google Robot上平均成功率最高（65.2%）。</p>
+<p> - 在<strong>LIBERO-Plus</strong>（鲁棒性基准）上，VLA-JEPA在七个扰动维度中的五个上表现最佳，平均成功率（79.5%）显著领先于其他基线方法。</p>
+<p> - <strong>真实世界实验</strong>表明，VLA-JEPA在分布内和物体布局分布外设置下均优于基准模型，执行轨迹更稳定，并展现了从人体视频中学习到的“重复抓取”技能。</p>
+<p> - <strong>消融研究</strong>表明，尽管在仿真基准上移除人体视频预训练影响不大，但它对于提升在LIBERO-Plus上的鲁棒性至关重要，且随着人体视频数据比例增加，模型鲁棒性持续提升。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

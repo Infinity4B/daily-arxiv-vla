@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MM-Nav: Multi-View VLA Model for Robust Visual Navigation via Multi-Expert Learning - VLA 论文精选</title>
+    <meta name="description" content="论文提出MM-Nav，一个多视图视觉语言行动（VLA）模型，旨在通过多专家学习实现鲁棒的视觉导航。核心思想是结合合成环境中的多样导航数据与VLA模型的泛化能力，解决视觉导航中观察数据建模困难的问题。MM-Nav使用360度视觉观察（四个水平分布的相机视图），通过两阶段训练学习：先从强化学习（RL）专家收集数据预训练，再进行在线教师-学生迭代训练。方法最终在模拟和真实环境中展示了强泛化能力，并优于单" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.03142">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">MM-Nav: Multi-View VLA Model for Robust Visual Navigation via Multi-Expert Learning</h1>
+          <div class="detail-meta">2025-10-03 · <a href="http://arxiv.org/abs/2510.03142" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.03142" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.03142</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>北京大学（Peking University）</li><li>Galbot</li><li>上海交通大学（Shanghai Jiao Tong University）</li><li>清华大学（Tsinghua University）</li><li>BAAI（可能指北京人工智能研究院）</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出MM-Nav，一个多视图视觉语言行动（VLA）模型，旨在通过多专家学习实现鲁棒的视觉导航。核心思想是结合合成环境中的多样导航数据与VLA模型的泛化能力，解决视觉导航中观察数据建模困难的问题。MM-Nav使用360度视觉观察（四个水平分布的相机视图），通过两阶段训练学习：先从强化学习（RL）专家收集数据预训练，再进行在线教师-学生迭代训练。方法最终在模拟和真实环境中展示了强泛化能力，并优于单一能力RL专家。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出MM-Nav多视图VLA模型，支持360度视觉输入，直接输出连续速度命令。</li><li>设计三种RL专家（reaching、squeezing、avoiding），分别学习导航能力。</li><li>两阶段训练：离线数据预训练和在线迭代训练（DAgger方式），引入能力平衡数据聚合策略（基于性能差距动态调整数据比例）。</li><li>在模拟和真实环境中评估，模型性能超越RL教师，验证多能力学习的协同效应。</li><li>提供开源实现和项目页面，促进研究社区应用。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>方法概述</strong>：采用教师-学生范式。学生模型是VLA（基于SigLIP视觉编码器和Qwen2语言模型），处理多视图RGB输入（四个相机），并预测速度命令。教师模型为三个RL专家（训练于不同合成环境，使用特权深度信息）。训练分两阶段：离线预训练（用专家数据初始化VLA）和在线迭代（VLA部署后收集专家数据，动态平衡训练比例）。</li><li><strong>RL专家</strong>：三个专家（reaching：到达目标；squeezing：穿行狭窄通道；avoiding：避开动态障碍）。使用PPO算法、深度图像输入（四个相机）、奖励函数针对能力调整。</li><li><strong>VLA学生模型</strong>：视觉编码（SigLIP输出视觉令牌；历史滑窗处理），语言提示（点目标转化为文本），动作预测（输出速度[v_x, v_y, v_yaw]）。</li><li><strong>在线训练</strong>：能力平衡数据聚合（计算VLA与专家的加权旅行时间（WTT）差距，调整数据比例），迭代优化直至收敛。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：合成环境数据（IsaacLab生成）：用于训练RL专家的三个能力特定场景（reaching、squeezing、avoiding），收集500k步专家数据；真实环境测试数据（四个场景：Narrow Zigzag Corridor、Thin Obstacle Avoidance、Dynamic Environment、Cluttered Static Environment）。</li><li><strong>训练资源</strong>：</li></ul>
+<p> - RL专家训练：IsaacLab模拟，NVIDIA RTX 4090 GPU，单次训练8-12小时。</p>
+<p> - VLA预训练：8个NVIDIA H100 GPU，约5小时（40 GPU小时）。</p>
+<p> - 在线迭代：每次迭代2小时（200k专家数据）。</p>
+<p> - 部署：服务器配备NVIDIA RTX 5090 GPU，机器人端（Unitree GO2）实时推理。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 模拟环境：IsaacLab中三个能力特定场景（reaching、squeezing、avoiding）和一个混合场景（包含所有能力）。</p>
+<p> - 真实环境：四个场景测试sim-to-real泛化。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 成功率（SR）：成功到达目标的百分比。</p>
+<p> - 碰撞率（CR）：发生碰撞的百分比。</p>
+<p> - 加权旅行时间（WTT）：成功到达目标的平均时间除以成功率。</p>
+<ul><li>对比基线：iPlanner、ViPlanner、NavDP等，结果显示MM-Nav在SR和CR上优于基线，WTT更低。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

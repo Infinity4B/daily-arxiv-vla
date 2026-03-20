@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Uni-NaVid: A Video-based Vision-Language-Action Model for Unifying Embodied Navigation Tasks - VLA 论文精选</title>
+    <meta name="description" content="Uni-NaVid是一个基于视频的视觉-语言-动作（VLA）模型，旨在统一多种具身导航任务。模型仅需接收自然语言指令和RGB视频流作为输入，端到端输出底层机器人动作，支持连续环境中的高效导航。通过收集360万条多任务导航样本并进行训练，Uni-NaVid在多个导航基准测试中实现了最先进性能，并在真实世界实验中展示了有效性和泛化能力。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2412.06224">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Uni-NaVid: A Video-based Vision-Language-Action Model for Unifying Embodied Navigation Tasks</h1>
+          <div class="detail-meta">2024-12-09 · <a href="http://arxiv.org/abs/2412.06224" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2412.06224" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2412.06224</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>北京大学计算机学院CFCS、Galbot、北京智源研究院</p>
+<h2 class="section-title">论文概述</h2>
+<p>Uni-NaVid是一个基于视频的视觉-语言-动作（VLA）模型，旨在统一多种具身导航任务。模型仅需接收自然语言指令和RGB视频流作为输入，端到端输出底层机器人动作，支持连续环境中的高效导航。通过收集360万条多任务导航样本并进行训练，Uni-NaVid在多个导航基准测试中实现了最先进性能，并在真实世界实验中展示了有效性和泛化能力。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出首个统一处理多种具身导航任务（包括VLN、ObjectNav、EQA和Human Following）的VLA模型，仅需RGB视频输入。</li><li>设计在线视觉token合并机制，按时间分组压缩视觉信息（当前、短期、长期token），推理速度提升至5 Hz，满足实时部署需求。</li><li>引入前瞻性动作规划，一次性生成未来4步动作序列，减少推理延迟。</li><li>收集并构建包含360万导航样本和230万互联网VQA/视频字幕样本的多任务数据集，促进跨任务学习协同。</li><li>在模拟基准和真实机器人平台上实现SOTA性能，验证模型的泛化能力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>模型架构分为三部分：</p>
+<ol><li><strong>观察编码</strong>：使用EVA-CLIP视觉编码器将每帧视频转换为256个视觉token（维度C）。</li><li><strong>在线视觉token合并</strong>：</li></ol>
+<p> - <strong>分组</strong>：按时间分为当前token（帧T）、短期token（帧[T-B, T)）、长期token（帧[1, T-B)），其中B=64。</p>
+<p> - <strong>空间压缩</strong>：使用GridPool操作，当前token压缩率α_curr=2（输出64个token），短期token α_short=8（输出4个token），长期token α_long=16（输出1个token）。</p>
+<p> - <strong>在线更新</strong>：新帧到达时，仅处理最新帧和最旧短期帧，重用历史token。</p>
+<p> - <strong>长期token优化</strong>：基于余弦相似度（阈值τ=0.95）合并相似长期token，防止线性增长，合并公式为加权平均。</p>
+<ol><li><strong>动作规划</strong>：视觉token经MLP投影后与语言token拼接，输入LLM生成4个动作（FORWARD、TURN-LEFT、TURN-RIGHT、STOP），动作空间兼容连续环境（30度旋转或25cm移动）。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>导航数据集</strong>：收集360万条样本，覆盖四个任务：</li></ul>
+<p> - VLN-CE（R2R/RxR连续环境版）</p>
+<p> - ObjectNav（HM3D数据集）</p>
+<p> - EQA（MP3D-EQA）</p>
+<p> - Human Following（自建Habitat 3.0基准）</p>
+<ul><li><strong>辅助数据集</strong>：230万互联网视频数据（VQA和视频字幕），增强场景理解和sim-to-real泛化。</li><li><strong>训练资源</strong>：使用多GPU训练（具体型号未明确），训练策略联合优化多任务损失，未公开详细计算资源。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>模拟环境</strong>：Habitat仿真器，包含VLN-CE、HM3D、MP3D-EQA等基准。</p>
+<p> - <strong>真实世界</strong>：配备RGB摄像头的机器人平台，部署非阻塞导航系统。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>VLN</strong>：SPL（路径长度加权成功率）、nDTW（标准化轨迹扭曲）。</p>
+<p> - <strong>ObjectNav</strong>：成功率（Success Rate）、SPL。</p>
+<p> - <strong>EQA</strong>：准确率（Accuracy）。</p>
+<p> - <strong>Human Following</strong>：距离保持误差（Distance Maintenance Error）。</p>
+<p> - <strong>整体</strong>：任务特定指标和推理速度（目标5 Hz）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

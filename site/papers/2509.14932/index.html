@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robot Control Stack: A Lean Ecosystem for Robot Learning at Scale - VLA 论文精选</title>
+    <meta name="description" content="论文提出了Robot Control Stack (RCS)，一个为大规模机器人学习设计的轻量级生态系统。随着Vision-Language-Action models (VLAs)的发展，传统机器人软件框架成为瓶颈，RCS旨在弥合这一差距。RCS采用模块化分层架构，为模拟和物理机器人提供统一接口，促进sim-to-real转换，在保持最小依赖和轻量级设计的同时，提供完整功能集，支持真实世界实验和" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.14932">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Robot Control Stack: A Lean Ecosystem for Robot Learning at Scale</h1>
+          <div class="detail-meta">2025-09-18 · <a href="http://arxiv.org/abs/2509.14932" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.14932" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.14932</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">Robot Control Stack: A Lean Ecosystem for Robot Learning at Scale</h2>
+<h2 class="section-title">论文研究单位</h2>
+<ul><li>Department of Computer Science & Artificial Intelligence, University of Technology Nuremberg, Germany</li><li>Learning, Adaptive Systems and Robotics (LASR) Lab, Faculty of Computer Science, TU Dresden, Germany</li><li>Siemens Foundational Technologies, Siemens AG, Germany</li><li>Chair for Robotics, Artificial Intelligence and Real-Time Systems, TUM School of Computation, Information and Technology, Technical University of Munich, Germany</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了Robot Control Stack (RCS)，一个为大规模机器人学习设计的轻量级生态系统。随着Vision-Language-Action models (VLAs)的发展，传统机器人软件框架成为瓶颈，RCS旨在弥合这一差距。RCS采用模块化分层架构，为模拟和物理机器人提供统一接口，促进sim-to-real转换，在保持最小依赖和轻量级设计的同时，提供完整功能集，支持真实世界实验和大规模模拟训练。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出基于环境包装器的RCS架构，支持在不同抽象级别轻松添加新功能，同时支持Python和C++</li><li>在常见用例上评估RCS，包括跨实体支持、模拟和真实环境中的训练数据收集、VLA和RL智能体的训练和评估</li><li>在可重现的取物任务上对Octo、OpenVLA和π₀进行广泛实验，涵盖多种不同机器人</li><li>展示将合成数据与真实数据混合可以显著提升π₀在真实世界中的性能</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>RCS基于环境包装器概念设计，通过包装器元组W=⟨f:S→S′,g:A′→A,P′,R′⟩将状态和动作从马尔可夫决策过程(MDP)进行转换。架构包含：</p>
+<ul><li>C++底层接口定义抽象机器人控制函数，支持Python绑定</li><li>场景包装器序列，可变异或观察环境动作和观察空间</li><li>硬件抽象：标准化传感器和执行器接口，支持同步/异步操作</li><li>仿真集成：基于MuJoCo，提供面向对象的场景视图和回调机制</li><li>机器人工具包：集成Pinocchio进行运动学计算，OMPL用于运动规划</li><li>数字孪生：实时运行仿真作为安全检查器</li><li>Agents应用层：通过RPC通信解决VLA策略依赖冲突</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>真实数据集</strong>：FR3 (143个演示)、xArm7 (100个演示)、UR5e (167个演示)、SO101 (120个演示)，均为30Hz频率收集</li><li><strong>仿真数据集</strong>：3000个脚本化演示，成功率73%，生成2193个成功演示</li><li><strong>任务设置</strong>：Pick-Cuboid任务，要求抓取绿色3D打印立方体</li><li><strong>训练资源</strong>：消费者级GPU笔记本电脑用于脚本化仿真数据生成，Nvidia RTX 4080 + 12核CPU用于RL训练</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p><strong>评估环境</strong>：</p>
+<ul><li>四个真实机器人设置：FR3、xArm7、UR5e、SO101</li><li>匹配MuJoCo仿真环境，复制FR3设置</li><li>支持多种传感器：RealSense摄像头、DIGIT触觉传感器、Tacto触觉传感器</li></ul>
+
+<p><strong>评估指标</strong>：</p>
+<ul><li><strong>成功率</strong>：50次真实世界 rollout 的抓取成功百分比</li><li><strong>跨VLA模型比较</strong>：在30Hz和5Hz操作下比较Octo、OpenVLA、π₀</li><li><strong>Sim-to-Real评估</strong>：使用SIMPLER方法评估真实到仿真的域转移</li><li><strong>数据混合实验</strong>：混合真实和仿真数据对性能的影响</li><li><strong>RL评估</strong>：训练3小时内(8.5M环境步骤)达到100%成功率，吞吐量>2000步/秒(24个并行环境)</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

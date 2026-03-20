@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robotic Control via Embodied Chain-of-Thought Reasoning - VLA 论文精选</title>
+    <meta name="description" content="论文提出了一种名为&quot;具身思维链推理&quot;（Embodied Chain-of-Thought Reasoning, ECoT）的方法，用于提升视觉-语言-动作模型（VLAs）在机器人控制中的泛化能力。传统VLAs直接从观测映射到动作，而ECoT通过在预测动作前引入多步文本推理（包括任务规划、子任务分解、运动描述和视觉特征定位），迫使模型在行动前&quot;仔细思考&quot;和&quot;仔细观察&quot;。实验表明，ECoT在无需额外机" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2407.08693">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Robotic Control via Embodied Chain-of-Thought Reasoning</h1>
+          <div class="detail-meta">2024-07-11 · <a href="http://arxiv.org/abs/2407.08693" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2407.08693" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2407.08693</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>UC Berkeley, University of Warsaw, Stanford University</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了一种名为"具身思维链推理"（Embodied Chain-of-Thought Reasoning, ECoT）的方法，用于提升视觉-语言-动作模型（VLAs）在机器人控制中的泛化能力。传统VLAs直接从观测映射到动作，而ECoT通过在预测动作前引入多步文本推理（包括任务规划、子任务分解、运动描述和视觉特征定位），迫使模型在行动前"仔细思考"和"仔细观察"。实验表明，ECoT在无需额外机器人数据的情况下，将OpenVLA模型在挑战性泛化任务上的绝对成功率提高了28%，并增强了策略的可解释性和人机交互能力。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出ECoT方法：将视觉-语言-动作模型训练为在预测动作前执行多步推理，结合高级语义推理（如子任务规划）和低级具身推理（如物体边界框和夹爪位置）。</li><li>设计可扩展的合成数据生成管道：利用预训练模型（如Prismatic VLM、Grounding DINO、Gemini）自动为大规模机器人数据集标注推理链，无需人工标注。</li><li>实验验证ECoT有效性：在Bridge V2数据集上训练的模型，在真实机器人泛化任务中成功率显著超越基线（包括OpenVLA、RT-2-X），并提升策略可解释性和交互式纠错能力。</li><li>推理效率优化：提出同步/异步执行策略，减少推理延迟，使ECoT实用化。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>推理步骤设计</strong>：</li></ol>
+<p> - 高级推理：任务重述（TASK）、高层计划（PLAN）、当前子任务（SUBTASK）。</p>
+<p> - 具身推理：低级运动指令（MOVE，如"左移"）、夹爪像素位置（GRIPPER）、物体边界框（OBJECTS）。</p>
+<p> - 强制模型关注多模态输入，将推理与视觉和机器人状态对齐。</p>
+<ol><li><strong>数据生成流程</strong>：</li></ol>
+<p> - 使用Prismatic VLM生成场景描述。</p>
+<p> - Grounding DINO检测物体边界框，关联文本片段。</p>
+<p> - 从机器人本体感觉计算运动原语（729种模板化动作）。</p>
+<p> - OWLv2和SAM检测夹爪位置，拟合投影矩阵。</p>
+<p> - Gemini整合信息生成完整推理链（计划、子任务、解释）。</p>
+<p> - 在Bridge V2的250万+转换数据上运行，耗时7天。</p>
+<ol><li><strong>训练与推理</strong>：</li></ol>
+<p> - 将推理和动作离散为tokens，微调OpenVLA（基于Llama 2-7B和Prismatic视觉编码器）。</p>
+<p> - 推理时采用N步冻结（如每5步更新高级推理）或异步并行（双实例）加速。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：</li></ol>
+<p> - 主要训练数据：Bridge V2数据集（60k演示，250万+转换）。</p>
+<p> - 评估任务：自定义泛化任务集（空间关系、未见过物体、新指令），共314次试验。</p>
+<p> - 泛化测试包括分布内（ID）和分布外（OOD）视角场景。</p>
+<ol><li><strong>训练资源</strong>：</li></ol>
+<p> - 基础模型：OpenVLA（Prismatic VLM + Llama 2-7B）。</p>
+<p> - 数据生成依赖：Prismatic-7B、Grounding DINO、Gemini 1.0、OWLv2、SAM。</p>
+<p> - 计算资源：未明确说明，但强调生成管线可扩展（7天处理Bridge V2）。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：</li></ol>
+<p> - 机器人平台：6-DoF WidowX机械臂（Bridge V2标准配置）。</p>
+<p> - 传感器：单视角第三人称摄像头。</p>
+<p> - 场景：真实世界环境，控制相机角度、光照和背景。</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> - 任务成功率：主要指标，报告平均值±标准误（StdErr）。</p>
+<p> - 泛化能力：按任务类型分类评估（ID/OOD物体、空间关系、新指令）。</p>
+<p> - 可解释性：定性分析推理链与失败案例。</p>
+<p> - 交互纠错：单次语言干预后的成功率提升。</p>
+<p> - 推理效率：比较不同加速方法的吞吐量（相对加速比）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

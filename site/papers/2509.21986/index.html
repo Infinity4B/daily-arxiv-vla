@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Developing Vision-Language-Action Model from Egocentric Videos - VLA 论文精选</title>
+    <meta name="description" content="论文探讨了利用自我中心视频（egocentric videos）训练视觉-语言-动作模型（Vision-Language-Action models, VLAs）的可行性。传统方法依赖昂贵的人类远程操作数据，导致数据稀缺。论文提出通过EgoScaler框架从自我中心视频中自动提取6DoF对象操作轨迹，构建大规模预训练数据集，并在π0架构上验证其有效性。实验在仿真和真实环境中进行，结果显示该方法可显" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.21986">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Developing Vision-Language-Action Model from Egocentric Videos</h1>
+          <div class="detail-meta">2025-09-26 · <a href="http://arxiv.org/abs/2509.21986" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.21986" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.21986</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>京都大学、国立情报学研究所（NII）、东京科学研究所、NII LLMC（东京）、索尼互动娱乐（东京）</p>
+<p>作者：Tomoya Yoshida（京都大学）、Shuhei Kurita（NII、东京科学研究所）、Taichi Nishimura（索尼互动娱乐）、Shinsuke Mori（京都大学）</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文探讨了利用自我中心视频（egocentric videos）训练视觉-语言-动作模型（Vision-Language-Action models, VLAs）的可行性。传统方法依赖昂贵的人类远程操作数据，导致数据稀缺。论文提出通过EgoScaler框架从自我中心视频中自动提取6DoF对象操作轨迹，构建大规模预训练数据集，并在π0架构上验证其有效性。实验在仿真和真实环境中进行，结果显示该方法可显著提升任务成功率。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>成功从自我中心视频训练π0模型，无需辅助标签（如手部姿态）。</li><li>构建的预训练数据集在性能上与真实机器人数据集竞争。</li><li>结合自我中心数据和真实机器人数据可进一步提升性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>EgoScaler框架</strong>：用于从自我中心视频中提取6DoF对象操作轨迹。</li></ul>
+<p> - 步骤：识别操作起止时间及对象；开词汇分割和3D点跟踪提取位置序列；点云配准投影到相机坐标系；奇异值分解计算旋转序列。</p>
+<ul><li><strong>数据处理</strong>：应用于Ego4D、Ego-Exo4D、HD-EPIC和Nymeria四个数据集。初始提取124,559 episodes，经规则过滤（移动距离阈值、背景轨迹相似性阈值）和平滑处理后，得到45,157 episodes。</li><li><strong>训练策略</strong>：使用π0架构预训练和后训练。动作表示为6DoF位移（平移+旋转），预训练优化MSE损失。后训练时合并真实机器人数据集并归一化动作维度。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 自我中心视频数据集：Ego4D、Ego-Exo4D、HD-EPIC、Nymeria（用于预训练）。</p>
+<p> - 真实机器人数据集：BC-Z、BridgeData V2、Fractal（用于对比）。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 硬件：8×H200 GPUs。</p>
+<p> - 优化器：AdamW（学习率5×10^-5）。</p>
+<p> - 预训练步数：20,000步；后训练步数：40,000步。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 仿真环境：SIMPLER（基于BridgeData V2的pick-and-place任务）。</p>
+<p> - 真实环境：ALOHA（语言引导的pick-and-place任务）。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 成功率：成功次数/总次数。仿真环境200次rollout；真实环境10次rollout。</p>
+<p> - 真实环境评分：抓取正确对象得0.5分，正确放置得0.5分。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

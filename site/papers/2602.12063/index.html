@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLAW: Iterative Co-Improvement of Vision-Language-Action Policy and World Model - VLA 论文精选</title>
+    <meta name="description" content="提出 VLAW (Vision-Language-Action-World) 框架，通过迭代的协同改进机制，提升 视觉-语言-动作 (VLA) 策略和 世界模型 (World Model) 的性能。 旨在解决在真实机器人上收集在线交互数据成本高昂的问题，通过基于世界模型生成大量合成轨迹数据来扩展训练样本，以进行策略优化。 核心思想是：利用有限的真实世界策略轨迹数据来“接地”（提升保真度）预训练的世" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.12063">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VLAW: Iterative Co-Improvement of Vision-Language-Action Policy and World Model</h1>
+          <div class="detail-meta">2026-02-12 · <a href="http://arxiv.org/abs/2602.12063" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.12063" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.12063</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>The Robotics and AI Institute</strong> (根据致谢部分推断)</li><li>受ONR资助 (N00014-22-1-2621)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>VLAW</strong> (Vision-Language-Action-World) 框架，通过迭代的协同改进机制，提升 <strong>视觉-语言-动作 (VLA)</strong> 策略和 <strong>世界模型 (World Model)</strong> 的性能。</li><li>旨在解决在真实机器人上收集在线交互数据成本高昂的问题，通过基于世界模型生成大量合成轨迹数据来扩展训练样本，以进行策略优化。</li><li>核心思想是：利用有限的真实世界策略轨迹数据来<strong>“接地”</strong>（提升保真度）预训练的世界模型，然后用改进后的世界模型生成大规模的合成数据来迭代改进VLA策略。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一种<strong>简单、可扩展的迭代框架</strong>（VLAW），利用世界模型生成的数据来改进最先进的VLA模型，在真实机器人上验证了其有效性。</li><li>证明了利用<strong>策略在线交互数据</strong>（包含成功和失败案例）微调世界模型，可以显著提升其在复杂接触式、变形物体任务上的物理仿真保真度。</li><li>展示了改进后的世界模型生成的<strong>大规模合成数据</strong>可以有效地用于VLA策略的后训练，在多个下游任务上实现了显著的性能提升（<strong>39.2%</strong> 绝对成功率提升）。</li><li>提出并验证了使用<strong>视觉-语言奖励模型</strong>（基于Qwen3-VL微调）来自动标注合成轨迹的成功/失败，从而筛选出高质量数据用于策略学习。</li><li>将提出的策略更新方法形式化为一种<strong>正则化强化学习</strong>框架的近似，提供了理论解释。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>核心技术方法</strong>：一种迭代的协同优化算法。每个迭代包含四个步骤：1) 在真实世界中进行策略部署收集在线轨迹；2) 用这些真实轨迹数据（结合原始的 <strong>DROID</strong> 数据集进行正则化）微调预训练的<strong>动作条件世界模型</strong>（<strong>Ctrl-World</strong>）；3) 用更新后的世界模型进行闭环仿真，生成大量合成轨迹，并用奖励模型进行自动标注和筛选；4) 使用过滤后的成功轨迹（包含真实的和合成的）通过<strong>流匹配 (Flow-Matching)</strong> 目标对VLA策略（<strong>π0.5</strong>）进行监督微调。</li><li><strong>创新点和关键技术</strong>：将世界模型的微调与VLA策略的改进<strong>迭代耦合</strong>，利用在线数据提升世界模型在策略状态-动作分布上的保真度，再利用高质量合成数据弥补真实交互数据的稀缺性。避免了复杂、不稳定的强化学习算法（如策略梯度），仅使用稳定的监督学习目标。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>数据集</strong>：<strong>DROID</strong> 数据集（用于世界模型的预训练和正则化），以及在实验中收集的<strong>真实机器人策略轨迹数据</strong>（每个任务类别每次迭代收集50条轨迹）。</li><li><strong>模型规模</strong>：</li></ul>
+<p> - 基础VLA策略：<strong>π0.5</strong> (参数量不详，为基础VLA模型)</p>
+<p> - 基础世界模型：<strong>Ctrl-World</strong> (基于视频扩散模型)</p>
+<p> - 奖励模型：微调自 <strong>Qwen3-VL-4B-Instruct</strong> (40亿参数)</p>
+<ul><li><strong>训练资源</strong>：文中未明确指定，但实验在<strong>真实DROID机器人平台</strong>（Franka Panda机械臂）上进行。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境</strong>：在真实<strong>DROID机器人平台</strong>上，测试了五个具有挑战性的接触式操作任务类别（<strong>堆叠积木、打开书本、擦拭白板、用勺盛物、在白板上画圆</strong>）。</li><li><strong>主要评估指标</strong>：<strong>任务成功率</strong>。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>世界模型保真度</strong>：微调后的世界模型在视频质量指标（PSNR, SSIM, LPIPS, FID, FVD）和交互事件预测（降低假阳性FP）上均优于仅用专家数据微调或未经微调的基线。</p>
+<p> - <strong>策略性能提升</strong>：经过两轮迭代，VLAW方法相比基础策略（经过少量专家演示微调后）实现了<strong>39.2%</strong> 的绝对成功率提升。与基线（仅用真实成功轨迹的过滤行为克隆，以及DSRL方法）相比，VLAW在每个任务上都取得了更高的成功率。</p>
+<p> - <strong>合成数据有效性</strong>：仅使用世界模型生成的合成数据改进策略，相比只使用真实数据训练的策略带来了<strong>11.6%</strong> 的额外提升。消融实验表明，减少合成数据量或移除真实成功轨迹都会导致性能下降。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

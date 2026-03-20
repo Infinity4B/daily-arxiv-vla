@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RetoVLA: Reusing Register Tokens for Spatial Reasoning in Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="针对VLA模型效率与性能的权衡难题，RetoVLA提出“复用Register Tokens”这一被ViT用于去伪影的中间信息，作为“空间上下文”直接注入Action Expert，在维持轻量结构的同时增强空间推理能力。 基于LIBERO基准、自建仿真环境以及自建7-DOF机械臂进行评估，实机与仿真均显示在长时序与三维空间理解任务上显著提升。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.21243">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">RetoVLA: Reusing Register Tokens for Spatial Reasoning in Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-09-25 · <a href="http://arxiv.org/abs/2509.21243" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.21243" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.21243</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>加川大学（School of Computing, Gachon University）</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>针对VLA模型效率与性能的权衡难题，RetoVLA提出“复用Register Tokens”这一被ViT用于去伪影的中间信息，作为“空间上下文”直接注入Action Expert，在维持轻量结构的同时增强空间推理能力。</li><li>基于LIBERO基准、自建仿真环境以及自建7-DOF机械臂进行评估，实机与仿真均显示在长时序与三维空间理解任务上显著提升。</li></ul>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>重新定义Register Tokens：从“去伪影的净化器”转为“空间上下文提供者”，设计可学习门控将其KV注入Action Expert的最后一层交叉注意力，实现语义与全局空间双流融合。</li><li>证明复用信息可弥补轻量模型（如SmolVLA）深度压缩导致的全局理解能力损失，是替代“信息缩减”的新范式。</li><li>三类实验验证：标准化仿真（LIBERO）、自建物理仿真（Unity+MuJoCo）、真实7-DOF机械臂上取得大幅提升（尤其长时序与3D空间任务）。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>架构</li></ul>
+<p> - 采用浅层VLM主干（SmolVLM2-500M的前16层）以保证效率；维持单流语义特征与双流信息融合路径。</p>
+<ul><li>空间上下文注入（核心）</li></ul>
+<p> - Register Token生成：用可学习初始向量与图像patch做注意力，生成场景依赖的Register Tokens。</p>
+<p> - 注入与融合：将Register Tokens投影为KV并与VLM的KV在Action Expert最后一层交叉注意力处拼接。</p>
+<p> - 门控：引入可学习标量经sigmoid调制注入强度，避免对极精细局部控制造成干扰。</p>
+<ul><li>训练目标</li></ul>
+<p> - 条件流匹配（CFM）：学习将噪声动作序列朝真实动作序列演化的向量场，MSE损失优化。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据与任务</li></ul>
+<p> - LIBERO四类基准：Spatial、Object、Goal、10(Long)。</p>
+<p> - 真实环境：自建7-DOF机械臂，7项操控任务，收集1,804条episode进行微调。</p>
+<p> - 自建仿真：Unity + MuJoCo插件，对应部分真实任务。</p>
+<ul><li>训练资源（报告为主干与步骤细节）</li></ul>
+<p> - 主干：SmolVLM2-500M（使用前16层）。</p>
+<p> - 训练步数：100k；批量：64。</p>
+<p> - 注入寄存器：2个Register Tokens（消融最优）。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境</li></ul>
+<p> - 仿真：LIBERO基准与自定义Unity+MuJoCo仿真。</p>
+<p> - 真实：7-DOF机械臂，多视角（顶视/侧视/腕部）。</p>
+<ul><li>评估指标</li></ul>
+<p> - 主要指标：成功率（Success Rate, SR）、平均成功率（MSR）。</p>
+<p> - 性能对比：SmolVLA vs RetoVLA。</p>
+<ul><li>关键结果摘要</li></ul>
+<p> - 真实机器人MSR：50.28% → 67.42%，绝对提升17.14%p。</p>
+<p> - 仿真MSR：62.8% → 74.8%，提升12.0%p。</p>
+<p> - 长时序与复杂空间任务提升显著（如Build Domino Line、Close Drawer、Jenga等）；对极精细局部操作有轻微权衡。</p>
+<p> - LIBERO各类总体提升有限，但针对工作记忆与三维空间理解的任务明显受益。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DynVLA: Learning World Dynamics for Action Reasoning in Autonomous Driving - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 DynVLA，这是一个用于端到端自动驾驶的视觉-语言-动作（VLA）模型，引入了一种名为 Dynamics CoT 的新型思维链范式。 该模型旨在解决现有 Textual CoT 缺乏细粒度时空理解以及 Visual CoT 存在大量冗余和计算开销的问题。 通过预测紧凑的世界动态令牌来进行动作推理，从而在交互密集和规则约束的交通场景中实现更明智、更具物理依据的决策。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.11041">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">DynVLA: Learning World Dynamics for Action Reasoning in Autonomous Driving</h1>
+          <div class="detail-meta">2026-03-11 · <a href="http://arxiv.org/abs/2603.11041" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.11041" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.11041</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>论文作者包括 <strong>Shuyao Shang</strong>, <strong>Bing Zhan</strong>, <strong>Yunfei Yan</strong>, <strong>Yuqi Wang</strong>, <strong>Yingyan Li</strong>, <strong>Yasong An</strong>, <strong>Xiaoman Wang</strong>, <strong>Jierui Liu</strong>, <strong>Lu Hou</strong>, <strong>Lue Fan</strong>, <strong>Zhaoxiang Zhang</strong>, <strong>Tieniu Tan</strong>。</li><li>注：HTML 原文中未明确列出作者所属的具体研究机构名称。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>DynVLA</strong>，这是一个用于端到端自动驾驶的视觉-语言-动作（VLA）模型，引入了一种名为 <strong>Dynamics CoT</strong> 的新型思维链范式。</li><li>该模型旨在解决现有 <strong>Textual CoT</strong> 缺乏细粒度时空理解以及 <strong>Visual CoT</strong> 存在大量冗余和计算开销的问题。</li><li>通过预测紧凑的世界动态令牌来进行动作推理，从而在交互密集和规则约束的交通场景中实现更明智、更具物理依据的决策。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>Dynamics CoT</strong> 范式，将未来动态压缩为少量令牌，实现了高效且具备时空推理能力的自动驾驶决策。</li><li>设计了 <strong>Dynamics Tokenizer</strong>，将动态显式解耦为以自车为中心和以环境为中心的动态，并引入物理正则化来防止歧义。</li><li>提出了基于动作的正则化和跨视图一致性正则化，分别用于对齐自车运动和保证不同视角下的语义一致性。</li><li>结合了监督微调（SFT）和强化微调（RFT）策略，在 Dynamics CoT 上训练模型，提高了决策质量和安全性。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>Dynamics Tokenizer</strong>: 使用编码器将相邻帧映射为 Patch 序列，通过两组可学习的查询提取自车和环境动态特征，并使用 VQ-VAE 风格的码本将其离散化为动态令牌。</li><li><strong>动态解耦与正则化</strong>: 将动态解耦以区分自车运动和环境变化；使用 MLP 预测自车动作并进行监督，防止码本坍塌；利用同一动态令牌同时重建未来图像和 BEV 地图，增强语义一致性。</li><li><strong>训练流程</strong>: 首先训练 Dynamics Tokenizer；然后构建结构化的 Dynamics CoT 序列（包含动态令牌和动作令牌）进行 SFT 训练；最后使用 GRPO 算法进行 RFT 训练，优化轨迹级奖励。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集包括真实世界基准 <strong>NAVSIM</strong>、闭环基准 <strong>Bench2Drive</strong> 以及包含 70 万帧的大型 <strong>内部数据集</strong>。</li><li>评估使用了 <strong>NVIDIA H800 GPU</strong> 进行推理延迟测试。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在 <strong>NAVSIM</strong> 基准上，DynVLA 取得了 <strong>91.7</strong> 的 PDMS 分数，优于 Textual CoT 和 Visual CoT 方法。</li><li>在 <strong>Bench2Drive</strong> 基准上，模型在驾驶得分（DS）、成功率（SR）和平均多能力指标上均达到最优，分别为 <strong>88.34</strong>、<strong>72.73</strong> 和 <strong>72.23</strong>。</li><li>在内部数据集上，模型取得了最低的平均位移误差（ADE <strong>1.215</strong>）和碰撞率（<strong>4.04</strong>），证明了大规模场景下的可靠性。</li><li><strong>Dynamics CoT</strong> 的推理延迟仅为 <strong>0.37s</strong>，显著低于 Textual CoT（3.04s）和 Visual CoT（2.29s），实现了效率与性能的平衡。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

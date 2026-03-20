@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FreezeVLA: Action-Freezing Attacks against Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="论文研究单位 复旦大学 上海人工智能实验室 Sea AI Lab 论文概述 针对视觉-语言-动作（VLA）模型提出并形式化“行动冻结”（action-freezing）攻击：对抗图像使机器人忽略后续指令，进入持续无响应状态，可能在关键时刻导致不作为，引发实际安全风险。 提出FreezeVLA框架，通过最小-最大双层优化生成跨提示可迁移的对抗图像，在三个SOTA VLA模型与四个机器人基准上实现高攻" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.19870">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">FreezeVLA: Action-Freezing Attacks against Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-09-24 · <a href="http://arxiv.org/abs/2509.19870" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.19870" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.19870</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>论文研究单位</p>
+<ul><li>复旦大学</li><li>上海人工智能实验室</li><li>Sea AI Lab</li></ul>
+
+<p>论文概述</p>
+<ul><li>针对视觉-语言-动作（VLA）模型提出并形式化“行动冻结”（action-freezing）攻击：对抗图像使机器人忽略后续指令，进入持续无响应状态，可能在关键时刻导致不作为，引发实际安全风险。</li><li>提出FreezeVLA框架，通过最小-最大双层优化生成跨提示可迁移的对抗图像，在三个SOTA VLA模型与四个机器人基准上实现高攻击成功率，显著优于现有方法。</li></ul>
+
+<p>论文核心贡献点</p>
+<ul><li>识别并形式化VLA模型的“行动冻结”漏洞，揭示与错误动作同等严重的“不作为”威胁。</li><li>提出FreezeVLA：使用内部最大化（对抗提示优化）与外部最小化（对抗图像优化）的双层优化方法，扩展提示嵌入空间覆盖，显著提升跨提示迁移能力。</li><li>跨模型验证：SpatialVLA、OpenVLA、π0 上分别达到平均攻击成功率73.3%、95.4%、59.8%，全面超越随机噪声、PGD、多提示等基线。</li></ul>
+
+<p>论文方法描述</p>
+<ul><li>威胁模型与目标：白盒访问VLA模型、黑盒用户指令，通过图像扰动使模型在任意指令下稳定输出冻结令牌（如<freeze>、<eos>或“do-nothing”token），导致行动终止。</li><li>内部最大化（对抗提示优化）：从初始参考提示集出发，通过梯度分析定位高影响词并进行贪婪同义词替换，迭代生成更难被冻结的“硬提示”集，扩展提示语义空间。</li><li>外部最小化（对抗图像优化）：基于“硬提示”集合，对图像进行梯度聚合与更新，使VLA模型在多种提示下均以高概率输出冻结令牌，实现持久冻结。</li><li>形式化目标：min−max 双层优化，外层在 L∞ 扰动预算 ε 内最小化冻结损失，内层最大化难提示下的损失，使对抗图像在跨提示下保持有效性。</li><li>提示多样性增强：对比“随机采样”与“GPT生成”提示，显示GPT生成的语义多样性进一步提升攻击迁移性。</li></ul>
+
+<p>论文使用数据集和训练资源</p>
+<ul><li>数据集与基准：LIBERO-10、LIBERO-Goal、LIBERO-Object、LIBERO-Spatial四个机器人操控基准。</li><li>目标模型：SpatialVLA、OpenVLA、π0 三种SOTA VLA模型（具备动作分块/离散化/连续动作头等不同架构与冻结令牌策略）。</li><li>训练与实验资源：HPC集群，32×NVIDIA A800-SXM4-80GB GPUs。</li></ul>
+
+<p>论文使用的评估环境和评估指标</p>
+<ul><li>评估指标：攻击成功率（ASR），定义为使VLA模型进入一致冻结状态的对抗图像比例。</li><li>评估设置：</li></ul>
+<p> - 扰动预算：L∞ 约束下的 ε=4/255（主实验），对比 ε∈{1/255,2/255,4/255,8/255,16/255} 的敏感性。</p>
+<p> - 优化步数与提示数：图像迭代K=100、步长α=1/255；参考提示规模\|P\|=20；内部提示迭代M=10。</p>
+<p> - 基线对比：随机噪声、Single-Prompt PGD、Multi-Prompt（随机/随机+GPT）、FreezeVLA（随机）与FreezeVLA+GPT。</p>
+<p> - 冻结策略差异：SpatialVLA/π0 使用 <eos>；OpenVLA 使用“do-nothing”token。</p>
+<ul><li>主要结果：FreezeVLA+GPT 在 ε=4/255 下实现平均ASR 73.3%（SpatialVLA）、95.4%（OpenVLA）、59.8%（π0），并具有强跨提示可迁移性与随预算提升的稳定增益。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

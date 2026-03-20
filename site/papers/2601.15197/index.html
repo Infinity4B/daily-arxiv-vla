@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BayesianVLA: Bayesian Decomposition of Vision Language Action Models via Latent Action Queries - VLA 论文精选</title>
+    <meta name="description" content="论文研究单位： HUST (华中科技大学), ZGCA (中关村实验室), ZGCI (中关村实验室), HIT (哈尔滨工业大学), HKUST(GZ) (香港科技大学（广州）), ZZU (郑州大学), BUAA (北京航空航天大学), ECNU (华东师范大学), DeepCybo。 论文概述： 本论文提出了BayesianVLA，一个旨在解决当前视觉-语言-动作模型在存在偏置的、目标驱动的" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2601.15197">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">BayesianVLA: Bayesian Decomposition of Vision Language Action Models via Latent Action Queries</h1>
+          <div class="detail-meta">2026-01-21 · <a href="http://arxiv.org/abs/2601.15197" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2601.15197" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2601.15197</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>论文研究单位：</p>
+<p>HUST (华中科技大学), ZGCA (中关村实验室), ZGCI (中关村实验室), HIT (哈尔滨工业大学), HKUST(GZ) (香港科技大学（广州）), ZZU (郑州大学), BUAA (北京航空航天大学), ECNU (华东师范大学), DeepCybo。</p>
+
+<p>论文概述：</p>
+<p>本论文提出了BayesianVLA，一个旨在解决当前视觉-语言-动作模型在存在偏置的、目标驱动的数据集中容易出现的“视觉捷径”病理的框架。该框架通过贝叶斯分解和引入潜在动作查询，强制模型遵循语言指令，从而改善其泛化能力，特别是在分布外和模糊场景中。论文在SimplerEnv和RoboCasa等基准测试上验证了其有效性。</p>
+
+<p>论文核心贡献点：</p>
+<ol><li>识别并实证验证了当前VLA训练中的“视觉捷径”病理，即标准模型往往会忽略语言而依赖数据集特有的视觉相关性。</li><li>提出了BayesianVLA方法，利用潜在动作查询和双分支贝叶斯目标，从存在偏置的数据中恢复真正的语言条件化策略。</li><li>证明了BayesianVLA在SimplerEnv和RoboCasa上达到了先进的性能，特别是在SimplerEnv的OOD泛化上实现了11.3%的显著提升，验证了其打破视觉捷径的有效性。</li></ol>
+
+<p>论文方法描述：</p>
+<ol><li>贝叶斯分解：提出最大化动作与指令之间的条件逐点互信息，其等价于最大化后验策略与视觉先验的对数似然比，迫使动作提供无法仅从视觉推断出的、关于指令的额外信息。</li><li>潜在动作查询：引入一组可学习的查询令牌（例如64个），注入到视觉语言模型中，作为VLM与下游扩散Transformer策略之间的瓶颈接口。这些查询根据其在输入序列中的位置，利用因果注意力掩码来编码纯视觉信息或视觉+语言信息。</li><li>双分支训练框架：</li></ol>
+<p> - 先验分支（视觉专用）：输入序列为[v, Q, l]，查询只能关注视觉观测v，用于学习视觉先验p(a\|v)。</p>
+<p> - 后验分支（视觉+语言）：输入序列为[v, l, Q]，查询可以关注视觉和语言，用于学习完整策略π(a\|v, l)。</p>
+<p> - 最大化似然比：通过最大化LLR损失来优化，该损失鼓励查询的隐藏状态携带解释指令l的信息。</p>
+<ol><li>总训练目标：结合后验分支和先验分支的动作预测损失（采用Rectified Flow Matching目标）以及LLR正则化项。推理时仅使用后验分支，不产生额外计算开销。</li></ol>
+
+<p>论文使用数据集和训练资源：</p>
+<ul><li>使用的数据集：BridgeDataV2，Fractal (来自Open X-Embodiment数据集)，Humanoid Robot Tabletop Manipulation子集 (来自PhysicalAI-Robotics-GR00T-X-Embodiment-Sim数据集)，LIBERO基准测试。</li><li>训练资源：基于StarVLA框架，在16个NVIDIA H100 GPU集群上进行训练。使用AdamW优化器（初始学习率1e-5，余弦退火调度）。系统级优化包括DeepSpeed ZeRO-2，梯度裁剪范数为1.0，无梯度累积。</li></ul>
+
+<p>论文使用的评估环境和评估指标：</p>
+<ul><li>评估环境：SimplerEnv（使用WidowX机器人），RoboCasa Tabletop simulation（使用GR1机器人），LIBERO benchmark。</li><li>评估指标：任务成功率。在SimplerEnv上，每个任务运行480次独立试验并报告平均性能；在RoboCasa上，每个任务运行50次独立试验并报告平均成功率。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

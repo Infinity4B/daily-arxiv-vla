@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TwinVLA: Data-Efficient Bimanual Manipulation with Twin Single-Arm Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="Vision-Language-Action模型（VLAs）在单臂机器人操控中表现出色，但双臂操控因缺乏大规模公开数据而面临挑战。本研究提出TwinVLA，通过组合两个预训练单臂VLA模型实现数据高效的双臂操控。TwinVLA避免了大量双臂预训练数据的依赖，仅需少量双臂演示即可在真实世界和仿真任务中达到或超越单体模型（如RDT-1B）的性能，并接近状态最先进的π_0模型。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.05275">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">TwinVLA: Data-Efficient Bimanual Manipulation with Twin Single-Arm Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-11-07 · <a href="http://arxiv.org/abs/2511.05275" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.05275" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.05275</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>延世大学人工智能系（Yonsei University, Department of Artificial Intelligence），微软研究院（Microsoft Research）。</p>
+<h2 class="section-title">论文概述</h2>
+<p>Vision-Language-Action模型（VLAs）在单臂机器人操控中表现出色，但双臂操控因缺乏大规模公开数据而面临挑战。本研究提出TwinVLA，通过组合两个预训练单臂VLA模型实现数据高效的双臂操控。TwinVLA避免了大量双臂预训练数据的依赖，仅需少量双臂演示即可在真实世界和仿真任务中达到或超越单体模型（如RDT-1B）的性能，并接近状态最先进的π_0模型。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出模块化双臂架构：通过复制预训练单臂VLA并结合联合注意力机制，实现两臂协调控制。</li><li>数据高效微调范式：仅使用小量双臂数据（每任务约50演示）进行微调，无需额外双臂预训练。</li><li>性能验证：在真实世界（Anubis机器人）和仿真（RoboTwin 2.0、Tabletop-Sim）任务中，TwinVLA在成功率上优于或匹配RDT-1B和DP方法，接近π_0模型。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>TwinVLA基于以下三大核心组件：</p>
+<ol><li><strong>单臂策略复制</strong>：复制预训练单臂VLA的VLM骨干（仅复制1.3B参数），共享视觉编码器和DiT动作头。左右臂各有一个轻量级本体感觉编码器。</li><li><strong>联合注意力机制</strong>：共享两个VLM间的自注意力层，实现跨臂信息融合，采用因果联合注意力掩码保持时序性和对称交互。</li><li><strong>混合专家（MoE）集成</strong>：通过MoE高效处理共享输入（如语言和自我视角图像），减少计算开销。同时，采用任务算术和注意力重加权技术保留预训练知识并加速微调。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 预训练：OXE数据集的0.5M轨迹子集。</p>
+<p> - 微调：真实世界任务每任务收集50集（绝对末端执行器控制），仿真任务每任务50集（如RoboTwin 2.0和Tabletop-Sim）。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - SingleVLA预训练：5×H100 GPUs，耗时5天，120k步。</p>
+<p> - TwinVLA微调：1×L40S GPU，耗时2天，100k步。</p>
+<p> - 计算总量：约25 H100 GPU天（RDT-1B需超1,000 H100 GPU天）。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>真实世界</strong>：使用Anubis双臂机器人，任务包括“carrot to bag”（胡萝卜入袋）、“brush to dustpan”（刷子入簸箕）、“take towel off”（取下毛巾）。</p>
+<p> - <strong>仿真</strong>：</p>
+<p> - RoboTwin 2.0：50个双臂任务（Easy和Hard设置）。</p>
+<p> - Tabletop-Sim：5个任务（如“dish-drainer”（碗碟架）、“handover-box”（传递盒子））。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 主要指标为任务成功率（Success Rate），在每任务20-500次 rollout 中计算平均成功率。</p>
+<p> - 语言跟随测试：多任务组合指令（如“put X box into Y pot”）下的平均成功率。</p>
+<p> - 数据效率评估：随演示数量（20、35、50）变化的成功率曲线。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

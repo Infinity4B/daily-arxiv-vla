@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAST: Efficient Action Tokenization for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="论文提出了一种名为FAST（Frequency-space Action Sequence Tokenization）的高效动作序列标记化方法，用于训练自回归视觉-语言-动作模型。该方法基于离散余弦变换（DCT）对机器人动作序列进行压缩，解决了现有标记化方法在处理高频控制任务时效果不佳的问题。论文还发布了FAST+，一个在100万个真实机器人轨迹上训练的通用动作标记化器，可处理多种机器人和任务。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2501.09747">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">FAST: Efficient Action Tokenization for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-01-16 · <a href="http://arxiv.org/abs/2501.09747" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2501.09747" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2501.09747</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Physical Intelligence, UC Berkeley, Stanford</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了一种名为FAST（Frequency-space Action Sequence Tokenization）的高效动作序列标记化方法，用于训练自回归视觉-语言-动作模型。该方法基于离散余弦变换（DCT）对机器人动作序列进行压缩，解决了现有标记化方法在处理高频控制任务时效果不佳的问题。论文还发布了FAST+，一个在100万个真实机器人轨迹上训练的通用动作标记化器，可处理多种机器人和任务。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出FAST标记化方法：使用DCT将动作序列转换到频域，通过量化和字节对编码（BPE）压缩信号，有效减少标记数量。</li><li>发布FAST+通用标记化器：在多样化机器人数据上预训练，可直接应用于新任务，无需重新训练。</li><li>验证了FAST在多个高频灵巧操作任务上的有效性：使自回归VLA模型首次成功应用于DROID等高频数据集，实现零样本泛化。</li><li>实验表明FAST训练速度比扩散模型快5倍，同时保持相当性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li>动作归一化：将动作的1%和99%分位数映射到[-1,1]范围。</li><li>DCT变换：对每个动作维度独立应用离散余弦变换，得到频域系数。</li><li>系数量化：通过缩放因子（γ=10）对系数缩放后四舍五入，稀疏化高频分量。</li><li>展平与BPE压缩：按频率优先顺序展平系数矩阵，训练BPE编码器生成紧凑标记序列。</li><li>逆向过程：通过逆BPE和逆DCT重建连续动作。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li>评估任务：</li></ol>
+<p> - Libero模拟基准（空间、目标、长时任务）</p>
+<p> - 真实机器人任务：桌面整理（20Hz）、T恤折叠（50Hz）、杂货装袋（20Hz）、烤面包（50Hz）、洗衣折叠（50Hz）</p>
+<p> - DROID零样本桌面操作（15Hz）</p>
+<ol><li>训练数据：</li></ol>
+<p> - FAST+通用标记化器：100万个真实机器人轨迹，涵盖单臂、双臂和移动机器人。</p>
+<p> - VLA训练：π₀模型在10,000小时数据上训练，包括BridgeV2（5Hz）、DROID（15Hz）等。</p>
+<ol><li>计算资源：未明确说明硬件配置，但强调FAST比扩散模型训练快5倍。</li></ol>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li>评估环境：</li></ol>
+<p> - 真实机器人：UR5单臂、ARX双臂、Trossen Viper-X双臂系统。</p>
+<p> - 模拟环境：Libero任务套件。</p>
+<p> - 零样本测试：三个大学校园的全新桌面场景。</p>
+<ol><li>评估指标：</li></ol>
+<p> - 任务成功率：洗衣折叠按衣物项目计算，其他任务按回合完成率。</p>
+<p> - 标记压缩率：比较FAST与朴素分箱方法的平均标记数。</p>
+<p> - 训练效率：收敛速度和计算时间。</p>
+<p> - 泛化能力：零样本环境下的策略鲁棒性。</think></p>
+<h2 class="section-title">论文研究单位</h2>
+<p>Physical Intelligence, UC Berkeley, Stanford</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了一种名为FAST（Frequency-space Action Sequence Tokenization）的高效动作序列标记化方法，用于训练自回归视觉-语言-动作模型。该方法基于离散余弦变换（DCT）对机器人动作序列进行压缩，解决了现有标记化方法在处理高频控制任务时效果不佳的问题。论文还发布了FAST+，一个在100万个真实机器人轨迹上训练的通用动作标记化器，可处理多种机器人和任务。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出FAST标记化方法：使用DCT将动作序列转换到频域，通过量化和字节对编码（BPE）压缩信号，有效减少标记数量。</li><li>发布FAST+通用标记化器：在多样化机器人数据上预训练，可直接应用于新任务，无需重新训练。</li><li>验证了FAST在多个高频灵巧操作任务上的有效性：使自回归VLA模型首次成功应用于DROID等高频数据集，实现零样本泛化。</li><li>实验表明FAST训练速度比扩散模型快5倍，同时保持相当性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li>动作归一化：将动作的1%和99%分位数映射到[-1,1]范围。</li><li>DCT变换：对每个动作维度独立应用离散余弦变换，得到频域系数。</li><li>系数量化：通过缩放因子（γ=10）对系数缩放后四舍五入，稀疏化高频分量。</li><li>展平与BPE压缩：按频率优先顺序展平系数矩阵，训练BPE编码器生成紧凑标记序列。</li><li>逆向过程：通过逆BPE和逆DCT重建连续动作。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li>评估任务：</li></ol>
+<p> - Libero模拟基准（空间、目标、长时任务）</p>
+<p> - 真实机器人任务：桌面整理（20Hz）、T恤折叠（50Hz）、杂货装袋（20Hz）、烤面包（50Hz）、洗衣折叠（50Hz）</p>
+<p> - DROID零样本桌面操作（15Hz）</p>
+<ol><li>训练数据：</li></ol>
+<p> - FAST+通用标记化器：100万个真实机器人轨迹，涵盖单臂、双臂和移动机器人。</p>
+<p> - VLA训练：π₀模型在10,000小时数据上训练，包括BridgeV2（5Hz）、DROID（15Hz）等。</p>
+<ol><li>计算资源：未明确说明硬件配置，但强调FAST比扩散模型训练快5倍。</li></ol>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li>评估环境：</li></ol>
+<p> - 真实机器人：UR5单臂、ARX双臂、Trossen Viper-X双臂系统。</p>
+<p> - 模拟环境：Libero任务套件。</p>
+<p> - 零样本测试：三个大学校园的全新桌面场景。</p>
+<ol><li>评估指标：</li></ol>
+<p> - 任务成功率：洗衣折叠按衣物项目计算，其他任务按回合完成率。</p>
+<p> - 标记压缩率：比较FAST与朴素分箱方法的平均标记数。</p>
+<p> - 训练效率：收敛速度和计算时间。</p>
+<p> - 泛化能力：零样本环境下的策略鲁棒性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

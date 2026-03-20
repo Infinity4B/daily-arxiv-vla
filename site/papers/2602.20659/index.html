@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recursive Belief Vision Language Model - VLA 论文精选</title>
+    <meta name="description" content="论文提出了一个名为 Recursive Belief VLA (RB-VLA) 的新型视觉语言动作模型架构，旨在解决长视野、部分可观测环境下的机器人操作任务。 核心目标是克服现有视觉语言动作模型（VLA）中存在的短期记忆依赖、高推理延迟、以及在多阶段任务中由于感知混淆和遮挡导致的任务状态丢失问题。 论文主要解决在部分可观测环境中进行长视野、多阶段操作时，模型缺乏持续、与动作相关的内部状态表示，从而" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.20659">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Recursive Belief Vision Language Model</h1>
+          <div class="detail-meta">2026-02-24 · <a href="http://arxiv.org/abs/2602.20659" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.20659" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.20659</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>论文作者未明确列出其所属研究机构。根据作者姓名（Vaidehi Bagaria, Bijo Sebastian, Nirav Patel）和致谢内容，推断其可能与学术研究机构或工业研究实验室相关，但原文未直接提供单位信息。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了一个名为 <strong>Recursive Belief VLA (RB-VLA)</strong> 的新型视觉语言动作模型架构，旨在解决长视野、部分可观测环境下的机器人操作任务。</li><li>核心目标是克服现有视觉语言动作模型（VLA）中存在的短期记忆依赖、高推理延迟、以及在多阶段任务中由于感知混淆和遮挡导致的任务状态丢失问题。</li><li>论文主要解决在部分可观测环境中进行长视野、多阶段操作时，模型缺乏持续、与动作相关的内部状态表示，从而导致任务执行不稳定和效率低下的问题。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出<strong>基于信念的VLA框架</strong>：引入一个固定大小、递归更新的<strong>信念</strong>状态，用于编码与任务相关的交互历史、系统动力学和对象状态，支持部分可观测下的因果推理。</li><li>实现<strong>阶段感知的长视野控制</strong>：该递归信念为扩散策略提供短期和长期的预测上下文，支持隐式的阶段估计，实现动态一致的闭环控制，替代了短观察窗口。</li><li>采用<strong>解耦的语义与控制系统</strong>：将语义推理（通过<strong>VLM</strong>完成）视为一次性过程（每个任务仅查询一次以提取高级意图），避免了密集的语义重复推理，显著降低了计算开销。</li><li>在<strong>长视野基准测试中进行了实证验证</strong>：在长视野、多阶段操作任务以及遮挡条件下，<strong>RB-VLA</strong> 大幅超越了现有的VLA方法，同时保持了恒定的内存使用和显著更低的推理延迟。</li><li>通过<strong>消融研究</strong>证明了信念模块是性能提升的主要驱动力，将无信念模块时的成功率从32.5%提升到了有信念模块时的77.5%。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>系统架构</strong>：<strong>RB-VLA</strong> 由三部分组成：一个视觉语言模块（用于生成静态的<strong>意图</strong>嵌入）、一个信念估计器（递归维护<strong>信念</strong>状态）和一个基于<strong>扩散</strong>策略的控制器。</li><li><strong>递归信念估计器</strong>：采用类<strong>RSSM</strong>的世界模型训练目标，使用基于<strong>Transformer</strong>的模块集成多模态观察（视觉、本体感觉、动作）的短期窗口以及先前的<strong>信念</strong>状态，生成一个紧凑的、固定维度的潜在<strong>信念</strong>状态。该信念通过预测未来状态和自我监督目标进行训练，使其能够捕捉动作条件下的动态变化。</li><li><strong>创新点</strong>：主要创新在于引入并学习一个持续的内部<strong>信念</strong>表示，该表示总结了过去动作的后果和任务进度，从而在无需存储原始观察或频繁调用<strong>VLM</strong>的情况下，实现稳健的、阶段感知的控制。信念的递归特性确保了内存使用不随时间增长。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>使用数据集</strong>：<strong>RoboSuite</strong>、<strong>LIBERO-Long</strong>、<strong>LIBERO-Object</strong> 和一个 <strong>UR5 MuJoCo</strong> 环境。共使用了40,000条模拟操作轨迹（约4千万时间步），涵盖拾放、堆叠和家庭操作等任务。</li><li><strong>模型规模与参数量</strong>：</li></ul>
+<p> - <strong>信念模型</strong>：使用 <strong>DINOv2 ViT-S/14</strong> 视觉编码器，包含<strong>1.5亿</strong>参数。</p>
+<p> - <strong>VLM</strong>：基于 <strong>Qwen2.5-VL-7B</strong> 模型（保持冻结）。</p>
+<p> - <strong>扩散控制器</strong>：包含<strong>1.2亿</strong>参数。</p>
+<ul><li><strong>训练资源</strong>：所有实验在 <strong>12 个 NVIDIA A100 GPU (80GB)</strong> 上使用分布式数据并行训练完成。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：在模拟环境（<strong>RoboSuite</strong>、<strong>LIBERO-Long</strong>）和真实世界（<strong>UR5机械臂</strong>）中评估。与基线模型如 <strong>GROOT-N1</strong>、<strong>OpenVLA</strong>、<strong>π₀</strong> 进行比较。</li><li><strong>主要评估指标</strong>：任务成功率、推理延迟（每回合平均时间）、内存使用增长、信念表示质量分析。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>长视野任务成功率</strong>：<strong>RB-VLA</strong> 在多物体拾放和堆叠任务中显著优于基线。例如，在遮挡下的多阶段拾放任务中，达到 <strong>77.5%</strong> 的成功率，相比 <strong>π₀</strong>（25.0%）提高了 <strong>52.5%</strong>。</p>
+<p> - <strong>效率提升</strong>：推理延迟相比基线（如 <strong>OpenVLA</strong>）降低了高达 <strong>5倍</strong>。内存使用保持恒定，不随观察帧数增长，而基线模型的内存使用则呈超线性增长。</p>
+<p> - <strong>消融研究</strong>：完整 <strong>RB-VLA</strong>（包含信念）在双物体拾放任务中成功率为 <strong>77.5%</strong>，移除信念后（仅扩散策略）成功率降至 <strong>32.5%</strong>。</p>
+<p> - <strong>真实世界部署</strong>：经过少量微调，在真实 <strong>UR5</strong> 机械臂上成功执行多物体拾放任务，成功率达到 <strong>68.0%</strong>。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

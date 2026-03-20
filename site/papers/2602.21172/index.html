@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NoRD: A Data-Efficient Vision-Language-Action Model that Drives without Reasoning - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 NoRD 模型，旨在解决当前视觉-语言-行动模型对海量数据和密集推理标注两大昂贵需求的依赖。 核心研究目标是探索能否在不使用任何推理标注、且训练数据量大幅减少（&lt;60%）的情况下，在自动驾驶基准上达到与现有方法竞争的性能。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.21172">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">NoRD: A Data-Efficient Vision-Language-Action Model that Drives without Reasoning</h1>
+          <div class="detail-meta">2026-02-24 · <a href="http://arxiv.org/abs/2602.21172" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.21172" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.21172</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Applied Intuition</strong></li><li><strong>Texas A&M University</strong></li><li><strong>UC Berkeley</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>NoRD</strong> 模型，旨在解决当前视觉-语言-行动模型对<strong>海量数据</strong>和<strong>密集推理标注</strong>两大昂贵需求的依赖。</li><li>核心研究目标是探索能否在不使用任何推理标注、且训练数据量大幅减少（<60%）的情况下，在自动驾驶基准上达到与现有方法<strong>竞争的性能</strong>。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li><strong>首次发现</strong>了数据高效且无推理的VLA训练失败源于<strong>难度偏差</strong>，该偏差由弱SFT策略和复杂驾驶奖励共同触发。</li><li>实证表征了这一失败，表明数据高效的SFT策略会诱导出两极分化的奖励分布，从而剥夺了<strong>GRPO</strong>的学习信号。</li><li>提出使用 <strong>Dr. GRPO</strong> 作为直接替代算法来训练 <strong>NoRD</strong>，这是<strong>首次在自动驾驶领域验证</strong>这种策略优化方法。</li><li>在 <strong>NAVSIM</strong> 和 <strong>WaymoE2E</strong> 基准测试上，<strong>在不使用任何推理标注且数据量减少至少60%的情况下</strong>，取得了具有竞争力的性能，同时提升了推理速度。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>基于 <strong>Qwen-2.5VL-3B-Instruct</strong> 模型构建VLA，采用两阶段训练：1）<strong>使用有限数据的有监督微调</strong>，形成弱的<strong>NoRD-base</strong>策略；2）使用 <strong>Dr. GRPO</strong> 对弱SFT策略进行<strong>强化学习后训练</strong>。</li><li>创新点在于使用 <strong>Dr. GRPO</strong> 解决标准 <strong>GRPO</strong> 在优化弱SFT策略时的<strong>难度偏差</strong>问题。Dr. GRPO通过移除GRPO优势估计中的标准差归一化项，使模型能够从高方差（困难）样本中有效学习。</li><li>为提高标记效率，使用 <strong>k-disc 标记化</strong>（词汇表大小为2048）将轨迹编码为离散标记，并直接预测未来轨迹。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要使用 <strong>NAVSIM</strong> 和 <strong>WaymoE2E</strong> 两个自动驾驶数据集进行训练和评估。</li><li>基础模型为 <strong>Qwen-2.5VL-3B-Instruct</strong>，是一个约30亿参数的多模态模型。</li><li>训练资源：SFT阶段使用<strong>16个A100 GPU</strong>；RL后训练阶段对NAVSIM使用<strong>30个A100 GPU</strong>，对WaymoE2E使用<strong>32个A100 GPU</strong>。使用了 <strong>verl</strong> 和 <strong>vLLM</strong> 等工具库。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在 <strong>WaymoE2E</strong> 测试集上，<strong>NoRD</strong> 取得了 <strong>RFS 7.709</strong> 的成绩（排名第三），是顶级模型中唯一<strong>不使用推理</strong>和<strong>集成</strong>的模型，且<strong>训练数据量大幅减少</strong>（例如，比Poutine少17倍）。</li><li>在 <strong>NAVSIM</strong> 测试集（navtest子集）上，<strong>NoRD</strong> 取得了 <strong>PDM Score 85.6</strong> 的成绩，在<strong>仅使用3个相机帧、无推理、无激光雷达</strong>的条件下，性能与许多BEV方法和VLA方法可比。</li><li>在 Best-of-N 评估中，<strong>NoRD-BoN</strong> 取得了 <strong>PDM Score 92.4</strong>，超过了推理模型 <strong>AutoVLA-BoN</strong>。</li><li>实验证明，使用 <strong>Dr. GRPO</strong> 优化弱SFT策略（<strong>NoRD-base</strong>）带来了 <strong>+11.68%</strong> 的性能提升，而标准 <strong>GRPO</strong> 仅带来 <strong>+0.67%</strong> 的微小提升。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

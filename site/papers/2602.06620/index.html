@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Force Generative Imitation Learning: Bridging Position Trajectory and Force Commands through Control Technique - VLA 论文精选</title>
+    <meta name="description" content="提出了一种名为 Force Generative Imitation Learning 的分层模仿学习框架，旨在从给定的位置轨迹中生成合适的力命令，以解决接触密集型任务中力命令未知的问题。 该方法通过引入反馈控制（PID）来补偿学习模型的输出误差，提高了系统对未见过位置轨迹的泛化能力和任务执行的鲁棒性。 核心目标是实现机器人能够在真实世界的接触任务（如写字）中，仅通过直观收集的位置轨迹，稳定且准确" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.06620">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Force Generative Imitation Learning: Bridging Position Trajectory and Force Commands through Control Technique</h1>
+          <div class="detail-meta">2026-02-06 · <a href="http://arxiv.org/abs/2602.06620" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.06620" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.06620</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>筑波大学</strong>（Graduate School of Systems and Information Engineering, University of Tsukuba; Department of Intelligent Interaction Technologies, Institute of Systems and Information Engineering, University of Tsukuba）</li><li><strong>埼玉大学</strong>（Graduate School of Science and Engineering, Saitama University）</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了一种名为 <strong>Force Generative Imitation Learning</strong> 的分层模仿学习框架，旨在从给定的<strong>位置轨迹</strong>中生成合适的<strong>力命令</strong>，以解决接触密集型任务中力命令未知的问题。</li><li>该方法通过引入<strong>反馈控制</strong>（PID）来补偿学习模型的输出误差，提高了系统对未见过位置轨迹的泛化能力和任务执行的鲁棒性。</li><li>核心目标是实现机器人能够在真实世界的接触任务（如写字）中，仅通过直观收集的位置轨迹，稳定且准确地生成并执行力控动作。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一种<strong>分层架构</strong>，明确将具有记忆能力的上层神经网络与<strong>无记忆、可反馈控制</strong>的下层神经网络分离，使得两个层级可以独立训练。</li><li>所提出的框架能够处理具有非平凡或未明确定义控制目标的接触式操作任务，同时仍能通过经典的<strong>反馈控制</strong>（如PID）来确保系统的稳定性。</li><li>揭示了在反馈控制环路中嵌入记忆会阻碍稳定性，并通过实验验证了时间尺度分离允许基于学习的力生成同时实现<strong>鲁棒性和稳定性</strong>。</li><li>成功将<strong>力生成能力</strong>集成到分层模仿学习中，扩展了其对需要精确力交互的真实世界机器人任务的适用性。</li><li>在真实的<strong>机器人写字任务</strong>中验证了方法的有效性，证明了其能提高精度并保持稳定接触。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>提出了一种名为 <strong>Force Generative Imitation Learning</strong> 的分层方法，其<strong>上层</strong>是一个记忆型神经网络（如Transformer或RNN），负责预测未来的角位置和角速度轨迹（上层层轨迹）。</li><li><strong>下层</strong>是一个<strong>无记忆</strong>的神经网络（如<strong>多层感知机</strong>），它以上层层轨迹和当前机器人状态（关节角、角速度、扭矩）为输入，预测下一时刻的状态和命令（包括力/扭矩命令）。</li><li><strong>关键创新点</strong>在于将记忆部分置于控制环路之外。下层网络的无记忆特性使其易于与<strong>PID反馈控制器</strong>结合。控制器通过计算上层层轨迹与下层网络预测状态之间的误差，生成控制信号并修正输入给下层网络的上层轨迹，从而实现对输出误差的在线补偿。</li><li>该方法通过<strong>双边控制</strong>收集专家演示数据，构建动作-状态对用于监督学习。训练时，上层和下层的模块可以分别独立训练。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用自行收集的<strong>机器人写字任务数据集</strong>，包含五条不同直线和两种不同圆形的轨迹，在两种白板高度（0 cm 和 2 cm）下通过<strong>双边控制</strong>收集，共70个试验序列。</li><li>模型规模：下层MLP包含7个全连接层，每层400个神经元，使用tanh激活函数。作为对比的LSTM包含6层，每层400维，外加一个全连接层。</li><li>训练资源：论文未明确说明具体使用的GPU/TPU类型。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境</strong>：使用<strong>CRANE-X7</strong>七自由度机械臂进行真实机器人实验，任务是基于模仿学习在白板上书写字符（如圆形、字母A、B、“2”、“3”、“ABCD”）。</li><li><strong>主要指标</strong>：笔尖的<strong>笛卡尔X坐标轨迹</strong>对比、书写字符与目标轨迹之间的<strong>交并比</strong>，以及<strong>扭矩参考值</strong>的变化。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 引入P控制（PID的比例项）能有效抑制振荡，使机器人运动更准确地跟踪上层层轨迹。</p>
+<p> - 与<strong>直接示教回放</strong>、<strong>传统LSTM模型</strong>相比，所提出的<strong>带PID控制的MLP模型</strong>在书写任务中实现了最高的轨迹跟踪精度和IoU值（尤其在未训练的白板高度1cm上）。</p>
+<p> - 实验表明，在控制环路中使用<strong>无记忆的MLP</strong>能够实现稳定的反馈控制，而<strong>带有记忆的LSTM</strong>在引入PID控制后无法有效提升精度，甚至导致控制困难。</p>
+<p> - 所提方法在<strong>泛化性</strong>测试中表现良好，能够对未见过的字符和高度生成有效的力命令并完成任务。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

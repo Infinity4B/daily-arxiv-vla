@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TriVLA: A Triple-System-Based Unified Vision-Language-Action Model for General Robot Control - VLA 论文精选</title>
+    <meta name="description" content="TriVLA 是一个受认知神经科学中的情景记忆理论启发的视觉-语言-动作（VLA）统一框架，通过三系统架构实现了情景世界模型。该模型使机器人能够积累、回忆和预测顺序的多模态体验，从而在动态环境中实现鲁棒的长期任务执行。当前基于VLM的VLA系统主要依赖静态表示和有限的时间上下文，而TriVLA通过集成预训练的视觉语言模型（VLM）和视频扩散模型（VDM），提供了高层次的推理和动态预测能力，实验证明" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2507.01424">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">TriVLA: A Triple-System-Based Unified Vision-Language-Action Model for General Robot Control</h1>
+          <div class="detail-meta">2025-07-02 · <a href="http://arxiv.org/abs/2507.01424" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2507.01424" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2507.01424</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">1. 论文研究单位</h2>
+<p>Fudan University and Shanghai Innovation Institute</p>
+<h2 class="section-title">2. 论文概述</h2>
+<p>TriVLA 是一个受认知神经科学中的情景记忆理论启发的视觉-语言-动作（VLA）统一框架，通过三系统架构实现了情景世界模型。该模型使机器人能够积累、回忆和预测顺序的多模态体验，从而在动态环境中实现鲁棒的长期任务执行。当前基于VLM的VLA系统主要依赖静态表示和有限的时间上下文，而TriVLA通过集成预训练的视觉语言模型（VLM）和视频扩散模型（VDM），提供了高层次的推理和动态预测能力，实验证明其在模拟和真实世界中均优于现有基线。</p>
+<h2 class="section-title">3. 论文核心贡献点</h2>
+<ol><li><strong>受认知神经科学启发的情景世界模型</strong>：提出了用于具身智能体的情景世界模型，使机器人能够积累、回忆和预测顺序的多模态体验。</li><li><strong>统一的三系统组合架构</strong>：提出了TriVLA，一个实现情景世界模型的三系统架构，包括情景多模态感知（System 2）、情景动态感知（System 3）和策略学习模块（System 1）。</li><li><strong>最先进的性能</strong>：在Calvin ABC→D、LIBERO和MetaWorld基准测试中，TriVLA相比之前的最先进方法分别提升了0.21、0.11和0.13，并在真实世界的长视野任务中表现出色。</li></ol>
+<h2 class="section-title">4. 论文方法描述</h2>
+<p>TriVLA采用三系统架构：</p>
+<ul><li><strong>System 2（情景多模态感知）</strong>：使用预训练的Eagle-2 VLM处理视觉和语言输入，提取视觉语言嵌入。</li><li><strong>System 3（情景动态感知）</strong>：使用在人类和机器人操控数据集上微调的1.5B参数Stable Video Diffusion (SVD)模型，编码过去状态序列并预测未来场景轨迹。为避免计算密集的完整视频去噪，采用单次前向传播提取特征，并自动聚合多层上采样特征。</li><li><strong>System 1（策略学习）</strong>：集成Systems 2和3的输出，使用扩散策略和扩散变换器（DiT）生成动作。通过流匹配和跨模态注意力机制，结合视觉语言标记、动态预测标记、机器人状态和动作历史，预测动作序列。训练时采用扩散损失函数。</li></ul>
+<h2 class="section-title">5. 论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 模拟基准：Calvin（ABC→D设置）、LIBERO（Spatial、Object、Goal、Long四个子集）、MetaWorld（50个Sawyer机器人任务）。</p>
+<p> - 真实世界：使用KINOVA GEN2机器人和RealSense D455相机，在室内环境中操作各种物体，并设计了长视野高动态任务。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - System 2：使用预训练的Eagle-2 VLM。</p>
+<p> - System 3：微调SVD模型，使用193,690个人类轨迹和179,074个机器人轨迹，补充Calvin ABC、MetaWorld和真实任务视频。在8块NVIDIA H100 GPU上训练2-3天。</p>
+<p> - System 1：在任务数据集上训练，使用4块H100 GPU，耗时5-9小时。</p>
+<h2 class="section-title">6. 论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 模拟环境：Calvin、LIBERO、MetaWorld基准测试环境。</p>
+<p> - 真实环境：KINOVA GEN2机器人配备RealSense D455深度相机，采用眼在手配置，在室内场景进行操作。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - Calvin：任务序列的平均成功长度（Avg. Len）。</p>
+<p> - LIBERO和MetaWorld：平均任务成功率（%）。</p>
+<p> - 真实世界：任务执行的定性分析，包括长视野任务的成功率。</p>
+<p> - 额外指标：推理延迟（ms）和模型参数量（B）。</think></p>
+<h2 class="section-title">论文研究单位</h2>
+<p>Fudan University and Shanghai Innovation Institute</p>
+<h2 class="section-title">论文概述</h2>
+<p>TriVLA 是一个受认知神经科学中的情景记忆理论启发的视觉-语言-动作（VLA）统一框架，通过三系统架构实现了情景世界模型。该模型使机器人能够积累、回忆和预测顺序的多模态体验，从而在动态环境中实现鲁棒的长期任务执行。当前基于VLM的VLA系统主要依赖静态表示和有限的时间上下文，而TriVLA通过集成预训练的视觉语言模型（VLM）和视频扩散模型（VDM），提供了高层次的推理和动态预测能力，实验证明其在模拟和真实世界中均优于现有基线。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>受认知神经科学启发的情景世界模型：提出了用于具身智能体的情景世界模型，使机器人能够积累、回忆和预测顺序的多模态体验。</li><li>统一的三系统组合架构：提出了TriVLA，一个实现情景世界模型的三系统架构，包括情景多模态感知（System 2）、情景动态感知（System 3）和策略学习模块（System 1）。</li><li>最先进的性能：在Calvin ABC→D、LIBERO和MetaWorld基准测试中，TriVLA相比之前的最先进方法分别提升了0.21、0.11和0.13，并在真实世界的长视野任务中表现出色。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>TriVLA采用三系统架构：</p>
+<ul><li>System 2（情景多模态感知）：使用预训练的Eagle-2 VLM处理视觉和语言输入，提取视觉语言嵌入。</li><li>System 3（情景动态感知）：使用在人类和机器人操控数据集上微调的1.5B参数Stable Video Diffusion (SVD)模型，编码过去状态序列并预测未来场景轨迹。为避免计算密集的完整视频去噪，采用单次前向传播提取特征，并自动聚合多层上采样特征。</li><li>System 1（策略学习）：集成Systems 2和3的输出，使用扩散策略和扩散变换器（DiT）生成动作。通过流匹配和跨模态注意力机制，结合视觉语言标记、动态预测标记、机器人状态和动作历史，预测动作序列。训练时采用扩散损失函数。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据集：</li></ul>
+<p> - 模拟基准：Calvin（ABC→D设置）、LIBERO（Spatial、Object、Goal、Long四个子集）、MetaWorld（50个Sawyer机器人任务）。</p>
+<p> - 真实世界：使用KINOVA GEN2机器人和RealSense D455相机，在室内环境中操作各种物体，并设计了长视野高动态任务。</p>
+<ul><li>训练资源：</li></ul>
+<p> - System 2：使用预训练的Eagle-2 VLM。</p>
+<p> - System 3：微调SVD模型，使用193,690个人类轨迹和179,074个机器人轨迹，补充Calvin ABC、MetaWorld和真实任务视频。在8块NVIDIA H100 GPU上训练2-3天。</p>
+<p> - System 1：在任务数据集上训练，使用4块H100 GPU，耗时5-9小时。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境：</li></ul>
+<p> - 模拟环境：Calvin、LIBERO、MetaWorld基准测试环境。</p>
+<p> - 真实环境：KINOVA GEN2机器人配备RealSense D455深度相机，采用眼在手配置，在室内场景进行操作。</p>
+<ul><li>评估指标：</li></ul>
+<p> - Calvin：任务序列的平均成功长度（Avg. Len）。</p>
+<p> - LIBERO和MetaWorld：平均任务成功率（%）。</p>
+<p> - 真实世界：任务执行的定性分析，包括长视野任务的成功率。</p>
+<p> - 额外指标：推理延迟（ms）和模型参数量（B）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

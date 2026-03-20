@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HarvestFlex: Strawberry Harvesting via Vision-Language-Action Policy Adaptation in the Wild - VLA 论文精选</title>
+    <meta name="description" content="首次将视觉语言动作（VLA）策略迁移到真实温室草莓采摘场景，该任务面临严重的遮挡和高光反射挑战，属于长时域、非结构化任务 构建了端到端的闭环 HarvestFlex 平台，采用三视角 RGB 感知（两个固定场景视角 + 一个手腕安装视角），刻意避免使用深度点云和显式几何标定 收集了 3.71 小时的 VR 遥操作演示数据（227 个回合），对 π₀、π₀.₅ 和 WALL-OSS 模型进行全量微调" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.05982">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">HarvestFlex: Strawberry Harvesting via Vision-Language-Action Policy Adaptation in the Wild</h1>
+          <div class="detail-meta">2026-03-06 · <a href="http://arxiv.org/abs/2603.05982" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.05982" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.05982</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>北京农业林业科学院智能装备研究中心</strong>（北京市海淀区，100097）</li><li><strong>上海大学机电工程与自动化学院</strong>（上海市，200444）</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>首次将视觉语言动作（VLA）策略迁移到真实温室草莓采摘场景，该任务面临严重的遮挡和高光反射挑战，属于长时域、非结构化任务</li><li>构建了端到端的闭环 HarvestFlex 平台，采用三视角 RGB 感知（两个固定场景视角 + 一个手腕安装视角），刻意避免使用深度点云和显式几何标定</li><li>收集了 3.71 小时的 VR 遥操作演示数据（227 个回合），对 π₀、π₀.₅ 和 WALL-OSS 模型进行全量微调和 LoRA 微调</li><li>在统一的 50 次真实温室试验协议下，π₀.₅ 全量微调达到 74.0% 成功率，每采摘耗时 32.6 秒，损伤率 4.1%</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了温室草莓采摘的闭环端到端系统，集成了 LeRobot 数据采集框架，实现感知-决策-控制的持续执行</li><li>通过 VR 遥操作在多样光照和遮挡条件下采集长时域演示，涵盖采摘工作流关键阶段，提供可复现的数据采集方案</li><li>建立了 VLA 草莓采摘的综合评估协议，报告成功率、周期时间、损伤率、典型失败场景及各阶段成功情况</li><li>系统比较了多种开源 SOTA VLA 模型在迁移到未见过的机器人本体时的表现，研究全量微调与参数高效微调的权衡</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>任务定义</strong>：将采摘行为分为五个阶段——目标选择、避障接近、包裹与分离、放置、重试或复位</li><li><strong>系统设置</strong>：6-DoF 机械臂 + 2-DoF 柔顺末端执行器（硅胶结构气泵驱动），三视角 RGB 相机（两个 Intel RealSense D455 场景相机 + 一个 RealSense D405 手腕相机）</li><li><strong>策略适应</strong>：采用三种 VLA 基线模型（π₀、π₀.₅、WALL-OSS），策略输出 8 维动作（7 维机械臂 + 1 维气泵命令），使用 L2 损失和交叉熵损失联合优化</li><li><strong>部署模式</strong>：对比同步推理（串行图像采集-推理-执行）与异步推理（双线程管道，解耦推理与控制），异步模式提高接触敏感阶段的稳定性</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>数据集</strong>：3.71 小时 VR 遥操作演示，227 个回合，491 次有效采摘尝试，平均每次采摘 40 秒，平均重试 1.5 次</li><li><strong>数据多样性</strong>：覆盖低光/正常/强高光条件、轻度/中度/重度遮挡、单目标/多目标场景</li><li><strong>训练资源</strong>：2×A800（80GB）GPU，批量大小 16，训练 6 个 epoch</li><li><strong>推理部署</strong>：NVIDIA RTX A5000 GPU（16GB），控制频率 30Hz，图像统一缩放至 640×480</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>主要结果</strong>：π₀.₅ 全量微调在 6 个 epoch 后达到最佳性能——成功率 74.0%、周期时间 32.6 秒/采摘、损伤率 4.1%</li><li><strong>消融实验</strong>：添加手腕相机显著提升性能（从单视角的 10% 成功率提升到三视角的 74%），三视角配置对接触丰富的包裹和分离阶段至关重要</li><li><strong>推理模式对比</strong>：异步推理（SR 74.0%，周期时间 32.6s）优于同步推理（SR 70.0%，周期时间 45.7s），异步模式减少控制抖动，提高分离阶段稳定性</li><li><strong>与模块化基线对比</strong>：传统模块化管道成功率更高（89% vs 74%）且周期更短（8.3s vs 32.6s），但 VLA 在开发成本和适应复杂环境方面具有优势</li><li><strong>局限性</strong>：严重遮挡/反射下的观测退化、接触动力学不匹配、硬边缘案例数据覆盖不足</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

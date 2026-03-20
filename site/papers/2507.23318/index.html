@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FastDriveVLA: Efficient End-to-End Driving via Plug-and-Play Reconstruction-based Token Pruning - VLA 论文精选</title>
+    <meta name="description" content="FastDriveVLA是一种针对端到端自动驾驶中视觉-语言-动作（VLA）模型的重建式视觉token剪枝框架。现有VLA模型由于大量视觉token导致计算成本高，而传统的基于注意力或相似度的剪枝方法在自动驾驶场景中表现不佳。受人类驾驶员主要关注前景区域的启发，本文提出了一种通过MAE风格像素重建来优先处理前景信息的方法，从而有效减少视觉token数量。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2507.23318">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">FastDriveVLA: Efficient End-to-End Driving via Plug-and-Play Reconstruction-based Token Pruning</h1>
+          <div class="detail-meta">2025-07-31 · <a href="http://arxiv.org/abs/2507.23318" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2507.23318" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2507.23318</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+<h2 class="section-title">论文研究单位</h2>
+<p>中国的研究团队（由国家自然科学基金62476011资助）</p>
+<h2 class="section-title">论文概述</h2>
+<p>FastDriveVLA是一种针对端到端自动驾驶中视觉-语言-动作（VLA）模型的重建式视觉token剪枝框架。现有VLA模型由于大量视觉token导致计算成本高，而传统的基于注意力或相似度的剪枝方法在自动驾驶场景中表现不佳。受人类驾驶员主要关注前景区域的启发，本文提出了一种通过MAE风格像素重建来优先处理前景信息的方法，从而有效减少视觉token数量。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出FastDriveVLA框架，一种新颖的基于重建的token剪枝方法，区别于现有的基于注意力和相似度的剪枝方法</li><li>设计ReconPruner，一个即插即用的剪枝器，通过MAE风格的像素重建进行训练</li><li>引入对抗性前景-背景重建策略，增强识别有价值token的能力</li><li>构建nuScenes-FG数据集，包含241K个带有前景分割标注的图像-掩码对</li><li>在nuScenes开环规划基准上，在不同剪枝比例下均达到SOTA性能</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>ReconPruner架构</strong>：包含一个PrunerLayer（Qwen2.5-VL-3B的单个解码器层）和一个Scorer（单层前馈网络），总参数仅0.07B</li><li><strong>训练策略</strong>：</li></ol>
+<p> - 使用可学习查询token捕获视觉token的前景显著性</p>
+<p> - 通过MAE风格像素重建训练，鼓励模型关注前景区域</p>
+<p> - 采用对抗性前景-背景重建策略，避免模型对所有token分配高显著性分数</p>
+<ol><li><strong>推理过程</strong>：根据目标剪枝比例，选择显著性分数最高的前K个token，保留其空间语义信息后输入大语言模型</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：</li></ol>
+<p> - nuScenes-FG：基于nuScenes构建的大规模数据集，包含241K个图像-掩码对，覆盖6个摄像头视角</p>
+<p> - 前景定义包括人、道路、车辆、交通标志（包括交通灯）和交通障碍物</p>
+<p> - 使用Grounded-SAM生成精细的前景分割标注</p>
+<ol><li><strong>训练资源</strong>：</li></ol>
+<p> - 学习率：2e-5，使用余弦调度器</p>
+<p> - 训练周期：10个epoch</p>
+<p> - 硬件：两台H800 GPU</p>
+<p> - 训练时间：3小时</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：</li></ol>
+<p> - 数据集：nuScenes，包含1000个驾驶场景，每个约20秒</p>
+<p> - 测试样本：6019个</p>
+<p> - 基础模型：Impromptu-VLA（当前SOTA的端到端VLA模型）</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> - L2误差：轨迹预测的L2距离误差（1s、2s、3s和平均值）</p>
+<p> - 碰撞率：预测轨迹与物体的碰撞百分比</p>
+<p> - 交叉率：预测轨迹与道路边界的交叉百分比</p>
+<ol><li><strong>性能表现</strong>：</li></ol>
+<p> - 在25%剪枝率下，甚至在L2和交叉指标上超过原始未剪枝模型（分别提升0.1%和1.0%）</p>
+<p> - 在50%剪枝率下达到最平衡的性能（保持99.1%的原始模型性能）</p>
+<p> - 实现7.5倍FLOPs减少，预填充和解码时间分别减少3.7倍和1.3倍</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

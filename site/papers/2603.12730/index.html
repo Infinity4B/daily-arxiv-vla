@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AnchorVLA4D: an Anchor-Based Spatial-Temporal Vision-Language-Action Model for Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="提出 AnchorVLA4D，一种基于锚点的时空视觉-语言-动作模型，旨在解决机器人操作任务中空间感知受限和缺乏记忆的问题。 针对 VLA 模型在物体被遮挡时容易遗忘目标以及空间定位不准的问题，引入 anchor image（首帧）和轻量级 spatial encoder 来增强时空推理能力。 该方法无需额外的传感器模态（如深度图或点云），在保持低延迟的同时显著提升了操作成功率。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.12730">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">AnchorVLA4D: an Anchor-Based Spatial-Temporal Vision-Language-Action Model for Robotic Manipulation</h1>
+          <div class="detail-meta">2026-03-13 · <a href="http://arxiv.org/abs/2603.12730" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.12730" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.12730</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Peking University</strong> (School of Computer Science)</li><li><strong>PrimeBot</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>AnchorVLA4D</strong>，一种基于锚点的时空视觉-语言-动作模型，旨在解决机器人操作任务中空间感知受限和缺乏记忆的问题。</li><li>针对 VLA 模型在物体被遮挡时容易遗忘目标以及空间定位不准的问题，引入 <strong>anchor image</strong>（首帧）和轻量级 <strong>spatial encoder</strong> 来增强时空推理能力。</li><li>该方法无需额外的传感器模态（如深度图或点云），在保持低延迟的同时显著提升了操作成功率。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出锚点机制，利用每一段episode的首帧作为视觉锚点，帮助模型保持初始场景上下文，带来 <strong>9.4%</strong> 的性能提升，且推理延迟仅增加 <strong>8%</strong>。</li><li>集成预训练的空间编码器提供几何关系引导，在无监督标签的情况下进一步带来 <strong>4.2%</strong> 的性能提升。</li><li>在 <strong>Simpler WidowX</strong> 仿真基准测试中达到 <strong>64.6%</strong> 的成功率，在真实世界机器人任务中达到 <strong>80%</strong> 的平均成功率。</li><li>揭示了本体感知状态在真实世界环境中可能损害视觉定位能力，而在仿真环境中具有辅助作用。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>模型架构基于 <strong>Qwen2.5-VL</strong> (3B) 作为视觉语言主干，<strong>ScaleDP</strong> (400M) 作为扩散动作头。</li><li>核心创新是将首帧图像（$I_{anchor}$）与当前帧（$I_i$）同时输入模型，以缓解遮挡带来的记忆遗忘问题。</li><li>引入轻量级空间编码器（如 <strong>Any4D</strong>）联合处理锚点帧和当前帧，提取几何特征并与 VLM 的隐藏状态拼接，增强空间理解。</li><li>采用两阶段训练策略：在 <strong>BridgeV2</strong> 数据集上进行预训练，并在特定任务子集上进行微调。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>训练数据集：<strong>BridgeV2</strong>。</li><li>仿真评估环境：<strong>SimplerEnv</strong> (WidowX)。</li><li>真实世界平台：<strong>xLerobot</strong> 双臂移动机器人。</li><li>模型规模：主干 3B + 动作头 400M（总计约 4.4B 参数）。</li><li>训练资源：<strong>Ascend 910B</strong> 节点（8 NPUs，每块 64GB 内存）。</li><li>推理资源：仿真使用 <strong>NVIDIA A800</strong> GPU，真机使用 <strong>RTX 4090 Ti</strong> GPU。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>仿真实验：在 <strong>Simpler WidowX</strong> 基准上，<strong>AnchorVLA4D</strong> 平均成功率为 <strong>64.6%</strong>，比基线 VanillaVLA (51.0%) 提升了 <strong>13.6%</strong>。</li><li>真实世界实验：在 Lift Box、Open Drawer 和 Rotation 三项任务中，平均成功率达到 <strong>80%</strong>，显著优于基线模型 $\pi_{0.5}$ (50%)。</li><li>消融实验结果显示，冻结空间编码器的参数比微调效果更好；移除锚点或空间编码器均会导致性能下降。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

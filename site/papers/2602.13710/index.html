@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HBVLA: Pushing 1-Bit Post-Training Quantization for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="提出 HBVLA，一种专为视觉-语言-动作模型设计的1比特训练后量化框架，旨在在保持策略性能的同时实现极致的模型压缩。 解决VLA模型在资源受限的机器人平台部署时，现有1比特量化方法因权重分布差距和动作生成敏感导致的性能严重下降问题。 核心目标是最大限度地减少量化误差，确保量化后的模型在闭环、长程执行中的动作精度和策略鲁棒性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.13710">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">HBVLA: Pushing 1-Bit Post-Training Quantization for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2026-02-14 · <a href="http://arxiv.org/abs/2602.13710" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.13710" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.13710</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Xin Yan</strong> (作者1的机构未明确显示，推测为相关研究机构)</li><li><strong>Zhenglin Wan</strong>, <strong>Yang You</strong> (作者2和5的机构未明确显示，推测为<strong>新加坡国立大学</strong>或类似机构)</li><li><strong>Xingrui Yu</strong>, <strong>Ivor Tsang</strong> (作者3和6的机构未明确显示，推测为<strong>澳大利亚悉尼科技大学</strong>或类似机构)</li><li><strong>Hangyu Du</strong> (作者4的机构未明确显示)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>HBVLA</strong>，一种专为<strong>视觉-语言-动作模型</strong>设计的1比特训练后量化框架，旨在在保持策略性能的同时实现极致的模型压缩。</li><li>解决VLA模型在资源受限的机器人平台部署时，现有1比特量化方法因<strong>权重分布差距</strong>和<strong>动作生成敏感</strong>导致的性能严重下降问题。</li><li>核心目标是最大限度地减少量化误差，确保量化后的模型在闭环、长程执行中的<strong>动作精度</strong>和<strong>策略鲁棒性</strong>。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了<strong>策略感知的权重划分</strong>方法，通过校正的Hessian矩阵（融合了基于梯度的token重要性权重）来精准识别对动作生成至关重要的权重。</li><li>提出了<strong>基于稀疏正交变换的混合二值化</strong>方法，针对非关键权重，先进行重排序以降低Haar变换中的高频能量，再在频域进行组感知的1比特量化。</li><li>设计了一种<strong>残差感知的精细化量化流程</strong>，对关键权重在残差空间进行Haar变换和量化，以补偿非关键权重的近似误差。</li><li>在三个基准（<strong>LIBERO</strong>、<strong>SIMPLER</strong>、<strong>真实世界机器人</strong>）和三个VLA模型（<strong>OpenVLA</strong>、<strong>OpenVLA-OFT</strong>、<strong>CogACT</strong>）上进行了广泛评估，证明了方法显著优于现有最先进的二值化PTQ方法。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>方法分为两步：1）<strong>策略感知权重划分</strong>：通过块级梯度回传计算token重要性，构建校正的Hessian来划分关键与非关键权重列。2）<strong>显著性感知的混合二值化</strong>：对非关键权重应用<strong>稀疏正交变换</strong>和<strong>Haar小波变换</strong>后进行分组1比特量化；对关键权重在残差上应用列向Haar变换后进行高保真量化。</li><li>关键技术包括：<strong>梯度引导的token重要性重加权Hessian</strong>、用于最小化高频能量的<strong>贪婪配对-链接重排序算法</strong>、以及在Haar域进行的<strong>组感知共享均值二值化</strong>。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的评估数据集/基准：<strong>LIBERO</strong>、<strong>SIMPLER</strong>、自建的<strong>真实世界机器人评估套件</strong>（包括拾放、序列指令、折叠任务）。</li><li>量化的基础模型包括：<strong>OpenVLA</strong>、<strong>OpenVLA-OFT</strong>、<strong>CogACT</strong>。模型参数量级通常为十亿级别（具体规模论文未明确列出）。</li><li>训练/实验资源：实验在<strong>NVIDIA A800 GPUs</strong>上进行。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：模拟环境（LIBERO, SIMPLER）和真实世界<strong>Mobile ALOHA</strong>双臂机器人。</li><li>主要评估指标：任务<strong>成功率</strong>，以及与全精度模型的性能差距（Δ）。</li><li>关键实验结果：</li></ul>
+<p> - 在<strong>LIBERO</strong>上，量化后的<strong>OpenVLA-OFT</strong>平均成功率达<strong>90.3%</strong>，保留了全精度模型<strong>92.2%</strong> 的性能，显著优于基线方法。</p>
+<p> - 在<strong>SIMPLER</strong>上，量化后的<strong>CogACT</strong>在视觉匹配设定下平均成功率达<strong>70.0%</strong>，保留了全精度模型<strong>93.6%</strong> 的性能。</p>
+<p> - 在<strong>真实世界</strong>任务中，<strong>HBVLA</strong>相比全精度模型仅有微小性能下降，大幅优于<strong>BiLLM</strong>、<strong>HBLLM</strong>等基线。</p>
+<p> - 消融实验验证了<strong>策略感知Hessian</strong>和<strong>列L2范数重排序</strong>的有效性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Static and Plugged: Make Embodied Evaluation Simple - VLA 论文精选</title>
+    <meta name="description" content="论文指出了当前具身智能评估基准的两个主要问题：一是严重依赖高成本、高配置的模拟环境，二是缺乏统一的评估框架来同时评估高级认知和低级执行能力。为解决这些问题，论文提出了StaticEmbodiedBench，一个静态、统一、即插即用的基准。它通过仅使用静态关键帧和文本元数据来评估模型，无需复杂的模拟器，从而显著降低了评估的门槛。该基准包含42个场景和8个核心维度，能够分别评估视觉语言模型（VLM）的" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.06553">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Static and Plugged: Make Embodied Evaluation Simple</h1>
+          <div class="detail-meta">2025-08-06 · <a href="http://arxiv.org/abs/2508.06553" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.06553" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.06553</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>上海人工智能实验室 (Shanghai AI Laboratory)</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文指出了当前具身智能评估基准的两个主要问题：一是严重依赖高成本、高配置的模拟环境，二是缺乏统一的评估框架来同时评估高级认知和低级执行能力。为解决这些问题，论文提出了StaticEmbodiedBench，一个静态、统一、即插即用的基准。它通过仅使用静态关键帧和文本元数据来评估模型，无需复杂的模拟器，从而显著降低了评估的门槛。该基准包含42个场景和8个核心维度，能够分别评估视觉语言模型（VLM）的认知与决策能力以及视觉-语言-动作模型（VLA）的执行能力。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出了一种新颖的基于静态关键帧的评估方法和大脑-小脑协同评估框架，用于解耦和评估VLM与VLA在具身场景下的能力。</li><li>构建了StaticEmbodiedBench，一个静态、统一、即插即用的基准，包含42个场景和8个评估维度，并发布了包含200个样本的子集。</li><li>对19个VLM和11个VLA进行了全面评估，建立了首个具身智能的统一静态排行榜，并进行了深入分析。</li><li>通过在真实机器人上实验，量化了静态评估与动态执行之间的性能差距（Static-to-Dynamic Gap），验证了静态评估方法的有效性。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>静态关键帧评估思路：</strong> 核心洞察是，大多数具身任务的成功取决于轨迹中少数几个关键点（如识别目标物体、执行抓取等）。通过仅保留这些关键帧进行评估，可以极大减少计算和工程开销，同时保留对核心能力的评估。</li><li><strong>大脑-小脑协同评估设计：</strong></li></ul>
+<p> - <strong>StaticEmbodiedBench-VLM（大脑）：</strong> 评估VLM作为认知核心的能力，涵盖三个维度：宏观规划（将高级指令分解为子任务）、微观感知（识别细粒度视觉线索）和分阶段推理（判断当前步骤并确定下一步动作）。评估在第一人称和第三人称两种视角下进行。</p>
+<p> - <strong>StaticEmbodiedBench-VLA（小脑）：</strong> 评估VLA的执行能力。VLA模型需预测一个7自由度（7-DoF）的动作向量（包含位置、姿态和夹爪状态）。通过计算预测动作与专家轨迹之间的L2距离来评分，并进一步将误差分解为位置误差、姿态误差和末端执行器误差，以提供更细粒度的分析。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>StaticEmbodiedBench-VLM：</strong> 从Droid、VLABench等5个高质量数据集中收集了超过30万张高分辨率图像，经过GPT自动过滤、GPT-4o生成问答对和人工校验后，最终构建了一个包含1000个高质量任务样本的数据集。</li><li><strong>StaticEmbodiedBench-VLA：</strong> 在真实实验室环境中，使用UR5机械臂构建了100个桌面操作任务数据集。每个任务组合了6种背景、10种物体和5种交互动词，记录了50个均匀采样的动作步骤及其对应的多视角图像和专家轨迹。</li><li><strong>训练资源：</strong> 评估过程本身不涉及模型训练。VLM评估使用了两块NVIDIA A800 GPU，VLA评估使用了一块A800 GPU。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境：</strong> 评估在静态数据上进行，不需要任何模拟器或真实机器人。为了验证静态评估的有效性，部分实验（S2D Gap验证）在真实的UR5机器人上部署执行。</li><li><strong>评估指标：</strong></li></ul>
+<p> - <strong>VLM指标：</strong> 采用基于问答的准确率作为评估指标，分别计算宏观规划、微观感知、分阶段推理三个维度的得分，以及第一人称和第三人称视角下的得分，最后汇总为总分。</p>
+<p> - <strong>VLA指标：</strong> 采用预测的7-DoF动作向量与专家轨迹之间的L2距离作为核心指标。评分标准为：距离小于等于1毫米得100分，大于等于1米得0分，中间距离通过对数映射到0-100分。同时报告位置、姿态、末端执行器三个分解维度的得分。</p>
+<p> - <strong>静态到动态差距（S2D）：</strong> 使用皮尔逊线性相关系数（PLCC）来衡量静态评估分数与真实世界执行成功率之间的相关性，以此验证静态评估方法的可靠性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

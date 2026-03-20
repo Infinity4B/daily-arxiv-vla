@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VDRive: Leveraging Reinforced VLA and Diffusion Policy for End-to-end Autonomous Driving - VLA 论文精选</title>
+    <meta name="description" content="论文提出 VDRive 框架，将视觉-语言-动作模型（VLA）与扩散策略（Diffusion Policy）结合，用于端到端自动驾驶。框架以离散化的状态-动作表示为核心，通过“强化的模态对齐”桥接高维传感器空间与低维动作空间：在上下文层面，VLA 通过视觉 token 预训练预测未来观测；几何层面，通过对 VLA 的强化学习微调，使其基于当前驾驶条件预测轨迹与动作。随后，扩散策略头在 VLA 提供" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.15446">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VDRive: Leveraging Reinforced VLA and Diffusion Policy for End-to-end Autonomous Driving</h1>
+          <div class="detail-meta">2025-10-17 · <a href="http://arxiv.org/abs/2510.15446" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.15446" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.15446</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>清华大学苏州汽车研究院</li><li>作者实习单位为清华大学苏州汽车研究院</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出 VDRive 框架，将视觉-语言-动作模型（VLA）与扩散策略（Diffusion Policy）结合，用于端到端自动驾驶。框架以离散化的状态-动作表示为核心，通过“强化的模态对齐”桥接高维传感器空间与低维动作空间：在上下文层面，VLA 通过视觉 token 预训练预测未来观测；几何层面，通过对 VLA 的强化学习微调，使其基于当前驾驶条件预测轨迹与动作。随后，扩散策略头在 VLA 提供当前与预测状态 token 的条件下生成层次化动作与轨迹，并由动态引导的精炼头优化轨迹输出。方法采用全离线强化学习范式，在 nuScenes 开环规划与 Bench2Drive 闭环基准上均取得最先进性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出 VDRive 框架：通过 VLA 预测未来状态 token 与扩散策略头联合训练，实现上下文与几何对齐的驾驶决策。</li><li>构建强化学习偏好数据集：基于 nuScenes 与 Bench2Drive 构造“选择/拒绝”视觉-动作对用于 VLA 微调。</li><li>设计离线奖励数据：结合规则奖励与专家 VLM（Qwen2.5-VL-72B）评分，训练扩散策略头并构建 actor-critic 强化学习闭环。</li><li>在多基准上实现最先进结果：在 nuScenes 开环评估与 Bench2Drive 闭环评估中均显著提升。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>离散化表示（CVQ-VAE）：训练条件向量量化变分自编码器，以轨迹为条件，将原始/分割图像编码为离散观测 token，加入 VLA 分词器词表。</li><li>VLA 强化微调：利用偏好数据训练 VLA 生成未来观测 token、动作信号与导航命令，结合选择/拒绝样本进行偏好对齐。</li><li>扩散策略头学习：在离线状态-动作-奖励-下一状态数据集上，训练扩散模型作为 actor 网络、最小化生成动作与真实动作的重建误差，并通过 critic 网络提供价值反馈，实现累积奖励最大化。</li><li>动态引导的精炼头：将 VLA 与扩散策略的异步动作预测作为条件，通过 Transformer 编码器与 MLP 映射融合位置嵌入与动作特征，最终解码优化轨迹。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据：nuScenes（1000 场景，6 相机/5 雷达/1 激光雷达，2 Hz）与 Bench2Drive（CARLA 仿真）用于开/闭环评估与偏好/奖励数据集构建；利用 Vista 生成合成风险场景。</li><li>预训练/微调：视觉 token 预训练（CVQ-VAE + VLA tokenizer）；VLA 强化微调（偏好对齐）；扩散策略离线强化学习（actor-critic）。</li><li>模型：VLA 基于 InternVL3-8B；扩散策略头使用扩散模型；奖励评估采用 Qwen2.5-VL-72B。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>开环评估（nuScenes）：平均 L2 误差与碰撞率；在 1s/2s/3s 时间步与总体上报告指标。</li><li>闭环评估（Bench2Drive）：Driving Score、Success Rate、Efficiency、Comfortness；并报告多能力指标（并线、超车、紧急制动、让行、交通标志）。</li><li>消融实验：Bench2Drive-mini 上对比不同数据构造与不同精炼模块（Transformer/LSTM/GRU）设计。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MemoryVLA: Perceptual-Cognitive Memory in Vision-Language-Action Models for Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="MemoryVLA是一个受认知科学启发的视觉-语言-动作模型框架，通过引入感知-认知记忆机制解决机器人操作中的长期时间依赖问题。该方法结合了工作记忆（短期神经网络活动）和长时记忆（海马体系统），用于处理非马尔可夫性的操作任务，如&quot;推按钮&quot;等视觉变化不明显的场景。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.19236">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">MemoryVLA: Perceptual-Cognitive Memory in Vision-Language-Action Models for Robotic Manipulation</h1>
+          <div class="detail-meta">2025-08-26 · <a href="http://arxiv.org/abs/2508.19236" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.19236" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.19236</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>清华大学自动化系BNRist、Dexmal、MEGVII Technology、天津大学、哈尔滨工业大学、StepFun</p>
+<h2 class="section-title">论文概述</h2>
+<p>MemoryVLA是一个受认知科学启发的视觉-语言-动作模型框架，通过引入感知-认知记忆机制解决机器人操作中的长期时间依赖问题。该方法结合了工作记忆（短期神经网络活动）和长时记忆（海马体系统），用于处理非马尔可夫性的操作任务，如"推按钮"等视觉变化不明显的场景。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出认知-记忆-行动框架，利用VLM常识先验和记忆机制建模长期时间依赖</li><li>设计感知-认知记忆库（PCMB），支持高低层特征的记忆检索、门控融合和记忆整合</li><li>实现记忆条件化扩散动作专家，生成时间感知的动作序列</li><li>在150+仿真和真实任务上达到SOTA性能，长期任务提升显著</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>视觉-语言认知模块</strong>：</li></ol>
+<p> - 使用7B Prismatic VLM处理RGB图像和语言指令</p>
+<p> - DINOv2和SigLIP视觉编码器提取感知token（256维）</p>
+<p> - LLaMA-7B生成认知token（1维），形成工作记忆</p>
+
+<ol><li><strong>感知-认知记忆模块</strong>：</li></ol>
+<p> - <strong>记忆检索</strong>：通过带时间位置编码的交叉注意力从PCMB获取历史上下文</p>
+<p> - <strong>门控融合</strong>：用学习门控自适应融合当前token和检索内容</p>
+<p> - <strong>记忆整合</strong>：当容量满时合并时间相邻且语义相似的条目</p>
+
+<ol><li><strong>记忆条件化动作专家</strong>：</li></ol>
+<p> - 基于扩散的Transformer（DiT）生成16步7-DoF动作序列</p>
+<p> - 认知token提供高层语义指导，感知token补充细节</p>
+<p> - DDIM采样10步，使用分类器自由引导（CFG）</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：Bridge v2、RT-1、LIBERO（5套件）、真实世界数据</li><li><strong>训练资源</strong>：8块NVIDIA A100 GPU，PyTorch FSDP，全局批大小256，学习率2e-5</li><li><strong>模型参数</strong>：VLM 7B，扩散专家约300M</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>仿真环境</strong>：</li></ul>
+<p> - SimplerEnv-Bridge（WidowX机器人）</p>
+<p> - SimplerEnv-Fractal（Google机器人，含VM/VA设置）</p>
+<p> - LIBERO（Franka机器人，5套件：Spatial/Object/Goal/Long/LIBERO-90）</p>
+<ul><li><strong>真实环境</strong>：</li></ul>
+<p> - Franka和WidowX机器人</p>
+<p> - Intel RealSense D435 RGB摄像头（640×480→224×224）</p>
+<p> - ROS集成系统</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 成功率（%），每个任务15-50次试验</p>
+<p> - 长期任务采用子目标逐步评分</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

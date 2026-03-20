@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TrackVLA++: Unleashing Reasoning and Memory Capabilities in VLA Models for Embodied Visual Tracking - VLA 论文精选</title>
+    <meta name="description" content="提出TrackVLA++，一种增强具身视觉跟踪（EVT）能力的视觉-语言-动作（VLA）模型。针对现有方法在动态场景中因缺乏显式空间推理和有效时间记忆而失效的问题，TrackVLA++通过引入极坐标思维链（Polar-CoT）机制和目标识别记忆（TIM）模块，显著提升追踪性能与鲁棒性，支持多视角扩展，并在模拟和真实场景中验证了SOTA表现。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.07134">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">TrackVLA++: Unleashing Reasoning and Memory Capabilities in VLA Models for Embodied Visual Tracking</h1>
+          <div class="detail-meta">2025-10-08 · <a href="http://arxiv.org/abs/2510.07134" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.07134" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.07134</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>北京大学、Galbot、中国科学技术大学、BAAI、北京航空航天大学、南方科技大学、北京师范大学联合研究。</p>
+<h2 class="section-title">论文概述</h2>
+<p>提出TrackVLA++，一种增强具身视觉跟踪（EVT）能力的视觉-语言-动作（VLA）模型。针对现有方法在动态场景中因缺乏显式空间推理和有效时间记忆而失效的问题，TrackVLA++通过引入极坐标思维链（Polar-CoT）机制和目标识别记忆（TIM）模块，显著提升追踪性能与鲁棒性，支持多视角扩展，并在模拟和真实场景中验证了SOTA表现。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>Polar-CoT机制</strong>：将目标相对位置编码为极坐标token，提供轻量级空间推理能力，优于传统边界框方法。</li><li><strong>TIM模块</strong>：采用置信度门控记忆更新策略，抵抗遮挡和干扰物，实现长期目标识别。</li><li><strong>跨域泛化</strong>：在EVT-Bench和Gym-UnrealCV等基准测试中实现SOTA，并在真实机器人任务中验证零样本泛化。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>架构</strong>：基于导航基础模型NavFoM构建，结合双编码器提取视觉特征（SigLIP和DINOv2）。</li><li><strong>Polar-CoT模块</strong>：</li></ul>
+<p> - 将代理感知空间（0.6m-5.0m）离散化为60角度×30距离网格，编码为唯一词汇token（含<invalid> token处理遮挡）。</p>
+<p> - 输入：视觉特征、语言token和TIM记忆；输出：紧凑reasoning token。</p>
+<ul><li><strong>TIM模块</strong>：</li></ul>
+<p> - 通过加权平均更新记忆：权重由预测置信度（归一化熵）决定，仅高置信度时融合新特征。</p>
+<p> - 初始化为空状态，首次有效特征后生效。</p>
+<ul><li><strong>训练流程</strong>：</li></ul>
+<p> - 输入序列：LLM接收视觉、语言和reasoning token；输出动作token经MLP解码为8步轨迹。</p>
+<p> - 损失函数：轨迹MSE损失、推理对数损失和文本损失（权重α=0.2，β=0.5）。</p>
+<ul><li><strong>数据集</strong>：混合200万样本（100万EVT-Bench跟踪数据 + 100万QA数据：SYNTH-PEDES、图像/视频QA）。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 模拟：EVT-Bench（STT/DT/AT分割）、Gym-UnrealCV（Single Target/Distractor/Unseen Objects）。</p>
+<p> - 真实：Unitree GO2机器人多视角RGB流（Obstacle/Winding Path/Distractor场景）。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 硬件：8块NVIDIA H100 GPU。</p>
+<p> - 时间：约192 GPU小时（约一天）。</p>
+<p> - 推理速度：4.8 FPS（对比NavFoM 5.1 FPS）。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 模拟：EVT-Bench（DT分割作为主要测试）、Gym-UnrealCV。</p>
+<p> - 真实：Unitree GO2四足机器人，配备4台SG3S11AFxK摄像头。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>SR</strong>（Success Rate）：成功完成任务（1-3米内正确定向）的比例。</p>
+<p> - <strong>TR</strong>（Tracking Rate）：成功跟踪时间步的比例。</p>
+<p> - <strong>CR</strong>（Collision Rate）：因碰撞终止任务的比例。</p>
+<p> - <strong>EL</strong>（Episode Length）：Gym-UnrealCV中的平均步长（最大500）。</p>
+<p> - <strong>识别准确率</strong>：零样本人类识别任务（SYNTH-PEDES数据集）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ReMem-VLA: Empowering Vision-Language-Action Model with Memory via Dual-Level Recurrent Queries - VLA 论文精选</title>
+    <meta name="description" content="论文提出 ReMem-VLA，一种具有记忆增强功能的视觉-语言-动作模型，旨在解决现有 VLA 模型在处理依赖历史信息的任务时的局限性。 现有 VLA 模型通常基于马尔可夫假设，缺乏记忆机制，导致在需要空间、时间、顺序和情景记忆的长期任务中表现不佳。 该模型通过双层级循环查询机制引入记忆能力，并辅以过去观测预测任务，显著提升了机器人在复杂记忆依赖型任务中的表现。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.12942">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">ReMem-VLA: Empowering Vision-Language-Action Model with Memory via Dual-Level Recurrent Queries</h1>
+          <div class="detail-meta">2026-03-13 · <a href="http://arxiv.org/abs/2603.12942" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.12942" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.12942</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Technical University of Munich</strong> (慕尼黑工业大学)</li><li><strong>Huawei Heisenberg Research Center</strong> (华为海森堡研究中心)</li><li><strong>University of Freiburg</strong> (弗莱堡大学)</li><li><strong>Nanjing University</strong> (南京大学)</li><li><strong>Huawei Technologies</strong> (华为技术有限公司)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出 <strong>ReMem-VLA</strong>，一种具有记忆增强功能的视觉-语言-动作模型，旨在解决现有 VLA 模型在处理依赖历史信息的任务时的局限性。</li><li>现有 VLA 模型通常基于马尔可夫假设，缺乏记忆机制，导致在需要空间、时间、顺序和情景记忆的长期任务中表现不佳。</li><li>该模型通过双层级循环查询机制引入记忆能力，并辅以过去观测预测任务，显著提升了机器人在复杂记忆依赖型任务中的表现。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>ReMem-VLA</strong> 架构，引入双层级循环记忆查询：帧级查询用于短期记忆，块级查询用于长期记忆，实现了跨时间尺度的上下文保留。</li><li>设计了 <strong>Past Observation Prediction (POP)</strong> 辅助训练目标，通过重构历史视觉观测来增强模型的视觉记忆能力。</li><li>提出了一种基于时隙的流式训练方法，解决了变长片段循环模型批处理训练中的时序连续性和跨片段泄漏问题。</li><li>在仿真和真实世界实验中验证了模型在空间、时间、顺序、情景和视觉记忆等多个维度的有效性，大幅超越现有基线。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>模型以冻结的 <strong>Qwen3-VL-2B</strong> 作为视觉-语言模型骨干，并引入四组可学习的查询：动作查询、后见查询以及两组循环记忆查询。</li><li><strong>双层级循环记忆查询</strong>：帧级查询在每一步更新以捕捉短期上下文；块级查询每隔固定步数更新以保持长期记忆。</li><li>记忆更新路径采用无梯度的 <strong>指数移动平均 (EMA)</strong> 机制，避免了截断反向传播时间 (TBPTT) 对长期记忆学习的限制。</li><li>引入了一个带有双向注意力的 Transformer 连接器，使动作查询和后见查询能与记忆查询交互，融合历史与当前信息。</li><li>动作预测通过扩散模型实现，过去图像重构通过轻量级 ViT 解码器实现，两者联合端到端训练。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>仿真实验使用 <strong>MemoryBench</strong> 基准，包含 Put Block Back、Rearrange Block、Reopen Drawer 等任务，并扩展了一个长时域任务。</li><li>真实世界实验设计了四个任务：浇花（时间记忆）、舀米（情景记忆）、按顺序按钮（顺序与时间记忆）、放回水果（视觉记忆）。</li><li>模型骨干参数量为 <strong>2B</strong>，输入图像分辨率为 256×256，动作块大小为 30。</li><li>训练使用 <strong>8 张 A100 GPU</strong>，总 Batch Size 为 64；推理在单张 <strong>RTX 4090 GPU</strong> 上运行，频率约为 10 Hz。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在仿真实验中，<strong>ReMem-VLA</strong> 在四项任务上的平均成功率达到 <strong>94.5%</strong>，远高于基线模型（如 OpenVLA-OFT 为 0.75%，$\pi_{0.5}$ 为 8.25%）。</li><li>在真实世界实验中，<strong>ReMem-VLA</strong> 平均成功率为 <strong>82.5%</strong>，显著优于 MemoryVLA (8%) 和 $\pi_{0.5}$ (11%)。</li><li>消融实验证明，双层级查询对记忆保留至关重要，且无梯度的 EMA 更新路径在长期记忆任务中优于可学习的循环动态（如 GRU/MLP）。</li><li>过去观测预测 (POP) 显著提升了视觉记忆密集型任务（如 Put Fruit Back）的性能（成功率从 34% 提升至 82%）。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

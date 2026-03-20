@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation - VLA 论文精选</title>
+    <meta name="description" content="VITA-VLA论文提出了一种高效的教学框架，通过动作专家蒸馏技术将小型动作模型的知识转移到预训练的大规模视觉-语言模型(VLM)中，使其具备动作执行能力。该方法解决了传统VLA模型需要大量计算资源和数据进行端到端训练的局限，通过两阶段训练策略显著降低训练成本，同时保持高性能表现。在仿真基准(LIBERO和CALVIN)和真实机器人环境中的实验验证了该方法的有效性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.09607">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation</h1>
+          <div class="detail-meta">2025-10-10 · <a href="http://arxiv.org/abs/2510.09607" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.09607" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.09607</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+<h2 class="section-title">论文研究单位</h2>
+<p>南京大学、腾讯Youtu Lab、中科院(CASIA)</p>
+<h2 class="section-title">论文概述</h2>
+<p>VITA-VLA论文提出了一种高效的教学框架，通过动作专家蒸馏技术将小型动作模型的知识转移到预训练的大规模视觉-语言模型(VLM)中，使其具备动作执行能力。该方法解决了传统VLA模型需要大量计算资源和数据进行端到端训练的局限，通过两阶段训练策略显著降低训练成本，同时保持高性能表现。在仿真基准(LIBERO和CALVIN)和真实机器人环境中的实验验证了该方法的有效性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>精简架构设计</strong>：在保持原始VLM结构的基础上，仅添加动作token和状态编码器，集成物理输入信息</li><li><strong>两阶段训练策略</strong>：第一阶段进行轻量级对齐(仅3000万参数)，第二阶段选择性微调，有效降低训练成本</li><li><strong>优秀性能表现</strong>：在LIBERO基准上达到97.3%平均成功率(提升11.8%)，在LIBERO-LONG上达到93.5%成功率(提升24.5%)，在CALVIN ABC-D基准上达到92.5%第一任务成功率</li><li><strong>真实世界验证</strong>：在ALOHA机器人平台上实现82.0%平均成功率，较teacher模型提升17%</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<h2 class="section-title">整体架构</h2>
+<ul><li><strong>视觉编码器</strong>：InternViT-300M处理图像输入</li><li><strong>连接器</strong>：3层MLP桥接视觉和语言模态</li><li><strong>语言模型</strong>：Qwen-2.5-7B作为基础</li><li><strong>状态编码器</strong>：将6-DoF机械臂状态和2维夹爪状态编码为单token</li><li><strong>动作token</strong>：作为可学习查询，重复3次预测未来3步动作</li><li><strong>动作映射器</strong>：3层MLP将VLM隐藏状态映射到动作空间</li><li><strong>动作解码器</strong>：复用的2层MLP生成最终执行动作</li></ul>
+<h2 class="section-title">两阶段训练策略</h2>
+<p><strong>阶段1-对齐阶段</strong>：</p>
+<ul><li>训练状态编码器、动作token和动作映射器(约3000万参数)</li><li>使用MSE损失对齐VLM和小动作模型的隐藏表示空间</li><li>复用预训练动作解码器，避免昂贵端到端预训练</li></ul>
+
+<p><strong>阶段2-微调阶段</strong>：</p>
+<ul><li>端到端微调语言模型、状态编码器、动作模块</li><li>使用MAE损失监督6-DoF臂动作，BCE损失监督夹爪动作</li><li>组合损失函数：L_total = L_arm + λ·L_gripper (λ=0.01)</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<h2 class="section-title">仿真数据集</h2>
+<ul><li><strong>CALVIN ABC-D</strong>：训练于环境A、B、C，测试于未见环境D，评估零样本泛化</li><li><strong>LIBERO基准</strong>：4个任务套件(Spatial、Object、Goal、LONG)，每个包含10个长时序任务</li></ul>
+<h2 class="section-title">真实世界数据</h2>
+<ul><li>手动收集500个高质量演示轨迹(每任务100个)</li><li>覆盖5个操作任务：close drawer、stack cups、stack blocks、pick place sponge、pick place block</li></ul>
+<h2 class="section-title">训练资源</h2>
+<ul><li>使用DeepSpeed ZeRO-2阶段优化内存使用</li><li>对齐阶段：batch size=8，学习率=1e-4，训练3个epoch</li><li>微调阶段：batch size=4，学习率=1e-4，训练2个epoch</li><li>图像分辨率：统一为200×200像素</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<h2 class="section-title">评估环境</h2>
+<ul><li><strong>仿真环境</strong>：CALVIN和LIBERO基准测试平台</li><li><strong>真实世界</strong>：ALOHA机器人平台(6关节PiPer机械臂+Songling夹爪)</li></ul>
+<h2 class="section-title">评估指标</h2>
+<ul><li><strong>成功率</strong>：任务完成的平均百分比</li><li><strong>平均任务长度</strong>：连续完成指令的平均数量(CALVIN基准)</li><li><strong>长时序执行能力</strong>：LIBERO-LONG基准上的表现</li><li><strong>真实世界性能</strong>：5个操作任务各40次独立试验的平均成功率</li></ul>
+
+<p>评估结果显示VITA-VLA在所有基准上都实现了最佳VLA模型性能，特别是在复杂长时序任务中表现出色，并在真实机器人部署中验证了方法的实际有效性。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How Do VLAs Effectively Inherit from VLMs? - VLA 论文精选</title>
+    <meta name="description" content="该论文探讨了视觉-语言-行动模型如何有效地从预训练的视觉-语言模型中继承知识。为了解决这一核心问题并应对训练过程中可能出现的灾难性遗忘，研究者们引入了一个名为GrinningFace的诊断基准。该基准是一个表情符号桌面操作任务，要求机器人根据语言指令将物体放置在对应的印刷表情符号上。由于表情符号在VLM的预训练数据中广泛存在，但在标准机器人数据集中几乎不存在，该任务的成功完成可以清晰地表明VLM的" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.06619">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">How Do VLAs Effectively Inherit from VLMs?</h1>
+          <div class="detail-meta">2025-11-10 · <a href="http://arxiv.org/abs/2511.06619" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.06619" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.06619</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Microsoft Research</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文探讨了视觉-语言-行动模型如何有效地从预训练的视觉-语言模型中继承知识。为了解决这一核心问题并应对训练过程中可能出现的灾难性遗忘，研究者们引入了一个名为GrinningFace的诊断基准。该基准是一个表情符号桌面操作任务，要求机器人根据语言指令将物体放置在对应的印刷表情符号上。由于表情符号在VLM的预训练数据中广泛存在，但在标准机器人数据集中几乎不存在，该任务的成功完成可以清晰地表明VLM的先验知识被有效迁移到了具身控制中。论文通过在模拟和真实机器人上进行系统性实验，比较了多种有前景的知识迁移技术，揭示了保留VLM先验知识对于VLA泛化能力的关键重要性，并为未来开发真正可泛化的具身智能系统提供了指导。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出了一个最小化、可复现的基准，用于解构视觉-语义先验知识与运动技能，可作为诊断工具来评估VLM如何被有效地适配到VLA。</li><li>在一个严格控制实验的框架内，对不同VLA预训练和微调技术进行了系统的比较分析。</li><li>提供了基于实证的洞察，为未来开发可泛化具身智能体的研究方向提供指导，包括：VLM初始化、VLA预训练和VLA微调分别扮演着不同且互补的角色；全参数微调在狭窄任务上表现良好，但会导致灾难性遗忘；联合训练和预测潜在动作是更有前景的研究方向；在更多样化的数据集上进行VLA预训练可以提升性能。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>论文设计并比较了多种旨在改善VLA继承VLM先验知识的训练技术。核心方法是构建并使用GrinningFace基准进行评估。被比较的技术包括：</p>
+<ul><li>基线方法：使用π0风格的模型进行全参数微调。</li><li>参数高效微调：采用LoRA或仅微调动作专家模块。</li><li>冻结VLM主干：在微调过程中冻结VLM的权重。</li><li>联合训练：在VLA训练中同时加入视觉-语言任务，如在桌面场景中识别表情符号。</li><li>离散化目标：训练VLA预测离散化的动作目标。</li><li>潜在动作目标：训练VLA在预测机器人动作的同时，也预测潜在动作。</li><li>多样化数据预训练：研究不同数据集（如OXE magic soup, bridge-v2）对VLA性能的影响。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据集：</li></ul>
+<p> - GrinningFace基准：包含100个用于训练的表情符号和100个用于验证的表情符号，收集了500条轨迹用于微调。</p>
+<p> - VLA预训练数据集：主要使用Open X-Embodiment (OXE) magic-soup混合数据集（包含913k条轨迹）。实验中还使用了bridge-v2数据集以及排除了bridge-v2的OXE数据集，以进行消融研究。</p>
+<ul><li>训练资源：</li></ul>
+<p> - 计算资源：使用8块Nvidia A100 GPU进行VLA的预训练和微调，使用单块Nvidia A100 GPU进行评估。</p>
+<p> - 模型基础：代码库基于π0的开源实现，使用PaliGemma作为VLM主干，SigLIP作为视觉编码器。</p>
+<p> - 训练配置：VLA预训练80k步，微调30k步，批大小为1024。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境：</li></ul>
+<p> - 模拟环境：ManiSkill3。</p>
+<p> - 真实机器人：搭载Inspire Robots夹爪的Realman RM75机械臂。真实机器人上的任务被简化为“触摸”指定表情符号。</p>
+<ul><li>评估指标：</li></ul>
+<p> - 核心公式：整体成功率 = 执行成功率 × 识别成功率。</p>
+<p> - 执行成功率：机器人成功拿起方块并放置到任意一个表情符号卡片上。</p>
+<p> - 识别成功率：机器人在三个候选卡片中选择了正确的那个。</p>
+<p> - 评估协议：</p>
+<p> - ID：评估模型在训练时见过的表情符号组合上的表现。</p>
+<p> - Train：评估模型在由训练集表情符号构成的新组合上的表现。</p>
+<p> - Val：评估模型在验证集表情符号上的表现，用于测试泛化能力。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

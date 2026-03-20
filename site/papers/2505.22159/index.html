@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ForceVLA: Enhancing VLA Models with a Force-aware MoE for Contact-rich Manipulation - VLA 论文精选</title>
+    <meta name="description" content="论文提出ForceVLA，一种增强视觉-语言-动作（VLA）模型的端到端操作框架，通过将外部力感知作为核心模态，解决接触密集型操作任务中精细力控制的需求。该框架引入FVLMoE（力感知混合专家模块），动态融合预训练视觉-语言嵌入与实时6轴力反馈，并在五个接触密集任务中验证有效性，平均成功率提升23.2%，最高达80%。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2505.22159">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">ForceVLA: Enhancing VLA Models with a Force-aware MoE for Contact-rich Manipulation</h1>
+          <div class="detail-meta">2025-05-28 · <a href="http://arxiv.org/abs/2505.22159" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2505.22159" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2505.22159</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>复旦大学、上海交通大学、上海创新研究院、上海AI实验室、新加坡国立大学、上海大学、西安交通大学、Noematrix Intelligence</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出ForceVLA，一种增强视觉-语言-动作（VLA）模型的端到端操作框架，通过将外部力感知作为核心模态，解决接触密集型操作任务中精细力控制的需求。该框架引入FVLMoE（力感知混合专家模块），动态融合预训练视觉-语言嵌入与实时6轴力反馈，并在五个接触密集任务中验证有效性，平均成功率提升23.2%，最高达80%。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出力感知多模态框架：首次将力作为一等公民模态集成到VLA系统，通过FVLMoE实现动态模态感知融合，增强物理交互能力。</li><li>构建数据集与工具链：发布ForceVLA-Data数据集（244条轨迹，14万时间步）及完整数据采集系统（含遥操作工具和转换器），开源以支持社区研究。</li><li>实验性能突破：在插拔、擦拭等任务中成功率显著超越基线（如π₀模型），泛化至新物体、遮挡和物理扰动场景，验证鲁棒性。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>整体架构</strong>：基于π₀框架，扩展多模态输入（视觉、语言、本体感觉、力）。视觉和语言通过SigLIP编码为嵌入，力信号经线性投影后与VL嵌入融合。</li><li><strong>FVLMoE模块</strong>：采用后融合策略，力令牌在VLM处理后输入MoE。包含4个专家网络（MLP）和路由器，通过Top-1路由动态选择专家，输出通过残差连接注入动作流解码器，指导力感知动作生成。</li><li><strong>动作生成</strong>：采用条件流匹配模型，融合特征通过逐元素加法调制噪声动作轨迹，迭代去噪输出H步动作块。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：ForceVLA-Data，涵盖5个任务（按瓶、插拔、USB插入、擦白板、削黄瓜）。通过Flexiv Rizon 7-DOF机械臂采集，双RGB-D相机（第三人称1280×720@30fps、手腕640×480@30fps）同步视觉、本体感觉和6轴力矩数据。</li><li><strong>训练资源</strong>：8×NVIDIA RTX 4090 GPU（24GB VRAM），64核CPU，251GB RAM。使用Adam优化器（β₁=0.9, β₂=0.95），峰值学习率2.5×10⁻⁵，多任务训练30k步（约12小时），单任务训练10k步（约9小时），精度bfloat16。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>环境</strong>：真实物理场景，五项接触密集任务：瓶泵按压、插头插入、USB插入、白板擦拭、黄瓜削皮。泛化测试包括物体更换（瓶/插头类型）、高度变化、视觉遮挡、插座不稳等扰动。</li><li><strong>指标</strong>：主要任务成功率（按任务特定标准，如完全插入/擦拭）。削黄瓜任务附加指标：平均削皮长度（cm↑）、最少完成行程数（↓）。泛化场景报告各条件下成功率（%）。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

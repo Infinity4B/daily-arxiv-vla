@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="研究解决 Vision-Language-Action (VLA) 模型 中 Flow Matching 动作生成带来的推理延迟问题，传统的多步 ODE 求解严重阻碍了机器人实时响应控制 提出 ProbeFlow，一种无需训练的自适应推理框架，通过几何方法评估轨迹复杂度，动态调度积分步数，在线性区域跳过冗余计算 核心创新是利用 Lookahead Linearity Probe（前瞻线性探测器）通" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.17850">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2026-03-18 · <a href="http://arxiv.org/abs/2603.17850" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.17850" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.17850</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>东南大学计算机科学与工程学院</strong>，中国</li><li><strong>新一代人工智能技术及其交叉应用教育部重点实验室</strong>，中国</li><li><strong>东南大学电子科学与工程学院</strong>，中国</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>研究解决 <strong>Vision-Language-Action (VLA) 模型</strong> 中 Flow Matching 动作生成带来的推理延迟问题，传统的多步 ODE 求解严重阻碍了机器人实时响应控制</li><li>提出 <strong>ProbeFlow</strong>，一种无需训练的自适应推理框架，通过几何方法评估轨迹复杂度，动态调度积分步数，在线性区域跳过冗余计算</li><li>核心创新是利用 <strong>Lookahead Linearity Probe</strong>（前瞻线性探测器）通过计算初始速度向量与前瞻速度向量之间的余弦相似度来预测轨迹曲率</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出 <strong>ProbeFlow</strong>，无需训练的的自适应求解器，有效缓解连续生成策略中的动作解码瓶颈</li><li>引入 <strong>Lookahead Linearity Probe</strong>，通过余弦相似度作为轨迹复杂度的几何代理，严格只在非线性区域分配网络评估</li><li>在 MetaWorld 上实现 <strong>14.8 倍加速</strong>（平均步数从 N=50 降至 2.6），同时保持操作成功率</li><li>在 LIBERO 长视野基准测试中自动分配更密集的调度以处理语义瓶颈</li><li>真实物理部署验证了其在实时约束下的执行稳定性</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>核心洞察</strong>：Flow Matching 的概率路径在不同区域具有不同的曲率，线性区域（如粗略移动）可以大幅跳过积分步骤，而非线性区域（如精确抓取）需要密集积分</li><li><strong>Lookahead Linearity Probe</strong>：执行一个大步长探索（如 Δt_probe=0.5），计算初始速度 v_start 和前瞻位置速度 v_probe 之间的余弦相似度 S</li><li><strong>动态步长调度</strong>：将连续相似度分数 S 映射到离散积分步数 N，使用公式 N=clip(N_min + ⌊(1-S)/ε⌋×ΔN, N_min, N_max)</li><li><strong>线性区域处理</strong>：当 S≈1 时，直接重用探测状态进行稀疏积分；当 S≪1 时，执行密集积分以控制截断误差</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>基准数据集</strong>：MetaWorld (MT50) - 50 个短视野操作任务；LIBERO - 长视野、语义复杂的任务</li><li><strong>模型架构</strong>：Evo-1 模型 + InternVL3-1B 视觉骨干网（冻结）</li><li><strong>动作头</strong>：8 层 Diffusion Transformer (DiT)，隐藏维度 1024</li><li><strong>轨迹长度</strong>：T=50</li><li><strong>训练资源</strong>：NVIDIA RTX 4090 GPU</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<p><strong>MetaWorld 基准测试</strong>：</p>
+<ul><li>标准 N=50 求解器：动作头延迟 235.7 ms，成功率 82.5%</li><li>ProbeFlow：动作头延迟 <strong>15.9 ms</strong>（14.8 倍加速），成功率 <strong>83.2%</strong>（统计等价）</li><li>平均积分步数从 50 步降至 2.6 步</li></ul>
+
+<p><strong>LIBERO 基准测试</strong>：</p>
+<ul><li>N=50 求解器：动作头延迟 278.7 ms，成功率 92.5%</li><li>ProbeFlow：动作头延迟 <strong>32.7 ms</strong>（8.5 倍加速），成功率 <strong>88.7%</strong></li><li>通过调整阈值 ε=0.002 可恢复至 92.0% 成功率，仍比基线快 60%</li></ul>
+
+<p><strong>真实世界部署</strong>：</p>
+<ul><li>7-DoF xArm7 + Inspire 多指机械手</li><li>"Pick-and-Place" 任务</li><li>动作头延迟从 270.3 ms 降至 <strong>12.26 ms</strong>，平均步数 2.1 步</li><li>成功率 7/10，与基线方法相当</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

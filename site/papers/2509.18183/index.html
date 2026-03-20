@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLA-LPAF: Lightweight Perspective-Adaptive Fusion for Vision-Language-Action to Enable More Unconstrained Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="VLA模型在视觉视角变化时（如不同位置、背景或高度）泛化性能下降，影响任务执行。论文提出轻量级视角适应融合框架VLA-LPAF，通过潜在空间融合多视角2D图像，仅使用单视图数据进行微调，弥补视角差异。与RoboFlamingo结合构建RoboFlamingo-LPAF，在CALVIN、LIBERO和自定义CabinEnv数据集上提升成功率8%-30%，并在真实任务中验证视角适应能力。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.18183">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VLA-LPAF: Lightweight Perspective-Adaptive Fusion for Vision-Language-Action to Enable More Unconstrained Robotic Manipulation</h1>
+          <div class="detail-meta">2025-09-18 · <a href="http://arxiv.org/abs/2509.18183" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.18183" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.18183</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Li Auto Inc.，中国北京</p>
+<h2 class="section-title">论文概述</h2>
+<p>VLA模型在视觉视角变化时（如不同位置、背景或高度）泛化性能下降，影响任务执行。论文提出轻量级视角适应融合框架VLA-LPAF，通过潜在空间融合多视角2D图像，仅使用单视图数据进行微调，弥补视角差异。与RoboFlamingo结合构建RoboFlamingo-LPAF，在CALVIN、LIBERO和自定义CabinEnv数据集上提升成功率8%-30%，并在真实任务中验证视角适应能力。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>首次实现基于2D图像的轻量级潜在视角特征融合框架VLA-LPAF，降低视角一致性约束。</li><li>实例化VLA-LPAF为RoboFlamingo-LPAF，通过多数据集和真实任务验证有效性。</li><li>三阶段训练策略（单视图仅动作、多视图仅融合、多视图联合训练）优化泛化能力。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>问题定义</strong>：VLA模型映射多模态输入（图像、文本）到动作，但视角差异导致特征偏移。</li><li><strong>架构</strong>：添加MLP基融合模块，利用单视图参考数据集（D_R）和多视图辅助数据集（D_M)。</li><li><strong>对齐融合</strong>：融合模块在ViT编码的潜在空间中，对齐参考视图（R）和辅助视图（M）的特征。</li><li><strong>训练策略</strong>：</li></ul>
+<p> 1. 单视图阶段：冻结ViT，微调LLM参数（θ），使用动作损失（公式1）。</p>
+<p> 2. 多视图阶段：仅训练融合模块参数（θ'），使用对齐损失（公式4）。</p>
+<p> 3. 联合阶段：同时微调θ和θ'，结合动作损失（公式3）和对齐损失（公式5）。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 模拟：CALVIN、LIBERO、CabinEnv（自定义舱内环境，包含按钮按压和杠杆翻转任务）。</p>
+<p> - 数据集构建：参考视图（0°）+ 辅助视图（±45°范围，v=4个视角）。</p>
+<ul><li><strong>训练资源</strong>：8个NVIDIA A800 80GB GPU，图像统一尺寸224×224。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 模拟环境：使用多视角测试数据（如CALVIN中参考视图±90°范围，间隔10°）。</p>
+<p> - 真实环境：Realman RML机器人臂（单臂），Intel RealSense D415（全局参考和腕部摄像头），Azure Kinect（辅助全局摄像头），执行按钮按压和杠杆翻转任务。</p>
+<ul><li><strong>评估指标</strong>：任务成功率（success rate），基线比较显示CALVIN平均提升8%，LIBERO提升15%，CabinEnv提升30%，并在真实任务中验证RoboFlamingo-LPAF完成未包含视角（如30°）的任务。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

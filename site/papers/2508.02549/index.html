@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MonoDream: Monocular Vision-Language Navigation with Panoramic Dreaming - VLA 论文精选</title>
+    <meta name="description" content="本文针对单目视觉语言导航任务中，由于视角受限导致性能显著低于使用全景RGB-D输入方法的问题，提出了一个名为MonoDream的轻量级视觉语言行动框架。该框架使单目智能体能够学习一个统一的导航表示，通过潜在全景梦境任务进行监督，从而仅凭单目输入就能推断出隐式的全局、几何和时序上下文。实验表明，MonoDream在多个VLN基准测试中持续提升单目导航性能，并显著缩小了与基于全景智能体之间的性能差距。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.02549">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">MonoDream: Monocular Vision-Language Navigation with Panoramic Dreaming</h1>
+          <div class="detail-meta">2025-08-04 · <a href="http://arxiv.org/abs/2508.02549" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.02549" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.02549</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Shuo Wang<sup>1,3</sup>, Yongcai Wang<sup>1</sup>, Zhaoxin Fan<sup>2</sup>, Yucheng Wang<sup>3</sup>, Maiyue Chen<sup>3</sup>, Kaihui Wang<sup>3</sup>, Zhizhong Su<sup>3</sup>, Wanting Li<sup>1</sup>, Xudong Cai<sup>1</sup>, Yeying Jin<sup>4</sup>, Deying Li<sup>1</sup>。注：原文HTML未提供具体机构名称。</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文针对单目视觉语言导航任务中，由于视角受限导致性能显著低于使用全景RGB-D输入方法的问题，提出了一个名为MonoDream的轻量级视觉语言行动框架。该框架使单目智能体能够学习一个统一的导航表示，通过潜在全景梦境任务进行监督，从而仅凭单目输入就能推断出隐式的全局、几何和时序上下文。实验表明，MonoDream在多个VLN基准测试中持续提升单目导航性能，并显著缩小了与基于全景智能体之间的性能差距。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了MonoDream，一种新颖的单目VLN框架，通过增强智能体的内部全局感知能力，使其能够从单目图像中推断隐式的全局、几何和时序上下文。</li><li>引入了两个核心组件：统一导航表示，用于共同编码导航动作和潜在的全局场景信息；以及潜在全景梦境任务，通过监督当前和未来全景RGB-D的潜在特征来学习UNR。</li><li>在R2R-CE和RxR-CE等单目VLN-CE基准上取得了最先进的性能，并且在没有使用外部训练数据的情况下展现了强大的泛化能力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>MonoDream构建于一个视觉语言模型之上，核心是统一导航表示。该表示是一个共享的潜在空间，共同对齐了导航相关的信息，包括动作意图、全局场景布局、深度感知和未来动态。为了训练UNR，方法设计了潜在全景梦境任务作为辅助监督信号，仅在训练中使用。LPD任务引导模型从单目输入中预测当前和未来步骤的全景RGB和深度观察的潜在特征。整个框架通过多任务协同训练进行优化，联合训练动作预测、指令推理和LPD任务，使模型学习将动作决策与想象中的全局和未来上下文对齐。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：使用了模拟环境中的数据，包括R2R-CE和RxR-CE的训练集，并通过DAgger策略额外收集了50万个样本，总计约142万个步级样本。</p>
+<p>训练资源：基础模型为NVILA-lite-2B，使用8块NVIDIA H20 GPU进行训练，训练了5个周期，学习率为1e-5，批大小为80。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：在VLN-CE基准测试中进行评估，具体包括R2R-CE和RxR-CE数据集的Val-Unseen拆分。</p>
+<p>评估指标：遵循标准VLN评估协议，主要指标包括导航误差、成功率、成功率加权路径长度和导航成功率，其中SR和SPL被认为是主要评估指标。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unified Lexical Representation for Interpretable Visual-Language Alignment - VLA 论文精选</title>
+    <meta name="description" content="本文提出了一种名为LexVLA的视觉-语言对齐框架，旨在通过学习统一的词汇表示来解决现有方法（如CLIP）存在的可解释性差和训练复杂的问题。传统CLIP的潜在特征对齐缺乏表示清晰度和相似度评分的明确性，而词汇表示虽然自然且可解释，但难以学习。LexVLA利用单模态预训练模型的独特优势，通过简单的训练配置，实现了更优的跨模态检索性能和模型可解释性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2407.17827">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Unified Lexical Representation for Interpretable Visual-Language Alignment</h1>
+          <div class="detail-meta">2024-07-25 · <a href="http://arxiv.org/abs/2407.17827" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2407.17827" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2407.17827</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>好的，我将以论文阅读专家的身份，根据提供的Arxiv论文HTML原文，总结论文的要点。我将遵循你的要求，只提供Markdown格式文本，不使用加粗，不输出其他内容，并将总结分为你指定的几个部分。</p>
+
+<ol><li><strong>论文研究单位</strong>:</li></ol>
+<p> * 我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Services）。</p>
+
+<ol><li><strong>论文概述</strong>:</li></ol>
+<p> * 我将概括论文的背景、问题陈述和主要目标。这篇论文介绍了一个名为LexVLA的框架，用于视觉-语言对齐（VLA），旨在通过学习统一的词汇表示来解决现有方法（如CLIP）的可解释性差和训练复杂的问题。</p>
+
+<ol><li><strong>论文核心贡献点</strong>:</li></ol>
+<p> * 我将从引言的“We contribute”部分提取贡献点。</p>
+<p> * 贡献1：利用单模态预训练模型（用于视觉的DINOv2，用于文本的Llama 2），利用它们独特的优势（如局部特征和上下文预测能力）进行VLA。</p>
+<p> * 贡献2：提出了一种统一的词汇表示方法，但为视觉和文本模态使用独立的码本，以避免削弱预训练能力。</p>
+<p> * 贡献3：引入了过度使用惩罚（overuse penalty），以鼓励稀疏嵌入并防止无意义激活。</p>
+<p> * 贡献4：在更少的多模态训练数据下实现了卓越的检索性能，并使用提出的PatchDis指标获得了更好的可解释性。</p>
+
+<ol><li><strong>论文方法描述</strong>:</li></ol>
+<p> * 我将总结方法的关键步骤和组件，基于第3节“LexVLA”。</p>
+<p> * <strong>词汇表示</strong>: 使用共享词汇表但为视觉和文本模态设置不同的码本。码本初始化为Llama 2的输出码本；文本码本被冻结，视觉码本被微调。表示被稀疏化，通过阈值化（值大于1/√V）。</p>
+<p> * <strong>词汇编码器</strong>:</p>
+<p> * <strong>文本编码器</strong>: 使用Llama 2，并通过上下文提示（如“关键词提取”）使其执行词汇预测，而不是简单的标题嵌入。</p>
+<p> * <strong>视觉编码器</strong>: 使用DINOv2作为冻结的骨干网络。特征通过一个适配器（自注意力+2个MLP）处理，然后映射到视觉词汇表示。</p>
+<p> * <strong>训练</strong>: 使用标准的对比学习目标，并加入过度使用惩罚。训练采用增量微调：对于文本，使用LoRA；对于视觉，只训练适配器和映射器。</p>
+
+<ol><li><strong>论文使用数据集和训练资源</strong>:</li></ol>
+<p> * 我将从“实验”部分（第4节）中提取数据集和计算细节。</p>
+<p> * <strong>数据集</strong>: 训练在CC-12M上进行。在Flickr30K和MSCOCO上进行零样本跨模态检索评估。</p>
+<p> * <strong>训练资源</strong>: 文本编码器基于Llama 2（7B），视觉骨干网络为DINOv2（ViT-L/14）。使用单个8x A100 GPU进行训练。提及使用LoRA进行文本微调以减少资源消耗。</p>
+
+<ol><li><strong>论文使用的评估环境和评估指标</strong>:</li></ol>
+<p> * 我将从“实验”部分提取评估设置和指标。</p>
+<p> * <strong>评估环境</strong>: 标准零样本跨模态检索设置（图像到文本和文本到图像检索）。</p>
+<p> * <strong>评估指标</strong>: 在Flickr30K和MSCOCO上的检索指标（R@1, R@5, R@10, mean Recall）。此外，引入了一个新的可解释性指标“PatchDis”来量化模型在未经过细粒度任务训练的情况下的块级对齐能力。</think></p>
+<h2 class="section-title">论文研究单位</h2>
+<p>复旦大学 和 亚马逊云科技</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了一种名为LexVLA的视觉-语言对齐框架，旨在通过学习统一的词汇表示来解决现有方法（如CLIP）存在的可解释性差和训练复杂的问题。传统CLIP的潜在特征对齐缺乏表示清晰度和相似度评分的明确性，而词汇表示虽然自然且可解释，但难以学习。LexVLA利用单模态预训练模型的独特优势，通过简单的训练配置，实现了更优的跨模态检索性能和模型可解释性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>强调利用单模态预训练模型进行视觉-语言对齐，以受益于其无法通过对比目标学习的独特属性。例如，使用DINOv2因其局部化特征和使用Llama 2因其上下文能力。</li><li>有效学习统一词汇表示，为视觉和语言模态采用独特的码本，以避免削弱预训练能力。</li><li>提出过度使用惩罚，以鼓励稀疏嵌入并防止无意义激活。</li><li>以更少的多模态训练数据，享受卓越的检索性能，并在全局监督信号下，实现更好的块级可解释的VLA模型，使用提出的PatchDis指标在量上超越CLIP风格和词汇方法。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>LexVLA包含三个核心部分：</p>
+<ol><li><strong>词汇表示</strong>：使用共享词汇表但为文本和图像模态设置不同的码本。码本初始化为Llama 2的输出码本；文本码本被冻结以保留其语义，视觉码本则被微调以适应视觉特征。词汇表示被限制为非负且l2归一化，并通过值阈值化（大于1/√V）实现稀疏性。</li><li><strong>词汇编码器</strong>：</li></ol>
+<p> * <strong>词汇文本编码器</strong>：使用Llama 2作为基础。并非直接对文本标题嵌入，而是通过上下文提示（例如，“...的关键词是：”）使其执行词汇预测任务。输出标记的嵌入与文本码本计算点积注意力，经elu1p激活和l2归一化后得到全局词汇表示。</p>
+<p> * <strong>词汇视觉编码器</strong>：使用DINOv2作为冻结的视觉骨干网络。输入图像被展平为块，通过DINOv2提取特征序列。特征通过一个适配器（包含自注意力层和两个多层感知机）进行处理，然后映射到视觉词汇表示。</p>
+<ol><li><strong>训练LexVLA</strong>：采用标准的对比学习目标来对齐图像-文本对。训练中加入了过度使用惩罚项，以防止频繁激活无意义词汇。训练采用增量微调策略：对于文本，使用LoRA适配器微调Llama 2；对于视觉，冻结DINOv2骨干，仅训练适配器和映射器，视觉码本用文本码本初始化并进行微调。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p><strong>数据集</strong>：模型在CC-12M数据集上进行训练。在Flickr30K和MSCOCO数据集上进行零样本跨模态检索评估。</p>
+<p><strong>训练资源</strong>：文本编码器基于Llama 2（7B参数），视觉骨干网络为DINOv2（ViT-L/14架构）。训练在单个8x A100 GPU上进行。对文本模型使用LoRA进行微调以减少计算资源消耗。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p><strong>评估环境</strong>：在标准的零样本跨模态检索设置下评估模型性能，包括图像到文本检索和文本到图像检索任务。</p>
+<p><strong>评估指标</strong>：主要在Flickr30K和MSCOCO数据集上使用检索指标，包括R@1, R@5, R@10和平均召回率。此外，论文引入了一个新的可解释性评估指标PatchDis，用于在未经过细粒度任务（如分割或检测）训练的VLA模型上量化其块级对齐能力。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

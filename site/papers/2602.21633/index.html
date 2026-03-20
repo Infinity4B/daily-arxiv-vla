@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Self-Correcting VLA: Online Action Refinement via Sparse World Imagination - VLA 论文精选</title>
+    <meta name="description" content="提出 Self-Correcting VLA (SC-VLA) 框架，通过稀疏世界想象 (Sparse World Imagination, SPI) 和在线动作优化 (Online Action Refinement, OAR)，实现视觉-语言-动作模型的自我改进 (self-improvement)。 旨在解决传统 VLA 模型依赖静态数据先验、缺乏物理动态理解，以及传统强化学习依赖外部奖励信" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.21633">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Self-Correcting VLA: Online Action Refinement via Sparse World Imagination</h1>
+          <div class="detail-meta">2026-02-25 · <a href="http://arxiv.org/abs/2602.21633" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.21633" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.21633</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>作者未明确列出所属机构，但推测为 AI/机器人学习研究团队（根据论文内容和 GitHub 项目 Kisaragi0/SC-VLA）。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>Self-Correcting VLA (SC-VLA)</strong> 框架，通过<strong>稀疏世界想象 (Sparse World Imagination, SPI)</strong> 和<strong>在线动作优化 (Online Action Refinement, OAR)</strong>，实现视觉-语言-动作模型的<strong>自我改进 (self-improvement)</strong>。</li><li>旨在解决传统 VLA 模型依赖静态数据先验、缺乏物理动态理解，以及传统强化学习依赖外部奖励信号而与模型内部状态脱节的问题。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出 <strong>SC-VLA 框架</strong>，将离线动作生成与在线优化相结合，通过<strong>稀疏世界想象 (SPI)</strong> 预测未来状态，约束策略编码物理演化。</li><li>设计了<strong>在线动作优化 (OAR)</strong> 模块，利用残差强化学习和基于想象的<strong>内生密集奖励 (endogenous dense rewards)</strong> 动态调整轨迹方向。</li><li>在模拟（<strong>ManiSkill3</strong> 基准）和真实世界（<strong>ARX5</strong> 机器人平台）的复杂操作任务上进行了系统性评估，证明了该方法在成功率和任务吞吐量上的优越性。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>方法基于<strong>条件流匹配 (Conditional Flow Matching, FM)</strong> 和 <strong>Soft Actor-Critic (SAC)</strong> 算法构建。</li><li><strong>第一阶段 (SPI)</strong>：在 VLM-DiT 骨干网络上，添加辅助预测头，同时预测<strong>任务进度 (progress)</strong> 和<strong>未来相对状态变化 (ΔState)</strong>，作为稀疏世界信号。</li><li><strong>第二阶段 (OAR)</strong>：冻结基础策略，在其输出之上训练一个轻量级<strong>残差策略 (Residual Policy)</strong>。奖励信号由环境稀疏奖励和基于预测未来状态方向的<strong>内生密集指导奖励 (intrinsic dense guidance reward)</strong> 动态加权组合而成。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用 <strong>ManiSkill3</strong> 仿真基准中的四个挑战性机器人操作任务（StackCube, PlaceSphere, LiftPegUpright, PegInsertion）。</li><li>在真实世界使用 <strong>ARX5</strong> 机械臂平台进行验证。</li><li>模型基于 <strong>SigLIP-2</strong> 视觉编码器、<strong>Eagle-2</strong> VLM 和 <strong>DiT (Diffusion Transformer)</strong> 骨干网络。</li><li>训练资源未在提供的片段中明确说明。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境</strong>：ManiSkill3 仿真环境与 ARX5 真实机器人。</li><li><strong>主要指标</strong>：任务成功率，成功任务的平均完成步数（任务吞吐量）。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 在 ManiSkill3 上，<strong>SC-VLA</strong> 以 <strong>86%</strong> 的平均成功率超越所有基线（如 <strong>GR00T N1.5</strong> 72%， <strong>π₀</strong> 55%），并在最难的 PegInsertion 任务上提升 <strong>28%</strong>。</p>
+<p> - 在成功任务中，<strong>SC-VLA</strong> 的平均步数（<strong>157步</strong>）比最佳基线减少了 <strong>16%</strong>，实现了最高吞吐量。</p>
+<p> - 在真实世界任务中，<strong>SC-VLA</strong> 获得 <strong>71%</strong> 的平均成功率，比最佳基线 <strong>GR00T N1.5</strong> 高出 <strong>14%</strong>。</p>
+<p> - 消融实验验证了稀疏世界想象、内生密集奖励和动态权重调度各组件均对性能有显著贡献。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

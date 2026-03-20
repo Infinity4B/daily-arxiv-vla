@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Maestro: Orchestrating Robotics Modules with Vision-Language Models for Zero-Shot Generalist Robots - VLA 论文精选</title>
+    <meta name="description" content="论文提出maestro（Managerial Agent for Executing Sensorimotor Tasks in Robotics），一个以视觉语言模型（VLM）为中心的模块化智能体，通过编排包含感知、几何、控制、预训练视觉-动作模型与图像编辑等在内的“工具集”，以编写与执行代码的方式在真实世界中实现零样本通用机器人操作。该范式不依赖大规模机器人数据，而是在闭循环中“计划—反应—重" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.00917">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Maestro: Orchestrating Robotics Modules with Vision-Language Models for Zero-Shot Generalist Robots</h1>
+          <div class="detail-meta">2025-11-02 · <a href="http://arxiv.org/abs/2511.00917" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.00917" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.00917</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>宾夕法尼亚大学（University of Pennsylvania），并开放项目主页：maestro-robot.github.io。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出maestro（Managerial Agent for Executing Sensorimotor Tasks in Robotics），一个以视觉语言模型（VLM）为中心的模块化智能体，通过编排包含感知、几何、控制、预训练视觉-动作模型与图像编辑等在内的“工具集”，以编写与执行代码的方式在真实世界中实现零样本通用机器人操作。该范式不依赖大规模机器人数据，而是在闭循环中“计划—反应—重计划”的执行与反馈回路中不断演化，适应新任务与新硬件。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>首个在零样本条件下能与最新视觉-语言-动作（VLA）模型竞争的模块化机器人策略。</li><li>提出了以VLM为编码智能体、工具库为核心的系统化设计（覆盖几何与主动感知、碰撞规避、VLA高频监控），显著提升语义理解与精确执行的协同能力。</li><li>系统性消融实验揭示主动感知与几何推理工具的必要性。</li><li>展示在少量真实试验基础上的演化式改进机制，通过历史代码与失败分析进行上下文学习。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>总体架构：以VLM（文中采用Gemini Robotics-ER 1.5）为代码生成智能体，接收任务指令与场景图像，动态编写程序并实时执行与修改，形成“计划—反应—重计划”的闭环。</li><li>工具模块设计（Tabletop / Mobile 双套件）：</li></ul>
+<p> - 感知：原始RGB+本体感觉；分割与中心点；指向与任务相关关键点（受ReKep启发）；FoundationStereo深度；主动感知（手腕相机变焦/环视）。</p>
+<p> - 控制与几何：笛卡尔与手爪控制；cuRobo点云无碰撞运动规划；几何与线性代数（向量构造、距离、相对旋转、向量旋转）以支持空间推理。</p>
+<p> - 视觉运动策略：GraspGen抓取模型；π0.5 VLA作为可调用工具，配以本地托管的Qwen-2.5-VL-72B实现2Hz任务完成监控以高频中断与重规划。</p>
+<p> - 图像编辑：在图像上绘制关键点与6D位姿叠加，提升视觉定位与推理。</p>
+<p> - 移动操控：Mobile base状态估计（Faster-LIO）；语义地图缓存；主动探索工具；细粒度“nudge”局部微调与全局导航（Nav2）。</p>
+<ul><li>演化式改进：记录历史执行代码、输出与失败分析，作为上下文样例供后续尝试学习与优化。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>评估方法：为检验零样本泛化，采用STAR-Gen生成评测场景，固定对比基线；5次试验/任务（初始+4次扰动）。</li><li>真实世界平台与任务：</li></ul>
+<p> - 桌面操控：Franka Emika Panda（7-DoF）+ Robotiq 2F 手爪；手腕与第三人称相机；DROID平台。任务包括拾取放置、可变形物体（折毛巾/T恤）、铰接物体（开柜）、空间推理（紫色面朝上旋转立方体）、工具使用（用刀切香蕉）、物体功能（挂杯）、记忆与长时序（擦白板指令后按指令叠杯）。</p>
+<p> - 移动操控：Unitree Go2-W 四足机器人 + AgileX PiPER机械臂；校准手腕相机。任务包括长时序取物、投掷、主动探索（搜索并返回）、物体功能（按按钮开门）。</p>
+<ul><li>预训练/基础模型：</li></ul>
+<p> - VLM：Gemini Robotics-ER 1.5（用于代码生成与视觉推理）；Qwen-2.5-VL-72B（本地高频监控与中断）。</p>
+<p> - VLA：π0-FAST-DROID 与 π0.5-DROID（作为可调用工具）。</p>
+<p> - 其他：GraspGen（抓取）、FoundationStereo（深度估计）、cuRobo（无碰撞规划）、Faster-LIO（移动基定位）、Nav2（导航）。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境：两类真实世界本体——桌面操控（DROID、Franka）、移动操控（四足+机械臂），跨场景扰动（物体、位姿、语言指令、背景等）形成零样本测试集。</li><li>评估指标：</li></ul>
+<p> - 主要指标：平均任务进度（0–100，数值越高越好），基于STAR-Gen与任务分解子目标的可量化评分。</p>
+<p> - 对比基线：Gemini Robotics Agent（代码即策略）、π0-FAST-DROID、π0.5-DROID；另含maestro+π0.5（VLA作为工具并联）。</p>
+<p> - 消融设置：去除主动感知与几何模块对性能的影响。</p>
+<p> - 跨任务类别：在桌面与移动操控的多样任务上进行对比与误差分析。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

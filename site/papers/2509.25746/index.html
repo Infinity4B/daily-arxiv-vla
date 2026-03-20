@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TacRefineNet: Tactile-Only Grasp Refinement Between Arbitrary In-Hand Object Poses - VLA 论文精选</title>
+    <meta name="description" content="针对机器人灵巧手抓取执行阶段的“最后一公里”精度问题，论文提出TacRefineNet——首个仅依靠多指指尖触觉反馈实现已知物体任意姿态间精确调整的框架。该方法通过迭代调整末端执行器姿态，利用高分辨率压阻式触觉传感器捕获指尖接触力，实现毫米级抓取精度。为跨越仿真到现实的鸿沟，研究团队构建了MuJoCo仿真环境与真实机器人结合的数据集，并设计了多分支融合策略网络。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.25746">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">TacRefineNet: Tactile-Only Grasp Refinement Between Arbitrary In-Hand Object Poses</h1>
+          <div class="detail-meta">2025-09-30 · <a href="http://arxiv.org/abs/2509.25746" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.25746" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.25746</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>小米机器人（Xiaomi Robotics）</p>
+<h2 class="section-title">论文概述</h2>
+<p>针对机器人灵巧手抓取执行阶段的“最后一公里”精度问题，论文提出TacRefineNet——首个仅依靠多指指尖触觉反馈实现已知物体任意姿态间精确调整的框架。该方法通过迭代调整末端执行器姿态，利用高分辨率压阻式触觉传感器捕获指尖接触力，实现毫米级抓取精度。为跨越仿真到现实的鸿沟，研究团队构建了MuJoCo仿真环境与真实机器人结合的数据集，并设计了多分支融合策略网络。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>首个纯触觉驱动框架</strong>：提出TacRefineNet，实现六自由度手部姿态的毫米级精确调整，完全依赖指尖触觉反馈</li><li><strong>多分支融合策略网络</strong>：通过融合多指触觉信号与本体感受，设计支持任意姿态间转换的策略网络，无需逐姿态重训练</li><li><strong>仿真-现实高效结合</strong>：采用仿真预训练+现实微调的混合训练策略，仅用少量真实数据即显著提升性能</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>迭代调整策略</strong>：在多指建立接触后，根据触觉图像与目标图像的差异，预测末端执行器的六自由度位姿增量（Δx），通过重复抓取-调整过程收敛至目标姿态</li><li><strong>触觉传感系统</strong>：指尖集成11×9压阻式触觉阵列（像素间距1.1mm），实时输出触觉图像用于特征提取；在MuJoCo中建立物理基触觉模拟，弹性接触点模拟真实传感器弹性行为</li><li><strong>TacRefineNet网络架构</strong>：</li></ul>
+<p> 1. 多分支视觉编码器处理每根手指的当前/目标触觉图像</p>
+<p> 2. 融合多指触觉特征与关节位置信息</p>
+<p> 3. 三层MLP回归六自由度位姿增量</p>
+<ul><li><strong>跨组合训练方案</strong>：随机配对当前与目标触觉图像构建N×N组合，增强策略对任意目标姿态的适应性</li><li><strong>数据增强</strong>：对触觉图像实施缩放噪声，对关节位置添加高斯噪声提升鲁棒性</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>仿真数据集（Ds_img）</strong>：基于MuJoCo物理引擎生成，在限制维度范围内系统采样手部姿态（pitch/roll/y/z轴），记录对应触觉图像、关节位置及目标姿态</li><li><strong>真实数据集（Dr_img）</strong>：复现实实验证中的可行姿态，增大采样步长降低数据密度，剔除实际碰撞姿态</li><li><strong>混合训练策略</strong>：对比两种政策</li></ul>
+<p> - 政策A：仅仿真数据训练</p>
+<p> - 政策B：仿真预训练 + 真实数据微调</p>
+<ul><li><strong>硬件资源</strong>：</li></ul>
+<p> - 仿真：MuJoCo物理引擎</p>
+<p> - 实物：11自由度灵巧手 + 11×9指尖触觉传感器阵列（0-255离散力值）</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>实验场景</strong>：</li></ul>
+<p> - 多维度姿态调整：16种初始-目标姿态组合（pitch/roll/y/z轴对称设置）</p>
+<p> - 动态目标跟踪：连续扰动下的长期姿态维持任务</p>
+<p> - 未见物体泛化：相似几何但不同形态的物体测试</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> 1. <strong>精度指标（Metric 1）</strong>：10步调整后的6DOF误差</p>
+<p> - 位置误差：δ_pos = \|\|p - p_g\|\|₂</p>
+<p> - 角度误差：δ_rot = 2arccos(\|⟨Q, Q_g⟩\|)</p>
+<p> 2. <strong>效率指标（Metric 2）</strong>：达到精度阈值的步数</p>
+<p> - 位置阈值：ε_pos = 0.005m</p>
+<p> - 角度阈值：ε_rot = 0.05rad</p>
+<p> 3. <strong>成功率（Metric 3）</strong>：R=5次试验的成功率</p>
+<p> - 成功判定：同时满足δ_pos ≤ ε_pos、δ_rot ≤ ε_rot，且调整步数≤S_max</p>
+<ul><li><strong>关键结论</strong>：政策B在所有指标上显著优于政策A，最佳组合实现1.1mm位置精度/0.016rad角度精度，100%成功率。16种组合均达毫米级位置精度，最优姿态误差0.009rad。动态场景验证稳定性，未见物体在滚转维度表现出较好泛化性。</li></ul>
+
+<p>> 注：论文方法在当前对象范围内有效，未来需融合视觉信息突破单对象限制。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

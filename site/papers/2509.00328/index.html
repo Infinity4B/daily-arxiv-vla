@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mechanistic interpretability for steering vision-language-action models - VLA 论文精选</title>
+    <meta name="description" content="VLA模型结合视觉和语言信息实现机器人动作控制，但缺乏类似传统机器人管道的可解释性机制。本研究将机械可解释性技术应用于VLA模型，通过分析模型内部激活单元的语义含义，实现无需微调的实时行为引导。核心创新在于提取FFN层的语义价值向量（value vectors），识别与动作选择因果相关的控制方向（如速度、方向），并将其作为实时控制接口激活。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.00328">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Mechanistic interpretability for steering vision-language-action models</h1>
+          <div class="detail-meta">2025-08-30 · <a href="http://arxiv.org/abs/2509.00328" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.00328" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.00328</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>加州大学伯克利分校电气工程与计算机科学系（University of California, Berkeley, Department of Electrical Engineering and Computer Sciences）</p>
+<h2 class="section-title">论文概述</h2>
+<p>VLA模型结合视觉和语言信息实现机器人动作控制，但缺乏类似传统机器人管道的可解释性机制。本研究将机械可解释性技术应用于VLA模型，通过分析模型内部激活单元的语义含义，实现无需微调的实时行为引导。核心创新在于提取FFN层的语义价值向量（value vectors），识别与动作选择因果相关的控制方向（如速度、方向），并将其作为实时控制接口激活。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>语义保留发现</strong>：VLA模型在训练中保留大量预训练语义概念（<25% FFN神经元用于动作预测，其余维持语义结构）</li><li><strong>因果关联验证</strong>：验证内部概念与动作的因果关系（如"慢"概念直接导致末端执行器缓慢移动）</li><li><strong>实时控制接口</strong>：首次实现基于内部表征的零样本行为控制方法，突破微调/环境交互依赖</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>价值向量提取</strong></li></ol>
+<p> - 分析FFN输出层权重矩阵<code>Wθ</code>，提取独立于输入的固定值向量<code>wθ(i)</code>（式1-2）</p>
+<p> - 将值向量投影至标记空间，通过标记概率分布赋予语义含义</p>
+
+<ol><li><strong>概念激活引导</strong></li></ol>
+<p> - 通过kNN聚类或人工选择识别语义对齐的神经元簇<code>𝒮</code>（如"up"、"slow"）</p>
+<p> - 在推理时覆盖该簇的激活值为固定标量<code>α</code>（式3-4）</p>
+<p> - 剩余神经元保持原始激活，生成控制残差<code>Δx</code>影响最终动作标记分布</p>
+
+<ol><li><strong>跨框架实现</strong></li></ol>
+<p> - PyTorch框架：在OpenVLA的FFN下投影层应用前向钩子</p>
+<p> - JAX框架：修改π₀的FFN计算图插入引导算子<code>I𝒮^α</code></p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>基础预训练数据</strong>：Open X-Embodiment跨平台机器人数据集（OpenVLA/π₀预训练）</li><li><strong>模拟评估</strong>：LIBERO-Long长程操作基准（10项任务，OpenVLA 7B模型）</li><li><strong>实物实验</strong>：DROID平台数据用于π₀-FAST微调（LoRA方法，5000步）</li><li><strong>硬件资源</strong>：</li></ul>
+<p> - 模拟：NVIDIA H100 GPU</p>
+<p> - 实物：NVIDIA A4500 GPU + UR5机械臂（配Robotiq 2F-140夹爪）</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<h2 class="section-title">模拟实验（OpenVLA/LIBERO）</h2>
+<ul><li><strong>环境</strong>：10个长程操作任务（抓取、放置、器具操作等）</li><li><strong>干预参数</strong>：对比"快/慢"与"上"概念簇，测试不同层深度注入效果</li><li><strong>指标</strong>：</li></ul>
+<p> - 末端执行器位移变化率（平均提升27.73%，最大148.54%）</p>
+<p> - 统计显著性（配对t检验，p<0.001）</p>
+<p> - 效应大小（Cohen's d范围：-0.091至-1.419）</p>
+<h2 class="section-title">实物实验（π₀-FAST/UR5）</h2>
+<ul><li><strong>任务场景</strong>：</li></ul>
+<p> - 低/高运输：玩具企鹅提升高度控制（75演示轨迹）</p>
+<p> - 慢/快运输：玩具海豹速度控制（120演示轨迹）</p>
+<ul><li><strong>基线对比</strong>：无干预/提示词修改/随机向量干预</li><li><strong>指标</strong>：</li></ul>
+<p> - 低高组：末端最大高度分布（箱线图统计）</p>
+<p> - 慢快组：平均位移/累积位移时间序列</p>
+<ul><li><strong>关键发现</strong>：</li></ul>
+<p> - 低/慢干预显著降低轨迹幅度（p<0.05）</p>
+<p> - 高/快干预效果接近基线（模型已内建高速行为）</p>
+<p> - 语义引导优于随机干预与提示词修改</p>
+
+<p>> <strong>注</strong>：语义方向在不同任务/模型间存在迁移性差异，概念簇（如"小心"vs"卡顿"）可能引发混淆行为。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

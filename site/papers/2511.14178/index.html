@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Towards Deploying VLA without Fine-Tuning: Plug-and-Play Inference-Time VLA Policy Steering via Embodied Evolutionary Diffusion - VLA 论文精选</title>
+    <meta name="description" content="本文提出了一种名为VLA-Pilot的即插即用推理时策略引导方法，旨在解决预训练的视觉-语言-动作（VLA）模型在下游任务部署时性能下降的问题。传统方法依赖微调，但其成本高昂且不切实际。VLA-Pilot无需任何额外的策略微调或数据收集，即可实现预训练VLA的零样本部署。该方法通过利用多模态大语言模型（MLLM）进行开放式推理以获得引导目标，并采用进化扩散算法优化动作提议，从而提升策略的任务对齐能" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.14178">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Towards Deploying VLA without Fine-Tuning: Plug-and-Play Inference-Time VLA Policy Steering via Embodied Evolutionary Diffusion</h1>
+          <div class="detail-meta">2025-11-18 · <a href="http://arxiv.org/abs/2511.14178" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.14178" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.14178</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>香港中文大学，香港物流机器人中心，意大利技术研究院</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了一种名为VLA-Pilot的即插即用推理时策略引导方法，旨在解决预训练的视觉-语言-动作（VLA）模型在下游任务部署时性能下降的问题。传统方法依赖微调，但其成本高昂且不切实际。VLA-Pilot无需任何额外的策略微调或数据收集，即可实现预训练VLA的零样本部署。该方法通过利用多模态大语言模型（MLLM）进行开放式推理以获得引导目标，并采用进化扩散算法优化动作提议，从而提升策略的任务对齐能力。实验在两个不同的机器人实体上的六个真实世界操作任务中验证了该方法的有效性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出VLA-Pilot，一种即插即用的推理时策略引导方法，实现了冻结VLA策略在不同下游任务和机器人实体上的零样本泛化，无需额外的策略微调或数据收集。</li><li>提出一种具身推理引导的进化扩散策略，该策略联合推断广义的引导目标并优化动作提议，以增强任务对齐。</li><li>在六个真实世界操作任务和两种不同机器人实体上进行了广泛实验。结果表明，VLA-Pilot将两个预训练VLA策略的平均成功率提升了31%，显著优于所有基线方法。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>VLA-Pilot包含三个核心步骤：</p>
+<ol><li><strong>引导目标推理</strong>：利用一个名为“具身策略引导思维链”（EPS-CoT）的模块，通过多模态大语言模型（如GPT-4o）对任务上下文进行结构化推理。该推理过程包括引导目标确认、场景理解、具身增强（利用DINO和SAM等视觉基础模型提取空间关键点）以及生成任务对齐的奖励函数代码，作为黑盒评分函数。</li><li><strong>动作提议优化</strong>：引入一种进化扩散算法。首先从预训练VLA策略中采样一组初始动作提议。然后进行迭代进化搜索，在每次迭代中：使用推理出的奖励函数对动作提议进行评分；根据分数选择精英提议；对精英提议应用截断的扩散-去噪过程（即添加少量噪声后，再利用VLA策略自身的噪声预测器去噪），以在保持动作分布的同时探索和优化任务对齐的行动。</li><li><strong>迭代引导优化</strong>：这是一个闭环修正机制。执行动作后，EPS-CoT模块会根据初始提议、执行的动作、执行后的任务上下文和推理历史进行反思。如果检测到引导失败，MLLM会修正奖励函数并重新启动引导过程，直至任务完成，从而提高引导的准确性和鲁棒性。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>该方法是推理时方法，本身不涉及模型训练。</p>
+<ul><li><strong>数据集</strong>：实验在六个真实世界的下游操作任务上进行，包括四个简单的单臂任务（Mug Handling, Bag Handling, Basket Flipping, Table Bussing）和两个复杂的多臂任务。这些任务分为分布内（ID）和分布外（OOD）两种场景以评估泛化能力。</li><li><strong>训练资源</strong>：无需为VLA-Pilot本身进行训练。实验中使用了预训练的VLA模型（DiVLA, RDT-1B）作为基础策略，并使用GPT-4o作为推理时的MLLM。评估使用的物理机器人硬件包括DOBOT X-Trainer双臂系统和Franka Panda机械臂。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：真实机器人环境。主要实验平台是DOBOT X-Trainer双臂系统，包含两个6自由度的Nova2机械臂和1自由度夹爪，配备三个英特尔实感摄像头。跨实体泛化实验在Franka Panda机械臂上进行。</li><li><strong>评估指标</strong>：</li></ul>
+<p> 1. <strong>操作成功率</strong>：在策略引导后，成功执行下游操作的机器人动作所占的比例。</p>
+<p> 2. <strong>引导目标一致性</strong>：被选中的动作提议中，与预期引导目标对齐的比例。</p>
+<p> 每个方法和任务场景进行20次试验，报告平均性能。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Selective Perception for Robot: Task-Aware Attention in Multimodal VLA - VLA 论文精选</title>
+    <meta name="description" content="针对机器人多模态VLA模型中存在的静态融合问题，提出一种受人类主动感知启发的动态信息融合框架，以提升模型效率和鲁棒性 通过引入轻量级的Camera Router架构，实时分析任务提示和腕部摄像头观测，预测多个相机视图的任务相关性，并条件性地衰减低效用视图的计算 旨在解决机器人控制环境中多模态传感器信息冗余、计算开销大以及任务无关信息作为噪声干扰的问题" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.15543">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Selective Perception for Robot: Task-Aware Attention in Multimodal VLA</h1>
+          <div class="detail-meta">2026-02-17 · <a href="http://arxiv.org/abs/2602.15543" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.15543" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.15543</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>作者未明确标注所属机构，但根据作者姓名（如 Young-Chae Son, Jung-Woo Lee 等）推测可能与韩国相关研究机构有关</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>针对机器人多模态<strong>VLA</strong>模型中存在的静态融合问题，提出一种受人类主动感知启发的动态信息融合框架，以提升模型效率和鲁棒性</li><li>通过引入轻量级的<strong>Camera Router</strong>架构，实时分析任务提示和腕部摄像头观测，预测多个相机视图的任务相关性，并条件性地衰减低效用视图的计算</li><li>旨在解决机器人控制环境中多模态传感器信息冗余、计算开销大以及任务无关信息作为噪声干扰的问题</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出<strong>上下文感知的路由器与门控机制</strong>：一种基于腕部摄像头和语言提示输入，实时预测模态重要性的动态路由器</li><li>展示了<strong>长时程任务中的鲁棒性</strong>：通过基于路由器的特征融合结构整合关键模态，减轻模态间干扰，在长时程操作任务上取得了比现有方法更高的成功率</li><li>建立了<strong>可扩展的VLM监督</strong>流程：利用<strong>Vision-Language Models</strong>构建自动标注流水线，为路由器训练生成标注数据，无需额外数据收集成本</li><li>实现了<strong>端到端高效训练</strong>：路由器与基于<strong>Flow Matching</strong>的VLA策略网络集成，可在机器人微调期间与VLA模型一同训练，无需额外数据</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>核心是<strong>Camera Router</strong>架构：该模块以腕部摄像头图像和任务提示作为输入，通过注意力池化和平均池化提取特征，再经MLP和Softmax层输出对其他视图（如外部、热感、触觉摄像头）的重要性权重</li><li>创新技术包括<strong>动态门控</strong>：利用路由器预测的权重和学习到的缩放参数，对原始特征进行加权，强调任务相关视觉信息，衰减低重要性视图</li><li>采用<strong>不平衡路由学习</strong>：为解决稀疏标签的数据不平衡问题，使用<strong>Focal Loss</strong>训练路由器，聚焦于困难样本</li><li>引入<strong>VLM自动标注流水线</strong>：利用<strong>Qwen3-VL</strong>模型，结合历史感知提示策略，分析视频片段并自动生成摄像头激活标签，为路由器提供监督信号</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用自收集的<strong>机器人操作数据集</strong>：每个任务包含50条专家演示轨迹，数据包括机器人状态、动作、多模态图像和任务提示</li><li>视觉数据来自多传感器：腕部摄像头（<strong>Intel RealSense D435</strong>）、外部摄像头（<strong>Intel RealSense L515</strong>）、热感相机（<strong>ThermoEye TMC256B</strong>）、触觉传感器（<strong>Meta Digit</strong>）</li><li>模型基础为预训练的<strong>VLA策略</strong>，并采用<strong>LoRA</strong>进行微调以保持先验知识并提高训练效率</li><li>自动标注使用<strong>Qwen3-VL-30B-A3B-Instruct</strong>模型</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境</strong>：在三个真实世界机器人操作任务上进行测试：<strong>电池分拣</strong>（视觉+热感）、<strong>电线选择</strong>（视觉+触觉）、<strong>阀门操作</strong>（视觉+热感+触觉）</li><li><strong>主要指标</strong>：子任务成功率</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 提出的方法（以腕部摄像头+提示作为路由器输入）在三个任务上的平均成功率达到<strong>83.33%</strong>，显著优于仅使用多模态输入（10%）和静态融合基线方法</p>
+<p> - 路由器输入配置比较表明，<strong>腕部摄像头+任务提示</strong>的组合效果最佳</p>
+<p> - 在长时程序列任务中，该方法能维持高性能，显示了其鲁棒性</p>
+<p> - <strong>VLM自动标注</strong>的性能（83.33%平均成功率）与<strong>人工标注</strong>（86.67%）相当，验证了其有效性</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

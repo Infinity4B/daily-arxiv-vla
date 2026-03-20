@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FlowVLA: Thinking in Motion with a Visual Chain of Thought - VLA 论文精选</title>
+    <meta name="description" content="当前视觉-语言-动作（Vision-Language-Action, VLA）模型常以“下一帧预测”作为世界模型的预训练范式，直接从当前帧预测未来帧。这种跳过显式物理推理的方式容易导致“像素复制陷阱”，使预测在物理上不可信，并在长时序中不稳定。为解决该问题，论文提出“视觉思维链”（Visual Chain of Thought, Visual CoT），将预测分解为显式的“先推理运动，再生成外观”" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.18269">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">FlowVLA: Thinking in Motion with a Visual Chain of Thought</h1>
+          <div class="detail-meta">2025-08-25 · <a href="http://arxiv.org/abs/2508.18269" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.18269" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.18269</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>未明确标注单位，仅在作者列表中出现两个上标标记；推断主要来自多机构合作，具体单位信息未在页面中明确给出。</p>
+<h2 class="section-title">论文概述</h2>
+<p>当前视觉-语言-动作（Vision-Language-Action, VLA）模型常以“下一帧预测”作为世界模型的预训练范式，直接从当前帧预测未来帧。这种跳过显式物理推理的方式容易导致“像素复制陷阱”，使预测在物理上不可信，并在长时序中不稳定。为解决该问题，论文提出“视觉思维链”（Visual Chain of Thought, Visual CoT），将预测分解为显式的“先推理运动，再生成外观”的结构化过程，具体采用v_t→f_t→v_{t+1}的因果链条，并以光流f_t作为中间运动表示。论文据此构建FlowVLA：一个两阶段的统一自回归Transformer，第一阶段用Visual CoT进行世界模型预训练，第二阶段进行策略微调以生成动作块。FlowVLA在LIBERO、SimplerEnv等仿真基准以及AgileX Cobot真实机器人平台上实现了更物理合理、更高效的策略学习，并提升样本效率和收敛速度。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>指出下一帧预测范式的根本缺陷（像素复制陷阱、缺乏物理因果性），提出“视觉思维链”（Visual CoT）作为世界模型学习新范式。</li><li>通过v_t→f_t→v_{t+1}显式将运动推理与外观生成解耦，并在预训练中引入强归纳偏置以促进动态理解。</li><li>设计FlowVLA：单一统一自回归Transformer，使用共享的矢量量化（VQ）分词器将RGB帧与光流映射为同一词表，实现端到端的跨模态推理。</li><li>两阶段训练：阶段一以Visual CoT进行大规模视频的世界模型预训练；阶段二微调为策略模型以生成动作块，显著缩小预训练-下游任务的领域鸿沟。</li><li>在仿真和真实平台取得最优或大幅领先的性能，并验证样本效率、收敛速度与长时序规划能力提升。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>视觉思维链（Visual CoT）</li></ul>
+<p> - 将建模目标从P(v_{t+1}\|v_t, L)转化为联合建模P(v_{t+1}, f_t\|v_t, L)，并因式分解为两步：</p>
+<p> 1) 运动推理：P(f_t\|v_t, L)，要求显式预测光流f_t；</p>
+<p> 2) 外观生成：P(v_{t+1}\|f_t, v_t, L)，在给定光流条件下生成下一帧。</p>
+<p> - 将学习从像素回归重构为结构化物理推理，为策略学习提供与“如何动”对齐的中间表示。</p>
+<ul><li>两阶段训练框架</li></ul>
+<p> - 阶段一：世界模型预训练（Visual CoT）</p>
+<p> - 输入序列构造为交错的出现（帧）与运动（光流）token：S_wm = {L_instr, v_0, f_0, v_1, f_1, …, v_T, f_T}。</p>
+<p> - 统一分词：用同一VQ-GAN分词器将RGB帧与光流映射为离散token；光流由RAFT计算，并通过VideoJAM方式将二维位移编码为3通道RGB图，再进行非线性归一化以保留细微运动。</p>
+<p> - 训练目标：L_WM为对flow token与next-frame token的交叉熵损失之和（通常权重λ=1），以标准的“下一token预测”优化，交错预测f_t与v_{t+1}。</p>
+<p> - 阶段二：策略微调（动作预测）</p>
+<p> - 权重初始化自预训练世界模型。</p>
+<p> - 输入序列为S_policy = {L_instr, v_0, a_0, v_1, a_1, …}；动作按FAST方法离散化为token。</p>
+<p> - 训练目标：L_policy仅在动作token上计算交叉熵，使模型将已学到的视觉-动力知识聚焦于行动生成。</p>
+<ul><li>统一与简洁性</li></ul>
+<p> - 无需引入运动特定的网络分支：光流与帧共享同一分词器，单一自回归Transformer即可学习跨模态交错序列，兼具参数与结构效率。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据与基准</li></ul>
+<p> - 仿真基准：LIBERO（空间/目标/长期组合四套Suite）、SimplerEnv-WidowX（评估域移鲁棒性：光照、纹理、视角变化）。</p>
+<p> - 真实机器人：AgileX Cobot双机械臂平台，包含腕部与前向摄像头；设计四项单臂与双臂任务，采集每任务50–200条人类遥操作演示用于微调。</p>
+<ul><li>预训练与微调设置（典型）</li></ul>
+<p> - 基于Emu3（约8.5B参数）架构；光流由RAFT预计算；分词采用VQ-GAN。</p>
+<p> - LIBERO：世界模型预训练约5k步（batch=16）；策略微调约5k步（batch=96）。</p>
+<p> - SimplerEnv：预训练约12k步（batch=32）；微调约20k步（batch=128）。</p>
+<ul><li>实现细节</li></ul>
+<p> - 光流转换：2通道(u, v)映射为3通道RGB，方向→色相，速度→饱和度与明度；非线性归一化保留细微运动并避免饱和。</p>
+<p> - 损失平衡：L_WM中λ=1，交错预测flow与帧；动作token化遵循FAST。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境</li></ul>
+<p> - LIBERO四套Suite（空间泛化、目标泛化、目标改变、长期组合）以及SimplerEnv-WidowX域移场景。</p>
+<p> - 真实AgileX Cobot平台的双臂操作任务。</p>
+<ul><li>评估指标</li></ul>
+<p> - 任务成功率（%）：在LIBERO与SimplerEnv的仿真结果以及真实机器人任务上进行报告，通常每任务多次试验（真实实验每任务25次）以保证统计可靠性。</p>
+<p> - 收敛与样本效率：通过成功率和训练步数曲线，对比FlowVLA与基线（如UniVLA）在全数据与低数据（50%）条件下的收敛速度与最终性能。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

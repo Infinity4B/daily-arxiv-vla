@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unified Vision-Language-Action Model - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了UniVLA，一个统一的视觉-语言-动作（VLA）模型。与以往依赖外部视觉编码器且仅输出动作的VLA方法不同，UniVLA将视觉、语言和动作信号表示为离散令牌序列，并在统一的自回归框架中进行建模。这种统一的多模态范式支持灵活的多模态任务学习，特别是从大规模视频数据中学习。通过在后训练阶段结合世界模型，UniVLA能够从视频中捕捉因果动态，从而有效迁移到下游的策略学习，尤其是在长视野任务" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2506.19850">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Unified Vision-Language-Action Model</h1>
+          <div class="detail-meta">2025-06-24 · <a href="http://arxiv.org/abs/2506.19850" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2506.19850" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2506.19850</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+<h2 class="section-title">论文研究单位</h2>
+<p>CASIA, BAAI, THU, HKISI</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了UniVLA，一个统一的视觉-语言-动作（VLA）模型。与以往依赖外部视觉编码器且仅输出动作的VLA方法不同，UniVLA将视觉、语言和动作信号表示为离散令牌序列，并在统一的自回归框架中进行建模。这种统一的多模态范式支持灵活的多模态任务学习，特别是从大规模视频数据中学习。通过在后训练阶段结合世界模型，UniVLA能够从视频中捕捉因果动态，从而有效迁移到下游的策略学习，尤其是在长视野任务中。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了UniVLA，这是第一个将视觉、语言和动作编码为共享词汇表中的离散令牌，并通过自回归序列学习联合建模的统一VLA模型。</li><li>统一的序列建模框架支持广泛的多模态任务。通过研究不同的后训练策略，证明了世界模型可以有效地从视频数据中学习时间动态，显著提升下游策略学习的性能和效率，尤其是在长视野和分布外场景中。</li><li>模型在多个模拟基准测试中取得了最先进的性能，并支持大规模视频训练的开源VLA方法。进一步探索了其在空间推理和视频预测等不同模态的能力，并展示了其在自动驾驶场景中的有效迁移，突显了其在通用具身智能方面的潜力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>统一多模态模型</strong>：视觉、语言和动作信号被转换为离散令牌，并使用共享词汇表进行自回归建模。图像通过VQ分词器进行离散化，动作通过FAST分词器使用离散余弦变换（DCT）进行编码。训练目标是标准的下一个令牌预测任务，使用交叉熵损失。</li><li><strong>统一多模态序列建模</strong>：采用基于马尔可夫链的自回归序列建模方法，其中观察和动作交错排列。这自然地包含了因果依赖关系，使模型能够对时间动态进行推理。</li></ol>
+<p> - <strong>世界模型（后训练）</strong>：通过仅对视觉令牌进行监督来学习环境的动态，使模型能够生成给定指令和观察状态条件的视觉预测。</p>
+<p> - <strong>策略学习（微调）</strong>：在交错格式中，采用两阶段训练策略。模型首先使用视觉语言（VL）对齐的检查点进行初始化，后训练阶段利用大规模机器人中心视频数据集来研究不同后训练策略对下游策略学习的影响，微调阶段则专注于动作学习以细化任务特定行为。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：</li></ol>
+<p> - CALVIN：用于评估长视野、语言条件机器人操作的模拟基准。</p>
+<p> - LIBERO：终身机器人操作的综合套件，包含四个任务套件。</p>
+<p> - SimplerEnv：用于评估在真实世界视频数据上训练的模型的迁移性和泛化能力的模拟基准。</p>
+<ol><li><strong>训练资源</strong>：</li></ol>
+<p> - 模型采用8.5B参数的纯自回归Transformer架构。</p>
+<p> - 后训练阶段使用622K视频，训练30K步，批量大小为64。</p>
+<p> - 微调阶段：CALVIN基准使用A100 GPU，批量大小192，训练8k步；LIBERO基准使用A100 GPU，批量大小192，训练8k步；SimplerEnv基准使用A100 GPU，批量大小128，训练20k步。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：</li></ol>
+<p> - CALVIN模拟环境：评估长视野任务，包括ABC→D和ABCD→D设置。</p>
+<p> - LIBERO模拟环境：评估空间推理、对象级泛化、目标条件行为和长视野组合任务。</p>
+<p> - SimplerEnv模拟环境：评估在WidowX和Google Robot平台上的迁移性和泛化能力。</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> - CALVIN：平均连续完成的子任务数（Avg. Len ↑）。</p>
+<p> - LIBERO：每个任务套件的平均成功率（%），在500个剧集上进行评估。</p>
+<p> - SimplerEnv：各种操作任务的平均成功率（%），包括抓取成功率（Grasp）和整体成功率。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VOTE: Vision-Language-Action Optimization with Trajectory Ensemble Voting - VLA 论文精选</title>
+    <meta name="description" content="论文提出了VOTE（Vision-Language-Action Optimization with Trajectory Ensemble Voting）框架，旨在优化视觉-语言-动作（VLA）模型的训练和推理过程。该框架通过引入特殊令牌和集成投票策略，解决了现有VLA模型计算开销大和动作利用不足的问题，实现了更快的推理速度和更高的任务成功率，同时降低了训练成本。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2507.05116">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">VOTE: Vision-Language-Action Optimization with Trajectory Ensemble Voting</h1>
+          <div class="detail-meta">2025-07-07 · <a href="http://arxiv.org/abs/2507.05116" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2507.05116" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2507.05116</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>东北大学和EmbodyX公司。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了VOTE（Vision-Language-Action Optimization with Trajectory Ensemble Voting）框架，旨在优化视觉-语言-动作（VLA）模型的训练和推理过程。该框架通过引入特殊令牌和集成投票策略，解决了现有VLA模型计算开销大和动作利用不足的问题，实现了更快的推理速度和更高的任务成功率，同时降低了训练成本。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出轻量级VLA训练框架，通过单个特殊令牌替代多个动作令牌，显著减少生成令牌数量，降低训练和推理成本。</li><li>设计集成投票策略，结合当前和历史动作预测，通过投票机制选择最终动作，提高动作利用率和任务成功率。</li><li>实验表明，该方法在多个基准上达到最优性能，推理速度比OpenVLA快39倍，边缘设备吞吐量达46 Hz，具有实际部署潜力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>训练框架：在指令序列末尾插入特殊令牌<code><ACT></code>，VLA模型仅生成该令牌而非多个动作令牌。其隐藏状态通过瓶颈式MLP动作头直接预测连续动作块，避免顺序解码。训练损失结合令牌级交叉熵和动作级L1损失，权重分别为0.01和0.99。</p>
+<p>集成投票：推理时，收集当前及过去K步的动作预测。计算各历史动作与当前动作的余弦相似度，按阈值0.5分为相似集<code>M</code>和不相似集<code>N</code>。选择票数更多的集合，取平均作为最终动作。若当前预测获票少则被忽略，优先历史一致预测。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：SimplerEnv（使用BridgeData V2和Fractal数据微调）和LIBERO基准。</p>
+<p>训练资源：SimplerEnv训练在4块H100 GPU上，全局批量大小80，微调60K步；LIBERO训练在2块H100 GPU上，批量大小40。优化器为AdamW，学习率1e-4，LoRA秩32，α=16。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：NVIDIA RTX A6000和H100 GPU进行模拟评估；边缘设备NVIDIA Jetson Orin测试部署性能。</p>
+<p>评估指标：任务成功率（SR）、推理延迟、吞吐量及GPU内存占用。SimplerEnv中每个任务重复24次试验，LIBERO报告各任务套件平均SR。</think></p>
+<h2 class="section-title">论文研究单位</h2>
+<p>东北大学和EmbodyX公司。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了VOTE（Vision-Language-Action Optimization with Trajectory Ensemble Voting）框架，旨在优化视觉-语言-动作（VLA）模型的训练和推理过程。该框架通过引入特殊令牌和集成投票策略，解决了现有VLA模型计算开销大和动作利用不足的问题，实现了更快的推理速度和更高的任务成功率，同时降低了训练成本。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出轻量级VLA训练框架，通过单个特殊令牌替代多个动作令牌，显著减少生成令牌数量，降低训练和推理成本。</li><li>设计集成投票策略，结合当前和历史动作预测，通过投票机制选择最终动作，提高动作利用率和任务成功率。</li><li>实验表明，该方法在多个基准上达到最优性能，推理速度比OpenVLA快39倍，边缘设备吞吐量达46 Hz，具有实际部署潜力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>训练框架：在指令序列末尾插入特殊令牌<code><ACT></code>，VLA模型仅生成该令牌而非多个动作令牌。其隐藏状态通过瓶颈式MLP动作头直接预测连续动作块，避免顺序解码。训练损失结合令牌级交叉熵和动作级L1损失，权重分别为0.01和0.99。</p>
+<p>集成投票：推理时，收集当前及过去K步的动作预测。计算各历史动作与当前动作的余弦相似度，按阈值0.5分为相似集<code>M</code>和不相似集<code>N</code>。选择票数更多的集合，取平均作为最终动作。若当前预测获票少则被忽略，优先历史一致预测。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：SimplerEnv（使用BridgeData V2和Fractal数据微调）和LIBERO基准。</p>
+<p>训练资源：SimplerEnv训练在4块H100 GPU上，全局批量大小80，微调60K步；LIBERO训练在2块H100 GPU上，批量大小40。优化器为AdamW，学习率1e-4，LoRA秩32，α=16。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：NVIDIA RTX A6000和H100 GPU进行模拟评估；边缘设备NVIDIA Jetson Orin测试部署性能。</p>
+<p>评估指标：任务成功率（SR）、推理延迟、吞吐量及GPU内存占用。SimplerEnv中每个任务重复24次试验，LIBERO报告各任务套件平均SR。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

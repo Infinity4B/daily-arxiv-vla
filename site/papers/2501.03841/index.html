@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OmniManip: Towards General Robotic Manipulation via Object-Centric Interaction Primitives as Spatial Constraints - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VL" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2501.03841">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">OmniManip: Towards General Robotic Manipulation via Object-Centric Interaction Primitives as Spatial Constraints</h1>
+          <div class="detail-meta">2025-01-07 · <a href="http://arxiv.org/abs/2501.03841" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2501.03841" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2501.03841</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>CFCS, School of CS, Peking University; PKU-AgiBot Lab; AgiBot</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了一种新颖的以物体为中心的交互表示，有效桥接了VLM的高层常识推理与底层机器人操控之间的鸿沟。</li><li>首次提出了一个规划和执行双闭环的开放词汇操控系统，且整个过程无需对VLM进行微调。</li><li>通过大量实验证明了该方法在多样化操控任务上具有强大的零样本泛化能力，并展示了其在自动化大规模仿真数据生成方面的潜力。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>该方法将复杂的机器人任务分解为多个阶段，每个阶段由带有空间约束的物体交互原语来定义。</p>
+<ol><li><strong>任务分解与原语定义</strong>：利用视觉基础模型（VFM）和VLM从指令中识别相关物体并分解任务。交互原语被定义为物体标准空间中的交互点和交互方向。空间约束则定义了主动物体与被动物体之间交互原语的距离和角度关系。</li><li><strong>原语与约束提取</strong>：首先使用单视图3D生成网络和通用6D物体姿态估计模型对物体进行网格重建和标准化。然后，通过VLM结合视觉提示定位交互点（包括可见和不可见的点），并通过LLM对沿主轴采样的交互方向进行任务相关性评分，生成一个有序的、带有约束的交互原语列表。</li><li><strong>双闭环系统</strong>：</li></ol>
+<p> - <strong>闭环规划</strong>：引入了一个基于重采样、渲染和检查的自校正机制（RRC）。系统渲染当前交互配置，交由VLM验证。根据验证结果（成功、失败或需优化），系统决定接受、尝试下一个约束或进入细化阶段进行更精细的重采样，从而有效缓解VLM的幻觉问题。</p>
+<p> - <strong>闭环执行</strong>：当空间约束确定后，任务执行被表述为一个优化问题，目标是在满足空间约束、碰撞避免和路径平滑等损失函数的条件下，计算最优的末端执行器目标姿态。通过6D姿态跟踪器实时更新姿态，形成执行闭环。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>该方法不依赖于特定任务的训练数据集，采用零样本学习方式。它利用了多种预训练模型作为组件，包括：</p>
+<ul><li>视觉语言模型（VLM）和大型语言模型（LLM）用于高层推理和验证。</li><li>Omni6DPose用于通用6D物体姿态估计。</li><li>单视图3D生成网络用于从单张图像生成物体网格。</li></ul>
+<p>实验中使用的机器人硬件包括Franka Emika和Kinova Gen3机械臂，以及各种日常物体。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：在真实世界的实验平台上进行评估，使用了Franka Emika和Kinova Gen3两种机械臂，并包含了12种不同的日常操作任务，涵盖了刚体物体操控（如倒茶、插花）和铰接物体操控（如开关抽屉）。</li><li><strong>评估指标</strong>：主要采用任务成功率作为核心量化指标。对于每个任务，记录在多次尝试中成功完成的次数，并计算总体的平均成功率。例如，在12项任务上，OmniManip的闭环版本总成功率为68.3%，显著优于其他基线方法。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

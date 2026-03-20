@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Latent Action Pretraining Through World Modeling - VLA 论文精选</title>
+    <meta name="description" content="本文提出了LAWM框架，通过世界建模从无标签视频数据中学习潜在动作表示，用于预训练模仿学习模型。该框架能够从机器人录制视频或人类操作日常物体的视频中进行自监督学习，无需依赖人工标注的动作数据。框架设计为模型无关，可以跨任务、环境和具身形态进行迁移，在LIBERO基准测试和真实世界设置中的表现优于使用真实机器人动作训练的模型和类似的预训练方法，同时更高效且适用于实际场景。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.18428">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Latent Action Pretraining Through World Modeling</h1>
+          <div class="detail-meta">2025-09-22 · <a href="http://arxiv.org/abs/2509.18428" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.18428" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.18428</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+<h2 class="section-title">论文研究单位</h2>
+
+<p>Mohamed bin Zayed University of Artificial Intelligence (MBZUAI), Abu Dhabi, UAE</p>
+<p>Alexandria University, Alexandria, Egypt</p>
+<h2 class="section-title">论文概述</h2>
+
+<p>本文提出了LAWM框架，通过世界建模从无标签视频数据中学习潜在动作表示，用于预训练模仿学习模型。该框架能够从机器人录制视频或人类操作日常物体的视频中进行自监督学习，无需依赖人工标注的动作数据。框架设计为模型无关，可以跨任务、环境和具身形态进行迁移，在LIBERO基准测试和真实世界设置中的表现优于使用真实机器人动作训练的模型和类似的预训练方法，同时更高效且适用于实际场景。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+
+<ol><li>提出LAWM框架，这是一个模型无关的框架，可以从机器人和人类视频中学习动作块表示，无需动作标签</li><li>实验表明该框架可以从人类演示和机器人操作视频中学习优于监督预训练的动作先验，且无需使用真实动作标签</li><li>使用小型模型（BAKU和Dreamerv3）的框架在LIBERO基准测试上优于使用大型模型的类似方法（villa-X）</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+
+<p>LAWM包含两个阶段：</p>
+
+<p>潜在动作预训练阶段：</p>
+<ul><li>输入包括图像帧和自然语言指令</li><li>模仿学习模型处理输入产生n个潜在动作表示</li><li>这些潜在动作与当前帧和后续n-1帧配对，输入世界模型</li><li>世界模型基于RSSM架构，包含编码器、动态模型和解码器</li><li>通过预测未来图像帧进行端到端训练，损失函数包括MSE重建损失和KL散度正则化项</li><li>学习信号来自预测视频序列中的下一帧图像</li></ul>
+
+<p>动作微调阶段：</p>
+<ul><li>预训练的模仿学习模型适配到下游机器人任务</li><li>不再使用世界模型</li><li>使用标注演示数据将观察（图像、语言指令和机器人状态）直接映射到真实动作</li><li>对BAKU采用负对数似然损失，对Diffusion Policy采用去噪扩散损失</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+
+<p>数据集：</p>
+<ul><li>BridgeData v2：60,096条轨迹，24个环境，包含拾取放置、推动、折叠等任务</li><li>Something-Something v2：220,847个人类操作日常物体的视频片段（使用其中10%用于预训练）</li><li>LIBERO基准测试：包含LIBERO-90（90个任务）和四个任务套件（Spatial、Object、Goal、Long），每个套件10个任务，每个任务50个演示样本</li><li>真实世界自定义数据集：5个任务（3个拾取放置、1个堆叠、1个移动），每个任务50个演示，使用VR控制器收集</li></ul>
+
+<p>训练资源：</p>
+<ul><li>单个A100 GPU</li><li>DreamerV3世界模型使用50M参数配置</li><li>潜在动作空间维度为7（与真实动作相同）</li><li>BAKU实验的动作块大小为10，Diffusion Policy实验为16</li><li>在BridgeData v2或Something-Something v2上预训练约30小时</li><li>在LIBERO-90上微调约24小时</li><li>在LIBERO任务套件上微调约2小时</li><li>真实世界数据集微调约20分钟</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+
+<p>评估环境：</p>
+<ul><li>LIBERO-90基准测试：90个多样化任务</li><li>LIBERO任务套件：</li></ul>
+<p> - LIBERO-Spatial：新布局下的相同任务和对象类型</p>
+<p> - LIBERO-Object：新对象类型下的相同任务和布局</p>
+<p> - LIBERO-Goal：新任务下的相同对象类型和布局</p>
+<p> - LIBERO-Long：长时域任务，包含多样化的对象、布局和背景</p>
+<ul><li>真实世界设置：6自由度Realman机器人臂，配备1自由度夹爪，双视角相机观测</li></ul>
+
+<p>评估指标：</p>
+<ul><li>成功率（Success Rate, SR）：成功试验次数占总尝试次数的百分比</li><li>每个任务进行10次评估试验</li><li>使用典型相关分析（CCA）的第一规范分量的Pearson相关系数来量化潜在动作与真实动作之间的对齐程度</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

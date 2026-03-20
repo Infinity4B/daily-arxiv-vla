@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Restoring Linguistic Grounding in VLA Models via Train-Free Attention Recalibration - VLA 论文精选</title>
+    <meta name="description" content="揭示了视觉-语言-动作（VLA）模型中存在的“语言盲区”现象，即模型在语言指令与视觉场景矛盾时，仍倾向于执行视觉上合理的动作而忽略指令语义。 提出了 ICBench 基准测试，基于 LIBERO 数据集构建，通过注入受控的分布外（OOD）指令矛盾来诊断语言-动作耦合能力。 提出了 IGAR 方法，这是一种免训练的推理时干预机制，旨在通过重新平衡注意力分布来恢复语言指令对动作生成的指导作用。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.06001">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Restoring Linguistic Grounding in VLA Models via Train-Free Attention Recalibration</h1>
+          <div class="detail-meta">2026-03-06 · <a href="http://arxiv.org/abs/2603.06001" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.06001" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.06001</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Tsinghua University</strong></li><li><strong>Singapore Management University</strong></li><li><strong>Fudan University</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>揭示了视觉-语言-动作（VLA）模型中存在的“语言盲区”现象，即模型在语言指令与视觉场景矛盾时，仍倾向于执行视觉上合理的动作而忽略指令语义。</li><li>提出了 <strong>ICBench</strong> 基准测试，基于 <strong>LIBERO</strong> 数据集构建，通过注入受控的分布外（OOD）指令矛盾来诊断语言-动作耦合能力。</li><li>提出了 <strong>IGAR</strong> 方法，这是一种免训练的推理时干预机制，旨在通过重新平衡注意力分布来恢复语言指令对动作生成的指导作用。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>识别并定义了 VLA 模型中的 <strong>语言盲区</strong> 问题，指出当前模型主要依赖视觉先验而非指令语义。</li><li>构建了包含四类指令矛盾（操作对象属性替换、目标属性增强、双重属性扰动、空间关系替换）的诊断基准 <strong>ICBench</strong>。</li><li>提出了即插即用的 <strong>Instruction-Guided Attention Recalibration (IGAR)</strong> 方法，无需重新训练或修改架构即可部署。</li><li>在模拟环境和真实机器人（<strong>Franka</strong> 机械臂）上验证了方法的有效性，成功恢复了语言接地并保持了基准性能。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>注意力汇检测：</strong> 通过隐藏状态尖峰分析，识别出获得不成比例高注意力的视觉或文本“汇”标记。</li><li><strong>接地头选择：</strong> 筛选出具有跨模态失衡特征的注意力头，这些头虽关注视觉标记但未被视觉汇完全主导。</li><li><strong>注意力重分配：</strong> 在推理过程中，按比例降低汇标记的注意力权重，并将其重新分配给未被关注的指令标记，从而增强语言指令的影响力。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>数据集：</strong> <strong>LIBERO</strong> 基准数据集，包含 Spatial、Object 和 Goal 三类任务套件，共 30 个任务。</li><li><strong>评估模型：</strong> <strong>$\pi_0$</strong>、<strong>$\pi_{0.5}$</strong> 和 <strong>OpenVLA-OFT</strong>。</li><li><strong>硬件平台：</strong> 真实世界实验使用了 <strong>Franka Research 3</strong> 机械臂和 <strong>Intel RealSense D435</strong> 相机。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估指标：</strong> 任务成功率（SR）和语言接地得分（LGS），其中 LGS 用于衡量模型对指令语义的依赖程度。</li><li><strong>基准诊断：</strong> 实验显示现有 VLA 模型在矛盾指令下成功率仍超过 90%，表现出严重的语言盲区（低 LGS）。</li><li><strong>方法效果：</strong> 应用 <strong>IGAR</strong> 后，模型在矛盾指令下的错误执行率显著降低，LGS 大幅提升（例如在 Goal 套件中提升至 59.4）。</li><li><strong>性能保持：</strong> 在正常指令下，IGAR 几乎不影响模型原本的成功率（平均变化小于 1%）。</li><li><strong>真实验证：</strong> 在真实机器人实验中，IGAR 成功阻止了由不一致指令触发的错误操作，将“虚假成功”转变为“应得的失败”。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AsyncVLA: An Asynchronous VLA for Fast and Robust Navigation on the Edge - VLA 论文精选</title>
+    <meta name="description" content="提出 AsyncVLA，一个用于机器人导航的异步控制框架，旨在解决大型视觉-语言-动作（VLA）模型因计算成本高导致的推理延迟问题。 通过结构化解耦，将语义推理（远程大模型）与反应式执行（车载轻量模型）分离，以在高延迟（可达6秒）的动态环境中实现快速、鲁棒的导航。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.13476">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">AsyncVLA: An Asynchronous VLA for Fast and Robust Navigation on the Edge</h1>
+          <div class="detail-meta">2026-02-13 · <a href="http://arxiv.org/abs/2602.13476" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.13476" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.13476</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>University of California, Berkeley</strong></li><li><strong>Toyota Motor North America</strong></li><li><strong>Princeton University</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>AsyncVLA</strong>，一个用于机器人导航的异步控制框架，旨在解决大型视觉-语言-动作（VLA）模型因计算成本高导致的推理延迟问题。</li><li>通过结构化解耦，将语义推理（远程大模型）与反应式执行（车载轻量模型）分离，以在高延迟（可达6秒）的动态环境中实现快速、鲁棒的导航。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>AsyncVLA</strong> 框架，包含一个运行在远程工作站的大型基础VLA（<strong>OmniVLA</strong>）和一个在机器人车载控制器上运行、仅76M参数的轻量级 <strong>Edge Adapter</strong>。</li><li>设计了一种<strong>轨迹重加权训练策略</strong>，通过自动识别并上采样训练数据中需要反应式行为（如避障）的片段，提升了系统对动态环境的适应能力。</li><li>提出了一种<strong>端到端的微调协议</strong>，通过两阶段训练（先训练Edge Adapter，再联合微调）更好地对齐异步的“慢推理”和“快执行”策略流。</li><li>在真实世界的视觉导航任务中进行了全面评估，证明了AsyncVLA在存在网络和推理延迟的情况下，比最先进的基线方法成功率高出<strong>40%</strong>。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>架构基于<strong>分层控制思想</strong>：一个慢速、强大的 <strong>OmniVLA（>8B参数）</strong> 作为外环提供高级语义引导，一个快速的 <strong>Edge Adapter（76M参数）</strong> 作为内环基于最新观察调整动作。</li><li><strong>Edge Adapter</strong> 是一个小型ViT网络，接收VLA压缩后的动作令牌嵌入、当前图像以及延迟图像（用于感知环境变化），并输出高频动作序列。</li><li>关键技术包括：使用<strong>Token投影器</strong>压缩VLA输出以高效传输；在训练中引入<strong>随机延迟</strong>和<strong>动态交互数据上采样</strong>，迫使模型学会处理过时信息并适应动态变化。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集混合了多个公开导航数据集：<strong>GNM数据集</strong>（包含RECON、CoryHall等）、<strong>LeLaN数据集</strong>（野外视频和语言导航数据）以及 <strong>SACSoN (HuRoN)数据集</strong>（包含行人的动态场景）。</li><li>基础VLA <strong>OmniVLA</strong> 参数量超过<strong>8.26B</strong>，轻量级 <strong>Edge Adapter</strong> 参数量为<strong>76M</strong>。</li><li>训练使用<strong>5块NVIDIA H200 GPU</strong>。推理时，大VLA部署在配备<strong>NVIDIA RTX 4090</strong>的工作站，Edge Adapter部署在机器人车载的<strong>NVIDIA Jetson Orin</strong>上。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境</strong>：在真实世界、存在静态障碍和动态行人干扰的室内外环境中，测试了<strong>2D位姿条件导航</strong>和<strong>语言条件导航</strong>任务。</li><li><strong>主要评估指标</strong>：成功率（SR）、到达目标时间、与静态/动态障碍物的碰撞次数、语言指令遵循率。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>AsyncVLA</strong> 在位姿导航任务中取得<strong>85%</strong>的成功率，显著优于<strong>OmniVLA（45%）</strong> 和<strong>OmniVLA-edge（25%）</strong>。</p>
+<p> - 即使在人为引入高达<strong>5秒</strong>的工作站延迟下，AsyncVLA性能下降平缓，而基线模型性能急剧恶化。</p>
+<p> - 端到端训练至关重要，消融实验（Ours without E2E）成功率降至25%。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

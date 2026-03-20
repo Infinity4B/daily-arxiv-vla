@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DiT4DiT: Jointly Modeling Video Dynamics and Actions for Generalizable Robot Control - VLA 论文精选</title>
+    <meta name="description" content="论文提出 DiT4DiT，一个端到端的视频-动作模型，旨在解决现有视觉-语言-动作模型过度依赖静态图像文本预训练、缺乏对物理动力学建模的问题。 核心研究目标是将视频生成模型作为机器人策略学习的基础，通过联合建模视频动态和动作预测，实现更具泛化性的机器人控制。 论文验证了视频生成可以作为有效的代理训练目标，为机器人控制提供了一种更高效、可扩展的学习范式。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.10448">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">DiT4DiT: Jointly Modeling Video Dynamics and Actions for Generalizable Robot Control</h1>
+          <div class="detail-meta">2026-03-11 · <a href="http://arxiv.org/abs/2603.10448" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.10448" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.10448</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Mondo Robotics</strong></li><li><strong>HKUST(GZ)</strong></li><li><strong>HKUST</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出 <strong>DiT4DiT</strong>，一个端到端的视频-动作模型，旨在解决现有视觉-语言-动作模型过度依赖静态图像文本预训练、缺乏对物理动力学建模的问题。</li><li>核心研究目标是将视频生成模型作为机器人策略学习的基础，通过联合建模视频动态和动作预测，实现更具泛化性的机器人控制。</li><li>论文验证了视频生成可以作为有效的代理训练目标，为机器人控制提供了一种更高效、可扩展的学习范式。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>Dual-DiT</strong> 架构，将视频扩散Transformer与动作扩散Transformer在统一的级联框架中耦合。</li><li>设计了 <strong>双流匹配目标</strong> 与非对称三时间步方案，实现了视频与动作生成过程的联合优化。</li><li>通过大规模实验证明，视频生成作为代理目标，能将样本效率提升超过 <strong>10倍</strong>，收敛速度提升高达 <strong>7倍</strong>。</li><li>在模拟和真实世界基准上取得了最先进的结果，并在真实人形机器人上展示了卓越的零样本泛化能力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>模型核心由 <strong>Video DiT</strong> 和 <strong>Action DiT</strong> 两个模块组成。Video DiT 使用预训练的 <strong>Cosmos-Predict2.5-2B</strong> 作为骨干，通过前向钩子机制从视频去噪过程中间层提取特征作为视觉条件。</li><li>Action DiT 基于 <strong>GR00T-N1</strong> 改编，通过交叉注意力机制融合来自Video DiT的视觉特征和机器人本体状态，预测动作轨迹。</li><li>创新性地提出了三时间步方案：视频生成时间步 \(\tau_v\) 用于完整轨迹学习，动作时间步 \(\tau_a\) 采用Beta分布采样聚焦关键控制阶段，特征提取时间步 \(\tau_f\) 固定以确保稳定的视觉条件。</li><li>训练采用联合流匹配损失，同时优化视频预测和动作推断，使策略直接建立在生成式视觉动力学之上。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>模拟实验数据集：<strong>LIBERO</strong> 基准（500条轨迹/任务），<strong>RoboCasa-GR1</strong> 桌面基准（1000条轨迹/任务，共24任务）。</li><li>真实世界实验数据集：在 <strong>Unitree G1</strong> 人形机器人上采集的7个家庭操作任务数据（200条轨迹/任务）。</li><li>模型规模：视频骨干约 <strong>20亿</strong> 参数，与对比的 <strong>Qwen3-2B</strong> VLM参数量相当。</li><li>训练细节：实验使用真实G1任务数据微调，预训练数据量仅为 <strong>GR00T-N1.5</strong> 官方数据的约 <strong>15%</strong>。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估基准包括模拟环境（<strong>LIBERO</strong> 和 <strong>RoboCasa-GR1</strong>）和真实世界（<strong>Unitree G1</strong> 机器人）。</li><li>主要评估指标为任务成功率。</li><li>关键结果：</li></ul>
+<p> - 在 <strong>LIBERO</strong> 基准上取得 <strong>98.6%</strong> 的平均成功率，超越 <strong>π0.5</strong>、<strong>CogVLA</strong> 等模型。</p>
+<p> - 在 <strong>RoboCasa-GR1</strong> 复杂24任务基准上取得 <strong>50.8%</strong> 的平均成功率，显著优于 <strong>GR00T-N1.5</strong> 等方法。</p>
+<p> - 在真实世界 <strong>Unitree G1</strong> 机器人上，仅用有限数据即在“插盘入架”、“堆叠杯子”等高精度任务中表现出色，并展现出强大的零样本泛化能力。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

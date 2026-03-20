@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TempoFit: Plug-and-Play Layer-Wise Temporal KV Memory for Long-Horizon Vision-Language-Action Manipulation - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 TempoFit，一种无需训练、即插即用的时间记忆模块，旨在提升预训练视觉-语言-动作模型在长视野机器人操纵任务中的表现。 核心目标是解决现有主流VLA模型推理过程“无记忆”的问题，该问题导致其在存在遮挡、状态别名和细微变化的长时序、非马尔可夫环境中容易失败。 TempoFit通过复用模型内部的 前缀注意力键/值 作为状态级记忆，在不扩展输入上下文、不引入可训练模块的前提下，为冻结的模" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.07647">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">TempoFit: Plug-and-Play Layer-Wise Temporal KV Memory for Long-Horizon Vision-Language-Action Manipulation</h1>
+          <div class="detail-meta">2026-03-08 · <a href="http://arxiv.org/abs/2603.07647" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.07647" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.07647</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Xi’an Jiaotong-Liverpool University</strong>（西交利物浦大学）</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>TempoFit</strong>，一种无需训练、即插即用的时间记忆模块，旨在提升预训练视觉-语言-动作模型在长视野机器人操纵任务中的表现。</li><li>核心目标是解决现有主流VLA模型推理过程“无记忆”的问题，该问题导致其在存在遮挡、状态别名和细微变化的长时序、非马尔可夫环境中容易失败。</li><li>TempoFit通过复用模型内部的 <strong>前缀注意力键/值</strong> 作为状态级记忆，在不扩展输入上下文、不引入可训练模块的前提下，为冻结的模型注入历史信息。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>TempoFit</strong>，一种无需训练的推理时时间改装方案，可在不改变模型参数、训练目标或输入上下文长度的情况下，提升预训练VLA策略的时间一致性。</li><li>引入了 <strong>层级KV原生检索与注入算子</strong>，并结合 <strong>FGTB</strong>（帧间隙时间偏置），一种固定的即时性偏置，在冻结权重下抑制陈旧历史，减少历史与当前信息间的干扰。</li><li>在广泛使用的基准测试上进行了大量实验，证明了该方法在保持高推理效率和实时约束的同时，能提升长视野任务的成功率。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>整体流程</strong>：在选定的中间层缓存前缀 <strong>K/V</strong> 构成层级FIFO记忆，每步通过K-to-K检索匹配相关历史，再经由残差加载注入当前状态。</li><li><strong>关键创新</strong>：提出 <strong>K-to-K检索</strong>，在预训练骨干网络的同一键空间（投影空间）内进行地址匹配，无需学习新的查询投影，保证与冻结骨干网络的兼容性。</li><li><strong>时间偏置（FGTB）</strong>：受NLP位置偏置启发，在检索logits上增加一个与帧间隙成线性关系的负偏置，确保决策以当前信息为主导，且可解释、可调节。</li><li><strong>范数保持残差注入</strong>：通过残差更新将检索到的历史上下文注入当前K/V表，并进行范数重缩放以维持数值稳定性，避免在冻结权重下发生分布偏移。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要评估基准：<strong>LIBERO-Long</strong> 和 <strong>CALVIN</strong>。</li><li>使用的基础模型：<strong>π0.5</strong>、<strong>QwenGR00T</strong>（来自StarVLA）。</li><li>推理资源：实验报告提及使用 <strong>NVIDIA RTX5090 GPU</strong> 进行效率测试。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：<strong>LIBERO-Long</strong>（10个多子目标任务）和 <strong>CALVIN</strong>（D-D 和 ABC-D 设置）。</li><li>主要指标：任务平均成功率（LIBERO-Long）和连续成功任务的平均长度（CALVIN）。</li><li>关键结果：在 <strong>LIBERO-Long</strong> 上，TempoFit将 <strong>π0.5</strong> 基线成功率从92.6%提升至 <strong>96.6%</strong>（+4.0%），将 <strong>QwenGR00t</strong> 从90.8%提升至 <strong>94.4%</strong>（+3.6%），性能可比甚至优于需要训练的时序方法。在 <strong>CALVIN</strong> 上，D-D和ABC-D设置下的平均任务长度均有所提升。</li><li>效率结果：方法引入的推理开销极小，在历史容量为8帧时，延迟仅从71.2ms增加至74.4ms，显著优于帧堆叠方法。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

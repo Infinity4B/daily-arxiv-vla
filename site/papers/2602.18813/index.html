@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Habilis-$β$: A Fast-Motion and Long-Lasting On-Device Vision-Language-Action Model - VLA 论文精选</title>
+    <meta name="description" content="介绍了一个名为 Habilis-β 的快速运动、长时运行、可端侧部署的视觉-语言-动作模型，旨在满足实际部署需求。 提出了生产力-可靠性平面评估框架，使用每小时任务数 (TPH) 和平均干预间隔时间 (MTBI) 作为新指标，通过连续运行协议评估模型的性能。 解决当前VLA模型评估局限于单次尝试成功率、无法反映实际部署中所需的高速执行和持续鲁棒性（即“快速运动”和“长时运行”能力）的问题。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.18813">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Habilis-$β$: A Fast-Motion and Long-Lasting On-Device Vision-Language-Action Model</h1>
+          <div class="detail-meta">2026-02-21 · <a href="http://arxiv.org/abs/2602.18813" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.18813" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.18813</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Tommoro Robotics</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>介绍了一个名为 <strong>Habilis-β</strong> 的快速运动、长时运行、可端侧部署的视觉-语言-动作模型，旨在满足实际部署需求。</li><li>提出了生产力-可靠性平面评估框架，使用<strong>每小时任务数 (TPH)</strong> 和<strong>平均干预间隔时间 (MTBI)</strong> 作为新指标，通过连续运行协议评估模型的性能。</li><li>解决当前VLA模型评估局限于单次尝试成功率、无法反映实际部署中所需的高速执行和持续鲁棒性（即“快速运动”和“长时运行”能力）的问题。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了针对实际部署的<strong>生产力-可靠性平面</strong>评估框架和新指标（TPH和MTBI），超越了传统的单次成功率评估。</li><li>设计并实现了<strong>Habilis-β VLA模型</strong>，其训练策略集成了在无语言标注的<strong>大规模游戏数据</strong>上进行预训练以获得鲁棒的交互先验，以及在<strong>循环任务演示数据</strong>上进行后训练以学习跨连续任务迭代的恢复能力和状态漂移适应。</li><li>引入了<strong>ESPADA（空间感知下采样）</strong> 方法，对演示数据进行阶段自适应（空闲/精确阶段）的运动加速，以提升自由空间移动速度。</li><li>采用<strong>校正流蒸馏</strong>技术，将多步流匹配动作专家模型蒸馏为高效的2步模型，实现在边缘设备上的<strong>高频控制</strong>，降低了推理延迟。</li><li>整合了<strong>无分类器引导</strong> 作为部署时的调节旋钮，以动态平衡指令遵循和学习到的交互先验。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>模型采用前缀-后缀架构：预训练的<strong>VLM（视觉语言模型）前缀</strong>处理多模态观测（多视角图像和指令），<strong>流匹配动作专家后缀</strong>生成连续的动作块。</li><li>训练分为三阶段：第一阶段在游戏数据上进行无语言预训练，学习任务无关的交互先验；第二阶段在循环任务数据上进行后训练，并使用ESPADA加速自由空间动作；第三阶段通过校正流蒸馏将多步动作专家压缩成高效的2步模型。</li><li>关键技术包括：<strong>流匹配动作生成</strong>、<strong>校正流蒸馏</strong>、用于动作加速的<strong>ESPADA</strong>、用于在线调节的<strong>无分类器引导</strong>，以及通过缩短动作块长度实现的<strong>高频控制</strong>以提高闭环反应速度。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用了两种类型的数据集：用于预训练的无结构<strong>游戏数据集</strong>和用于对齐任务的<strong>循环任务数据集</strong>。</li><li>模型规模未在提供内容中明确给出具体参数量。</li><li>训练资源：未在提供内容中明确说明使用的具体GPU/TPU。</li><li>在<strong>NVIDIA Jetson Orin</strong> 边缘设备上进行端侧推理。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：在<strong>仿真（RoboTwin 2.0环境）</strong> 和<strong>真实世界（RB-Y1人形机器人）</strong> 中进行1小时连续运行评估。</li><li>主要评估指标：<strong>每小时任务数</strong>、<strong>平均干预间隔时间</strong> 和<strong>成功率</strong>。</li><li>关键实验结果：</li></ul>
+<p> - <strong>仿真实验</strong>：Habilis-β (带ESPADA) 实现了 <strong>572.6 TPH</strong> 和 <strong>39.2秒 MTBI</strong>，显著优于 <strong>π₀.₅</strong> 基线（120.5 TPH， 30.5秒 MTBI）。在标准的RoboTwin 2.0单次尝试基准测试中，Habilis-β在多个任务上也取得了最高报告性能。</p>
+<p> - <strong>真实世界实验</strong>：在“双箱传送带包装”任务中，Habilis-β实现了 <strong>124 TPH</strong> 和 <strong>137.4秒 MTBI</strong>，而 <strong>π₀.₅</strong> 基线为19 TPH和46.1秒 MTBI，成功率达到 <strong>82.7%</strong>。</p>
+<p> - 生产力-可靠性平面图显示，Habilis-β在TPH和MTBI两个指标上均优于基线模型，定位在平面的“高生产力-高可靠性”区域。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ROSA: Harnessing Robot States for Vision-Language and Action Alignment - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了ROSA，一种新的训练范式，旨在解决视觉-语言-动作模型在将高级视觉-语言理解与低级机器人物理动作对齐时存在的时空鸿沟问题。现有方法直接微调视觉-语言模型，但面临数据效率低下和对人工标注依赖性强的问题。ROSA通过引入一种自动收集的机器人状态估计数据作为辅助监督，增强模型对3D空间的理解和自我感知能力，从而提升模型在数据有限情况下的性能和泛化能力。实验在RLBench模拟环境和真实的W" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2506.13679">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">ROSA: Harnessing Robot States for Vision-Language and Action Alignment</h1>
+          <div class="detail-meta">2025-06-16 · <a href="http://arxiv.org/abs/2506.13679" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2506.13679" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2506.13679</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>中国科学技术大学, 南京大学, Dexmal</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了ROSA，一种新的训练范式，旨在解决视觉-语言-动作模型在将高级视觉-语言理解与低级机器人物理动作对齐时存在的时空鸿沟问题。现有方法直接微调视觉-语言模型，但面临数据效率低下和对人工标注依赖性强的问题。ROSA通过引入一种自动收集的机器人状态估计数据作为辅助监督，增强模型对3D空间的理解和自我感知能力，从而提升模型在数据有限情况下的性能和泛化能力。实验在RLBench模拟环境和真实的WidowX机器人平台上验证了该方法的有效性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了一种名为ROSA的新颖训练范式，它利用机器人状态估计数据来实现视觉-语言和动作空间之间更好的对齐。</li><li>提出了一种简单而有效的解决方案来创建机器人状态估计数据，在不需要额外人类收集工作的情况下，显著增强了VLA的数据效率。</li><li>在RLBench模拟和一个真实世界的WidowX平台上进行了广泛的实验，证明ROSA有效增强了当前的VLA模型，并实现了优于先前方法的性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>ROSA方法的核心是将VLA模型的训练分解为两个互补部分：预测未来动作和估计当前机器人状态。</p>
+<ol><li><strong>训练数据</strong>：</li></ol>
+<p> * <strong>专家动作数据</strong>：由人类操作员收集的轨迹数据，包含视觉观测、语言指令和对应的7自由度机器人动作（3D位置、3D欧拉角、1个夹爪开合状态）。</p>
+<p> * <strong>机器人状态估计数据</strong>：通过自动化脚本控制机器人在预定义环境中随机移动并记录观测与状态。这些数据同样包含7自由度的状态信息，并配以统一的语言指令，如“What is the current state of the robot?”，以实现与专家数据的格式统一和联合训练。</p>
+<ol><li><strong>模型架构</strong>：</li></ol>
+<p> * 基于LLaVA架构，包含一个视觉编码器、一个投影器和一个大语言模型。</p>
+<p> * 视觉编码器使用CLIP ViT-L/14，投影器为两层MLP，大语言模型骨干为Qwen-2.5-7B。</p>
+<p> * 为了让LLM预测连续的动作和状态，采用线性量化的方法将连续值离散化为token，推理时再通过逆映射恢复为连续值。</p>
+<ol><li><strong>训练目标</strong>：</li></ol>
+<p> * 对专家动作数据和机器人状态数据使用统一的训练目标，即下一个token预测的交叉熵损失。</p>
+<p> * 模型以1:4的比例混合两种数据进行训练，并完全微调所有层。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：</li></ol>
+<p> * <strong>RLBench</strong>：用于模拟实验，包含12个任务，每个任务包含多个训练变体。</p>
+<p> * <strong>真实机器人数据</strong>：在WidowX 250S机器人上采集，包括4个已见任务和4个用于泛化评估的未见任务。</p>
+<ol><li><strong>训练资源</strong>：</li></ol>
+<p> * 使用8块NVIDIA A100 GPU进行训练。</p>
+<p> * 基于Qwen-2.5-7B、CLIP ViT-L/14模型构建。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：</li></ol>
+<p> * <strong>RLBench模拟环境</strong>：使用Franka Panda机器人，配备一个固定的前置RGB摄像头（336x336分辨率）。</p>
+<p> * <strong>真实世界环境</strong>：使用WidowX 250S机器人和一个Intel RealSense D435摄像头提供第三人称视角。</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> * 主要评估指标是<strong>成功率</strong>，即任务成功的episode或试验次数占总数的百分比。</p>
+<p> * 在RLBench上，每个任务评估25个episode，并重复三次，报告平均成功率。</p>
+<p> * 在真实机器人上，每个任务评估10次试验。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

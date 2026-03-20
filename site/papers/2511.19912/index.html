@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reasoning-VLA: A Fast and General Vision-Language-Action Reasoning Model for Autonomous Driving - VLA 论文精选</title>
+    <meta name="description" content="论文提出了一种名为Reasoning-VLA的通用且快速的视觉-语言-动作（VLA）推理模型，用于解决现有自动驾驶VLA模型在推理效率和泛化能力方面的不足。该模型通过一组可学习的动作查询与增强推理的视觉-语言特征交互，实现连续动作轨迹的并行生成。为了提升泛化性，研究整合了八个公开的自动驾驶数据集，构建了一个基于思维链推理的统一数据集。结合监督微调（SFT）和强化学习（RL）的训练策略，实验表明Re" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.19912">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Reasoning-VLA: A Fast and General Vision-Language-Action Reasoning Model for Autonomous Driving</h1>
+          <div class="detail-meta">2025-11-25 · <a href="http://arxiv.org/abs/2511.19912" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.19912" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.19912</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Lanzhou University, China</p>
+<p>National University of Singapore, Singapore</p>
+<p>University of Science and Technology of China, China</p>
+<p>Tsinghua University, China</p>
+<p>University of New South Wales, Australia</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了一种名为Reasoning-VLA的通用且快速的视觉-语言-动作（VLA）推理模型，用于解决现有自动驾驶VLA模型在推理效率和泛化能力方面的不足。该模型通过一组可学习的动作查询与增强推理的视觉-语言特征交互，实现连续动作轨迹的并行生成。为了提升泛化性，研究整合了八个公开的自动驾驶数据集，构建了一个基于思维链推理的统一数据集。结合监督微调（SFT）和强化学习（RL）的训练策略，实验表明Reasoning-VLA在多个基准上实现了最先进的性能、卓越的泛化能力和目前报告的优异推理速度。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了Reasoning-VLA，一个高效的VLA框架，通过可学习的动作查询与推理增强的视觉-语言表示交互，实现单步并行动作生成。</li><li>通过从真实轨迹中进行高斯分布采样来初始化可学习的动作查询，提升了模型效率。</li><li>构建了一个统一的、基于思维链推理的自动驾驶数据集，该数据集融合了八个现有数据集，以促进模型在不同车辆类型和驾驶环境下的泛化能力。</li><li>采用结合SFT和RL的微调策略，并辅以物理和动力学奖励函数，增强了模型的通用推理能力，显著优于先前的方法。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>该方法基于Qwen2.5-VL模型构建，包含三个主要部分：</p>
+<ol><li><strong>推理增强的视觉-语言模型主干</strong>：利用Qwen2.5-VL作为基础模型，提供强大的视觉-语言理解和推理能力。</li><li><strong>VL到Action模块</strong>：引入一组可学习的动作查询，这些查询通过自注意力和与VLM特征的交叉注意力进行交互，从VLM的推理内容中提取动作相关信息，实现并行动作轨迹的预测。</li><li><strong>动作细化模块（ARM）</strong>：通过多层感知机（MLP）和注意力机制处理动作查询的隐藏状态，以细化特征表示，提高轨迹精度。</li></ol>
+<p>训练过程分为两个阶段：</p>
+<ol><li><strong>监督微调（SFT）</strong>：使用统一的推理数据集对模型进行初步训练，建立结构化的推理链。</li><li><strong>强化学习（RL）微调</strong>：采用GRPO算法和设计的基于规则的奖励函数进行优化，以提高模型在未见场景下的泛化能力。奖励函数包括物理轨迹奖励、车辆动态奖励（转向和加速度约束）以及它们的加权和。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p><strong>数据集</strong>：</p>
+<p>构建了一个统一的自动驾驶数据集，整合了八个公开数据集：NAVSIM, nuScenes, Waymo, Argoverse-V2, KITTI, Mapillary, ONCE, 和 IDD。经过筛选和处理，包含了超过75,000个高质量片段，并生成了思维链描述。</p>
+<p><strong>训练资源</strong>：</p>
+<p>训练在8张H200 GPU上进行，总批大小为8。SFT阶段训练4个周期，学习率从5e-4开始；RL阶段训练1个周期，学习率从1e-6开始。累积梯度步数为2。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p><strong>评估环境</strong>：</p>
+<ol><li><strong>开环评估</strong>：在nuScenes数据集的验证集上进行，与现有方法进行公平比较。</li><li><strong>闭环评估</strong>：在NeuroNCAP模拟器上进行，该模拟器能够模拟复杂的现实世界驾驶场景。</li></ol>
+<p><strong>评估指标</strong>：</p>
+<ol><li><strong>开环指标</strong>：</li></ol>
+<p> - L2误差（米）：在1秒、2秒、3秒未来时间点的平均L2距离，值越低越好。</p>
+<p> - 碰撞率（%）：在1秒、2秒、3秒未来时间点的碰撞率，值越低越好。</p>
+<ol><li><strong>闭环指标</strong>：</li></ol>
+<p> - NeuroNCAP分数：在静止、正面、侧面等不同场景下的得分，值越高越好。</p>
+<p> - 碰撞率（%）：在静止、正面、侧面等不同场景下的碰撞率，值越低越好。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

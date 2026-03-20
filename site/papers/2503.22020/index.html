@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoT-VLA: Visual Chain-of-Thought Reasoning for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了CoT-VLA，一种视觉-语言-动作模型，它通过引入显式的视觉思维链（CoT）推理来增强模型的性能。CoT-VLA首先生成一个代表未来子目标的图像，然后基于当前观测和生成的子目标图像来生成一个短动作序列以实现该子目标。该方法允许模型在执行动作前进行“视觉思考”，从而提升在复杂操作任务中的表现。论文通过在模拟基准和真实世界实验中进行广泛评估，证明了视觉思维链推理能提升VLA性能，并且在多" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2503.22020">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">CoT-VLA: Visual Chain-of-Thought Reasoning for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-03-27 · <a href="http://arxiv.org/abs/2503.22020" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2503.22020" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2503.22020</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>NVIDIA、斯坦福大学和麻省理工学院。</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了CoT-VLA，一种视觉-语言-动作模型，它通过引入显式的视觉思维链（CoT）推理来增强模型的性能。CoT-VLA首先生成一个代表未来子目标的图像，然后基于当前观测和生成的子目标图像来生成一个短动作序列以实现该子目标。该方法允许模型在执行动作前进行“视觉思考”，从而提升在复杂操作任务中的表现。论文通过在模拟基准和真实世界实验中进行广泛评估，证明了视觉思维链推理能提升VLA性能，并且在多个机器人平台和任务上实现了最先进的性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>引入了一种通过子目标图像生成作为机器人控制中间推理步骤的视觉思维链推理方法。</li><li>提出了CoT-VLA系统，该系统集成了视觉思维链推理，并采用了一种混合注意力机制，将用于像素和文本生成的因果注意力与用于动作预测的全注意力相结合。</li><li>在模拟和真实世界环境中进行了全面评估，证明视觉思维链推理提高了VLA性能，其系统在多个机器人平台和任务上实现了最先进的性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>视觉思维链推理框架</strong>：模型操作分为两个连续阶段。首先，预测一个子目标图像作为中间视觉推理步骤；然后，生成一个动作序列以实现该子目标状态。</li><li><strong>基础视觉-语言模型</strong>：基于VILA-U构建，这是一个能够理解和生成图像和文本标记的统一多模态基础模型。</li><li><strong>训练程序</strong>：包括视觉标记预测（使用因果注意力）和动作标记预测（使用全注意力）。训练目标结合了动作损失和视觉损失。</li><li><strong>混合注意力机制</strong>：对图像或文本生成使用因果注意力，对动作生成使用全注意力。</li><li><strong>动作分块</strong>：预测动作序列而不是单个动作，每个动作被离散化为256个区间。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：</li></ol>
+<p> - 机器人演示数据：Open X-Embodiment数据集（OpenX）的子集，包括第三人称摄像头视图和单臂末端执行器控制（7自由度）。</p>
+<p> - 无动作视频数据：EPIC-KITCHENS和Something-Something V2数据集。</p>
+<ol><li><strong>训练资源</strong>：使用7B的VILA-U模型作为基础模型，所有图像处理在256x256分辨率下进行。</li><li><strong>训练阶段</strong>：</li></ol>
+<p> - <strong>预训练阶段</strong>：在机器人演示数据和无动作视频数据上对模型进行预训练。</p>
+<p> - <strong>适应阶段</strong>：在下游任务部署的机器人设置上收集的任务演示对模型进行微调。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：</li></ol>
+<p> - <strong>模拟基准测试</strong>：LIBERO模拟基准测试。</p>
+<p> - <strong>真实世界实验</strong>：Bridge-V2和Franka-Tabletop真实机器人实验。</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> - 在LIBERO基准测试中，报告了在不同任务套件（空间、对象、目标、长程）上的平均成功率和标准误差。</p>
+<p> - 在真实世界任务中，通过成功率来评估性能。</p>
+<p> - 与基线方法（如Diffusion Policy、Octo、OpenVLA）进行了比较。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

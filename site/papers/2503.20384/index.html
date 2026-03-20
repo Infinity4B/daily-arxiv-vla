@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MoLe-VLA: Dynamic Layer-skipping Vision Language Action Model via Mixture-of-Layers for Efficient Robot Manipulation - VLA 论文精选</title>
+    <meta name="description" content="该论文提出了一种名为MoLe-VLA的新型视觉-语言-动作模型，旨在通过动态跳过大型语言模型中的部分层来提高机器人操作的效率。该方法受到神经科学中“浅层脑假说”和混合专家模型的启发，将每个LLM层视为一个专家，并设计了一个时空感知路由器来根据机器人的当前状态选择性地激活相关层，以模仿大脑在认知和因果推理中不同的信号通路。此外，为了弥补因层跳过而损失的LLM认知能力，论文还提出了一种认知自知识蒸馏方" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2503.20384">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">MoLe-VLA: Dynamic Layer-skipping Vision Language Action Model via Mixture-of-Layers for Efficient Robot Manipulation</h1>
+          <div class="detail-meta">2025-03-26 · <a href="http://arxiv.org/abs/2503.20384" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2503.20384" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2503.20384</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>南京大学、香港理工大学、北京大学计算机学院多媒体信息处理国家重点实验室、北京智源人工智能研究院、香港科技大学。</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文提出了一种名为MoLe-VLA的新型视觉-语言-动作模型，旨在通过动态跳过大型语言模型中的部分层来提高机器人操作的效率。该方法受到神经科学中“浅层脑假说”和混合专家模型的启发，将每个LLM层视为一个专家，并设计了一个时空感知路由器来根据机器人的当前状态选择性地激活相关层，以模仿大脑在认知和因果推理中不同的信号通路。此外，为了弥补因层跳过而损失的LLM认知能力，论文还提出了一种认知自知识蒸馏方法来增强模型对任务需求的理解并生成相关的动作序列。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>受浅层脑假说启发，开发了MoLe框架，模仿人脑信号流，通过路由器实现动态层激活以提高模型效率。</li><li>提出了一种新型层决策路由器STAR，充分利用机器人输入的时空信息做出更准确的激活决策。</li><li>引入了一种自知识蒸馏范式CogKD，以恢复稀疏LLM中因层跳过而丢失的认知信息，提升整体性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>论文方法主要包括三个核心部分：</p>
+<ol><li><strong>混合层架构</strong>：将LLM的每一层视为一个独立的专家，设计路由器动态选择执行哪些层。输入嵌入<code>x_k</code>经过路由器生成二进制门控向量<code>G_mol(x)</code>，仅top-k个值为1的层<code>π_k</code>被执行，其余层被跳过，输出<code>h_k</code>根据公式<code>h_k = G_k * π_k(h_{k-1}) + (1 - G_k) * h_{k-1}</code>计算。</li><li><strong>时空感知路由器（STAR）</strong>：为克服传统路由器无法捕捉动态具身智能任务中关键时空信息的限制，STAR独立处理来自视觉输入的空间特征和来自文本输入的时间依赖，将其组合成统一表示，以对齐LLM层选择与当前环境需求。</li><li><strong>认知自知识蒸馏（CogKD）</strong>：为了补偿层跳过导致的认知表达能力下降，使用原始全层模型作为教师，MoLe层跳过模型作为学生。引入可学习的“认知token”来整合视觉token和语言指导，通过分析认知token与学生token的相似性来识别关键信息，并自适应地重新加权蒸馏过程。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：RLBench仿真环境数据集和真实世界任务数据集。</p>
+<p>训练资源：论文未明确提及具体硬件，但训练过程在多个VLA模型上进行了端到端的实现，使用了扩散动作头，通过最小化预测噪声与真实噪声之间的均方误差进行优化。优化目标包括任务损失<code>L_task</code>和可能的负载平衡损失。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：RLBench模拟环境和真实世界环境（使用Franka机械臂设置）。</p>
+<p>评估指标：主要指标是任务成功率，计算为在十个任务上的平均成功率。此外，还评估了计算效率，包括推理延迟（或频率）和计算成本（如FLOPs或延迟倍数）。在真实世界中，评估了模型在一系列操作任务上的定性表现。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

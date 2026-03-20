@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NORA: A Small Open-Sourced Generalist Vision Language Action Model for Embodied Tasks - VLA 论文精选</title>
+    <meta name="description" content="本文提出了NORA（Neural Orchestrator for Robotic Autonomy），一个3B参数的小型开源通用视觉-语言-动作（VLA）模型，用于处理具身任务。NORA旨在减少现有大型VLA模型的高计算开销，同时保持强大的任务执行能力。模型基于Qwen-2.5-VL-3B多模态模型，并利用FAST+标记器进行高效的动作序列生成。实验表明，NORA在多个现实世界和模拟任务中优于现" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2504.19854">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">NORA: A Small Open-Sourced Generalist Vision Language Action Model for Embodied Tasks</h1>
+          <div class="detail-meta">2025-04-28 · <a href="http://arxiv.org/abs/2504.19854" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2504.19854" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2504.19854</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+<h2 class="section-title">论文研究单位</h2>
+<p>新加坡科技与设计大学，Lambda Labs</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了NORA（Neural Orchestrator for Robotic Autonomy），一个3B参数的小型开源通用视觉-语言-动作（VLA）模型，用于处理具身任务。NORA旨在减少现有大型VLA模型的高计算开销，同时保持强大的任务执行能力。模型基于Qwen-2.5-VL-3B多模态模型，并利用FAST+标记器进行高效的动作序列生成。实验表明，NORA在多个现实世界和模拟任务中优于现有的大型VLA模型，以显著降低的计算开销实现了更好的任务性能，使其成为实时机器人自主性更实用的解决方案。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了NORA，一个3B参数的VLA模型，基于Qwen-2.5-VL-3B主干，采用高效的动作解码策略压缩高度相关的动作标记，确保在各种机器人任务中的鲁棒性能。</li><li>进行了全面的实验，分析了不同动作预测策略的影响，包括单步与分块动作预测的详细比较，证明了其设计在提高动作生成效率方面的有效性。</li><li>开源了完整的NORA框架，包括模型检查点、训练策略和评估协议，以促进可重复性并推动可扩展的视觉-语言-动作模型在机器人学领域的进一步研究。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>NORA的架构基于预训练的视觉-语言模型（VLM）M，该模型自回归地预测从时间t到t+N的动作块，编码未来的动作。输入包括自然语言任务指令c和t时间的n帧视觉观测ot，形成整体输入Xt=[ot,c]。动作块at:t+N由FAST+机器人标记器在训练时编码的离散标记序列R=[rt,...,rt+N]表示。VLM M基于Xt条件预测动作块的标记序列R，然后使用FAST+_decode将标记序列解码为连续动作。模型选择了Qwen-2.5-VL作为主干，因其3B的小参数规模，并通过FAST+标记器引入了2048个额外标记来增强VLM标记器的词汇量。观测ot保持为单个视觉帧，动作块大小选择为1。NORA使用标准的下一标记预测损失语言建模目标进行训练。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>模型在Open X-Embodiment数据集上进行预训练，该数据集包含970k真实世界机器人演示，来自不同机器人执行的各种任务，包括BridgeV2和DROID等子集。训练在单个8x H100 GPU节点上进行约三周，总计约4000 H100 GPU小时。使用批量大小为256，采用AdamW优化器进行110万次梯度更新。应用了前50k步的线性预热，峰值学习率为5e-5，随后采用余弦衰减至零。为增强训练效率和减少内存占用，使用了FlashAttention并以bf16精度训练。此外，训练了NORA-Long变体，使用动作块大小为5，在相同预训练数据集上预训练了90万步。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估在两种环境中进行：真实世界的WidowX机器人平台和LIBERO模拟基准。真实世界评估包括9个多样任务，每个任务进行10次试验，评估指令理解、空间推理和多任务运动规划能力。模拟基准包括30个程序生成的解耦任务，涉及空间布局（LIBERO-Spatial）、物体（LIBERO-Object）、任务目标（LIBERO-Goal）和10个长视野纠缠任务（LIBERO-Long）。所有策略在相同设置下进行500次试验评估。主要评估指标为成功率，定义为成功完成任务的比例，计算公式为：% success rate := (100 E_{τ~D_eval} 1[task τ is successfully completed])%。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grounding Multimodal LLMs to Embodied Agents that Ask for Help with Reinforcement Learning - VLA 论文精选</title>
+    <meta name="description" content="本文提出 Ask-to-Act 任务，研究具身智能体在部分可观测的家居环境中，如何通过最少且相关的澄清问题解决模糊指令，完成单或多物体重排任务。作者提出 AutoAsk 方法，利用强化学习（RL）微调多模态大语言模型（MLLM）作为视觉-语言-行动（VLA）策略，通过大型语言模型（LLM）生成奖励信号，无需大规模人类演示或手动设计奖励。实验表明，该方法在未见场景和任务上显著优于零样本基线（如 GP" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2504.00907">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Grounding Multimodal LLMs to Embodied Agents that Ask for Help with Reinforcement Learning</h1>
+          <div class="detail-meta">2025-04-01 · <a href="http://arxiv.org/abs/2504.00907" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2504.00907" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2504.00907</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Georgia Institute of Technology 和 Meta FAIR</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出 Ask-to-Act 任务，研究具身智能体在部分可观测的家居环境中，如何通过最少且相关的澄清问题解决模糊指令，完成单或多物体重排任务。作者提出 AutoAsk 方法，利用强化学习（RL）微调多模态大语言模型（MLLM）作为视觉-语言-行动（VLA）策略，通过大型语言模型（LLM）生成奖励信号，无需大规模人类演示或手动设计奖励。实验表明，该方法在未见场景和任务上显著优于零样本基线（如 GPT-4o）和监督微调模型。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>引入 Ask-to-Act 任务，评估智能体通过提问解决模糊指令的能力，涵盖属性识别、空间推理、物体大小等七类子任务。</li><li>提出 AutoAsk 方法，首次实现基于 LLM 生成奖励的在线 RL 训练 VLA 策略，使智能体能同时行动和提问。</li><li>验证 LLM 生成奖励的有效性，消除对人工奖励或人类数据的依赖，在未见场景和任务上成功率提升 10.4%-16.5%。</li><li>展示训练策略在问题预算下的可调性，平衡成功率和提问效率。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>AutoAsk 基于 LLaVA-OneVision 0.5B 架构，适配为 VLA 策略：</p>
+<ul><li><strong>策略架构</strong>：输入包括任务指令、历史观察、动作和用户回复。视觉观察通过 Perceiver 模型下采样至 4 个 token，以支持长历史序列处理。</li><li><strong>训练机制</strong>：使用 DD-PPO（分布式 PPO）进行在线 RL，训练 50M 步。奖励函数由 LLM（Llama-3）生成，包含成功奖励、子目标奖励、有用问题奖励、超预算惩罚和步数惩罚。</li><li><strong>奖励生成</strong>：LLM 根据特权环境状态、任务指令和智能体动作，评估提问是否有效解决模糊性，输出二进制奖励。</li><li><strong>实现细节</strong>：异步处理奖励请求，使用 8 个 A40 GPU，vLLM 服务器加速推理。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：在 Habitat 3.0 中构建，使用 ReplicaCAD 数据集的 83 个场景（63 个训练，20 个评估）和 Google Scanned Objects 的 42 个物体类别。任务包括单物体和多物体重排，覆盖无模糊性、属性识别、空间推理等七类。</li><li><strong>训练资源</strong>：使用 8 个 NVIDIA A40 GPU，分布式训练 5000 万步。奖励生成模型为 Llama-3 8B，通过 vLLM 服务异步处理。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：部分可观测的 Habitat 3.0 模拟器，智能体以 Spot 机器人形态执行任务。评估分两维度：Unseen Scenes（新场景和物体布局）和 Unseen Tasks（新模糊任务组合）。</li><li><strong>评估指标</strong>：</li></ul>
+<p> - Success Rate (SR)：任务完成率。</p>
+<p> - Ambiguity-Resolution Efficiency Score (ARS)：衡量任务成功的同时最小化提问数量，计算公式为 $\frac{\mathds{1}_{\text{success}}}{1+\text{abs}(q_{\text{relevant}}-K)+q_{\text{irrelevant}}}$。</p>
+<p> - Question Ratio (QR)：实际提问数与最小需求问题数的比率。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vla-eval: A Unified Evaluation Harness for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型评估生态碎片化的问题，提出统一评估框架 vla-eval 解决当前VLA模型评估中存在的代码重复、依赖冲突、协议不明确和评估速度慢等核心痛点 实现&quot;模型集成一次，基准集成一次，完整交叉评估矩阵自动运行&quot;的设计目标" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.13966">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">vla-eval: A Unified Evaluation Harness for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2026-03-14 · <a href="http://arxiv.org/abs/2603.13966" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.13966" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.13966</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Allen Institute for AI</strong> (Suhwan Choi, Yunsung Lee, Yubeen Park)</li><li><strong>University of Washington</strong> (Chris Dongjoo Kim, Ranjay Krishna, Dieter Fox)</li><li><strong>Yonsei University</strong> (Youngjae Yu)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>针对视觉-语言-动作（VLA）模型评估生态碎片化的问题，提出统一评估框架 <strong>vla-eval</strong></li><li>解决当前VLA模型评估中存在的代码重复、依赖冲突、协议不明确和评估速度慢等核心痛点</li><li>实现"模型集成一次，基准集成一次，完整交叉评估矩阵自动运行"的设计目标</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>开源评估框架支持 <strong>13个模拟基准</strong> 和 <strong>6个模型服务器</strong>，采用 <strong>Docker隔离</strong> 和 <strong>WebSocket+msgpack协议</strong></li><li>对发布VLA模型进行可复现性审计，发现未记录的评估要求（模糊终止语义、隐藏归一化统计）</li><li>并行评估方法（episode分片 + 批量推理）实现 <strong>47倍吞吐量提升</strong>，2,000个LIBERO episode仅需约18分钟</li><li>发布VLA排行榜，聚合 <strong>657个已发布结果</strong> 跨越 <strong>17个基准</strong></li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>客户端-服务器架构</strong>：通过WebSocket+msgpack二进制序列化分离模型推理与基准执行</li><li><strong>模型服务器</strong>：基于 <code>PredictModelServer</code> ABC，仅需实现 <code>predict()</code> 方法（约50行代码），支持自动动作分块和批量推理</li><li><strong>基准集成</strong>：通过 <code>StepBenchmark</code> 包装器实现四个方法（<code>reset</code>, <code>step</code>, <code>make_obs</code>, <code>get_step_result</code>）</li><li><strong>依赖隔离</strong>：模型服务器使用PEP 723内联元数据声明依赖，通过 <code>uv run</code> 自动创建隔离环境；基准在Docker容器中运行</li><li><strong>并行优化</strong>：环境并行（episode分片）+ 推理并行（批量前向传播），通过需求/供给方法调优</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>支持基准</strong>：<strong>LIBERO</strong>、<strong>CALVIN</strong>、<strong>SimplerEnv</strong>、<strong>ManiSkill2</strong>、<strong>LIBERO-Mem</strong>、<strong>Kinetix</strong>、<strong>RoboCasa</strong>、<strong>VLABench</strong>、<strong>MIKASA-Robo</strong>、<strong>RoboTwin 2.0</strong>、<strong>RLBench</strong>、<strong>RoboCerebra</strong>、<strong>LIBERO-Pro</strong></li><li><strong>支持模型</strong>：<strong>CogACT</strong>、<strong>OpenVLA</strong>、<strong>OpenVLA-OFT</strong>、<strong>π₀/π₀-FAST</strong>、<strong>GR00T N1</strong>、<strong>X-VLA</strong></li><li><strong>Docker镜像</strong>：4.7 GB至35.6 GB不等，托管于 <code>ghcr.io</code></li><li><strong>硬件</strong>：H100 GPU用于模型服务器，支持CPU/GPU渲染的基准主机</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>可复现性审计</strong>：DB-CogACT模型在 <strong>LIBERO</strong>（4个套件，2,000 episode）、<strong>CALVIN</strong>（1,000链式序列）、<strong>SimplerEnv</strong>（288 episode，3种子）上复现结果与发布值偏差在 <strong>±3个百分点</strong> 内</li><li><strong>关键发现</strong>：识别未记录要求——SimplerEnv中 <code>terminated</code> 标志的歧义语义、CALVIN中隐藏的训练集归一化统计</li><li><strong>性能指标</strong>：LIBERO 47倍加速（14小时→18分钟）、CALVIN 16倍加速、SimplerEnv 12倍加速</li><li><strong>排行榜数据</strong>：81%的509+模型仅在单一基准上评估，仅6%在三个或以上基准上评估，凸显跨基准比较稀缺</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

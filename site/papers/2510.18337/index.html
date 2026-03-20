@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MoTVLA: A Vision-Language-Action Model with Unified Fast-Slow Reasoning - VLA 论文精选</title>
+    <meta name="description" content="MoTVLA是一个基于混合Transformer（MoT）架构的视觉语言动作（VLA）模型，通过整合快速与慢速推理来改进机器人学习中的语言指令控制能力。该模型保留预训练VLM的通用智能（通用智能专家）以处理感知和语义规划，同时引入领域专家生成快速运动分解信号，最终通过扩散Transformer（DiT）动作专家执行具体操作。该设计显著提升语言可控性和推理效率，并已在NLP基准、仿真环境（ManiS" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.18337">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">MoTVLA: A Vision-Language-Action Model with Unified Fast-Slow Reasoning</h1>
+          <div class="detail-meta">2025-10-21 · <a href="http://arxiv.org/abs/2510.18337" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.18337" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.18337</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li><strong>Harvard University</strong> (Wenhui Huang, Han Qi, Yilun Du, Heng Yang)</li><li><strong>University of Michigan</strong> (Changhe Chen)</li><li><strong>Nanyang Technological University</strong> (Chen Lv)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>MoTVLA是一个基于混合Transformer（MoT）架构的视觉语言动作（VLA）模型，通过整合快速与慢速推理来改进机器人学习中的语言指令控制能力。该模型保留预训练VLM的通用智能（通用智能专家）以处理感知和语义规划，同时引入领域专家生成快速运动分解信号，最终通过扩散Transformer（DiT）动作专家执行具体操作。该设计显著提升语言可控性和推理效率，并已在NLP基准、仿真环境（ManiSkill）和真实机器人实验中验证有效性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>统一快慢推理架构</strong>：在单一MoT模型中实现通用智能（慢速推理）与领域特定知识（快速推理）的融合，通过分解-组合-再分解的机制保持性能平衡。</li><li><strong>动作条件化策略学习</strong>：将快速推理生成的运动分解信号作为扩散策略条件，提升任务执行效率和行为可解释性。</li><li><strong>延迟与性能优势</strong>：在推理速度（快推理频率达4倍提升）、语义理解及真实操作任务上超越SOTA基线（如π0.5、RT-2）。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>架构设计</strong>：</li></ul>
+<p> - <strong>通用智能专家（Slow Reasoning）</strong>：基于Qwen2.5-LLM 7B的预训练模型，处理视觉-文本多模态理解。</p>
+<p> - <strong>领域专家（Fast Reasoning）</strong>：同构架构，生成步骤化运动分解文本（双向注意力）。</p>
+<p> - <strong>动作专家</strong>：DiT结构，基于视觉窗口（5帧）、机器人状态、运动分解信号执行扩散去噪生成动作序列。</p>
+<ul><li><strong>训练流程</strong>：</li></ul>
+<p> - <strong>领域专家SFT</strong>：使用1.27M问答对（仿真154K + 真实125K + Robo2VLM 678K + LLaVA-OV 318K）优化快速推理。</p>
+<p> - <strong>动作专家扩散策略</strong>：ManiSkill仿真（每任务300轨迹）+ 真实操作（Pick-and-Place 50轨迹，Table Bussing 200轨迹），以均方误差优化去噪网络。</p>
+<ul><li><strong>推理模式</strong>：</li></ul>
+<p> - <strong>对话模式</strong>：通用智能专家执行慢推理回答人类问题（如场景描述）。</p>
+<p> - <strong>行动模式</strong>：领域专家快速生成运动分解 → 动作专家执行多步操作（如堆叠、插孔）。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>领域专家数据</strong>：</li></ul>
+<p> - 仿真数据：154K（ManiSkill的Cube Stacking、Peg-in-Hole、L-tool Pull）</p>
+<p> - 真实演示：125K（人类操作的Pick-and-Place、Table Bussing）</p>
+<p> - 外部数据：678K（Robo2VLM，转换为推理文本）、318K（LLaVA-OV，筛选长答案）</p>
+<ul><li><strong>动作专家数据</strong>：</li></ul>
+<p> - 仿真：900轨迹（3任务×300）</p>
+<p> - 真实：250轨迹（Pick-and-Place 50 + Table Bussing 200）</p>
+<ul><li><strong>预训练资源</strong>：</li></ul>
+<p> - 通用智能专家：Bagel-VLM初始化（SigLIP-So400m视觉编码 + Qwen2.5文本分词器）</p>
+<p> - 推理骨干：MoTVLA-14B（双7B专家，总参数量14B）</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - <strong>仿真</strong>：ManiSkill平台（Cube Stacking、Peg-in-Hole、L-tool Pull）。</p>
+<p> - <strong>真实操作</strong>：桌面任务（蔬菜Pick-and-Place含干扰物、Table Bussing含模糊指令）。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>语义推理</strong>：BLEU、METEOR、CIDEr、Token准确率（VQA任务如ScienceQA、Visual-7W）。</p>
+<p> - <strong>机器人任务</strong>：平均成功率（重复随机种子测试，零样本干扰场景）。</p>
+<p> - <strong>延迟对比</strong>：推理频率（MoTVLA-14B/1B vs π0.5-KI，H100/A6000 GPU）。</p>
+<ul><li><strong>基线对比</strong>：π0.5-KI、π0、GR-MG、Diffusion Policy（DP），基于1050轨迹微调后性能。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RISE: Self-Improving Robot Policy with Compositional World Model - VLA 论文精选</title>
+    <meta name="description" content="提出了 RISE 框架，通过将机器人策略的学习环境从物理世界转移到由世界模型构建的想象空间，实现可扩展的在线强化学习。 旨在解决在物理世界中直接进行策略强化学习（RL）时面临的成本高、环境重置困难、安全性风险以及数据收集瓶颈等问题，以提升机器人策略在接触密集和动态复杂操作任务中的鲁棒性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.11075">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">RISE: Self-Improving Robot Policy with Compositional World Model</h1>
+          <div class="detail-meta">2026-02-11 · <a href="http://arxiv.org/abs/2602.11075" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.11075" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.11075</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>清华大学</strong></li><li><strong>上海人工智能实验室</strong></li><li>**<strong>商汤科技</strong>**</li><li><strong>上海交通大学</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了 <strong>RISE</strong> 框架，通过将机器人策略的学习环境从物理世界转移到由世界模型构建的想象空间，实现可扩展的在线强化学习。</li><li>旨在解决在物理世界中直接进行策略强化学习（RL）时面临的成本高、环境重置困难、安全性风险以及数据收集瓶颈等问题，以提升机器人策略在接触密集和动态复杂操作任务中的鲁棒性。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>RISE</strong> 框架，通过 <strong>“想象”</strong> 实现机器人基础模型的自主 <strong>自我改进</strong>，克服了物理世界交互的限制。</li><li>设计并构建了一个 <strong>组合式世界模型</strong>，该模型将动态预测（<strong>可控动力学模型</strong>）与状态价值评估（<strong>进展价值模型</strong>）解耦，为策略改进提供可靠的学习信号。</li><li>揭示了实现稳定学习的关键设计选择，包括用于提升动作可控性的 <strong>任务中心批处理</strong>、结合进度回归与时间差分学习训练的价值模型以及混合离线与在线数据的训练策略。</li><li>在多个高难度真实世界任务上进行了广泛评估，实验结果表明 <strong>RISE</strong> 的性能显著超越了现有的模仿学习（IL）和强化学习（RL）方法。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>整体框架分为两个阶段：<strong>策略预热</strong>（在真实世界离线数据上进行优势条件训练）和 <strong>自我改进循环</strong>（在组合式世界模型中生成想象样本进行策略优化）。</li><li><strong>组合式世界模型</strong> 由两个独立的模块组成：</li></ul>
+<p> - <strong>可控动力学模型</strong>：基于高效的视频扩散模型 <strong>Genie Envisioner</strong>，通过大规模机器人数据集和 <strong>任务中心批处理</strong> 策略进行预训练，实现了对动作序列的快速、忠实未来状态预测。</p>
+<p> - <strong>进展价值模型</strong>：参数化自预训练的 VLA 策略 <strong>π₀.₅</strong>，通过结合 <strong>进度回归损失</strong> 和 <strong>时间差分学习损失</strong> 进行训练，为想象的轨迹提供密集且对失败敏感的奖励信号。</p>
+<ul><li>系统将策略提出的动作序列输入世界模型，合成未来视觉状态并计算优势值，然后通过优势条件训练（Advantage-Conditioned Training）更新策略，整个过程在想象空间中进行，无需物理交互。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集包括：大规模机器人数据集 <strong>Galaxea</strong> 和 <strong>Agibot World</strong>（用于动力学模型预训练），以及为特定任务（动态积木分拣、背包打包、盒子封装）收集的离线真实世界经验数据。</li><li><strong>动力学模型</strong> 基于 <strong>Genie Envisioner (GE-base)</strong> 架构；<strong>价值模型</strong> 基于 <strong>π₀.₅</strong> VLA 模型；策略模型为基于流匹配的 <strong>VLA</strong>。</li><li>训练资源：动力学模型预训练使用 <strong>16 块 NVIDIA H100 GPU</strong>（约7天），任务特定微调使用 <strong>8 块 H100 GPU</strong>（约3天）；价值模型和策略训练均使用 <strong>8 块 H100 GPU</strong>。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：在真实世界的三个挑战性任务上评估——<strong>动态积木分拣</strong>、<strong>背包打包</strong> 和 <strong>盒子封装</strong>。对比了包括 <strong>π₀.₅</strong>、<strong>DAgger</strong>、<strong>PPO</strong>、<strong>DSRL</strong> 和 <strong>RECAP</strong> 在内的多种基线方法。</li><li><strong>主要评估指标</strong>：任务<strong>成功率（%）</strong> 和多阶段<strong>评分</strong>。</li><li><strong>关键实验结果</strong>：<strong>RISE</strong> 在所有任务上均取得显著优势。在<strong>动态积木分拣</strong>任务上，成功率从 RECAP 的 50% 提升至 <strong>85%</strong>；在<strong>背包打包</strong>任务上，从 RECAP 的 40% 提升至 <strong>85%</strong>；在<strong>盒子封装</strong>任务上，从 RECAP 的 60% 提升至 <strong>95%</strong>。</li><li><strong>消融实验</strong>：验证了各组件（如任务中心批处理、价值模型的混合损失、在线动作与状态生成）的有效性，并表明最佳离线数据混合比例约为 <strong>0.6</strong>。</li><li><strong>世界模型质量</strong>：在 PSNR、LPIPS、SSIM、FVD 和端点误差（EPE）等指标上，其动力学模型均优于 Cosmos 和基础 Genie Envisioner。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

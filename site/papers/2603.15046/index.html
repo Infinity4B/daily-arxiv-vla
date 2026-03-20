@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AnoleVLA: Lightweight Vision-Language-Action Model with Deep State Space Models for Mobile Manipulation - VLA 论文精选</title>
+    <meta name="description" content="本文提出 AnoleVLA，一个用于移动操作的轻量级 视觉-语言-动作模型。 论文旨在解决现有 VLAs 在资源受限环境下部署时，因基于 Transformer 骨干网络带来的高推理延迟和内存消耗问题。 模型利用 深度状态空间模型 作为骨干，实现高效的多模态序列处理与轨迹生成。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.15046">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">AnoleVLA: Lightweight Vision-Language-Action Model with Deep State Space Models for Mobile Manipulation</h1>
+          <div class="detail-meta">2026-03-16 · <a href="http://arxiv.org/abs/2603.15046" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.15046" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.15046</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Keio University</strong> (庆应义塾大学)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>本文提出 <strong>AnoleVLA</strong>，一个用于移动操作的轻量级 <strong>视觉-语言-动作模型</strong>。</li><li>论文旨在解决现有 <strong>VLAs</strong> 在资源受限环境下部署时，因基于 <strong>Transformer</strong> 骨干网络带来的高推理延迟和内存消耗问题。</li><li>模型利用 <strong>深度状态空间模型</strong> 作为骨干，实现高效的多模态序列处理与轨迹生成。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出一个轻量级、高速的 <strong>VLA</strong> 模型，可在资源受限环境中高效运行，降低了长上下文多模态输入的推理延迟与显存使用。</li><li>引入 <strong>Mamba</strong> 作为骨干架构，利用其线性时间复杂度的序列处理能力进行 <strong>VLA</strong> 建模。</li><li>设计了一种两阶段训练策略，第一阶段使用速度损失，第二阶段引入加速度损失以细化策略，提升执行平滑度。</li><li>在仿真与真实物理实验中验证了模型的有效性，在真实世界评估中，任务成功率比代表性大规模 <strong>VLA</strong> 高 <strong>21个百分点</strong>，且推理速度提升约 <strong>3倍</strong>。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>模型架构由输入嵌入模块、<strong>Mamba</strong> 骨干网络和动作头三部分组成。</li><li>输入嵌入模块将机器人状态、状态增量、视觉图像和语言指令编码为多模态 token 序列。其中视觉编码使用 <strong>SigLIP 2</strong>。</li><li><strong>Mamba</strong> 骨干网络处理多模态 token 序列，通过其选择性的深度 <strong>SSM</strong> 层进行因果序列建模，计算复杂度为线性。</li><li>动作头直接从骨干网络最后的隐藏状态生成连续的动作轨迹块，无需离散化。</li><li>创新点在于使用 <strong>Mamba</strong> 替代 <strong>Transformer</strong> 骨干以规避二次方复杂度，并采用两阶段损失（速度损失 + 加速度损失）来训练生成平滑轨迹。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>仿真实验使用 <strong>Meta-World</strong> 基准数据集，包含 <strong>2,500个</strong> 操作回合。</li><li>真实世界实验使用 <strong>Human Support Robot (HSR)</strong> 平台，自采集了 <strong>250个</strong> 回合（5个任务，每任务50回合）。</li><li>模型参数量约为 <strong>467M</strong>，计算量约为 <strong>91 GFLOPs</strong>。</li><li>训练使用 <strong>NVIDIA GeForce RTX 4090 GPU</strong> (24GB)，训练时长约 <strong>20小时</strong>，推理速度为 <strong>216 ms/chunk</strong>。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境包括 <strong>Meta-World</strong> 仿真基准和真实世界的移动操作任务。</li><li>主要评估指标为 <strong>任务成功率</strong> 和 <strong>推理速度</strong>。</li><li>在 <strong>Meta-World</strong> 基准上，<strong>AnoleVLA</strong> 平均成功率达到 <strong>67.85%</strong>，显著优于同等参数规模的基线模型 <strong>SmolVLA</strong> (57.33%)、<strong>TinyVLA</strong> (31.58%) 和 <strong>VLA-Adapter</strong> (0.94%)。</li><li>在真实世界实验中，<strong>AnoleVLA</strong> 平均成功率为 <strong>63%</strong>，优于所有小规模 <strong>VLA</strong> 基线，且比大规模 <strong>VLA</strong> 基线 <strong>π₀.₅</strong> 高 <strong>21个百分点</strong>，同时推理速度（<strong>216 ms/chunk</strong>）比 <strong>π₀.₅</strong>（<strong>578 ms/chunk</strong>）快约 <strong>3倍</strong>。</li><li>消融实验证明，引入加速度损失的第二阶段训练使成功率提升了 <strong>4.73个百分点</strong>。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

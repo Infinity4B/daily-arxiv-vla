@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mixture of Horizons in Action Chunking - VLA 论文精选</title>
+    <meta name="description" content="该论文研究了视觉-语言-动作（VLA）模型中动作块长度（horizon）的影响。研究发现存在一个固有的权衡：较长的horizon提供更好的全局规划能力但会降低细粒度精度，而较短的horizon提供精确的局部控制但在长期任务上表现不佳。为解决这一问题，论文提出了混合视界策略，通过将动作块重组为不同长度的分段，使用共享的动作变换器并行处理，并通过轻量级线性门控融合输出。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.19433">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Mixture of Horizons in Action Chunking</h1>
+          <div class="detail-meta">2025-11-24 · <a href="http://arxiv.org/abs/2511.19433" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.19433" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.19433</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文总结</h2>
+<h2 class="section-title">论文研究单位</h2>
+<p>中国人民大学 (RUC), 北卡罗来纳大学教堂山分校 (UNC), 香港中文大学 (CUHK)</p>
+<h2 class="section-title">论文概述</h2>
+<p>该论文研究了视觉-语言-动作（VLA）模型中动作块长度（horizon）的影响。研究发现存在一个固有的权衡：较长的horizon提供更好的全局规划能力但会降低细粒度精度，而较短的horizon提供精确的局部控制但在长期任务上表现不佳。为解决这一问题，论文提出了混合视界策略，通过将动作块重组为不同长度的分段，使用共享的动作变换器并行处理，并通过轻量级线性门控融合输出。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>系统研究了VLA中动作块horizon的影响，揭示了长期预测与短期精度之间的关键权衡。</li><li>提出了混合视界策略，这是一个即插即用、低开销的方法，缓解了上述权衡，提升了性能和泛化能力。</li><li>提出了通过跨horizon共识的动态推理方案，以实现更稳定、更快的执行。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>混合视界策略包含以下关键组件：</p>
+<ul><li>动作块重排：将最大horizon H的动作块按候选集合 H={h1, ..., hN} 截断为多个子块。</li><li>共享处理：使用单一动作变换器并行处理所有horizon的子块，通过特定注意力掩码处理不同长度。</li><li>门控融合：添加轻量级线性门控头，为每个时间步和horizon生成权重，通过softmax归一化后加权融合各horizon预测。</li><li>平衡损失：引入负载平衡损失，鼓励所有horizon被均衡利用，避免门控网络退化。</li><li>动态推理：通过跨horizon共识机制，选择稳定的动作前缀执行，将不确定动作推迟到下次重规划，提高吞吐量。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据集：LIBERO（包含Spatial、Object、Goal、Long四个任务套件）和RoboTwin 2.0（包含50个双手机器人任务）。</li><li>训练资源：4块NVIDIA A100 GPU，训练30k迭代，批量大小32，LIBERO训练在10小时内完成，RoboTwin训练约3k-10k迭代。</li><li>基础模型：基于PaliGemma的π系列模型（π0、π0.5、πreg）。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境：LIBERO仿真环境（评估500次试验）和RoboTwin 2.0仿真环境（简单和困难模式各评估100次试验）。</li><li>评估指标：任务成功率，LIBERO执行每个动作块的前5步，RoboTwin执行前20步。</li><li>比较方法：包括Octo、OpenVLA、Diffusion Policy等SOTA方法，在相同随机种子下进行公平比较。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

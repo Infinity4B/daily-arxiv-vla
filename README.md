@@ -1,6 +1,6 @@
 # ArXiv Papers 网站
 
-这是一个展示ArXiv论文精选的静态网站，支持搜索和详情查看功能。项目会自动爬取包含"VLA"关键词的论文，并使用AI生成摘要。
+这是一个展示ArXiv论文精选的静态网站，支持搜索和独立详情页查看功能。项目会自动爬取包含"VLA"关键词的论文，并使用AI生成摘要。
 
 ## 功能特性
 
@@ -10,7 +10,8 @@
 - 🔍 实时搜索功能
 - 📱 响应式设计，支持移动端
 - 🎨 现代化暗色主题界面
-- 📄 论文详情全屏视图展示
+- 📄 每篇论文生成独立静态详情页
+- 💾 按 arXiv ID 独立记录论文页滚动进度
 - ⏰ **定时任务**: 每日中午12点自动更新内容
 
 ## 本地开发
@@ -61,7 +62,7 @@ python scripts/generate_summaries.py
 python scripts/build_site.py
 ```
 
-这将在 `site/` 目录下生成静态网站文件。
+这将在 `site/` 目录下生成静态网站文件，包括首页、轻量数据文件，以及每篇论文对应的独立静态详情页。
 
 ### 本地预览
 
@@ -149,9 +150,13 @@ arxiv/
 │   └── build_site.py            # 网站构建脚本
 ├── site/                        # 生成的静态网站
 │   ├── index.html
+│   ├── papers/
+│   │   └── <arxiv-id>/
+│   │       └── index.html
 │   └── assets/
 │       ├── style.css
 │       ├── app.js
+│       ├── paper.js
 │       └── data.json
 └── .github/
     └── workflows/

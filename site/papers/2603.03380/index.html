@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LiteVLA-Edge: Quantized On-Device Multimodal Control for Embedded Robotics - VLA 论文精选</title>
+    <meta name="description" content="论文提出了 LiteVLA-Edge，这是一个面向嵌入式机器人的部署导向型视觉-语言-动作（VLA）流水线。 旨在解决现有 VLA 模型计算需求大、推理延迟高，难以在功耗受限的边缘设备上部署的问题。 实现了完全离线的设备端推理，使机器人能够进行实时的闭环视觉运动控制。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.03380">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">LiteVLA-Edge: Quantized On-Device Multimodal Control for Embedded Robotics</h1>
+          <div class="detail-meta">2026-03-03 · <a href="http://arxiv.org/abs/2603.03380" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.03380" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.03380</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Clark Atlanta University</strong></li><li><strong>Siemens Corporation</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出了 <strong>LiteVLA-Edge</strong>，这是一个面向嵌入式机器人的部署导向型视觉-语言-动作（VLA）流水线。</li><li>旨在解决现有 VLA 模型计算需求大、推理延迟高，难以在功耗受限的边缘设备上部署的问题。</li><li>实现了完全离线的设备端推理，使机器人能够进行实时的闭环视觉运动控制。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>在 <strong>NVIDIA Jetson AGX Orin</strong> 上实现了 <strong>150.5 ms</strong> 的端到端 VLA 推理延迟（约 6.6 Hz），相比之前的基线提升了约 220%。</li><li>提供了与 <strong>OpenVLA</strong>、<strong>EdgeVLA</strong> 和 <strong>Efficient VLA</strong> 的对比分析，展示了在低功耗硬件上优越的“推理-频率”平衡。</li><li>描述了一个使用 <strong>GGUF 量化</strong> 的部署就绪流水线，使消费级边缘芯片能够用于高频机器人控制。</li><li>验证了系统在连续 <strong>ROS 2</strong> 操作中保持确定性动作生成和低抖动（$\sigma < 0.2$ ms）的能力。</li><li>证明了该系统能够实现 <strong>闭环反馈</strong>，允许机器人在单一人类注意力窗口内对动态环境变化做出反应。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>采用 <strong>SmolVLM-256M</strong> 作为多模态骨干网络，并使用监督学习的图像到动作进行微调。</li><li>微调阶段使用 <strong>FP32</strong> 精度和 <strong>LoRA</strong>（Rank 8, Alpha 8）技术，以保证电机命令的高保真映射。</li><li>训练后使用 <strong>4-bit GGUF 量化 (Q4_K_M)</strong> 进行模型压缩，显著减小模型尺寸以适应边缘设备内存。</li><li>利用 <strong>llama.cpp</strong> 运行时和 CUDA 后端，将所有 42 层 Transformer 层卸载到 GPU，并截断上下文窗口至 512 以优化延迟。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集：精选的机器人演示数据集。</li><li>模型规模：基于 <strong>SmolVLM-256M</strong>（256M 参数）。</li><li>硬件资源：<strong>NVIDIA Jetson AGX Orin (64GB)</strong> 和 <strong>Jetson Orin NX</strong>。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：完全在设备端进行，集成了 <strong>ROS 2</strong> 感知-推理-动作流水线。</li><li>主要指标：端到端推理延迟、推理频率和抖动（标准差）。</li><li>关键结果：平均推理延迟为 <strong>150.5 ms</strong>（约 6.6 Hz），标准差极低（<strong>0.13 ms</strong>）。</li><li>性能对比：相比 <strong>OpenVLA</strong>（需要桌面级 GPU）和早期 <strong>LiteVLA</strong>（多秒级延迟），实现了质的飞跃，达到了反应式控制所需的 6-10 Hz 阈值。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

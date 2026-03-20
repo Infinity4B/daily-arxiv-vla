@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CAST: Counterfactual Labels Improve Instruction Following in Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="本文提出了一种名为CAST（Counterfactual Augmentation with Synthetic Trajectories）的新方法，用于改进视觉-语言-动作（VLA）模型遵循指令的能力。当前VLA模型在遵循细粒度命令方面存在困难，原因在于现有机器人数据集缺乏语义多样性和语言基础。CAST利用视觉-语言模型（VLM）为现有机器人数据集生成反事实标签，通过增加语言基础的多样性和粒度来" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2508.13446">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">CAST: Counterfactual Labels Improve Instruction Following in Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-08-19 · <a href="http://arxiv.org/abs/2508.13446" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2508.13446" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2508.13446</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>University of California Berkeley, Princeton University</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了一种名为CAST（Counterfactual Augmentation with Synthetic Trajectories）的新方法，用于改进视觉-语言-动作（VLA）模型遵循指令的能力。当前VLA模型在遵循细粒度命令方面存在困难，原因在于现有机器人数据集缺乏语义多样性和语言基础。CAST利用视觉-语言模型（VLM）为现有机器人数据集生成反事实标签，通过增加语言基础的多样性和粒度来提升VLA的性能。该方法无需额外收集数据，通过合成反事实语言和动作，显著提高了策略遵循指令的能力。在三个真实环境中的视觉语言导航实验表明，使用CAST的策略在导航任务上的成功率比基线提高了27%，达到了与最先进方法相当的水平。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出了CAST方法：一种新颖的数据增强方案，通过利用VLM为现有数据集生成反事实的语言和动作标签，以解决语言条件策略中的后验崩溃问题。</li><li>创建了CAST数据集：通过上述方法生成的增强数据集，包含原始轨迹和分支出去的反事实轨迹。</li><li>训练了CounterfactualVLA模型：一个基于PaliGemma的3B参数VLA模型，在CAST数据集上进行微调。</li><li>实验验证：在27个语言指令和3个真实环境中的实验表明，该方法在指令遵循任务上比仅使用后验标签的基线提升了27%的成功率，并优于多个SOTA基线。</li><li>开源贡献：公开了CAST增强代码、CounterfactualVLA策略训练代码、CAST数据集以及训练好的模型检查点。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<p>CAST方法旨在为同一观察生成多个不同的语言-动作对，迫使策略关注语言指令以选择正确动作，从而避免后验崩溃。该方法包含以下步骤：</p>
+<ol><li><strong>原子标签生成</strong>：将原始轨迹中的动作离散化为简单的原子命令，如“turn left”、“turn right”、“go forward”、“stop”等，形成一个带原子标签的数据集。</li><li><strong>原子策略训练</strong>：使用上述数据集训练一个原子策略，该策略专门用于执行这些短视距的原子命令。该策略基于EfficientNet-b2和扩散模型。</li><li><strong>反事实指令生成</strong>：在原始轨迹的决策点，使用VLM根据当前观察和原始指令生成多种可行的反事实指令及其对应的原子命令。</li><li><strong>反事实轨迹合成</strong>：利用训练好的原子策略，为每个反事实的原子命令采样生成相应的动作序列，从而构建出从原始轨迹分支出但未实际执行的反事实轨迹。</li><li><strong>VLA模型训练</strong>：将原始数据和合成的反事实数据（观察、指令、动作）结合，用于训练一个高容量的VLA模型（CounterfactualVLA），该模型基于PaliGemma，能够将复杂的语言指令映射到机器人动作。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：使用GNM数据集，该数据集包含多种机器人形态（轮式机器人、四足机器人等）在室内和室外环境中的导航轨迹。通过CAST方法对该数据集进行增强，生成用于训练的CAST数据集。</li><li><strong>训练资源</strong>：CounterfactualVLA模型在v4-8 TPU虚拟机上训练了100,000步，耗时约50小时。批次大小为192，学习率为1e-4。若使用v4-32 TPO pod，可将训练时间缩短至约20小时。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：在3个真实的物理环境中进行评估，包括拥挤的办公室走廊、厨房/公共区域和一个室外公园。</li><li><strong>任务</strong>：共27个语言指令，分为三类：</li></ul>
+<p> - Object Navigation：导航到特定物体（如“移动到橙色椅子”）。</p>
+<p> - Referential Navigation：相对于物体或结构进行导航，需要空间理解（如“移动到椅子的右边”）。</p>
+<p> - Continuous Navigation：执行相对于环境的连续行为（如“沿着白墙移动”）。</p>
+<ul><li><strong>评估指标</strong>：主要指标是<strong>成功率</strong>。根据任务类型定义不同的成功标准：物体导航中，成功定义为到达目标物体50厘米范围内；关系导航中，成功定义为正确执行相对位置移动且无碰撞；连续导航中，成功定义为在参考结构1米内移动并持续行为2米以上。每个指令在每种环境中进行5次试验，结果以成功次数/总试验数（如3/5）和平均成功率报告，并计算标准误差。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

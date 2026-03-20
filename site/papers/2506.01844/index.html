@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SmolVLA: A Vision-Language-Action Model for Affordable and Efficient Robotics - VLA 论文精选</title>
+    <meta name="description" content="本文提出了SmolVLA，一个轻量级、高效且由社区驱动的视觉-语言-动作（VLA）模型。SmolVLA旨在显著降低训练和推理成本，同时保持与大型VLA模型相当的性能。它被设计为可在单个GPU上训练，并部署在消费级GPU甚至CPU上。为了进一步提高响应速度，论文引入了一个异步推理栈，将感知和动作预测与动作执行解耦，允许通过分块动作生成实现更高的控制频率。尽管体积紧凑，SmolVLA在模拟和真实世界的" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2506.01844">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">SmolVLA: A Vision-Language-Action Model for Affordable and Efficient Robotics</h1>
+          <div class="detail-meta">2025-06-02 · <a href="http://arxiv.org/abs/2506.01844" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2506.01844" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2506.01844</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Hugging Face, Sorbonne University, valeo.ai, École Normale Supérieure Paris-Saclay</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了SmolVLA，一个轻量级、高效且由社区驱动的视觉-语言-动作（VLA）模型。SmolVLA旨在显著降低训练和推理成本，同时保持与大型VLA模型相当的性能。它被设计为可在单个GPU上训练，并部署在消费级GPU甚至CPU上。为了进一步提高响应速度，论文引入了一个异步推理栈，将感知和动作预测与动作执行解耦，允许通过分块动作生成实现更高的控制频率。尽管体积紧凑，SmolVLA在模拟和真实世界的机器人基准测试中，实现了与比其大10倍的VLA模型相媲美的性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>轻量级架构：提出了SmolVLA，一个为在消费级GPU上训练和部署而优化的紧凑高效视觉-语言代理。</li><li>基于社区驱动数据集的预训练：SmolVLA在完全来自公开社区贡献数据集的少于3万次训练回合上进行端到端训练。</li><li>异步推理：引入了一个优化的异步推理栈，将动作执行与观察处理和动作预测解耦，以降低延迟并实现快速、资源高效的推理。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>SmolVLA由两个主要组件组成：一个用于感知的预训练视觉-语言模型（VLM）和一个用于行动的动作专家。VLM处理来自多个RGB摄像头的图像、描述任务的语言指令以及机器人的传感器运动状态。VLM输出的特征直接馈送给动作专家，后者输出最终的连续动作。</p>
+<p>模型架构的关键设计包括：</p>
+<ol><li>VLM：使用SmolVLM-2作为骨干，通过视觉编码器和像素洗牌技术处理图像序列。</li><li>状态、动作和特征投影器：使用线性投影层将状态投影到VLM维度，将动作投影到动作专家维度，并使VLM特征与动作专家的维度对齐。</li><li>视觉令牌缩减：不使用图像分块，仅使用全局图像，并通过像素洗牌操作将每帧的视觉令牌限制为64个。</li><li>通过层跳过实现更快的推理：跳过VLM中的计算，仅使用到指定层N（通常为总层的一半）的特征，将LLM和动作专家的计算成本减半。</li><li>流匹配动作专家：使用Transformer架构的条件流匹配Transformer作为动作专家，训练目标为预测从VLM特征和带噪声动作中得到的向量场。</li><li>交错交叉注意力和因果自注意力层：在动作专家中交错使用交叉注意力和自注意力层，其中交叉注意力层交叉关注VLM的键和值，自注意力层允许动作令牌相互关注。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p>数据集：使用来自Hugging Face的481个公开社区数据集进行预训练，总计约22.9k次训练回合和1060万帧数据。数据筛选依据是实体类型、回合数、整体数据质量和帧覆盖率。使用VLM（Qwen2.5-VL-3B-Instruct）自动生成简洁的任务描述，并手动将相机映射到标准化视角类型（顶视、腕视、侧视）。</p>
+<p>训练资源：可在单个消费级GPU上进行训练。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p>评估环境：在模拟环境和真实世界机器人任务上进行评估。</p>
+<p>评估指标：成功率（Simulation Evaluation 和 Real-World Evaluation），以及在异步推理中控制频率和响应速度的提升。</p>
+<p>基线模型：与π0和ACT等模型进行比较。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

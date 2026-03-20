@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DM0: An Embodied-Native Vision-Language-Action Model towards Physical AI - VLA 论文精选</title>
+    <meta name="description" content="提出了一种名为 DM0 的 Embodied-Native（具身原生）的 Vision-Language-Action 框架，旨在实现 Physical AI，与传统“先预训练后适配”的范式不同。 旨在解决当前 VLA 模型通常在互联网静态数据上预训练，缺乏内在物理基础，从而导致适应物理任务时出现知识遗忘或性能下降的问题。 通过一个统一的三阶段训练流程，从初始阶段就融合了网络、驾驶和具身数据，同时" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.14974">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">DM0: An Embodied-Native Vision-Language-Action Model towards Physical AI</h1>
+          <div class="detail-meta">2026-02-16 · <a href="http://arxiv.org/abs/2602.14974" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.14974" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.14974</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>DM0 Team</strong></li><li><strong>Dexmal</strong></li><li><strong>StepFun</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了一种名为 <strong>DM0</strong> 的 <strong>Embodied-Native</strong>（具身原生）的 Vision-Language-Action 框架，旨在实现 Physical AI，与传统“先预训练后适配”的范式不同。</li><li>旨在解决当前 VLA 模型通常在互联网静态数据上预训练，缺乏内在物理基础，从而导致适应物理任务时出现知识遗忘或性能下降的问题。</li><li>通过一个统一的三阶段训练流程，从初始阶段就融合了网络、驾驶和具身数据，同时学习语义知识和物理先验。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>Embodied-Native</strong> 的训练范式，从早期阶段就将具身数据作为一等公民，与其他模态数据统一训练。</li><li>设计了一个<strong>三阶段训练流程</strong>：预训练、中间训练和后训练，逐步融合多种数据源并最终专精于目标平台。</li><li>采用<strong>多源混合训练</strong>策略，在具身数据上解耦动作专家和 VLM 的梯度，以保留 VLM 的通用知识。</li><li>引入了<strong>具身空间支架</strong>策略，通过生成空间思维链来分解复杂指令，约束动作解空间。</li><li>开发了基于 <strong>Flow Matching</strong> 的动作专家模型，并与 VLM 骨干集成，实现了从感知、推理到连续动作的端到端学习。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>模型架构：基于 <strong>Qwen3-1.7B</strong> 大语言模型构建 VLM 骨干，并整合了感知编码器来处理多模态输入；其上构建了一个基于 <strong>Flow Matching</strong> 的动作专家来生成连续机器人动作。</li><li>核心技术：采用<strong>多源混合训练</strong>策略，对于具身数据，动作专家的梯度不回传到 VLM；对于非具身数据，VLM 继续训练以保留通用能力。</li><li>创新点：<strong>Embodied Spatial Scaffolding</strong> 策略，通过层次化预测（子任务、目标框、末端轨迹、离散动作）引导模型从高层语义推理逐步过渡到低层控制。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>预训练数据：整合了知识（网络文本、图像-文本对）、教育（K-12、大学科目）、OCR、视觉问答、GUI、<strong>驾驶</strong>场景和<strong>具身</strong>交互日志等多种来源的数据。</li><li>中间训练数据：混合了视觉-语言数据、具身推理数据、仿真数据、单臂/双臂机器人数据（如 <strong>LIBERO</strong>、<strong>RoboTwin2.0</strong>、<strong>OXE</strong>、<strong>ALOHA</strong> 等）。</li><li>模型规模：总参数量约为 <strong>2B</strong>，骨干模型基于 <strong>Qwen3-1.7B</strong>。</li><li>训练资源：预训练使用了大规模 GPU 集群，中间训练使用了 <strong>64 块 NVIDIA H20 GPU</strong>，后训练和 SFT 使用了 <strong>8 到 16 块 H20 GPU</strong>。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：在真实世界的 <strong>RoboChallenge</strong> 基准测试上进行评估，特别是 <strong>Table30</strong> 任务套件。</li><li>评估指标：主要使用<strong>成功率</strong>，在通才模型评估中还结合了<strong>任务分数</strong>。</li><li>关键实验结果：<strong>DM0-Specialist</strong> 在 Table30 上的平均成功率达到 <strong>62.0%</strong>，超过了 <strong>GigaBrain-0.1 (51.67%)</strong>、<strong>Spirit-v1.5 (51.00%)</strong> 和 <strong>π0.5 (42.67%)</strong>。<strong>DM0-Generalist</strong> 的平均成功率为 <strong>37.3%</strong>，显著优于 <strong>π0.5-Generalist (17.67%)</strong> 和 <strong>π0-Generalist (9.0%)</strong>。</li><li>额外评估：验证了 <strong>DM0</strong> 在场景理解、OCR、子任务预测等通用多模态理解任务上的能力。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

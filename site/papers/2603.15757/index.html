@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>You&#x27;ve Got a Golden Ticket: Improving Generative Robot Policies With A Single Noise Vector - VLA 论文精选</title>
+    <meta name="description" content="提出&quot;彩票假设&quot;（Lottery Ticket Hypothesis）的机器人控制版本：预训练的生成式机器人策略（如 diffusion 或 flow matching 策略）可以通过使用固定的&quot;黄金票据&quot;（golden ticket）噪声向量来提升性能，而非从高斯分布重复采样噪声 该方法保持预训练策略参数冻结，不训练任何新网络，仅通过优化初始噪声向量来适应下游任务 研究问题：对于预训练的生成式机" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.15757">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">You&#x27;ve Got a Golden Ticket: Improving Generative Robot Policies With A Single Noise Vector</h1>
+          <div class="detail-meta">2026-03-16 · <a href="http://arxiv.org/abs/2603.15757" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.15757" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.15757</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>BDAI Institute</strong> (百度研究院)</li><li>论文作者包括来自 BDAI Institute 的研究人员和合作者</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出<strong>"彩票假设"（Lottery Ticket Hypothesis）的机器人控制版本</strong>：预训练的生成式机器人策略（如 diffusion 或 flow matching 策略）可以通过使用固定的"黄金票据"（golden ticket）噪声向量来提升性能，而非从高斯分布重复采样噪声</li><li>该方法<strong>保持预训练策略参数冻结</strong>，不训练任何新网络，仅通过优化初始噪声向量来适应下游任务</li><li>研究问题：对于预训练的生成式机器人策略，如果提供一个恒定的初始噪声输入而不是每次从高斯分布采样，会发生什么？</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li><strong>形式化机器人控制的彩票假设</strong>：提出使用单一初始噪声向量（golden ticket）来适配机器人行为以优化下游奖励函数</li><li><strong>随机搜索方法</strong>：提出基于蒙特卡洛策略评估的黄金票据搜索算法，只需能够注入初始噪声并计算任务奖励即可</li><li><strong>跨模型架构验证</strong>：在多种模型架构（VLA、diffusion policies、flow matching policies）、观测模态和机器人实体上验证了方法的有效性</li><li><strong>与先进方法竞争力相当</strong>：黄金票据方法可与现有的基于 RL 的潜在转向方法（如 DSRL）竞争，在某些情况下表现更优</li><li><strong>开源代码</strong>：发布预训练策略和黄金票据的代码库</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>核心思想</strong>：在 diffusion/flow matching 模型的逆向过程中，不从各向同性高斯分布采样初始噪声，而是使用一个经过优化的恒定噪声向量（称为"golden ticket"）</li><li><strong>搜索方法</strong>：采用随机搜索（Algorithm 1），采样 n 个初始噪声向量（lottery tickets），在搜索环境中评估每个票据的性能，选择累积奖励最高的票据</li><li><strong>无需额外训练</strong>：该方法不假设可以访问去噪过程的中间步骤，将预训练策略视为黑盒，只需能够注入初始噪声并获取episode奖励</li><li><strong>适用性广泛</strong>：适用于所有 diffusion/flow matching 策略，包括许多 VLA（视觉-语言-动作）模型</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>模拟基准</strong>：</li></ul>
+<p> - <strong>franka_sim</strong>：单臂 Franka 机器人抓取立方体任务</p>
+<p> - <strong>LIBERO</strong>：包含 LIBERO-Object、LIBERO-Goal、LIBERO-Spatial 三个任务套件，共 30 个任务</p>
+<p> - <strong>robomimic</strong>：lift、can、square、transport 四个任务</p>
+<p> - <strong>DexMimicGen</strong>：双手操作任务（Drawer Cleanup、Lift Tray、Threading、Box Cleanup、Piece Assembly）</p>
+<ul><li><strong>硬件实验</strong>：</li></ul>
+<p> - Franka 机械臂上的 RGB diffusion policy（方块抓取任务）</p>
+<p> - 点云 diffusion policy（香蕉抓取、杯子推动任务）</p>
+<ul><li><strong>策略类型</strong>：Flow matching policy、SmolVLA（VLA 模型）、DPPO 训练的 diffusion policy、RGB diffusion policy</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>总体结果</strong>：在 43 个任务中的 38 个任务上提升了策略性能，至少在 41 个任务上达到或超过基线</li><li><strong>franka_sim</strong>：基线策略平均成功率 38.5%，黄金票据达到 96%</li><li><strong>robomimic</strong>：can 任务从 42.8% 提升到 80.8%（38% 提升）</li><li><strong>LIBERO</strong>：LIBERO-Spatial 提升 13%，LIBERO-Goal 提升 12.8%，LIBERO-Object 提升 8%</li><li><strong>DexMimicGen</strong>：Box Cleanup 从 87.6% 提升到 97.8%</li><li><strong>硬件实验</strong>：</li></ul>
+<p> - 方块抓取：从 80% 提升到 98%（18% 提升），仅需 150 个搜索 episodes</p>
+<p> - 香蕉抓取：基线 30%，黄金票据 100%（60% 提升）</p>
+<ul><li><strong>与 DSRL 对比</strong>：在 5 个 DexMimicGen 任务上，使用更少计算资源达到相当或更好的性能</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

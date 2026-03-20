@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RobustVLA: Robustness-Aware Reinforcement Post-Training for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="RobustVLA是一种针对Vision-Language-Action (VLA)模型的在线强化学习后训练方法，旨在提高模型在环境扰动（如观察噪声和动作噪声）下的鲁棒性。传统方法在out-of-distribution部署中易失败，RobustVLA通过理论分析的鲁棒性界限，引入Jacobian正则化和smoothness正则化来显式约束模型敏感性，显著提升VLA模型的稳定性和可靠性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.01331">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">RobustVLA: Robustness-Aware Reinforcement Post-Training for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-11-03 · <a href="http://arxiv.org/abs/2511.01331" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.01331" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.01331</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>Westlake University</p>
+<h2 class="section-title">论文概述</h2>
+<p>RobustVLA是一种针对Vision-Language-Action (VLA)模型的在线强化学习后训练方法，旨在提高模型在环境扰动（如观察噪声和动作噪声）下的鲁棒性。传统方法在out-of-distribution部署中易失败，RobustVLA通过理论分析的鲁棒性界限，引入Jacobian正则化和smoothness正则化来显式约束模型敏感性，显著提升VLA模型的稳定性和可靠性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出RobustVLA方法，结合在线RL和鲁棒性约束，针对环境扰动优化VLA模型。</li><li>进行系统鲁棒性分析，识别观察扰动和动作扰动的影响，分别推导Jacobian敏感性和smoothness稳定性的关键作用。</li><li>引入双正则化策略：Jacobian正则化抑制观察噪声敏感性，smoothness正则化缓解动作扰动和更新漂移。</li><li>实验证明RobustVLA在多种扰动下优于SOTA基线（如RIPT-VLA、OpenVLA等），提升迁移学习和消融性能。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>问题建模</strong>：基于马尔可夫决策过程（MDP），VLA模型πθ映射语言指令和观察序列到动作分布。</li><li><strong>鲁棒性分析</strong>：</li></ul>
+<p> - 定理1（观察扰动误差界限）：返回差距受Jacobian敏感性和观察噪声影响，需控制\|\|∇_s log πθ(a\|s)\|\|。</p>
+<p> - 定理2（动作扰动返回漂移）：返回差距与累积模型漂移∑δ_t和动作噪声σ√d相关，需限制模型更新平滑度。</p>
+<p> - 定理3（联合扰动鲁棒性）：观察和动作扰动联合时返回差距扩大，需同时应用双正则化。</p>
+<ul><li><strong>正则化目标</strong>：</li></ul>
+<p> - Jacobian正则化：ℛ_Jac(θ) = E[min(\|\|∇_s log πθ(a\|s)\|\|², G_max)]，限制输入敏感性。</p>
+<p> - Smoothness正则化：ℛ_Smooth(θ) = E[\|\|μ_θ(s) - μ_θ-(s)\|\|²]，稳定模型更新。</p>
+<p> - 整体目标：ℒ_RobustVLA = ℒ_PPO + αℛ_Jac + βℛ_Smooth。</p>
+<ul><li><strong>算法实现</strong>：采用课程学习机制（RobustVLA-C），基于成功率的移动平均自适应调整噪声水平（ε_min到ε_max），防止训练初期不稳定。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：基于LIBERO仿真平台，包含Objects、Long、Spatial、Goal四个任务套件，每个套件使用50个保留测试上下文。</li><li><strong>扰动设置</strong>：</li></ul>
+<p> - 观察扰动：图像移位、旋转、颜色抖动、遮挡、擦除。</p>
+<p> - 动作扰动：零均值高斯噪声，标准差0.1、0.2、0.3。</p>
+<ul><li><strong>训练资源</strong>：在线RL交互收集数据，算法在仿真环境中运行；评估基于单VLA模型部署至所有任务。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：LIBERO仿真平台，模拟机器人操作任务场景。</li><li><strong>评估指标</strong>：</li></ul>
+<p> - 主要指标：平均成功率（SR）在扰动下的表现。</p>
+<p> - 对比基线：离线IL（π₀、GEVRM、OpenVLA、OpenVLA-OFT）、离线RL（RWR、ARFM、ReinboT）、在线RL（RIPT-VLA）。</p>
+<p> - 其他评估：迁移学习性能（从LIBERO Goal套件到下游任务）、消融研究（超参数α和β影响、T-SNE观察表示可视化）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

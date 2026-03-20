@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unifying Perception and Action: A Hybrid-Modality Pipeline with Implicit Visual Chain-of-Thought for Robotic Action Generation - VLA 论文精选</title>
+    <meta name="description" content="本文提出VITA（Vision-Integrated Trajectory Alignment）框架，旨在统一视觉感知与机器人动作生成。通过构建跨模态共享的离散潜在空间，VITA将视觉观察与低级动作对齐，并引入隐式视觉思维链（Implicit Visual Chain-of-Thought）：自回归生成的token同时解码为未来帧预测和机器人动作序列，使视觉动态作为动作规划的归纳偏置。该方法解决了" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2511.19859">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Unifying Perception and Action: A Hybrid-Modality Pipeline with Implicit Visual Chain-of-Thought for Robotic Action Generation</h1>
+          <div class="detail-meta">2025-11-25 · <a href="http://arxiv.org/abs/2511.19859" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2511.19859" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2511.19859</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>南京大学计算机软件新技术国家重点实验室（State Key Laboratory for Novel Software Technology, Nanjing University）</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出VITA（Vision-Integrated Trajectory Alignment）框架，旨在统一视觉感知与机器人动作生成。通过构建跨模态共享的离散潜在空间，VITA将视觉观察与低级动作对齐，并引入隐式视觉思维链（Implicit Visual Chain-of-Thought）：自回归生成的token同时解码为未来帧预测和机器人动作序列，使视觉动态作为动作规划的归纳偏置。该方法解决了视觉-动作模态 gap 和训练不稳定性问题，在模拟与真实环境中实现SOTA性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>框架创新</strong>：提出VITA框架，通过统一潜在空间对齐感知与动作，并将未来帧预测内化为动作生成的归纳偏置，实现正向与逆向动力学联合建模。</li><li><strong>训练策略</strong>：设计渐进式训练方法（warmup + co-train + fine-tune），使模型从大规模人类演示视频中学习通用运动动态，同时过滤无关像素细节。</li><li><strong>性能提升</strong>：在CALVIN、LIBERO和SimplerEnv模拟基准上分别提升14.5%、9.6%和12.1%，真实世界任务平均成功率达80.5%。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>跨模态向量量化框架</strong>：</li></ol>
+<p> - <strong>视觉分支</strong>：使用DINOv2提取连续帧特征，经M-Former生成运动嵌入，通过共享码本量化后解码为未来帧（L1 + SSIM损失）。</p>
+<p> - <strong>动作分支</strong>：对动作序列进行离散余弦变换（DCT）和频率编码，量化后解码重建动作（MSE损失）。</p>
+<p> - 共享码本（Codebook）统一视觉与动作表示，无需跨模态对齐数据。</p>
+<ol><li><strong>VLM主干架构</strong>：</li></ol>
+<p> - <strong>渐进注意力机制</strong>：分阶段处理输入token → 文本子任务token → 跨模态token，确保信息流单向性（Input → Textual → Cross-modal）。</p>
+<p> - <strong>文本CoT</strong>：生成符号化子任务序列（如[GRASP], [MOVE]），作为高层规划指导。</p>
+<p> - <strong>隐式视觉CoT</strong>：基于子任务token生成跨模态token，同步解码为未来帧和动作序列。</p>
+<ol><li><strong>训练流程</strong>：</li></ol>
+<p> - <strong>Warmup阶段</strong>：独立训练视觉/动作自编码器和共享码本，使用单模态数据（无监督重建损失）。</p>
+<p> - <strong>Co-train阶段</strong>：冻结码本，联合训练VLM与双解码器，混合使用视频数据和同步视频-动作数据（视觉损失 + 动作损失）。</p>
+<p> - <strong>Fine-tune阶段</strong>：仅微调动作解码器于特定任务数据。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>混合数据集</strong>：</li></ol>
+<p> - 人类演示视频：SSv2、Ego4D。</p>
+<p> - 机器人数据（真实）：OXE、RoboMIND。</p>
+<p> - 机器人数据（模拟）：CALVIN-ABC、LIBERO。</p>
+<ol><li><strong>训练资源</strong>：</li></ol>
+<p> - 模型规模：SigLIP视觉编码器（400M） + Gemma主干（2B） + 视觉/动作解码器（共约324M）。</p>
+<p> - 硬件：16块NVIDIA A100 GPU。</p>
+<p> - 时长：约5天，300K训练步数。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>模拟环境</strong>：</li></ol>
+<p> - <strong>CALVIN</strong>：多步骤家庭任务，评估连续5条指令的完成率（Average Number of Tasks）。</p>
+<p> - <strong>LIBERO</strong>：多任务套件（GOAL/SPATIAL/OBJECT/LONG），评估任务平均成功率。</p>
+<p> - <strong>SimplerEnv</strong>：Google Robot和WidowX平台，评估视觉匹配任务成功率。</p>
+<ol><li><strong>真实环境</strong>：</li></ol>
+<p> - <strong>UR-5e机器人平台</strong>：6项桌面操作任务，评估分布内（ID）和分布外（OOD）成功率。</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> - <strong>CALVIN</strong>：连续任务完成率（1-5任务）及平均完成长度（Avg. Len）。</p>
+<p> - <strong>LIBERO/SimplerEnv</strong>：任务平均成功率（%）。</p>
+<p> - <strong>真实世界</strong>：任务成功率（%），对比基线包括Pi0、OpenVLA、GR00T N1.5。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

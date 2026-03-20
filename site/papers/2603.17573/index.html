@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HeiSD: Hybrid Speculative Decoding for Embodied Vision-Language-Action Models with Kinematic Awareness - VLA 论文精选</title>
+    <meta name="description" content="论文旨在解决具身视觉-语言-动作（VLA）模型推理速度慢的问题，这是该领域实现实时控制的主要瓶颈。 研究分析了两种推测解码（Speculative Decoding， SD）方法：基于起草模型的方法和基于检索的方法，并发现二者在VLA模型中各有优劣，应混合使用以达到更优性能。 论文提出了一个名为 HeiSD 的端到端混合推测解码框架，通过优化检索式SD并设计运动学感知的边界确定策略，在保持高任务成" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.17573">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">HeiSD: Hybrid Speculative Decoding for Embodied Vision-Language-Action Models with Kinematic Awareness</h1>
+          <div class="detail-meta">2026-03-18 · <a href="http://arxiv.org/abs/2603.17573" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.17573" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.17573</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>由于提供的HTML原文中未明确列出作者所属机构，因此无法确定具体研究单位。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文旨在解决具身视觉-语言-动作（<strong>VLA</strong>）模型推理速度慢的问题，这是该领域实现实时控制的主要瓶颈。</li><li>研究分析了两种推测解码（<strong>Speculative Decoding</strong>， <strong>SD</strong>）方法：基于起草模型的方法和基于检索的方法，并发现二者在VLA模型中各有优劣，应混合使用以达到更优性能。</li><li>论文提出了一个名为 <strong>HeiSD</strong> 的端到端混合推测解码框架，通过优化检索式SD并设计运动学感知的边界确定策略，在保持高任务成功率的同时实现显著加速。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>通过对机器人轨迹模式的深入分析，得出关键见解：在VLA模型的推理过程中混合使用基于起草模型的SD和基于检索的SD能实现更优的性能平衡。</li><li>提出了检索式SD的优化方法，包括自适应验证跳过机制和序列级宽松接受策略，以解决检索草稿质量低和持久错误的问题。</li><li>设计了一种基于运动学的融合指标，用于在多步推理过程中自动、动态地确定两种SD方法的使用边界。</li><li>构建并开源了完整的 <strong>HeiSD</strong> 框架，在模拟基准和真实世界场景中实现了高达 <strong>2.45×</strong> 和 <strong>2.41×</strong> 的加速，同时保持了高任务成功率。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>HeiSD</strong> 框架的核心是混合推测解码策略，根据轨迹段的运动学特征自动选择使用检索式SD或基于起草模型的SD。</li><li>对于检索式SD的优化：提出了自适应验证跳过机制，根据历史轨迹特征相似性模式选择性跳过验证过程；提出了序列级宽松接受策略，将具有运动学关联的token分组为序列进行验证，允许整体偏差在特定范围内的序列被接受，从而减少持久错误并提高草稿多样性。</li><li>为确定混合边界：分析了轨迹段的曲率半径和累积位移等运动学特征，提出了一个融合这两个特征的归一化指标，用于在每一步推理中自动判断应采用哪种SD方法。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要评估使用 <strong>LIBERO</strong> 仿真基准数据集，包含 <strong>LIBERO-Goal</strong>、<strong>LIBERO-Object</strong>、<strong>LIBERO-Spatial</strong> 和 <strong>LIBERO-Long</strong> 四个任务套件。</li><li>基础VLA模型采用 <strong>OpenVLA</strong>；用于基于起草模型的SD的草稿模型是一个单层 <strong>LLaMA</strong> 块。</li><li>实验硬件平台包括 <strong>NVIDIA A100 GPU</strong> 和 <strong>Intel Xeon Silver 4410T CPU</strong>；检索数据库使用 <strong>Qdrant</strong> 向量数据库构建，部署在CPU内存中以降低GPU显存开销。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估在 <strong>LIBERO</strong> 仿真基准和真实机器人桌面操作环境中进行，主要评估指标为任务成功率（<strong>SR</strong>）和推理加速比。</li><li>在仿真实验中，<strong>HeiSD</strong> 相比标准自回归推理实现了 <strong>1.79×</strong> 至 <strong>2.45×</strong> 的加速；相比最优基线方法 <strong>SpecVLA</strong>，实现了 <strong>1.51×</strong> 至 <strong>2.22×</strong> 的进一步加速，且成功率更高。</li><li>在真实世界实验中，<strong>HeiSD</strong> 实现了 <strong>2.06×</strong> 至 <strong>2.41×</strong> 的加速，同时维持了与基线方法相当甚至更高的任务成功率。</li><li>实验结果验证了混合使用两种SD方法的有效性，以及所提出的优化策略在加速推理的同时保持任务精度的能力。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

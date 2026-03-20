@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Latent Action Pretraining from Videos - VLA 论文精选</title>
+    <meta name="description" content="论文提出了一种名为“潜动作预训练”（Latent Action Pretraining, LAPA）的无监督方法，用于在无需真实机器人动作标签的情况下预训练视觉-语言-动作（VLA）模型。该方法旨在从大规模无标签的互联网视频中学习机器人技能，克服现有VLA模型对人工遥操作数据的依赖，从而扩展数据来源和规模。LAPA通过学习离散的潜动作表示，并在少量机器人动作数据上微调，实现了对未见任务、对象和指令" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2410.11758">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Latent Action Pretraining from Videos</h1>
+          <div class="detail-meta">2024-10-15 · <a href="http://arxiv.org/abs/2410.11758" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2410.11758" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2410.11758</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>好的，我已阅读并理解了论文内容。以下是根据要求生成的Markdown格式论文总结：</p>
+<h2 class="section-title">论文研究单位</h2>
+<p>KAIST、华盛顿大学、微软研究院、NVIDIA、艾伦人工智能研究所。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了一种名为“潜动作预训练”（Latent Action Pretraining, LAPA）的无监督方法，用于在无需真实机器人动作标签的情况下预训练视觉-语言-动作（VLA）模型。该方法旨在从大规模无标签的互联网视频中学习机器人技能，克服现有VLA模型对人工遥操作数据的依赖，从而扩展数据来源和规模。LAPA通过学习离散的潜动作表示，并在少量机器人动作数据上微调，实现了对未见任务、对象和指令的泛化能力，性能超越了现有技术。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>首次提出无监督的VLA预训练框架LAPA，利用无动作标签的视频数据。</li><li>实验表明LAPA在跨任务、跨环境和跨形态设置中显著优于现有基线方法，并在真实任务中超越当前最优VLA模型OpenVLA（+6.22%）。</li><li>证明了仅使用人类操作视频进行预训练的有效性，为利用网络规模数据构建机器人基础模型开辟了道路。</li><li>展示了LAPA可作为世界模型生成神经轨迹，支持闭环评估。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>方法分为三个阶段：</p>
+<ol><li><strong>潜动作量化（Latent Action Quantization）</strong>：使用基于VQ-VAE的目标训练编码器-解码器模型，从连续视频帧（当前帧xt和未来帧xt+H）中学习离散的潜动作表示zt，通过量化损失和码本实现动作标记化。</li><li><strong>潜预训练（Latent Pretraining）</strong>：将预训练的视觉-语言模型（VLM）的编码器作为逆动力学模型，预测语言指令和当前观察xt对应的潜动作zt，冻结视觉编码器并训练语言模型参数。</li><li><strong>动作微调（Action Finetuning）</strong>：在小规模机器人动作数据集上微调模型，替换潜动作头为真实动作头（如末端执行器增量动作），映射潜空间到机器人动作，冻结视觉编码器。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> - 预训练：BridgeV2（机器人轨迹）、Open-X-Embodiment（多机器人数据集）、Something-Something V2（人类操作视频）。</p>
+<p> - 微调：Language Table（仿真推积木）、SIMPLER（仿真7-DOF WidowX臂）、真实世界桌面操作任务（7-DOF Franka Panda臂，3任务）。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 潜动作量化模型：使用NSVQ避免梯度崩溃，码本替换技术。</p>
+<p> - VLM骨干：7B Large World Model（LWM-Chat-1M）。</p>
+<p> - 预训练计算：8 H100 GPU训练34小时（272 GPU小时），比OpenVLA（21,500 A100小时）高效30倍。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 仿真：Language Table（2-DOF推任务）、SIMPLER（多任务仿真）。</p>
+<p> - 真实世界：Franka Emika Panda机械臂执行“拾取物体”、“覆盖物体”、“敲击物体”任务。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - 平均成功率（Average Success Rate），标准差（StdErr），针对seen/unseen对象、组合和指令设置。</p>
+<p> - 任务部分成功率（Partial Success Criterion）。</p>
+<p> - 生成轨迹质量（通过闭环 rollout 评估）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

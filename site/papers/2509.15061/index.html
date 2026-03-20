@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ask-to-Clarify: Resolving Instruction Ambiguity through Multi-turn Dialogue - VLA 论文精选</title>
+    <meta name="description" content="提出 Ask-to-Clarify 框架以解决真实环境中指令歧义性。框架首先通过多轮对话主动向用户提问澄清歧义，然后端到端生成低层动作执行具体任务。框架由协作组件（VLM）与动作组件（扩散专家）构成，并通过连接模块与两阶段“知识隔离”训练策略实现协作与动作生成能力的融合。在推理时通过信号检测器实现“提问/动作”模式的无缝切换。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.15061">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Ask-to-Clarify: Resolving Instruction Ambiguity through Multi-turn Dialogue</h1>
+          <div class="detail-meta">2025-09-18 · <a href="http://arxiv.org/abs/2509.15061" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.15061" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.15061</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>复旦大学计算机科学与人工智能学院</p>
+<p>上海创新研究院</p>
+<p>加州大学伯克利分校机械系统控制实验室（UC Berkeley Mechanical Systems Control Lab）</p>
+<h2 class="section-title">论文概述</h2>
+<p>提出 Ask-to-Clarify 框架以解决真实环境中指令歧义性。框架首先通过多轮对话主动向用户提问澄清歧义，然后端到端生成低层动作执行具体任务。框架由协作组件（VLM）与动作组件（扩散专家）构成，并通过连接模块与两阶段“知识隔离”训练策略实现协作与动作生成能力的融合。在推理时通过信号检测器实现“提问/动作”模式的无缝切换。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出任务与框架：要求具身智能体先通过多轮问答澄清歧义，再执行指令；采用 VLM 协作与扩散动作专家的组合，并设计连接模块以在两者间建立可靠条件。</li><li>两阶段知识隔离训练策略：先学习歧义澄清与交互，再学习端到端低层动作；通过冻结 VLM 防止灾难性遗忘，同时用连接模块补偿 VLM 与扩散模型的联动。</li><li>真实世界实验与验证：在 8 项真实任务上对比多种 SOTA VLA，表明该框架显著提升在歧义指令与复杂场景下的成功率与鲁棒性。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>任务定义：对给定视觉观察与歧义指令，Agent 依序生成澄清问题并接收回答；若干轮后推断正确指令，然后生成低层动作序列完成任务。</li><li>框架结构</li></ul>
+<p> - 协作组件（VLM，Qwen2-VL-2B）：负责提问、判断歧义与推导正确指令。</p>
+<p> - 连接模块（FiLM）：以语言指令为条件对视觉观察进行特征调制，为动作专家提供更具区分性的条件。</p>
+<p> - 动作组件（扩散专家，ScaleDP-Huge）：端到端生成低层动作（动作块长度 50）。</p>
+<p> - 信号检测器：解析 VLM 输出末端的信号token（<AMBG>、<NOT_AMBG>、<ACT>、<REJ>），以无训练方式路由“提问/动作”状态。</p>
+<ul><li>两阶段训练</li></ul>
+<p> - Stage 1：使用歧义交互对话数据训练协作组件；冻结视觉编码器，微调 LLM，新增信号token用于区分歧义、行动/拒绝等状态。</p>
+<p> - Stage 2：冻结协作组件与视觉编码器，训练连接模块与扩散动作专家；采用专家演示的具身数据进行端到端动作生成。</p>
+<ul><li>推理流程</li></ul>
+<p> - 若指令被判为歧义则输出 <AMBG> 并生成问题；根据用户回答更新对话历史。</p>
+<p> - 多轮后由 VLM 推断正确指令并标记 <NOT_AMBG>；随后由检测器触发 <ACT>（目标可见则执行）或 <REJ>（目标不可见则拒绝）。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>机器人与设备：xArm 7（7 DoF + 1 DoF 夹爪）、RealSense D435 相机（手腕与第三视角），xArm Python SDK；Stage 2 采用 Meta Quest 3 进行遥操作采集演示。</li><li>数据</li></ul>
+<p> - Stage 1（对话数据）：收集多对象图像并由 Qwen3-235B-A22B 生成歧义指令、问答对与正确指令，构成交互对话集。</p>
+<p> - Stage 2（具身演示）：8 项任务，每项约 10 条演示。</p>
+<ul><li>实现细节</li></ul>
+<p> - 协作组件：Qwen2-VL-2B-Instruct</p>
+<p> - 动作组件：ScaleDP-Huge（扩散专家）</p>
+<p> - 训练超参数（示例）</p>
+<p> - Stage 1：学习率 1e-5，批量 128，50 轮，训练参数约 1.5B</p>
+<p> - Stage 2：学习率 2e-5，批量 64，40 轮，训练参数约 978M</p>
+<p> - 动作块长度：50 步</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>环境与任务：xArm 7 真实场景下 8 项任务，含三类通用任务：</li></ul>
+<p> - Put the Object on the plate（Apple/Peach/Orange）</p>
+<p> - Pour the water from the Color cup onto the plate（Red/Green/White）</p>
+<p> - Stack the Color1 block on top of the Color2 block（(Blue, Yellow)、(Yellow, Blue)）</p>
+<ul><li>指标：成功率（每任务 20 次试验）；与基线对比（π0、π0-FAST、OpenVLA-OFT）；消融（知识隔离策略、连接模块、必要性）。</li><li>附加评估</li></ul>
+<p> - 协作能力：在“目标存在/不存在”场景下判断并执行的正确率。</p>
+<p> - 鲁棒性：低光照（灯光减半）、视觉干扰（相似干扰物）条件下的成功率。</p>
+
+<p>结果表明：Ask-to-Clarify 在全部 8 项任务显著优于基线；在低光照与干扰条件下仍保持较高成功率；两阶段训练与连接模块二者缺一不可，共同保证歧义澄清与端到端动作生成的综合能力。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

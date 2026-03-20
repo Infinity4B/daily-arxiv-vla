@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SimVLA: A Simple VLA Baseline for Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="提出 SimVLA，一个设计简洁的 Vision-Language-Action (VLA) 基准模型，旨在解决当前该领域因模型架构复杂、训练方法不统一而难以公平比较的问题。 研究目标是建立一个 模块化、可复现的强基线，清晰地将感知（视觉语言理解）与控制（动作生成）解耦，并通过标准化关键训练细节来实现高性能，以便未来能够准确评估架构创新的价值。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.18224">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">SimVLA: A Simple VLA Baseline for Robotic Manipulation</h1>
+          <div class="detail-meta">2026-02-20 · <a href="http://arxiv.org/abs/2602.18224" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.18224" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.18224</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Frontier Robotics</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>SimVLA</strong>，一个设计简洁的 <strong>Vision-Language-Action (VLA)</strong> 基准模型，旨在解决当前该领域因模型架构复杂、训练方法不统一而难以公平比较的问题。</li><li>研究目标是建立一个 <strong>模块化、可复现的强基线</strong>，清晰地将感知（视觉语言理解）与控制（动作生成）解耦，并通过标准化关键训练细节来实现高性能，以便未来能够准确评估架构创新的价值。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了 <strong>SimVLA</strong>，一个模块化的 <strong>VLA</strong> 基线模型，通过解耦感知与控制（使用标准的视觉语言主干网络和轻量级动作头），实现了灵活和面向未来的设计。</li><li>识别并标准化了影响 <strong>VLA</strong> 性能的“隐性”驱动因素（如<strong>数据洗牌策略、动作空间归一化、优化动态</strong>），提供了一个严谨的训练方法，以实现公平的跨模型比较。</li><li>证明了这种极简设计能够实现 <strong>state-of-the-art</strong> 的性能，在模拟基准测试中超越了更大、更复杂的模型，同时实现了高效的零样本场景泛化和真实机器人部署。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li><strong>SimVLA</strong> 采用 <strong>感知-控制解耦</strong> 的模块化设计：使用一个预训练的视觉语言模型（<strong>VLM</strong>）作为编码器来处理多视角RGB图像和语言指令，生成融合的表示；然后由一个轻量级的 <strong>Transformer 编码器</strong> 作为动作头，使用<strong>条件流匹配</strong> 在归一化的连续动作空间中生成未来的动作块。</li><li>创新点在于其<strong>极简架构</strong>，避免了复杂的时空先验、记忆模块或多阶段推理流程。关键技术包括：<strong>流匹配</strong> 用于生成平滑、时间一致的动作块；以及一套严格标准化的<strong>训练方法</strong>，确保性能增益可归因于架构本身而非实现细节。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集包括：<strong>LIBERO</strong>、<strong>LIBERO-PRO</strong>、<strong>SimplerEnv (Fractal/BridgeData-V2)</strong> 以及 <strong>Galaxea Open-World Dataset</strong>。</li><li>模型总参数量约为 <strong>0.5B</strong>，其中视觉语言主干可选择 <strong>SmolVLM-0.5B</strong> 或 <strong>Florence-2</strong>。</li><li>训练资源涉及 <strong>GPU</strong>，具体数量未在提供片段中明确说明。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境包括<strong>仿真基准</strong>（LIBERO, LIBERO-PRO, SimplerEnv）和<strong>真实机器人</strong>（Galaxea R1 Lite）。</li><li>主要评估指标是<strong>任务成功率 (%)</strong>。</li><li><strong>SimVLA</strong> 在 <strong>LIBERO</strong> 基准上取得了 <strong>98.6%</strong> 的平均成功率（四个套件的平均），超越了所有对比模型（包括数十亿参数的大型模型）。在<strong>LIBERO-PRO</strong> 鲁棒性测试中，其在<strong>语义扰动</strong>维度上表现最佳，证明了更强的泛化能力。在 <strong>SimplerEnv</strong> 和 <strong>WidowX</strong> 机器人任务上也达到了 <strong>95.8%</strong> 的平均成功率。在真实机器人上的零样本部署表现与强大的 <strong>π0.5</strong> 基线相当。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>From Inference Efficiency to Embodied Efficiency: Revisiting Efficiency Metrics for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="论文指出当前视觉-语言-动作（VLA）模型研究中普遍使用的“效率”指标（如参数量、FLOPs、解码吞吐量）无法反映机器人平台的实际执行性能。 研究核心在于提出并验证“具身效率”概念，强调应从系统级行为（如任务完成时间、轨迹平滑度、累计关节旋转和运动能量）来评估 VLA 模型。 通过系统性实验，论文揭示了传统“推理效率”与实际“具身效率”之间的错位，旨在为 VLA 模型的评估与开发提供更全面、公平的" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.19131">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">From Inference Efficiency to Embodied Efficiency: Revisiting Efficiency Metrics for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2026-03-19 · <a href="http://arxiv.org/abs/2603.19131" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.19131" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.19131</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>香港科技大学</strong> - 通讯作者 Chaojian Li 所属机构</li><li><strong>乔治亚理工学院</strong> - 通讯作者 Yingyan (Celine) Lin 所属机构</li><li>论文共同第一作者来自上述两个机构</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文指出当前视觉-语言-动作（VLA）模型研究中普遍使用的“效率”指标（如参数量、FLOPs、解码吞吐量）无法反映机器人平台的实际执行性能。</li><li>研究核心在于提出并验证“具身效率”概念，强调应从系统级行为（如任务完成时间、轨迹平滑度、累计关节旋转和运动能量）来评估 VLA 模型。</li><li>通过系统性实验，论文揭示了传统“推理效率”与实际“具身效率”之间的错位，旨在为 VLA 模型的评估与开发提供更全面、公平的视角。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一套用于评估 VLA 模型“具身效率”的量化指标体系，涵盖任务持续时间（完成时间、路径长度）与运动平滑性（抖动、动作率）两个维度。</li><li>系统性地揭示了常见模型压缩技术（剪枝、量化）、Token 稀疏化和动作序列压缩方法在提升推理效率的同时，往往导致机器人执行效率下降或运动质量劣化。</li><li>证明了系统级“具身效率”指标能够揭示出在常规成功率或吞吐量评估下被掩盖的策略行为差异。</li><li>评估了上下文学习和监督微调等常见适应策略对“具身效率”的影响，发现其改善有限且存在指标间的权衡。</li><li>强调了在 VLA 模型的研究与部署中，必须将“具身效率”纳入考量，以实现计算效率与行为鲁棒性的统一。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>论文采用实证研究方法，不提出新的模型架构，而是通过定义新的评估指标并对现有技术进行实验分析。</li><li>定义了五项核心“具身效率”指标：任务完成时间（τ）、末端执行器路径长度、关节空间路径长度、平均抖动 L2 范数（J）和平均动作率（R）。</li><li>在三个维度上测试了效率优化技术的影响：<strong>模型压缩</strong>（权重剪枝、后训练量化）、<strong>Token 压缩</strong>（视觉 Token 剪枝）和<strong>动作压缩</strong>（采用 FAST 分词器）。</li><li>进一步评估了<strong>上下文学习</strong>（通过提示词引导）和<strong>监督微调</strong>（引入辅助损失函数）两种适应策略改善“具身效率”的效果。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>主要使用 <strong>Libero</strong> 基准数据集进行评估，包含四个任务套件：Libero-Spatial、Libero-Object、Libero-Goal、Libero-10。</li><li>额外在 <strong>Bridge</strong> 数据集上进行了部分实验，以验证结论的普适性。</li><li>评估的代表性 VLA 模型包括 <strong>π₀</strong>、<strong>π₀.₅</strong> 和 <strong>MolmoAct</strong>。</li><li>实验在仿真环境中进行，每个任务运行 50 个评估回合或直至获得 10 个成功案例，具体训练硬件资源未在摘要中详述。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境为标准仿真器，基准为各模型原始（未压缩）版本的成功率与效率指标。</li><li>主要评估指标为任务成功率（SR）及上述五项“具身效率”指标。</li><li>关键实验结果：</li></ul>
+<p> - <strong>模型压缩</strong>：权重剪枝（如剪枝 5-10%）在成功率下降不显著的情况下，导致任务完成时间增加（最高+3.0%）、路径变长（最高+5.6%）和抖动加剧（最高+11.0%）。量化至 int4 导致抖动显著上升（最高+19.5%）。</p>
+<p> - <strong>Token/动作压缩</strong>：视觉 Token 剪枝比例提高使运动抖动成倍增加；采用 FAST 动作分词器可缩短完成时间（最高-5.6%），但导致抖动大幅上升（最高+50.6%）。</p>
+<p> - <strong>适应策略</strong>：上下文学习可降低抖动（最高-25.8%）和动作率，但代价是完成时间延长（最高+11.2%）；监督微调加入辅助损失能降低抖动（最高-24.0%），但也会轻微增加完成时间。</p>
+<p> - 总体结论：提升推理计算效率的方法可能损害系统级执行效率，仅关注推理效率不足以评价 VLA 模型的实际性能。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

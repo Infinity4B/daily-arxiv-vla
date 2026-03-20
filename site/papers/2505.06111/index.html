@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UniVLA: Learning to Act Anywhere with Task-centric Latent Actions - VLA 论文精选</title>
+    <meta name="description" content="论文提出了UniVLA，一个用于学习跨具身视觉-语言-动作（VLA）策略的新框架。核心创新是通过一个潜在动作模型从视频中导出任务中心的动作表示，从而能够利用跨越广泛具身和视角的庞大数据。论文通过结合语言指令并在DINO特征空间中建立潜在动作模型，来减轻任务无关动态的影响。学习自互联网规模视频的通用策略可以通过高效的潜在动作解码部署到各种机器人。论文在多个操作和导航基准测试以及真实机器人部署中取得了" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2505.06111">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">UniVLA: Learning to Act Anywhere with Task-centric Latent Actions</h1>
+          <div class="detail-meta">2025-05-09 · <a href="http://arxiv.org/abs/2505.06111" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2505.06111" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2505.06111</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>论文作者来自多个机构，包括北京大学的1,2单位，以及北京大学的其他合作单位，例如第3单位。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了UniVLA，一个用于学习跨具身视觉-语言-动作（VLA）策略的新框架。核心创新是通过一个潜在动作模型从视频中导出任务中心的动作表示，从而能够利用跨越广泛具身和视角的庞大数据。论文通过结合语言指令并在DINO特征空间中建立潜在动作模型，来减轻任务无关动态的影响。学习自互联网规模视频的通用策略可以通过高效的潜在动作解码部署到各种机器人。论文在多个操作和导航基准测试以及真实机器人部署中取得了最先进的结果。UniVLA在计算成本不到OpenVLA的1/20，下游数据不到1/10的情况下，取得了优于OpenVLA的性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了UniVLA，一个通过在统一的、具身不可知的动作空间中规划来实现通用策略的框架，能够通过从网络规模视频中学习来实现可扩展和高效的决策。</li><li>引入了一种从跨具身视频中提取任务相关潜在动作的新方法，将任务中心动态与无关的视觉变化解耦。定性和定量实验突出了其优点和相对于现有工作的优势。</li><li>UniVLA在多个基准测试和真实机器人测试中取得了最先进的性能，在LIBERO基准上成功率比OpenVLA提高18.5%，导航任务中提高29.6%，真实世界部署中提高36.7%。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>UniVLA方法分为三个阶段：</p>
+<ol><li><strong>任务中心潜在动作学习</strong>：通过语言指令引导，从跨具身视频中无监督地提取任务相关的动作表示。使用VQ-VAE对连续帧对的逆动态进行离散化，得到量化的潜在动作。在DINOv2特征空间中操作以过滤视觉噪声，并解耦出任务中心动态。</li><li><strong>通用策略预训练</strong>：基于Prismatic-7B视觉语言模型，通过自回归方式预测离散化的潜在动作标记，训练一个具身不可知的通用策略。</li><li><strong>部署后训练</strong>：引入轻量级动作解码器（约10.8M参数），将潜在动作解码为可执行轨迹，实现对新机器人的高效适配。同时利用历史潜在动作输出作为提示输入，增强长时程任务表现。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p><strong>数据集</strong>：</p>
+<ul><li>预训练：Open X-Embodiment（操作数据）、GNM（导航数据）和Ego4D（人类视频）。</li><li>评估：LIBERO（操作）、CALVIN（操作）、SimplerEnv（操作）、Room2Room（导航）以及真实世界机器人任务。</li></ul>
+<p><strong>训练资源</strong>：</p>
+<ul><li>预训练：960 A100小时，显著低于OpenVLA的21,500 A100小时。</li><li>后训练：使用LoRA进行参数高效微调，新增约123M可训练参数。</li><li>推理：在NVIDIA RTX 4090 GPU上实现10Hz实时闭环推理。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p><strong>评估环境</strong>：</p>
+<ul><li>模拟环境：LIBERO、CALVIN、SimplerEnv和VLN-CE的Room2Room（R2R）。</li><li>真实环境：配备7-DoF机械臂和Orbecc DABAI相机的Piper机器人。</li></ul>
+<p><strong>评估指标</strong>：</p>
+<ul><li>操作任务：成功率（Success Rate）。</li><li>导航任务：Oracle成功率（在VLN-CE中，代理到达目标3米内视为成功）。</li><li>真实任务：成功率（Success Rate）和逐步得分（Step-wise Score，每个任务最高3分）。</li><li>通用性评估：光照变化、视觉干扰物、新物体场景下的成功率。</think></li></ul>
+<h2 class="section-title">论文研究单位</h2>
+<p>论文作者来自多个机构，包括北京大学的1,2单位，以及北京大学的其他合作单位，例如第3单位。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文提出了UniVLA，一个用于学习跨具身视觉-语言-动作（VLA）策略的新框架。核心创新是通过一个潜在动作模型从视频中导出任务中心的动作表示，从而能够利用跨越广泛具身和视角的庞大数据。论文通过结合语言指令并在DINO特征空间中建立潜在动作模型，来减轻任务无关动态的影响。学习自互联网规模视频的通用策略可以通过高效的潜在动作解码部署到各种机器人。论文在多个操作和导航基准测试以及真实机器人部署中取得了最先进的结果。UniVLA在计算成本不到OpenVLA的1/20，下游数据不到1/10的情况下，取得了优于OpenVLA的性能。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>提出了UniVLA，一个通过在统一的、具身不可知的动作空间中规划来实现通用策略的框架，能够通过从网络规模视频中学习来实现可扩展和高效的决策。</li><li>引入了一种从跨具身视频中提取任务相关潜在动作的新方法，将任务中心动态与无关的视觉变化解耦。定性和定量实验突出了其优点和相对于现有工作的优势。</li><li>UniVLA在多个基准测试和真实机器人测试中取得了最先进的性能，在LIBERO基准上成功率比OpenVLA提高18.5%，导航任务中提高29.6%，真实世界部署中提高36.7%。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<p>UniVLA方法分为三个阶段：</p>
+<ol><li><strong>任务中心潜在动作学习</strong>：通过语言指令引导，从跨具身视频中无监督地提取任务相关的动作表示。使用VQ-VAE对连续帧对的逆动态进行离散化，得到量化的潜在动作。在DINOv2特征空间中操作以过滤视觉噪声，并解耦出任务中心动态。</li><li><strong>通用策略预训练</strong>：基于Prismatic-7B视觉语言模型，通过自回归方式预测离散化的潜在动作标记，训练一个具身不可知的通用策略。</li><li><strong>部署后训练</strong>：引入轻量级动作解码器（约10.8M参数），将潜在动作解码为可执行轨迹，实现对新机器人的高效适配。同时利用历史潜在动作输出作为提示输入，增强长时程任务表现。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<p><strong>数据集</strong>：</p>
+<ul><li>预训练：Open X-Embodiment（操作数据）、GNM（导航数据）和Ego4D（人类视频）。</li><li>评估：LIBERO（操作）、CALVIN（操作）、SimplerEnv（操作）、Room2Room（导航）以及真实世界机器人任务。</li></ul>
+<p><strong>训练资源</strong>：</p>
+<ul><li>预训练：960 A100小时，显著低于OpenVLA的21,500 A100小时。</li><li>后训练：使用LoRA进行参数高效微调，新增约123M可训练参数。</li><li>推理：在NVIDIA RTX 4090 GPU上实现10Hz实时闭环推理。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<p><strong>评估环境</strong>：</p>
+<ul><li>模拟环境：LIBERO、CALVIN、SimplerEnv和VLN-CE的Room2Room（R2R）。</li><li>真实环境：配备7-DoF机械臂和Orbecc DABAI相机的Piper机器人。</li></ul>
+<p><strong>评估指标</strong>：</p>
+<ul><li>操作任务：成功率（Success Rate）。</li><li>导航任务：Oracle成功率（在VLN-CE中，代理到达目标3米内视为成功）。</li><li>真实任务：成功率（Success Rate）和逐步得分（Step-wise Score，每个任务最高3分）。</li><li>通用性评估：光照变化、视觉干扰物、新物体场景下的成功率。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

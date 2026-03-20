@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Notes-to-Self: Scratchpad Augmented VLAs for Memory Dependent Manipulation Tasks - VLA 论文精选</title>
+    <meta name="description" content="提出了一种为 视觉-语言-行动 (Vision-Language-Action, VLA) 模型引入显式记忆机制的方法：语言便笺 (Language Scratchpad)。 旨在解决现有“无状态”VLA模型在依赖时空记忆的长周期、多步骤操作任务（如物体位置交换）上性能不佳的问题。 通过让模型生成、存储和利用语言描述来记录任务计划、环境状态（空间记忆）和子任务进度（时间记忆），从而解决任务的非马尔" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.21013">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Notes-to-Self: Scratchpad Augmented VLAs for Memory Dependent Manipulation Tasks</h1>
+          <div class="detail-meta">2026-02-24 · <a href="http://arxiv.org/abs/2602.21013" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.21013" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.21013</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>Qualcomm AI Research</strong> (Qualcomm Technologies, Inc.)</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了一种为 <strong>视觉-语言-行动 (Vision-Language-Action, VLA)</strong> 模型引入显式记忆机制的方法：<strong>语言便笺 (Language Scratchpad)</strong>。</li><li>旨在解决现有“无状态”VLA模型在依赖<strong>时空记忆</strong>的长周期、多步骤操作任务（如物体位置交换）上性能不佳的问题。</li><li>通过让模型生成、存储和利用语言描述来记录任务计划、环境状态（空间记忆）和子任务进度（时间记忆），从而解决任务的非马尔可夫特性问题。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出一种<strong>基于语言便笺的简单记忆机制</strong>，使VLA模型能够创建行动计划，并基于此计划执行和条件化后续动作。</li><li>引入了<strong>ClevrSkills-Mem</strong> 评测基准，这是一个从ClevrSkills环境中提取的、包含五个依赖记忆的操作任务的数据集，用于系统地评估模型的时空记忆能力。</li><li>展示了便笺机制能显著提升<strong>非循环 (T-VLA)</strong> 和<strong>循环 (R-VLA)</strong> 策略在记忆依赖任务上的性能，平均成功率分别提升约48%和11%。</li><li>在<strong>MemoryBench</strong> 基准和<strong>真实世界</strong>的拾取-放置-恢复任务上验证了该方法的有效性，证明了其泛化能力。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>在标准的VLA模型基础上，引入一个语言描述的<strong>便笺</strong>作为输入和输出的一部分。模型在每一步接收当前观测、指令和便笺，并同时输出动作和一条语言描述。</li><li>关键创新在于便笺的<strong>动态更新机制</strong>：当模型完成一个子任务时，会预测一个特殊的<code><done></code>标记，触发将该步骤的描述（即“思考”）加入便笺，供后续步骤使用。</li><li>便笺内容结构化，包含<strong>环境初始化信息（接地）</strong>、<strong>任务计划（规划）</strong>和<strong>已完成动作（执行）</strong>三部分，灵活地编码了空间和时间记忆。</li><li>该方法被同时应用于<strong>基于Transformer的VLA</strong> 和<strong>基于循环架构（如Mamba）的VLA</strong>。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用的数据集：<strong>ClevrSkills-Mem</strong> （基于ManiSkill2），<strong>MemoryBench</strong> （基于RLBench），以及自建的<strong>真实世界拾取-放置-恢复</strong>数据集（200条轨迹）。</li><li>模型规模与参数：</li></ul>
+<p> - <strong>T-VLA</strong>：基于<strong>PaliGemma-2</strong> VLM（3B参数）。</p>
+<p> - <strong>R-VLA</strong>：基于<strong>Mamba</strong> 语言模型（130M参数）和ViT视觉骨干。</p>
+<ul><li>训练资源：实验在<strong>4块NVIDIA A100 GPU</strong> 上进行。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估环境：<strong>ClevrSkills-Mem</strong>（5个任务）、<strong>MemoryBench</strong>（Put-Block-Back任务）和真实世界机器人平台（<strong>UFACTORY xArm 6</strong>）。</li><li>主要评估指标：<strong>任务成功率</strong>、<strong>子任务完成率</strong>、<strong>物体最终放置的准确度（平均距离）</strong>。</li><li>关键实验结果：</li></ul>
+<p> - 在<strong>ClevrSkills-Mem</strong>上，T-VLA使用便笺后平均成功率提升了<strong>48.8%</strong>；R-VLA也获得了<strong>11%</strong>的平均提升。</p>
+<p> - 在<strong>MemoryBench</strong>的Put-Block-Back任务中，T-VLA使用便笺的成功率为<strong>40%</strong>；在简化评估下（接近按钮时使用真实动作）达到<strong>100%</strong>。</p>
+<p> - 在真实世界的拾取-放置-恢复任务中，基于<strong>OpenVLA</strong>的模型在添加便笺后，成功率从<strong>0%</strong>提升至<strong>65%</strong>。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

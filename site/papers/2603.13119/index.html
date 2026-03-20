@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Geometry-Guided Camera Motion Understanding in VideoLLMs - VLA 论文精选</title>
+    <meta name="description" content="本文旨在解决当前视频大语言模型在细粒度相机运动识别方面存在的显著缺陷，提出一个包含基准测试、诊断与信号注入的完整框架。 论文的核心目标是弥补VideoLLMs在几何运动信号表示上的缺失，使其能够理解作为核心电影语法的相机运动。 研究发现现成VideoLLMs在此任务上表现接近随机猜测，存在“相机运动盲区”，并提出了无需重新训练即可注入几何线索的解决方案。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.13119">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Geometry-Guided Camera Motion Understanding in VideoLLMs</h1>
+          <div class="detail-meta">2026-03-13 · <a href="http://arxiv.org/abs/2603.13119" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.13119" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.13119</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>University of Maryland, College Park</strong></li><li><strong>Dolby Laboratories Inc.</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>本文旨在解决当前视频大语言模型在细粒度相机运动识别方面存在的显著缺陷，提出一个包含基准测试、诊断与信号注入的完整框架。</li><li>论文的核心目标是弥补VideoLLMs在几何运动信号表示上的缺失，使其能够理解作为核心电影语法的相机运动。</li><li>研究发现现成VideoLLMs在此任务上表现接近随机猜测，存在“相机运动盲区”，并提出了无需重新训练即可注入几何线索的解决方案。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>构建了 <strong>CameraMotionDataset</strong> 合成数据集和 <strong>CameraMotionVQA</strong> 多选VQA基准测试，用于训练和评估细粒度相机运动识别。</li><li>提出一个模型无关的流水线，从冻结的3D基础模型提取相机线索，预测受约束的运动原语，并通过结构化提示注入VideoLLMs。</li><li>通过Q-Former探针实验，诊断并揭示了相机运动线索在VideoLLM视觉编码器深层中被衰减的关键瓶颈。</li><li>提出了高效的 <strong>VGGT–Q-Former</strong> 蒸馏方法，在大幅降低计算成本的同时保持了良好的运动识别性能。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>采用 <strong>冻结的3D基础模型VGGT</strong> 提取帧级相机令牌作为几何线索。</li><li>训练一个包含约束正则化（不兼容性与基数约束）的轻量级Transformer时序分类器，预测15种原子运动的多标签组合。</li><li>将预测的每秒运动序列格式化为结构化文本提示（如“Per-second camera motion: [pan-left, static, ...]”），前置到用户指令中，无需修改VideoLLM权重。</li><li>使用Q-Former探针分析视觉编码器中间特征，并设计知识蒸馏方法将VGGT的相机感知能力迁移到更高效的轻量级模型。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>CameraMotionDataset</strong>：包含12,274个1秒镜头内片段，源自 <strong>MultiCamVideo</strong>，具有由相机外参确定的精确运动标签。</li><li><strong>CameraMotionVQA</strong>：基于上述数据集的多选题基准测试，用于标准化评估VideoLLMs。</li><li>使用模型：<strong>VGGT</strong> (1.2B参数) 作为相机线索提取器；轻量级Transformer分类器 (约9.5M参数)。</li><li>训练资源：所有实验在单张 <strong>NVIDIA RTX A6000</strong> GPU上完成。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>评估基准：在 <strong>CameraMotionDataset</strong> 上进行多标签识别，在 <strong>CameraMotionVQA</strong> 上进行四选一问答。</li><li>主要指标：<strong>实例精度</strong>、<strong>Macro-F1</strong>、<strong>Weighted-F1</strong>。</li><li>关键结果：基于VGGT线索的方法取得73.8%的实例精度，远超现成VideoLLMs（约25%的随机水平）。探针实验显示运动线索在视觉编码器深层中逐渐丢失。蒸馏后的 <strong>VGGT–Q-Former</strong> 在吞吐量提升5.3倍、内存降低61%的情况下，精度仅下降8.13%。结构化提示有效引导模型生成时空连贯、相机感知的描述。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

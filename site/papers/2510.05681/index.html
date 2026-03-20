@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Verifier-free Test-Time Sampling for Vision Language Action Models - VLA 论文精选</title>
+    <meta name="description" content="Vision-Language-Action (VLA) 模型在机器人控制中展现出卓越性能，但在需要高精度的任务中仍存在根本性局限。当前方法主要依赖单次推理范式，限制了精细操作任务的表现。虽然已有测试时扩展方法使用外部验证器提升性能，但这些方法需要额外训练且泛化能力有限。本研究提出Masking Distribution Guided Selection (MG-Select)，一种新颖的VLA测" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.05681">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Verifier-free Test-Time Sampling for Vision Language Action Models</h1>
+          <div class="detail-meta">2025-10-07 · <a href="http://arxiv.org/abs/2510.05681" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.05681" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.05681</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>根据提供的Arxiv论文HTML原文，我为您总结这篇关于Vision-Language-Action模型的无验证器测试时采样论文：</p>
+<h2 class="section-title">论文研究单位</h2>
+<p>KAIST（韩国科学技术院）、首尔国立大学（SNU）、RLWRLD</p>
+<h2 class="section-title">论文概述</h2>
+<p>Vision-Language-Action (VLA) 模型在机器人控制中展现出卓越性能，但在需要高精度的任务中仍存在根本性局限。当前方法主要依赖单次推理范式，限制了精细操作任务的表现。虽然已有测试时扩展方法使用外部验证器提升性能，但这些方法需要额外训练且泛化能力有限。本研究提出Masking Distribution Guided Selection (MG-Select)，一种新颖的VLA测试时扩展框架，仅利用模型内部属性，无需额外训练或外部模块。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li><strong>提出MG-Select框架</strong>：利用KL散度作为置信度指标，从多个候选动作中选择最优动作</li><li><strong>条件掩蔽分布设计</strong>：通过随机掩蔽状态和语言条件生成参考分布，确保最大不确定性同时保持任务分布对齐</li><li><strong>联合训练策略</strong>：通过dropout技术使模型学习条件和无条件分布，进一步提升参考分布质量</li><li><strong>显著性能提升</strong>：在真实世界任务中实现28%的内分布和35%的外分布性能提升，在RoboCasa pick-and-place任务中实现168%相对增益</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<h2 class="section-title">测试时扩展框架</h2>
+<ul><li><strong>阶段1</strong>：并行随机采样生成N个候选动作</li><li><strong>阶段2</strong>：使用特定标准进行Best-of-N选择</li></ul>
+<h2 class="section-title">条件掩蔽分布置信度</h2>
+<ul><li>使用KL散度测量预测分布与参考分布间的距离作为置信度指标</li><li>参考分布通过掩蔽文本、状态或两者创建，分别对应：文本掩蔽、状态掩蔽、文本&状态掩蔽</li><li>针对不同任务环境选择最优置信度变体</li></ul>
+<h2 class="section-title">联合训练策略</h2>
+<ul><li>训练时引入四种掩蔽变体：(qₜ,I)、(qₜ,∅)、(∅,I)、(∅,∅)</li><li>通过dropout技术增强模型对条件掩蔽分布的感知能力</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<h2 class="section-title">训练资源</h2>
+<ul><li><strong>硬件</strong>：NVIDIA A100 GPU（2块）</li><li><strong>模型</strong>：π₀-FAST (Paligemma-3B VLM)、OpenVLA (Prismatic-7B VLM)</li><li><strong>优化器</strong>：AdamW，学习率2.5e-5到2.5e-6的余弦衰减</li><li><strong>训练配置</strong>：warmup_steps=1,000，global batch size根据数据集变化</li></ul>
+<h2 class="section-title">使用数据集</h2>
+<ul><li><strong>RoboCasa</strong>：24个家庭厨房环境中的原子任务，专注于8个pick-and-place任务</li><li><strong>SIMPLER-WidowX</strong>：4个pick-and-place任务，基于BridgeData V2训练</li><li><strong>LIBERO</strong>：多轴泛化评估，包括布局、物体和目标变化，以及长期任务</li><li><strong>真实世界数据</strong>：DROID数据集，基于Franka Research 3机器人</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<h2 class="section-title">评估环境</h2>
+<ul><li><strong>仿真环境</strong>：RoboCasa、SIMPLER-WidowX、LIBERO</li><li><strong>真实世界环境</strong>：Franka Research 3机器人，7-DoF机械臂</li></ul>
+<h2 class="section-title">评估指标</h2>
+<ul><li><strong>成功率</strong>：以百分比表示的成功率，基于多次试验（通常为50次仿真、16-24次真实世界）</li><li><strong>样本效率</strong>：在30、100、300个演示样本下的性能表现</li><li><strong>泛化能力</strong>：内分布（ID）和外分布（OOD）任务的区分评估</li><li><strong>效率分析</strong>：推理延迟分析，通过单预填充策略实现45%的延迟减少</li></ul>
+
+<p>实验结果表明MG-Select在不同演示规模下均能持续改进基础模型性能，特别是在低数据场景下效果显著。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

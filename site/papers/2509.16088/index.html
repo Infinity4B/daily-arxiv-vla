@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Randomized Smoothing Meets Vision-Language Models - VLA 论文精选</title>
+    <meta name="description" content="随机化平滑（Randomized Smoothing, RS）是目前在大规模分类模型上唯一可行的鲁棒性认证技术，但其原本只能处理离散标签，难以直接用于生成式的视觉‑语言模型（Vision‑Language Models, VLMs）。本文提出一种将生成式模型的输出映射为分类问题的通用方法，从而把 RS 迁移到 VLMs 场景。核心思路是引入一个“oracle”分类层，对模型生成的文本进行二分类（如" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.16088">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Randomized Smoothing Meets Vision-Language Models</h1>
+          <div class="detail-meta">2025-09-19 · <a href="http://arxiv.org/abs/2509.16088" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.16088" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.16088</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>National Technical University of Athens, Athens, Greece</li><li>Université Grenoble Alpes, Grenoble, France</li><li>CSX‑AI, Grenoble, France</li><li>Carl von Ossietzky University of Oldenburg, Oldenburg, Germany</li><li>Chalmers University of Technology, Gothenburg, Sweden</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>随机化平滑（Randomized Smoothing, RS）是目前在大规模分类模型上唯一可行的鲁棒性认证技术，但其原本只能处理离散标签，难以直接用于生成式的视觉‑语言模型（Vision‑Language Models, VLMs）。本文提出一种将生成式模型的输出映射为分类问题的通用方法，从而把 RS 迁移到 VLMs 场景。核心思路是引入一个“oracle”分类层，对模型生成的文本进行二分类（如有害/无害）或离散动作映射，或将语义等价的答案归为同一等价类。通过对图像添加高斯噪声、保持提示文本不变、进行多次采样并使用 oracle 进行投票，得到多数类的置信下界，进而推导出可验证的鲁棒半径。论文还从理论上分析了样本数对半径和认证精度的影响，给出改进的样本复杂度标度律，使得在实际应用中只需要 10²‑10³ 级别的样本即可得到与经典方法（10⁴‑10⁵ 样本）相匹配的证书。实验在最新的 VLM 上对最近的越狱式攻击进行了验证，展示了该方法的可扩展性和实用性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>将随机化平滑从分类扩展到生成式 VLM，提出基于 oracle 的抽象层，使得生成结果可以被视作离散类。</li><li>给出在 oracle 错误率 ε<0.5 下的概率下界修正公式</li></ul>
+<p> \[</p>
+<p> \bar p_y = \frac{\bar q_y - \epsilon}{1-2\epsilon}</p>
+<p> \]</p>
+<p> 并证明在 \(\bar q_y>0.5\) 时该下界仍然是有效的。</p>
+<ul><li>推导出样本数 \(n\) 与可验证半径的关系（利用中心极限定理和 Shore 对 \(\Phi^{-1}\) 的近似），得到标度律</li></ul>
+<p> \[</p>
+<p> r_\sigma(\alpha,n) \approx 1 - 1.64\frac{z_\alpha}{\sqrt n}</p>
+<p> \]</p>
+<p> 表明样本量只需降低 2‑3 个数量级即可保持接近最优的半径。</p>
+<ul><li>在理论上放宽了前期工作对均匀分布的要求，仅需多数类概率分布主要集中在 \([\beta,1)\) 且 \(\beta\ge 0.7\)，从而提升了方法的适用性。</li><li>给出适用于 VLM 的完整认证算法（Algorithm 2），包括语义等价聚类的投票机制。</li><li>通过在最新 VLMs 上进行实验，验证了对 jailbreak‑style 攻击的防御能力，并报告了认证半径、认证精度以及样本效率的定量结果。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>模型与噪声注入</strong></li></ol>
+<p> - 输入为图像 \(\mathbf x\) 与文本提示 \(\mathbf t\)。</p>
+<p> - 对图像加高斯噪声 \(\mathbf z\sim\mathcal N(\mathbf 0,\sigma^2\mathbf I)\) 生成 \(\mathbf x'\)。</p>
+<p> - 文本保持不变，调用 VLM \(f_\theta(\mathbf x',\mathbf t)\) 获得生成的回答 \(\mathbf y\)。</p>
+
+<ol><li><strong>Oracle 分类层</strong></li></ol>
+<p> - <strong>内容安全分类</strong>：oracle 将 \(\mathbf y\) 判为 “有害” 或 “无害”。</p>
+<p> - <strong>离散动作映射</strong>：若 VLM 充当 VLA，oracle 将答案映射为有限的动作集合（如 <code>base‑forward</code>、<code>gripper‑open</code>）。</p>
+<p> - <strong>语义等价聚类</strong>：oracle 判断新回答是否与已出现的回答语义相同，若相同则累计计数，否则创建新类。</p>
+
+<ol><li><strong>投票与计数</strong>（Algorithm 2）</li></ol>
+<p> - 用字典 <code>ans</code> 存储每个等价类（或每个离散动作）的出现次数。</p>
+<p> - 对每个噪声样本执行 oracle 判断并更新相应计数。</p>
+<p> - 最终返回计数最高的回答 \(y\) 与其计数 \(c\)。</p>
+
+<ol><li><strong>概率下界与证书半径</strong></li></ol>
+<p> - 将计数 \(c\) 与样本数 \(n\) 带入 Clopper‑Pearson 方法得到 \(\bar q_y\)（在置信度 \(1-\alpha\) 下的下界）。</p>
+<p> - 考虑 oracle 误差 \(\epsilon\)（假设 \(\epsilon<0.5\)），修正得到真实概率下界</p>
+<p> \[</p>
+<p> \bar p_y = \frac{\bar q_y - \epsilon}{1-2\epsilon}</p>
+<p> \]</p>
+<p> - 若 \(\bar p_y>0.5\)，则可验证半径为</p>
+<p> \[</p>
+<p> R = \sigma \Phi^{-1}(\bar p_y)</p>
+<p> \]</p>
+<p> - 对于二分类情形，若对 \(\epsilon\) 没有任何已知信息，只要 \(\bar q_y>0.5\) 仍可直接使用 \(R = \sigma\Phi^{-1}(\bar q_y)\) 作为下界（Theorem 4.2）。</p>
+
+<ol><li><strong>样本效率分析</strong></li></ol>
+<p> - 利用 CLT 对 \(\bar p_y\) 进行近似，得到期望半径</p>
+<p> \[</p>
+<p> R_\sigma^{\alpha,n}(p_A) \approx \sigma \Phi^{-1}\!\bigl(p_A - t_{\alpha,n}\bigr),\quad</p>
+<p> t_{\alpha,n}=z_\alpha\sqrt{p_A(1-p_A)/n}</p>
+<p> \]</p>
+<p> - 通过 Shore 对 \(\Phi^{-1}\) 的幂级数近似，进一步得到平均半径的下降比例</p>
+<p> \[</p>
+<p> r_\sigma(\alpha,n) = \frac{\bar R_\sigma(\alpha,n)}{\bar R_\sigma(0,\infty)} \approx 1 - 1.64\frac{z_\alpha}{\sqrt n}</p>
+<p> \]</p>
+<p> - 该公式说明把样本数从 \(10^5\) 降到 \(10^3\) 仍能保持约 90% 以上的理想半径。</p>
+
+<ol><li><strong>实验实现</strong></li></ol>
+<p> - 采样若干噪声图像（如 \(n=500\)‑\(2000\)），对每个图像调用 VLM 并由强 LLM（如 GPT‑4、Llama‑70B）充当 oracle。</p>
+<p> - 计算多数类的计数、Clopper‑Pearson 下界与对应半径。</p>
+<p> - 与原始分类 RS 基线以及仅使用 Clopper‑Pearson 不进行 oracle 修正的方案进行对比。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>模型</strong>：直接使用公开的预训练 VLM（如 LLaVA、InstructBLIP、GPT‑4V 等），不进行额外微调。</li><li><strong>Oracle</strong>：使用更强的语言模型（例如 GPT‑4 或 Llama‑70B）作为分类器或语义等价判断器。</li><li><strong>实验数据</strong>：在论文正文中未提供详细数据集描述，附录 B 中列有用于内容安全、VLA 动作与语义聚类的图像‑提示对（来源于公开的 VLM 评测集），并对每个样本进行多次噪声采样。</li><li><strong>计算资源</strong>：实验基于多卡 GPU 集群执行 VLM 推理，oracle 的调用使用相同的 GPU 或 CPU 后端。由于模型已预训练，计算开销主要是多次前向推理（每张图像 \(n\) 次），具体硬件规格未在正文中给出。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：在标准机器学习服务器上运行（Python + PyTorch），所有 VLM 与 oracle 均通过相同的推理框架进行调用，实验代码已开源。</li><li><strong>鲁棒性指标</strong></li></ul>
+<p> - <strong>可验证半径 \(R\)</strong>：在给定置信度 \(\alpha\) 下，对每个输入返回的最大半径。</p>
+<p> - <strong>认证精度</strong>：在特定半径阈值（如 \(R=0.5\)）下，能够给出非“ABSTAIN”结果的样本比例。</p>
+<p> - <strong>半径下降比例</strong>：通过标度律或实际测量比较不同样本数 \(n\) 下的平均半径 \(\bar R_\sigma(\alpha,n)\)。</p>
+<p> - <strong>Oracle 误差敏感性</strong>：评估在不同假设的 \(\epsilon\)（oracle 错误率）下半径下界的变化。</p>
+<ul><li><strong>对抗评估</strong></li></ul>
+<p> - 对最新的 jailbreak‑style 攻击（Qi et al., 2024）进行防御测试，统计攻击成功率的降低程度。</p>
+<p> - 与未加噪声的原始 VLM 对比，展示 RS 增强后的安全性提升。</p>
+<ul><li><strong>样本效率</strong></li></ul>
+<p> - 记录在不同样本规模（如 \(n=100, 500, 1000, 5000\)）下的认证半径、认证精度以及所需的计算时间。</p>
+<p> - 通过经验曲线验证理论标度律 \(1-1.64z_\alpha/\sqrt n\) 的准确性。</p>
+
+<p>以上内容概括了论文的研究单位、整体概述、主要贡献、方法细节、实验使用的数据与资源以及评估环境和指标。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Building Explicit World Model for Zero-Shot Open-World Object Manipulation - VLA 论文精选</title>
+    <meta name="description" content="提出了一个基于显式世界模型的框架，用于开放世界物体操作，通过构建环境的物理基础数字孪生实现零样本泛化。 该框架整合了开放集感知、数字孪生重建以及交互策略的采样与评估，旨在解决VLA模型依赖大规模演示数据且泛化能力受限的问题。 核心目标是在无需任何任务特定动作演示的情况下，使机器人能够对新物体和新任务进行零样本操作。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.13825">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Building Explicit World Model for Zero-Shot Open-World Object Manipulation</h1>
+          <div class="detail-meta">2026-03-14 · <a href="http://arxiv.org/abs/2603.13825" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.13825" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.13825</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>代尔夫特理工大学认知机器人系</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了一个基于显式世界模型的框架，用于开放世界物体操作，通过构建环境的物理基础数字孪生实现零样本泛化。</li><li>该框架整合了开放集感知、数字孪生重建以及交互策略的采样与评估，旨在解决VLA模型依赖大规模演示数据且泛化能力受限的问题。</li><li>核心目标是在无需任何任务特定动作演示的情况下，使机器人能够对新物体和新任务进行零样本操作。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一个基于显式世界模型的操作框架，实现了对新颖刚体物体和任务规格的零样本泛化，无需任务特定训练或演示。</li><li>设计了一个动态数字孪生构建流水线，能够从机载观测中重建物体网格，并对齐尺度与姿态以实现仿真一致的真实世界迁移。</li><li>开发了一个基于视觉-语言模型的评估模块，用于评估采样动作候选的模拟结果的成功概率。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>框架包含四个主要模块：开放集分割与抓取、数字孪生构建、操作策略采样。</li><li>采用 <strong>GPT-4o</strong> 与 <strong>Grounded-SAM</strong> 进行开放集物体分割，使用 <strong>AnyGrasp</strong> 进行抓取姿态预测。</li><li>创新性地提出了两阶段姿态对齐管道：首先利用 <strong>DINOv2</strong> 特征相似度进行粗对齐，再结合 <strong>RANSAC</strong> 和 <strong>ICP</strong> 进行精细对齐，解决了生成网格与真实观测的配准问题。</li><li>在 <strong>NVIDIA Isaac Sim</strong> 仿真环境中采样多样化的交互策略，并利用 <strong>GPT-4o</strong> 和 <strong>高斯过程分类器</strong> 评估模拟结果以选择最优动作。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>未使用特定的公开数据集，主要依赖真实机器人实验验证。</li><li>使用的关键模型包括：<strong>GPT-4o</strong> (VLM)、<strong>Grounded-SAM</strong> (分割)、<strong>Hunyuan3D 2.0</strong> (3D生成)、<strong>DINOv2</strong> (特征提取)、<strong>AnyGrasp</strong> (抓取预测)。</li><li>硬件资源：一台配备 <strong>NVIDIA RTX 2070 GPU (6GB RAM)</strong> 的笔记本用于仿真，一台配备 <strong>NVIDIA RTX 3090 GPU (24GB RAM)</strong> 的工作站用于计算机视觉模型。</li><li>机器人平台：<strong>Kinova Gen3 Lite</strong> 7自由度机械臂，配备两个 <strong>Intel RealSense D405</strong> 相机。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>实验分为数字孪生对齐精度评估与真实机器人任务性能评估两部分。</li><li>对齐评估指标：对齐成功率与均方根误差。实验表明，所提出的两阶段对齐方法相比直接使用 <strong>RANSAC/ICP</strong> 的基线方法，显著提高了成功率，同时保持了相当的几何精度。</li><li>真实机器人实验：设计了9个多样化的开放集操作任务，共进行96次试验。其中6个任务的成功率达到75%以上，部分任务（如“将黄色立方体放入白色盒子”）成功率达91.7%。</li><li>主要失败原因在于基于LLM的结果检查器对视觉模糊性敏感，以及仿真到现实的差距（物理引擎精度、硬件控制延迟、传感器噪声等）。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

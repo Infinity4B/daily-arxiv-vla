@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unifying Language-Action Understanding and Generation for Autonomous Driving - VLA 论文精选</title>
+    <meta name="description" content="提出了一种名为 LinkVLA 的新型 Vision-Language-Action (VLA) 架构，旨在增强自动驾驶中语言指令与规划动作之间的对齐。 旨在解决现有 VLA 模型中存在的语言与动作持续性错位、以及自回归动作生成效率低下的两大关键挑战。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.01441">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Unifying Language-Action Understanding and Generation for Autonomous Driving</h1>
+          <div class="detail-meta">2026-03-02 · <a href="http://arxiv.org/abs/2603.01441" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.01441" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.01441</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>浙江大学 CAD&CG 国家重点实验室</strong></li><li><strong>理想汽车 (Li Auto)</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出了一种名为 <strong>LinkVLA</strong> 的新型 Vision-Language-Action (VLA) 架构，旨在增强自动驾驶中语言指令与规划动作之间的对齐。</li><li>旨在解决现有 VLA 模型中存在的语言与动作持续性错位、以及自回归动作生成效率低下的两大关键挑战。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一个<strong>统一的语言-动作分词框架</strong>，将语言和动作词元映射到一个共享的离散码本中，从结构上弥合了模态差异。</li><li>引入了一个<strong>显式的动作理解目标</strong>，通过要求模型从轨迹生成描述性语言，强制执行双向语义一致性。</li><li>设计了一个<strong>由粗到精 (C2F) 的动作生成范式</strong>，显著降低了推理延迟。</li><li>在具有挑战性的闭环驾驶基准测试中实现了<strong>最先进的性能</strong>，在指令遵循准确性和驾驶能力方面均有显著提升。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>核心技术是基于统一的多模态大语言模型架构，核心创新包含三个部分：</li></ul>
+<p> - <strong>统一分词</strong>：通过对数坐标变换和空间软标签策略，对连续的轨迹（路径点和速度点）进行非均匀、空间感知的词元化，并与语言词表合并。</p>
+<p> - <strong>双向学习</strong>：联合训练动作生成（语言 → 动作）和动作理解（动作 → 语言描述）任务，强化语义链接。</p>
+<p> - <strong>由粗到精推理</strong>：采用两阶段生成：先预测轨迹终点并初始化一条粗略线性轨迹，再通过模型并行精炼得到最终的平滑轨迹。</p>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用 <strong>Bench2Drive</strong> 基准进行闭环训练和评估。</li><li>使用 <strong>Action Dreaming</strong>、<strong>DriveLM-hard</strong> 等数据集进行指令跟随、VQA 和评论生成任务的评估。</li><li>模型基于 <strong>InternVL2-1B</strong> 架构，包含 InternViT-300M 视觉主干和 <strong>Qwen2-0.5B</strong> LLM。</li><li>在 <strong>32 个 H20 GPU</strong> 上训练 30 个 epoch。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在 <strong>CARLA 仿真器</strong> 的 <strong>Bench2Drive</strong> 基准上进行闭环评估。</li><li>主要评估指标包括 <strong>驾驶分数 (DS)</strong>、<strong>成功率 (SR)</strong>、<strong>多能力评分</strong>以及指令跟随的<strong>成功率</strong>。</li><li>关键实验结果：</li></ul>
+<p> - <strong>LinkVLA</strong> 取得了 <strong>91.01</strong> 的驾驶分数 (DS) 和 <strong>74.55%</strong> 的成功率 (SR)，显著优于 Orion、SimLingo 等现有 VLA 和端到端方法。</p>
+<p> - 在指令跟随任务上，在“减速”、“超车”等多个指令类别上取得了 <strong>60% - 93.33%</strong> 的高成功率。</p>
+<p> - 相较于标准自回归 (AR) 生成，C2F 方法将推理延迟从 <strong>361ms</strong> 大幅降低至 <strong>48ms</strong>，节省了约 <strong>86%</strong> 的时间，且性能无损。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

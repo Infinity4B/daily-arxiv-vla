@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Self-Supervised Bootstrapping of Action-Predictive Embodied Reasoning - VLA 论文精选</title>
+    <meta name="description" content="论文研究单位： 论文作者来自多个机构，但根据姓名后面的符号（♯, ♭, ♮）及脚注&quot;Equal contribution&quot;，推断他们应隶属于不同的研究单位/机构，但原文未明确列出。从作者姓氏和上下文推测，可能与斯坦福大学等机构有关联，但无法从提供的HTML片段中确定具体单位。 论文概述： 这篇论文提出了名为R&amp;B-EnCoRe的方法，旨在解决Vision-Language-Action模型在具身推" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.08167">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Self-Supervised Bootstrapping of Action-Predictive Embodied Reasoning</h1>
+          <div class="detail-meta">2026-02-09 · <a href="http://arxiv.org/abs/2602.08167" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.08167" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.08167</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><p>论文研究单位：</p>
+<p>论文作者来自多个机构，但根据姓名后面的符号（♯, ♭, ♮）及脚注"Equal contribution"，推断他们应隶属于不同的研究单位/机构，但原文未明确列出。从作者姓氏和上下文推测，可能与斯坦福大学等机构有关联，但无法从提供的HTML片段中确定具体单位。</p>
+
+<p>论文概述：</p>
+<p>这篇论文提出了名为R&B-EnCoRe的方法，旨在解决Vision-Language-Action模型在具身推理（Embodied CoT）中的一个关键瓶颈：目前的方法依赖于固定的模板来指定推理原语（如场景对象、高层计划），这些模板可能迫使策略处理与关键动作预测信号无关的干扰信息。论文将具身推理视为一个潜变量，并基于重要性加权变分推断，使模型能够从互联网规模的知识中通过自监督的方式引导（bootstrap）出高质量的、针对特定具身的推理策略，而无需外部奖励、验证器或人工标注。该方法通过在多种具身（仿真和硬件中的机器人操作、足式/轮式/自行车/四足机器人导航、自动驾驶）上进行验证，展示了其有效性。</p>
+
+<p>论文核心贡献点：</p>
+<ol><li>引入了R&B-EnCoRe框架，它将具身推理公式化为潜变量，并提供了一种基于重要性加权变分推断的自监督训练方法，能够从先验知识中精炼并引导出高质量的推理策略，无需手工设计的启发式规则或昂贵的人工标注。</li><li>证明了R&B-EnCoRe能够有效过滤掉“干扰”信息（例如任务无关物体的边界框），同时放大关键信号（例如足式机器人的结构可供性）。该过程产生了高质量、可解释的推理轨迹，无需外部启发式规则、奖励或验证器即可区分关键视觉线索与冗余噪声。</li><li>在多种具身任务（机器人操作、足式导航、自动驾驶）上使用多种VLA架构（参数量分别为1B, 4B, 7B, 30B）验证了R&B-EnCoRe。相比于不加区分地使用所有推理原语的基线模型，R&B-EnCoRe在操作任务成功率上提升了28%，在导航分数上提升了101%，在自动驾驶碰撞率指标上降低了21%。</li></ol>
+
+<p>论文方法描述：</p>
+<p>R&B-EnCoRe框架分为三个阶段：</p>
+<ol><li>通过推理Dropout热身策略假设：给定一组潜在的推理原语集合（如计划、可见物体、子任务等），使用基础模型为每个训练数据样本生成所有原语的文本解释。然后，通过Dropout机制（每个原语以固定概率被随机丢弃）生成多样化的推理轨迹组合，形成热身数据集。这使得模型能够接触各种推理策略（从简洁到详尽）。</li><li>联合训练先验和后验分布：使用热身数据集同时训练一个VLA模型，使其同时扮演先验和后验的角色。先验模型p(Z, A\|C)训练在序列（Z_j, A\|C）上，学习根据上下文C生成推理Z_j和动作A（类似于在线策略）。后验模型q(Z\|C, A)训练在序列（Z_j\|C, A）上，学习在给定上下文C和真实动作A的条件下，生成能解释该动作的多样推理Z_j（作为提案分布）。</li><li>通过重要性采样进行精炼和引导（Bootstrapping）：</li></ol>
+<p> - 精炼阶段：对于每个演示数据(C, A)，从后验模型q中采样K个候选推理轨迹。为每个轨迹计算重要性权重 w(Z_k) = p(Z_k, A\|C) / q(Z_k\|C, A)，其中p来自先验模型。权重反映了该推理轨迹对预测正确动作的信息增益（信息效益）。然后根据权重进行加权采样，选出一个精炼后的轨迹Z*。</p>
+<p> - 引导阶段：使用精炼后的高质量数据集 { (Z*, A\|C) } 重新训练最终的VLA模型。这使得模型能够从与任务成功对齐的推理示例中学习，从而提升性能。</p>
+
+<p>论文使用数据集和训练资源：</p>
+<p>数据集：</p>
+<ol><li>LIBERO-90：用于Franka Panda机器人仿真操作的基准数据集。</li><li>Bridge v2 Dataset：用于WidowX硬件机器人操作的真实世界数据集。</li><li>NaviTrace Dataset：包含约1000个任务、500个独特场景，用于四种具身（双足、轮式、自行车、四足）导航的数据集。</li><li>自动驾驶实验使用的数据集未在提供片段中明确命名，但提及使用UniAD指标进行评估。</li></ol>
+<p>训练资源：</p>
+<p>使用了多种VLA模型架构：</p>
+<ol><li>MiniVLA（1B参数）：结合了0.5B Qwen2.5 LLM、DINOv2和SigLIP视觉编码器。</li><li>OpenVLA（7B参数）：结合了Llama 2、DINOv2和SigLIP视觉编码器。</li><li>Qwen3-VL-30B-A3B-Instruct（30B参数）：一个混合专家模型。</li></ol>
+<p>用于生成推理原语的基础模型包括Gemini 1.0等。</p>
+
+<p>论文使用的评估环境和评估指标：</p>
+<p>评估环境：</p>
+<ol><li>仿真环境（LIBERO-90, NaviTrace场景）。</li><li>真实硬件环境（WidowX机器人）。</li><li>自动驾驶仿真环境（具体未命名）。</li></ol>
+<p>评估指标：</p>
+<ol><li>操作任务：成功率（Success Rate）。</li><li>导航任务：NaviTrace分数（一个结合了动态时间规整距离、目标端点误差和语义惩罚的综合指标，100分为完美对齐专家路径）。</li><li>自动驾驶任务：L2路径误差（米）和碰撞率（%），按1秒、2秒、3秒预测时域和平均值报告。</li><li>辅助指标：对象关键性率（Object Criticality Rate，推理轨迹中所有列出的物体都是任务关键的比例）、平均生成令牌数（推理轨迹的简洁性）、推理延迟（秒/步）。</li></ol></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAVLA: A Force-Adaptive Fast-Slow VLA model for Contact-Rich Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="提出一种名为 FAVLA（Force-Adaptive Fast–Slow VLA）的新型视觉-语言-动作模型，用于解决接触式丰富的机器人操控任务。 旨在解决现有VLA模型因采用单一频率融合所有模态（视觉、语言、力/扭矩）而导致的反应延迟和开环控制问题，尤其是在高精度工业操作中力反馈信号被降采样丢弃的场景。 核心目标是实现对接触力的自适应、闭环控制，以提升任务成功率和安全性，同时降低操作过程中的峰" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.23648">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">FAVLA: A Force-Adaptive Fast-Slow VLA model for Contact-Rich Robotic Manipulation</h1>
+          <div class="detail-meta">2026-02-27 · <a href="http://arxiv.org/abs/2602.23648" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.23648" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.23648</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li>未明确列出，但作者列表中包含多位研究者（如 <strong>Yao Li, Peiyuan Tang</strong> 等），论文内容主要涉及机器人操作领域。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出一种名为 <strong>FAVLA</strong>（Force-Adaptive Fast–Slow VLA）的新型视觉-语言-动作模型，用于解决<strong>接触式丰富的机器人操控任务</strong>。</li><li>旨在解决现有VLA模型因采用<strong>单一频率融合</strong>所有模态（视觉、语言、力/扭矩）而导致的<strong>反应延迟</strong>和<strong>开环控制</strong>问题，尤其是在高精度工业操作中力反馈信号被降采样丢弃的场景。</li><li>核心目标是实现<strong>对接触力的自适应、闭环控制</strong>，以提升任务成功率和安全性，同时降低操作过程中的峰值接触力。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了一个<strong>力自适应的快-慢VLA框架</strong>（FAVLA），将“慢”语义模态（视觉、语言、历史力）与“快”交互信号（最新力数据）解耦，实现接触式闭环控制。</li><li>设计了一种<strong>力注入式动作专家</strong>，通过<strong>力适配器</strong>将高频力反馈信息注入到多个网络层，使动作块能直接根据接触力进行条件化校正。</li><li>提出了一种<strong>力自适应快-慢推理策略</strong>，利用VLM预测的未来力变化，自适应地调度快速动作专家的执行频率，提高接触时的响应速度并减少操纵力。</li><li>在多种接触式丰富的真实机器人任务上进行了广泛实验，证明了方法在<strong>任务成功率</strong>和<strong>降低峰值接触力</strong>方面优于现有基准方法。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>采用基于<strong>π0</strong> 框架的双分支架构：一个<strong>慢速VLM骨干网络</strong>（固定低频运行，整合视觉、语言和历史力序列）和一个<strong>快速动作专家</strong>（可变高频运行，利用最新力数据和机器人状态）。</li><li><strong>关键技术</strong>包括：1) 使用<strong>时序卷积网络（TCN）</strong> 对力序列进行令牌化；2) 在动作专家各层引入<strong>力适配器</strong>，通过跨注意力机制将高频力特征注入动作令牌；3) VLM增加一个<strong>辅助的力方差预测头</strong>，用于预测未来接触力的变化趋势。</li><li><strong>核心创新点</strong>：通过力方差预测动态调整快速动作专家的执行频率（力变化大时提高频率，力平稳时降低频率），并结合固定噪声采样和时域集成策略，保证动作块内的一致性。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用自建的<strong>真实机器人数据集</strong>，包含四个接触式操控任务：USB插入、齿轮装配、盒子翻转、黑板擦拭。</li><li>数据集总规模：<strong>260条轨迹，约198,250帧</strong>，每个任务轨迹数在50-80条之间。</li><li><strong>模型规模与参数量</strong>：基于 <strong>π0</strong> 架构（PaliGemma），VLM部分参数量为<strong>2.6B</strong>。</li><li><strong>训练资源</strong>：在单个 <strong>NVIDIA A100 80GB GPU</strong> 上训练，每个任务约6小时。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：在 <strong>Monte机器人</strong>（配备7自由度X-ARM、腕部相机和6轴力传感器）上进行真实世界实验。</li><li><strong>主要评估指标</strong>：<strong>任务成功率</strong>、<strong>平均峰值接触力</strong>。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>FAVLA</strong> 在四个任务上的平均成功率达到 <strong>80.8%</strong>，比最强的基线 <strong>ForceVLA</strong> 高出 <strong>13.8%</strong>，比纯视觉基线 <strong>π0</strong> 高出 <strong>38.0%</strong>。</p>
+<p> - 在<strong>齿轮装配</strong>和<strong>盒子翻转</strong>任务中，FAVLA的<strong>平均峰值接触力</strong>（分别为7.7N和9.9N）显著低于所有基线方法。</p>
+<p> - 消融实验验证了力注入AE、力方差预测和力自适应推理策略均对性能提升有贡献，且自适应频率策略优于所有固定频率设置。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

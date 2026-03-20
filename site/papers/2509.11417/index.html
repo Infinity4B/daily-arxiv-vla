@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Enhancing Generalization in Vision-Language-Action Models by Preserving Pretrained Representations - VLA 论文精选</title>
+    <meta name="description" content="VLA模型往往通过直接微调预训练的VLM获取机器人控制能力，但会导致预训练表征严重退化，在视觉背景变化与指令同义改写下性能显著下降。本文提出保留预训练表征的VLA训练框架，在仿真与真实机器人上均显著提升稳健性与泛化。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2509.11417">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Enhancing Generalization in Vision-Language-Action Models by Preserving Pretrained Representations</h1>
+          <div class="detail-meta">2025-09-14 · <a href="http://arxiv.org/abs/2509.11417" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2509.11417" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2509.11417</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>UC San Diego（加州大学圣地亚哥分校）</li><li>Hillbot</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>VLA模型往往通过直接微调预训练的VLM获取机器人控制能力，但会导致预训练表征严重退化，在视觉背景变化与指令同义改写下性能显著下降。本文提出保留预训练表征的VLA训练框架，在仿真与真实机器人上均显著提升稳健性与泛化。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>部分冻结的双视觉编码器：冻结一个编码器作为“锚点”保留预训练表征，另一个可训练以适配机器人任务，拼接后输入后续模块。</li><li>字符串动作分词器：将连续动作转换为字符序列，使用与语言一致的词表和自回归目标，使动作预测与VLM预训练目标对齐，支持细粒度逐步生成。</li><li>特征正则化与联合训练：利用统一的字符串输出空间，在机器人数据与强调空间推理/可供性的视觉-语言数据上进行等量（50%/批次）联合训练，防止灾难性遗忘并增强泛化。</li><li>架构与配方通用性：可无缝适配OpenVLA与π0等多种VLA体系。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>部分冻结双编码器架构：使用两个视觉编码器（一个冻结、一个训练），对同一观测生成两组特征并拼接 z_t = [φ_frozen(o_t) \|\|φ_train(o_t)]，再与语言指令 c 一起送入动作分词器 ψ 生成动作。</li><li>字符串动作分词器：将动作各维度（如Δx=0.0312）序列化为字符序列（如“0 . 0 3 1 2”），利用语言词表与自回归生成目标进行预测，使动作空间与语言空间对齐，支持在语言模型内统一优化机器人与视觉-语言任务。</li><li>联合训练策略：每批训练从机器人数据与视觉-语言数据各取50%，数据涵盖空间推理、视觉问答、目标定位等，确保与任务相关且一致的梯度来源。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>数据集</li></ul>
+<p> - 机器人：Open X-Embodiment (OXE)</p>
+<p> - 视觉-语言：LLaVA Visual Instruct CC3M、VQASynth-Spatial、LLaVA OneVision、RoboPoint</p>
+<ul><li>仿真评估：SimplerEnv（Visual Matching与Visual Variant Aggregation），包含背景、光照、桌面纹理、干扰物与视角扰动</li><li>训练与评估硬件：双GTX 1080 Ti；真实机器人使用Logitech C920 Webcam作为视觉输入</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>仿真：SimplerEnv的Visual Matching与Visual Variant Aggregation</li><li>视觉稳健性：背景遮挡与视觉多样性扰动</li><li>语言稳健性：同义指令改写（GPT-4生成），如“grasp the can”→“get the can”</li><li>泛化与推理：在Text-VQA、POPE、GQA、VizWiz、VSR等VLM基准上评估保留的推理能力</li><li>指标</li></ul>
+<p> - 任务成功率（%）</p>
+<p> - VQA准确率（%）</p>
+<p> - CIFAR-10线性探测准确率（%）与t-SNE可视化</p>
+<p> - 真实机器人每任务25次试验的成功次数（表V）</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

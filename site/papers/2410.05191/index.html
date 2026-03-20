@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LADEV: A Language-Driven Testing and Evaluation Platform for Vision-Language-Action Models in Robotic Manipulation - VLA 论文精选</title>
+    <meta name="description" content="本文提出了LADEV，一个语言驱动的测试和评估平台，用于机器人操作中的视觉-语言-动作（VLA）模型。该平台通过自然语言输入自动生成仿真环境，并对任务指令进行转述，以全面评估VLA模型的性能。相比现有方法如SimplerEnv（需手动调整环境且忽略语言输入变化），LADEV提高了测试效率并填补了语言多样性评估的空白。实验使用超过4000个场景测试了七个VLA模型，证明了其有效性。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2410.05191">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">LADEV: A Language-Driven Testing and Evaluation Platform for Vision-Language-Action Models in Robotic Manipulation</h1>
+          <div class="detail-meta">2024-10-07 · <a href="http://arxiv.org/abs/2410.05191" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2410.05191" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2410.05191</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>University of Alberta, Edmonton, AB, Canada</p>
+<p>The University of Tokyo, Tokyo, Japan</p>
+<h2 class="section-title">论文概述</h2>
+<p>本文提出了LADEV，一个语言驱动的测试和评估平台，用于机器人操作中的视觉-语言-动作（VLA）模型。该平台通过自然语言输入自动生成仿真环境，并对任务指令进行转述，以全面评估VLA模型的性能。相比现有方法如SimplerEnv（需手动调整环境且忽略语言输入变化），LADEV提高了测试效率并填补了语言多样性评估的空白。实验使用超过4000个场景测试了七个VLA模型，证明了其有效性。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>提出语言驱动方法，从自然语言描述自动生成仿真环境，减少手动配置需求。</li><li>实现任务指令转述机制，生成多样化的语言输入以评估模型的语言鲁棒性。</li><li>引入批量评估方法，通过单一输入生成多个测试场景，支持大规模测试。</li><li>对多个VLA模型进行全面评估，涵盖四个任务和4000+场景，建立性能基线。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>语言驱动的仿真环境生成</strong>：</li></ul>
+<p> 使用LLM将自然语言描述（对象数量、细节、环境设置）转换为仿真器兼容配置。过程分两步：对象配置（基于YCB和SimplerEnv数据集选择模型）和环境设置（调整光照和相机位置）。采用少样本上下文学习确保输出格式兼容。</p>
+<ul><li><strong>自然语言任务指令转述</strong>：</li></ul>
+<p> 生成阶段用LLM基于原始指令创建k个变体；验证阶段用sentence BERT计算语义相似度，超过阈值则保留有效指令。</p>
+<ul><li><strong>批量评估</strong>：</li></ul>
+<p> LLM生成n个场景描述和原始指令，每个指令转述为k个变体，共n×k个输入，实现高效大规模测试。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：</li></ul>
+<p> YCB对象数据集（65个对象，视为未见对象）和SimplerEnv默认数据集（18个对象，视为训练集覆盖对象）。</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> 实验使用GPT-4o作为LLM，服务器配置为AMD 5955WX CPU和两个NVIDIA RTX A6000 GPU。平台未训练新模型，仅用于评估。</p>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：</li></ul>
+<p> 基于SimplerEnv，构建于SAPIEN仿真器和ManiSkill2基准。</p>
+<ul><li><strong>评估任务</strong>：</li></ul>
+<p> 四个机器人操作任务：拾取物体、移动物体A到物体B附近、将物体A放在物体B上、将物体A放入物体B内。</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> 成功率（任务完成百分比），评估条件包括对象数量（1-5个）、任务指令（基本vs转述）、对象类型（SimplerEnv vs YCB）、环境条件（默认光照、变化光照、相机位置变化）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

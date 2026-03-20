@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vlaser: Vision-Language-Action Model with Synergistic Embodied Reasoning - VLA 论文精选</title>
+    <meta name="description" content="针对上游VLM（Vision-Language Model）的具身推理能力与下游VLA（Vision-Language-Action）策略学习之间的关键差距，提出Vlaser：一个将高阶推理与低阶控制协同的VLA基础模型。 构建高质量Vlaser-6M数据引擎，形成600万规模的多任务具身推理语料；系统分析不同VLM初始化与数据类型对VLA微调的影响，缩小互联网数据与具身策略学习之间的域间偏移。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.11027">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Vlaser: Vision-Language-Action Model with Synergistic Embodied Reasoning</h1>
+          <div class="detail-meta">2025-10-13 · <a href="http://arxiv.org/abs/2510.11027" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.11027" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.11027</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">Vlaser: Vision-Language-Action Model with Synergistic Embodied Reasoning</h2>
+<h2 class="section-title">论文研究单位</h2>
+<ul><li>论文由上海AI实验室主导，联合中国科学技术大学、上海交通大学、浙江大学、南京大学、复旦大学、清华大学、NUS、东北大学、深圳大学等多机构合作完成。</li><li>通讯作者来自上海AI实验室；项目页面与代码仓库公开。</li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>针对上游VLM（Vision-Language Model）的具身推理能力与下游VLA（Vision-Language-Action）策略学习之间的关键差距，提出Vlaser：一个将高阶推理与低阶控制协同的VLA基础模型。</li><li>构建高质量Vlaser-6M数据引擎，形成600万规模的多任务具身推理语料；系统分析不同VLM初始化与数据类型对VLA微调的影响，缩小互联网数据与具身策略学习之间的域间偏移。</li><li>在12项具身推理基准与闭环机器人任务（WidowX/Google Robot）上取得领先结果，公开模型、数据与代码。</li></ul>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>统一的具身VLA架构与两阶段训练范式：将InternVL3扩展出“动作专家”，通过流匹配实现未来动作chunk预测，兼顾视觉、语言与控制。</li><li>数据引擎与方法论创新：系统整合并增广多源公共数据集，构建覆盖定位（grounding）、空间推理、规划与通用VQA的Vlaser-6M；进一步在SimplerEnv中生成200万面向VLA的“域内”QA数据，缓解视觉域偏移。</li><li>实证与洞见：上游具身推理的提升未必转化为下游VLA闭环成功率；与互联网数据相比，针对具体机器人本体与视角的“域内”数据更能加速收敛与提升成功率，并明确域间偏移的核心问题。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li>模型结构</li></ul>
+<p> - VLM骨干：基于InternVL3（InternViT图像编码 + Qwen2.5语言模型），尺寸为2B与8B，强调具身常识与端到端控制。</p>
+<p> - 动作专家：在VLM上增设低层控制分支；采用流匹配（flow matching）学习动作向量化场（vector field），以单帧观测、语言指令与机器人状态token为输入，生成未来H步动作序列；VLA流使用非因果注意力。</p>
+<p> - 训练与推理损失：VLM阶段采用自回归语言建模损失；VLA阶段最小化预测向量场与真实去噪向量场的MSE；推理时用欧拉积分从τ=0至τ=1对随机噪声进行去噪，生成动作。</p>
+<ul><li>数据引擎</li></ul>
+<p> - 具身定位：1.5M问答（边界框与中心点，标准化至[0,1000]），来源RoboPoint、ShareRobot、Pixmo-Points、Paco-LaVIS、RefSpatial；并从SA-1B分割掩码增广30万标注。</p>
+<p> - 通用/空间推理：1.2M通用RoboVQA + 0.5M空间推理数据；源RoboVQA、Robo2VLM、RoboPoint、SPAR、SpaceR-151k、VILASR，以及ScanNet/ScanNet++/CA-1M/ARKitScenes的10万手工空间样本。</p>
+<p> - 规划：40万数据，含Alpaca-15k-Instruction、MuEP、WAP，以及LLaRP在Habitat的规划轨迹与EgoPlan-IT/EgoCOT的第一人称视频规划样例。</p>
+<p> - VLA域内数据：200万针对WidowX与Google Robot的SimplerEnv生成问答，涵盖定位、空间、规划、通用VQA等类别。</p>
+<ul><li>训练配方</li></ul>
+<p> - 阶段一：监督微调InternVL3构建具身VLM骨干。</p>
+<p> - 阶段二：在机器人数据集上对动作专家进行VLA微调；使用流匹配损失训练，H=4，积分步长δ=10。</p>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li>具身推理评估数据（12项基准）：ERQA、Ego-Plan2、Where2place、Pointarena、Paco-Lavis、Pixmo-Points、VSI-Bench、RefSpatial-Bench、MMSI-Bench、VLABench、EmbodiedBench（ALFRED/Habitat）。</li><li>机器人闭环评估：SimplerEnv（Bridge/WidowX 与 Google Robot 任务集），包含超过5百万帧图像与机器人 эпизодов。</li><li>数据引擎与规模：Vlaser-6M由多源公共数据整合与增广（定位、空间推理、规划、通用VQA），以及来自SimplerEnv的200万域内VLM预训练问答对。</li><li>预训练骨干：InternVL3-2B/8B（InternViT + Qwen2.5-1.5B/7B），动作专家采用流匹配架构；公开模型、训练与推理代码。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li>评估环境</li></ul>
+<p> - 具身推理：12项公开基准，涵盖问答、任务规划、定位、空间推理与仿真闭环评估。</p>
+<p> - 闭环机器人控制：SimplerEnv中的WidowX与Google Robot平台（Pick Coke Can、Move Near、Drawer、Carrot on plate、Put eggplant in basket、Spoon on towel、Stack Cube等任务）。</p>
+<ul><li>评估指标</li></ul>
+<p> - 具身推理：各基准的任务分数与标准化平均分（Avg）。</p>
+<p> - 闭环控制：成功率（Success Rate），分任务与平均成功率。</p>
+<p> - 训练分析：收敛速度与跨域泛化表现（域内vs互联网数据对VLA微调的影响）。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

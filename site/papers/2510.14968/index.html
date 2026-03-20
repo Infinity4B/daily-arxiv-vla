@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RDD: Retrieval-Based Demonstration Decomposer for Planner Alignment in Long-Horizon Tasks - VLA 论文精选</title>
+    <meta name="description" content="论文针对长程任务中的层次化视觉-语言-行动（VLA）框架问题，提出检索式演示分解器（RDD）。现有VLM规划器微调依赖人工或启发式子任务分解，易导致子任务与低层视觉运动策略训练数据不一致，降低任务性能。RDD通过视觉特征检索自动分解演示，将子任务与策略训练数据对齐，使用动态规划优化分解策略，实现计划器与策略协同。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2510.14968">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">RDD: Retrieval-Based Demonstration Decomposer for Planner Alignment in Long-Horizon Tasks</h1>
+          <div class="detail-meta">2025-10-16 · <a href="http://arxiv.org/abs/2510.14968" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2510.14968" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2510.14968</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<ul><li>Mingxuan Yan、Yuping Wang、Jiachen Li：加州大学河滨分校（University of California, Riverside）</li><li>Yuping Wang（共同作者）：密歇根大学（University of Michigan）</li><li>Zechun Liu：Meta AI</li></ul>
+<h2 class="section-title">论文概述</h2>
+<p>论文针对长程任务中的层次化视觉-语言-行动（VLA）框架问题，提出检索式演示分解器（RDD）。现有VLM规划器微调依赖人工或启发式子任务分解，易导致子任务与低层视觉运动策略训练数据不一致，降低任务性能。RDD通过视觉特征检索自动分解演示，将子任务与策略训练数据对齐，使用动态规划优化分解策略，实现计划器与策略协同。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ul><li>首次协调高层规划器与低层视觉运动策略，通过生成对齐的规划器微调数据集提升长程任务性能。</li><li>提出RDD框架，训练自由的检索式演示分解方法，形式化为最优分割问题，用动态规划高效求解（含理论分析）。</li><li>在仿真和真实基准评估中，RDD优于启发式分解器（如UVD），展现跨设置鲁棒性。</li></ul>
+<h2 class="section-title">论文方法描述</h2>
+<ul><li><strong>问题建模</strong>：将演示分解形式化为最优分割问题（公式3.1），最大化分割策略与策略训练数据的相似性。</li><li><strong>动态规划求解</strong>：利用最优性原理，将复杂度从O(2^N)降至O(N^2)（有界区间时O(N)）（算法1）。</li><li><strong>区间评分函数</strong>：定义区间相似性（公式3.3），结合视觉编码器（如LIV）、近似最近邻检索（Annoy）和时间持续差异。</li><li><strong>视觉特征</strong>：使用视觉编码器嵌入间隔（公式3.5），结合开始和结束帧，计算间隔相似度（公式3.6）。</li><li><strong>OOD处理</strong>：扩展方法处理分布外子任务，结合检索和启发式（公式3.7-3.8）。</li></ul>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ul><li><strong>数据集</strong>：RLBench机器人操作基准，使用训练集1908个演示（分解为12700子任务区间）。</li><li><strong>视觉编码器</strong>：LIV（主用），对比R3M、VIP、VC-1、CLIP、DINOv2、ResNet。</li><li><strong>检索方法</strong>：Annoy近似最近邻搜索（Angular距离）。</li><li><strong>规划器</strong>：LLaVA-based VLM（llama3-llava-next-8B），LoRA微调（rank 128，scale 256）。</li><li><strong>计算资源</strong>：4个NVIDIA 6000 Ada GPU，微调约5分钟。</li></ul>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ul><li><strong>评估环境</strong>：RLBench仿真基准，13个任务（成功率高>35%）。</li><li><strong>评估指标</strong>：</li></ul>
+<p> - 多任务成功率（%，平均值和标准差）。</p>
+<p> - 平均排名（↓）。</p>
+<ul><li><strong>比较基线</strong>：Expert（启发式专家）、UVD（视觉分解器）、Uniform（均匀分割）、w/o Finetune（不微调）。</li><li><strong>实验设置</strong>：每个任务3个演示用于微调；结果平均10次随机种子。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

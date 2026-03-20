@@ -7,7 +7,13 @@
 2) 从第四列提取 <details> ... </details> 中的实际内容。
 3) 对内容进行“自动补换行”修复（因原始换行丢失）。
 4) 将修复后的 Markdown 渲染为 HTML（无第三方依赖，内置简易渲染器）。
-5) 输出站点到 `site/`：index.html、assets/style.css、assets/app.js、assets/data.json。
+5) 输出站点到 `site/`：
+   - `index.html`
+   - `assets/style.css`
+   - `assets/app.js`
+   - `assets/paper.js`
+   - `assets/data.json`（列表页轻量数据）
+   - `papers/<arxiv-id>/index.html`（每篇论文独立静态页面）
 """
 
 from __future__ import annotations
@@ -15,15 +21,18 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import sys
+from html import escape
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INPUT_MD = PROJECT_ROOT / "papers.md"
 SITE_DIR = PROJECT_ROOT / "site"
 ASSETS_DIR = SITE_DIR / "assets"
+PAPERS_DIR = SITE_DIR / "papers"
 
 
 def read_text(path: Path) -> str:
@@ -47,24 +56,25 @@ def parse_markdown_table(md_text: str) -> List[Dict[str, str]]:
         return []
 
     records: List[Dict[str, str]] = []
-    # 跳过表头两行
     for line in lines[2:]:
         if not line.strip().startswith("|"):
             continue
-        # 朴素分割，并去除首尾竖线
+
         parts = [p.strip() for p in line.strip().strip("|").split("|")]
         if len(parts) < 4:
             continue
-        date_str, title, link, summary_cell = parts[0], parts[1], parts[2], "|".join(parts[3:]).strip()
 
-        # 提取 <details> 内容
+        date_str, title, link = parts[0], parts[1], parts[2]
+        summary_cell = "|".join(parts[3:]).strip()
         details_content = extract_details(summary_cell)
-        records.append({
-            "date": date_str,
-            "title": title,
-            "link": link,
-            "details_raw": details_content,
-        })
+        records.append(
+            {
+                "date": date_str,
+                "title": title,
+                "link": link,
+                "details_raw": details_content,
+            }
+        )
     return records
 
 
@@ -72,265 +82,381 @@ def extract_details(cell_html: str) -> str:
     """
     从单元格中提取 <details> 内容，去除 <summary>...
     """
-    # 去壳
-    m = re.search(r"<details>([\s\S]*?)</details>", cell_html, re.IGNORECASE)
-    content = m.group(1) if m else cell_html
-    # 去掉 <summary>...</summary>
+    match = re.search(r"<details>([\s\S]*?)</details>", cell_html, re.IGNORECASE)
+    content = match.group(1) if match else cell_html
     content = re.sub(r"<summary>[\s\S]*?</summary>", "", content, flags=re.IGNORECASE)
-    # 将 <br> 标签转换回换行符，以便 Markdown 渲染器正确处理
     content = content.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
-    # 去掉包裹空白
     return content.strip()
 
 
 def auto_add_linebreaks(text: str) -> str:
     """
-    自动添加换行符的启发式规则（仅在换行已丢失时使用）：
-    - 标题前换行：在 "#" 等子标题前插入换行（如果紧跟在其他内容后）
-    - 项目符号：将内嵌的 " - "/" – " 转为行首列表项
-    - 有序列表："1. ", "2. " 等编号若非行首，则前置换行
-    - 水平分割线：在 --- 周围添加换行
-    - 粗体小节：将 " - **小节**" 等模式置于新行
-    
-    注意：如果文本中已经包含换行符（从 <br> 转换而来），则跳过大部分启发式规则
+    自动添加换行符的启发式规则（仅在换行已丢失时使用）。
     """
-    t = text
-    
-    # 如果文本中已经有换行符，说明换行信息已保留，只需做轻微规范化
-    has_linebreaks = "\n" in t
-    
+    fixed = text
+    has_linebreaks = "\n" in fixed
+
     if has_linebreaks:
-        # 已有换行，只需规范化
-        # 确保标题前有换行（如果紧跟在其他非空白内容后）
-        # 使用负向前瞻确保不会拆分行首的标题
-        # 匹配：非换行、非#的字符，后面跟着 #（且不在行首）
-        t = re.sub(r"([^\n\s#])\s*(?=#+\s)", r"\1\n", t)
-        # 确保水平线前后有换行
-        t = re.sub(r"([^\n])\s*---\s*([^\n])", r"\1\n---\n\2", t)
-        # 合并多余空行为最多两个
-        t = re.sub(r"\n{3,}", "\n\n", t)
-    else:
-        # 没有换行，使用完整的启发式规则恢复
-        # 标题前强制换行（但不要拆分行首的标题）
-        # 只在非行首的 # 前添加换行
-        t = re.sub(r"([^\n\s#])\s*(?=#+\s)", r"\1\n", t)
-        # 如果文本开头没有换行，确保标题在行首
-        if not t.startswith("#"):
-            t = re.sub(r"^\s*(#+\s+)", r"\1", t)
+        fixed = re.sub(r"([^\n\s#])\s*(?=#+\s)", r"\1\n", fixed)
+        fixed = re.sub(r"([^\n])\s*---\s*([^\n])", r"\1\n---\n\2", fixed)
+        fixed = re.sub(r"\n{3,}", "\n\n", fixed)
+        return fixed.strip()
 
-        # 水平线周围换行
-        t = re.sub(r"\s*---\s*", "\n---\n", t)
+    fixed = re.sub(r"([^\n\s#])\s*(?=#+\s)", r"\1\n", fixed)
+    if not fixed.startswith("#"):
+        fixed = re.sub(r"^\s*(#+\s+)", r"\1", fixed)
 
-        # 列表项前换行（无序）
-        t = re.sub(r"\s+[-–]\s+", "\n- ", t)
-
-        # 有序列表：将内联的 " 1. " 变为换行起始
-        # 但不要匹配在 **粗体** 内部的数字（如 **1. 标题**）
-        t = re.sub(r"(?<!\n)(?<!\*\*)(\s*)(\d+\.\s+)", lambda m: "\n" + m.group(2), t)
-
-        # 粗体小节项：" - **...**" → 换行
-        t = re.sub(r"\s+-\s+\*\*(.+?)\*\*", lambda m: "\n- **" + m.group(1) + "**", t)
-
-        # 在中文句号+标题锚点之间分段（谨慎）
-        t = re.sub(r"([。！？；])\s*(#+\s+)", r"\1\n\2", t)
-
-        # 合并多余空行为最多两个
-        t = re.sub(r"\n{3,}", "\n\n", t)
-
-    return t.strip()
+    fixed = re.sub(r"\s*---\s*", "\n---\n", fixed)
+    fixed = re.sub(r"\s+[-–]\s+", "\n- ", fixed)
+    fixed = re.sub(r"(?<!\n)(?<!\*\*)(\s*)(\d+\.\s+)", lambda m: "\n" + m.group(2), fixed)
+    fixed = re.sub(r"\s+-\s+\*\*(.+?)\*\*", lambda m: "\n- **" + m.group(1) + "**", fixed)
+    fixed = re.sub(r"([。！？；])\s*(#+\s+)", r"\1\n\2", fixed)
+    fixed = re.sub(r"\n{3,}", "\n\n", fixed)
+    return fixed.strip()
 
 
 def markdown_to_html(md: str) -> str:
     """
-    改进的 Markdown 渲染器，支持：
-    - 所有级别标题 (#, ##, ###, ####)
-    - 无序列表和有序列表（支持多行）
-    - 行内格式：**粗体**、`代码`、[链接](url)
-    - 段落和换行
+    简易 Markdown 渲染器，支持标题、列表、行内粗体/代码/链接、段落。
     """
     lines = md.splitlines()
     html_lines: List[str] = []
 
-    def render_inline(s: str) -> str:
-        # 代码块
-        s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
-        # 粗体
-        s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
-        # 链接
-        s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"<a href=\"\2\" target=\"_blank\" rel=\"noopener noreferrer\">\1</a>", s)
-        return s
+    def render_inline(text: str) -> str:
+        text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
+        text = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", text)
+        text = re.sub(
+            r"\[([^\]]+)\]\(([^)]+)\)",
+            r"<a href=\"\2\" target=\"_blank\" rel=\"noopener noreferrer\">\1</a>",
+            text,
+        )
+        return text
 
-    i = 0
-    while i < len(lines):
-        line = lines[i].rstrip()
+    index = 0
+    while index < len(lines):
+        line = lines[index].rstrip()
 
         if not line:
             html_lines.append("")
-            i += 1
+            index += 1
             continue
 
-        # 标题 - 支持所有级别（#, ##, ###, ####）
         title_match = re.match(r"^(#{1,6})\s+(.+)$", line)
         if title_match:
-            level = len(title_match.group(1))
-            # 限制最大级别为 h4
-            level = min(level, 4)
-            # h2 添加特殊类名用于样式
+            level = min(len(title_match.group(1)), 4)
             title_text = title_match.group(2).strip()
-            class_attr = ' class="section-title"' if level == 2 else ''
+            class_attr = ' class="section-title"' if level == 2 else ""
             html_lines.append(f"<h{level}{class_attr}>{render_inline(title_text)}</h{level}>")
-            i += 1
+            index += 1
             continue
 
-        # 水平线
         if line.strip() == "---":
             html_lines.append("<hr/>")
-            i += 1
+            index += 1
             continue
 
-        # 无序列表
         if re.match(r"^[-*]\s+", line):
-            ul_items: List[str] = []
-            while i < len(lines):
-                curr_line = lines[i].rstrip()
-                if not curr_line:
+            items: List[str] = []
+            while index < len(lines):
+                current = lines[index].rstrip()
+                if not current:
                     break
-                if re.match(r"^[-*]\s+", curr_line):
-                    item_text = re.sub(r"^[-*]\s+", "", curr_line).strip()
-                    ul_items.append(f"<li>{render_inline(item_text)}</li>")
-                    i += 1
-                else:
-                    break
-            if ul_items:
-                html_lines.append("<ul>" + "".join(ul_items) + "</ul>")
+                if re.match(r"^[-*]\s+", current):
+                    item_text = re.sub(r"^[-*]\s+", "", current).strip()
+                    items.append(f"<li>{render_inline(item_text)}</li>")
+                    index += 1
+                    continue
+                break
+            html_lines.append("<ul>" + "".join(items) + "</ul>")
             continue
 
-        # 有序列表
         if re.match(r"^\d+\.\s+", line):
-            ol_items: List[str] = []
-            while i < len(lines):
-                curr_line = lines[i].rstrip()
-                if not curr_line:
+            items = []
+            while index < len(lines):
+                current = lines[index].rstrip()
+                if not current:
                     break
-                if re.match(r"^\d+\.\s+", curr_line):
-                    item_text = re.sub(r"^\d+\.\s+", "", curr_line).strip()
-                    ol_items.append(f"<li>{render_inline(item_text)}</li>")
-                    i += 1
-                else:
-                    break
-            if ol_items:
-                html_lines.append("<ol>" + "".join(ol_items) + "</ol>")
+                if re.match(r"^\d+\.\s+", current):
+                    item_text = re.sub(r"^\d+\.\s+", "", current).strip()
+                    items.append(f"<li>{render_inline(item_text)}</li>")
+                    index += 1
+                    continue
+                break
+            html_lines.append("<ol>" + "".join(items) + "</ol>")
             continue
 
-        # 普通段落
         html_lines.append(f"<p>{render_inline(line)}</p>")
-        i += 1
+        index += 1
 
-    # 合并相邻空行
-    out: List[str] = []
-    prev_blank = False
-    for h in html_lines:
-        is_blank = (h == "")
-        if is_blank and prev_blank:
+    collapsed: List[str] = []
+    previous_blank = False
+    for line in html_lines:
+        is_blank = line == ""
+        if is_blank and previous_blank:
             continue
-        out.append(h)
-        prev_blank = is_blank
+        collapsed.append(line)
+        previous_blank = is_blank
 
-    return "\n".join(out).strip()
+    return "\n".join(collapsed).strip()
 
 
-def build_data(records: List[Dict[str, str]]) -> List[Dict[str, str]]:
-    data: List[Dict[str, str]] = []
-    for rec in records:
-        raw = rec["details_raw"]
-        fixed = auto_add_linebreaks(raw)
-        html = markdown_to_html(fixed)
-        data.append({
-            "date": rec["date"],
-            "title": rec["title"],
-            "link": rec["link"],
-            "summary_markdown": fixed,
-            "summary_html": html,
-        })
-    return data
+def extract_section_block(markdown: str, titles: List[str]) -> str:
+    for title in titles:
+        escaped = re.escape(title)
+        match = re.search(rf"##\s*{escaped}[\s\S]*?(?=##|$)", markdown)
+        if match:
+            return match.group(0)
+    return ""
+
+
+def extract_research_unit(markdown: str) -> str:
+    block = extract_section_block(markdown, ["研究单位", "论文研究单位"])
+    if not block:
+        return ""
+
+    first_bullet = ""
+    for line in block.splitlines():
+        candidate = line.strip()
+        if candidate.startswith("- "):
+            first_bullet = candidate
+            break
+
+    if not first_bullet:
+        stripped = re.sub(r"^##\s*[^\n]+\n?", "", block).strip()
+        first_line = stripped.splitlines()[0].strip() if stripped else ""
+        first_bullet = first_line
+
+    if not first_bullet:
+        return ""
+
+    return (
+        first_bullet.replace("- ", "", 1)
+        .replace("**", "")
+        .replace("`", "")
+        .replace("作者主要来自", "")
+        .replace("作者来自", "")
+        .strip()
+    )
+
+
+def strip_markdown(text: str) -> str:
+    plain = text
+    plain = re.sub(r"<[^>]+>", " ", plain)
+    plain = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", plain)
+    plain = re.sub(r"`([^`]+)`", r"\1", plain)
+    plain = re.sub(r"\*\*([^*]+)\*\*", r"\1", plain)
+    plain = re.sub(r"^#{1,6}\s*", "", plain, flags=re.MULTILINE)
+    plain = re.sub(r"^\s*[-*]\s+", "", plain, flags=re.MULTILINE)
+    plain = re.sub(r"^\s*\d+\.\s+", "", plain, flags=re.MULTILINE)
+    plain = re.sub(r"\s+", " ", plain)
+    return plain.strip()
+
+
+def build_preview(markdown: str) -> str:
+    overview = extract_section_block(markdown, ["论文概述"])
+    if overview:
+        text = strip_markdown(re.sub(r"^##\s*论文概述\s*", "", overview))
+    else:
+        text = strip_markdown(markdown)
+    return text[:200].strip()
+
+
+def normalize_arxiv_id(value: str) -> str:
+    match = re.search(r"arxiv\.org/(?:abs|pdf)/([^?#]+)", value, re.IGNORECASE)
+    if not match:
+        return ""
+
+    arxiv_id = match.group(1).strip().rstrip("/")
+    if arxiv_id.lower().endswith(".pdf"):
+        arxiv_id = arxiv_id[:-4]
+    arxiv_id = re.sub(r"v\d+$", "", arxiv_id, flags=re.IGNORECASE)
+    return arxiv_id
+
+
+def get_translation_link(link: str) -> str:
+    arxiv_id = normalize_arxiv_id(link)
+    return f"https://hjfy.top/arxiv/{arxiv_id}" if arxiv_id else ""
+
+
+def slugify_fallback(text: str) -> str:
+    slug = re.sub(r"[^\w\u4e00-\u9fff-]+", "-", text.lower()).strip("-")
+    slug = re.sub(r"-{2,}", "-", slug)
+    return slug or "paper"
+
+
+def make_page_dir_name(arxiv_id: str, title: str) -> str:
+    if arxiv_id:
+        return arxiv_id.replace("/", "-")
+    return slugify_fallback(title)
+
+
+def build_site_records(records: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    built: List[Dict[str, str]] = []
+    for record in records:
+        summary_markdown = auto_add_linebreaks(record["details_raw"])
+        summary_html = markdown_to_html(summary_markdown)
+        arxiv_id = normalize_arxiv_id(record["link"])
+        page_dir = make_page_dir_name(arxiv_id, record["title"])
+        preview_text = build_preview(summary_markdown)
+        research_unit = extract_research_unit(summary_markdown)
+
+        built.append(
+            {
+                "date": record["date"],
+                "title": record["title"],
+                "link": record["link"],
+                "arxiv_id": arxiv_id,
+                "page_dir": page_dir,
+                "detail_path": f"papers/{page_dir}/",
+                "preview_text": preview_text,
+                "research_unit": research_unit,
+                "translation_link": get_translation_link(record["link"]),
+                "summary_markdown": summary_markdown,
+                "summary_html": summary_html,
+            }
+        )
+    return built
+
+
+def build_list_data(records: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    return [
+        {
+            "date": record["date"],
+            "title": record["title"],
+            "link": record["link"],
+            "arxiv_id": record["arxiv_id"],
+            "detail_path": record["detail_path"],
+            "preview_text": record["preview_text"],
+            "research_unit": record["research_unit"],
+        }
+        for record in records
+    ]
+
+
+def render_detail_meta(record: Dict[str, str]) -> str:
+    parts = [escape(record["date"])]
+    parts.append(
+        f'<a href="{escape(record["link"], quote=True)}" target="_blank" rel="noopener noreferrer">原文链接</a>'
+    )
+    if record["translation_link"]:
+        parts.append(
+            f'<a href="{escape(record["translation_link"], quote=True)}" target="_blank" rel="noopener noreferrer">幻觉翻译</a>'
+        )
+    if record["arxiv_id"]:
+        parts.append(f'<span class="meta-id">{escape(record["arxiv_id"])}</span>')
+    return " · ".join(parts)
 
 
 def generate_index_html() -> str:
-    # 从环境变量读取关键词，生成动态标题
     keyword = os.getenv("ARXIV_QUERY_KEYWORD", "VLA")
     site_title = f"{keyword} 论文精选"
     site_subtitle = f"精选 {keyword} 相关的最新 arXiv 论文"
 
     return f"""<!doctype html>
-<html lang=\"zh-CN\">
+<html lang="zh-CN">
   <head>
-    <meta charset=\"utf-8\" />
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-    <title>{site_title} - ArXiv Papers</title>
-    <meta name=\"description\" content=\"{site_subtitle}\" />
-    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />
-    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />
-    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap\" rel=\"stylesheet\" />
-    <link rel=\"stylesheet\" href=\"assets/style.css\" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{escape(site_title)} - ArXiv Papers</title>
+    <meta name="description" content="{escape(site_subtitle, quote=True)}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/style.css" />
   </head>
   <body>
-    <div class=\"bg-gradient\"></div>
-    <header class=\"header\">
-      <div class=\"container\">
-        <div class=\"header-content\">
-          <div class=\"header-text\">
-            <h1 class=\"site-title\">
-              <span class=\"icon\">📚</span>
-              {site_title}
+    <div class="bg-gradient"></div>
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="header-text">
+            <h1 class="site-title">
+              <span class="icon">📚</span>
+              {escape(site_title)}
             </h1>
-            <p class=\"site-subtitle\">{site_subtitle}</p>
+            <p class="site-subtitle">{escape(site_subtitle)}</p>
           </div>
-          <div class=\"search-wrapper\">
-            <svg class=\"search-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\">
-              <path d=\"M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4-4\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
+          <div class="search-wrapper">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <input id=\"search\" type=\"search\" placeholder=\"搜索论文标题或内容...\" aria-label=\"搜索\" />
+            <input id="search" type="search" placeholder="搜索论文标题、摘要预览或 arXiv ID..." aria-label="搜索" />
           </div>
         </div>
       </div>
     </header>
 
-    <main class=\"container main-content\">
-      <section id=\"status\" class=\"status-panel hidden\" aria-live=\"polite\"></section>
-      <section id=\"groups\"></section>
+    <main class="container main-content">
+      <section id="status" class="status-panel hidden" aria-live="polite"></section>
+      <section id="groups"></section>
     </main>
 
-    <footer class=\"footer\">
-      <div class=\"container\">
-        <p>数据来源：<a href=\"https://arxiv.org\" target=\"_blank\" rel=\"noopener noreferrer\">arXiv.org</a></p>
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
       </div>
     </footer>
 
-    <div id=\"detail-view\" class=\"detail-view hidden\">
-      <div class=\"detail-header\">
-        <button id=\"detail-back\" class=\"back-btn\" aria-label=\"返回\">
-          <svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\">
-            <path d=\"M15 10H5M5 10l5 5M5 10l5-5\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>
-          </svg>
-          返回
-        </button>
-      </div>
-      <div class=\"detail-content\">
-        <div class=\"detail-shell\">
-          <div class=\"detail-main\">
-            <h2 id=\"detail-title\"></h2>
-            <div id=\"detail-meta\" class=\"detail-meta\"></div>
-            <article id=\"detail-body\"></article>
-          </div>
-          <aside id=\"detail-toc\" class=\"detail-toc hidden\" aria-label=\"内容目录\">
-            <p class=\"detail-toc-title\">内容目录</p>
-            <nav id=\"detail-toc-nav\" class=\"detail-toc-nav\"></nav>
-          </aside>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
+""".strip()
+
+
+def generate_paper_html(record: Dict[str, str]) -> str:
+    keyword = os.getenv("ARXIV_QUERY_KEYWORD", "VLA")
+    site_title = f"{keyword} 论文精选"
+    page_title = record["title"]
+    page_description = record["preview_text"] or f"{keyword} 论文详情"
+    meta_html = render_detail_meta(record)
+
+    return f"""<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{escape(page_title)} - {escape(site_title)}</title>
+    <meta name="description" content="{escape(page_description, quote=True)}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="{escape(record["arxiv_id"] or record["page_dir"], quote=True)}">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">{escape(site_title)}</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">{escape(page_title)}</h1>
+          <div class="detail-meta">{meta_html}</div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <script src=\"assets/app.js\"></script>
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body">{record["summary_html"]}</article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
   </body>
 </html>
 """.strip()
@@ -350,7 +476,6 @@ def generate_style_css() -> str:
   --accent-hover: #4f46e5;
   --gradient-from: #6366f1;
   --gradient-to: #8b5cf6;
-  --shadow: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -359,16 +484,16 @@ def generate_style_css() -> str:
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   background: var(--bg);
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
-}
-
-body.detail-open {
-  overflow: hidden;
 }
 
 .bg-gradient {
@@ -466,13 +591,15 @@ input[type=search]::placeholder {
   color: var(--text-secondary);
 }
 
-.main-content {
+.main-content,
+.detail-layout {
   position: relative;
   z-index: 1;
   padding-bottom: 80px;
 }
 
-.status-panel.hidden {
+.status-panel.hidden,
+.detail-toc.hidden {
   display: none;
 }
 
@@ -549,10 +676,29 @@ input[type=search]::placeholder {
   font-size: 18px;
 }
 
+.group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.group-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .card {
@@ -602,26 +748,13 @@ input[type=search]::placeholder {
   transform: translateY(-4px) scale(1.01);
 }
 
-.card:focus-visible,
-.back-btn:focus-visible,
+.card-link:focus-visible,
+.back-link:focus-visible,
 .detail-toc-link:focus-visible,
 input[type=search]:focus-visible,
 .status-action:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16);
-}
-
-.group-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.group-count {
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-weight: 500;
 }
 
 .title {
@@ -701,52 +834,19 @@ input[type=search]:focus-visible,
   font-size: 16px;
 }
 
-.footer {
-  position: relative;
-  z-index: 1;
-  padding: 32px 0;
-  border-top: 1px solid var(--border);
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 14px;
+.detail-page-header {
+  padding-bottom: 12px;
 }
 
-.footer a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.footer a:hover {
-  color: var(--accent-hover);
-}
-
-.detail-view {
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  z-index: 1000;
+.detail-page-topbar {
   display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
 }
 
-.detail-view.hidden {
-  display: none;
-}
-
-.detail-header {
-  position: sticky;
-  top: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 16px 24px;
-  z-index: 10;
-  backdrop-filter: blur(12px);
-  background: rgba(10, 14, 26, 0.95);
-}
-
-.back-btn {
+.back-link {
   appearance: none;
   background: var(--card);
   border: 1px solid var(--border);
@@ -760,49 +860,46 @@ input[type=search]:focus-visible,
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
-.back-btn:hover {
+.back-link::before {
+  content: '←';
+}
+
+.back-link:hover {
   border-color: var(--accent);
   background: var(--card-hover);
 }
 
-.back-btn svg {
-  width: 20px;
-  height: 20px;
+.detail-site-name,
+.detail-kicker,
+.detail-meta,
+.footer,
+.group-count {
+  color: var(--text-secondary);
 }
 
-.detail-content {
-  flex: 1;
-  max-width: 1180px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
+.detail-site-name {
+  font-size: 14px;
 }
 
-.detail-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  gap: 40px;
-  align-items: start;
+.detail-kicker {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
-.detail-main {
-  min-width: 0;
-}
-
-#detail-title {
-  font-size: 32px;
+.detail-page-title {
+  font-size: 40px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
   margin-bottom: 16px;
-  color: var(--text);
 }
 
 .detail-meta {
-  color: var(--text-secondary);
   font-size: 15px;
-  margin-bottom: 32px;
   padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
 }
@@ -817,24 +914,39 @@ input[type=search]:focus-visible,
   color: var(--accent-hover);
 }
 
+.meta-id {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.detail-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 40px;
+  align-items: start;
+}
+
+.detail-main {
+  min-width: 0;
+}
+
 .detail-toc {
   position: sticky;
-  top: 92px;
+  top: 24px;
   background: rgba(15, 20, 25, 0.82);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 18px;
 }
 
-.detail-toc.hidden {
-  display: none;
-}
-
 .detail-toc-title {
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
   margin-bottom: 14px;
 }
 
@@ -936,14 +1048,19 @@ article code {
   color: var(--accent);
 }
 
-article a {
+article a,
+.footer a {
   color: var(--accent);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-article a:hover {
+article a:hover,
+.footer a:hover {
   color: var(--accent-hover);
+}
+
+article a:hover {
   text-decoration: underline;
 }
 
@@ -951,6 +1068,15 @@ hr {
   border: none;
   border-top: 1px solid var(--border);
   margin: 32px 0;
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {
@@ -974,14 +1100,6 @@ hr {
     grid-template-columns: 1fr;
   }
 
-  #detail-title {
-    font-size: 24px;
-  }
-
-  .detail-content {
-    padding: 24px 16px 60px;
-  }
-
   .status-card {
     padding: 20px;
   }
@@ -989,6 +1107,15 @@ hr {
   .group-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .detail-page-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .detail-page-title {
+    font-size: 28px;
   }
 
   .detail-shell {
@@ -1008,74 +1135,16 @@ def generate_app_js() -> str:
     return """
 /**
  * @file app.js
- * @description 前端逻辑：加载 data.json，渲染卡片、搜索、状态反馈、详情目录与键盘交互。
+ * @description 首页逻辑：加载轻量 data.json，渲染卡片与搜索。
  */
 (function(){
-  /** @type {Array<{date:string,title:string,link:string,summary_markdown:string,summary_html:string}>} */
+  /** @type {Array<{date:string,title:string,link:string,arxiv_id:string,detail_path:string,preview_text:string,research_unit:string}>} */
   let DATA = [];
 
   const $ = (sel) => document.querySelector(sel);
   const statusEl = $('#status');
   const groupsEl = $('#groups');
   const searchEl = $('#search');
-  const detailView = $('#detail-view');
-  const detailTitle = $('#detail-title');
-  const detailMeta = $('#detail-meta');
-  const detailBody = $('#detail-body');
-  const detailToc = $('#detail-toc');
-  const detailTocNav = $('#detail-toc-nav');
-  const detailBack = $('#detail-back');
-  let currentItem = null;
-  let lastScrollY = 0;
-  let lastFocusedCard = null;
-
-  /**
-   * @param {Array} items
-   * @param {string} q
-   */
-  function filterItems(items, q){
-    const kw = (q||'').trim().toLowerCase();
-    return items.filter(it => {
-      if(!kw) return true;
-      const hay = (it.title + ' ' + it.summary_markdown).toLowerCase();
-      return hay.includes(kw);
-    });
-  }
-
-  function extractSectionBlock(markdown, title){
-    const escaped = title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');
-    const match = markdown.match(new RegExp(`##\\\\s*${escaped}[\\\\s\\\\S]*?(?=##|$)`));
-    return match ? match[0] : '';
-  }
-
-  function extractResearchUnit(markdown){
-    const block = extractSectionBlock(markdown, '研究单位');
-    if(!block){
-      return '';
-    }
-
-    const firstBullet = block
-      .split('\\n')
-      .map((line) => line.trim())
-      .find((line) => line.startsWith('- '));
-
-    if(!firstBullet){
-      return '';
-    }
-
-    return firstBullet
-      .replace(/^-\\s*/, '')
-      .replace(/\\*\\*/g, '')
-      .replace(/`/g, '')
-      .replace(/作者主要来自/g, '')
-      .replace(/作者来自/g, '')
-      .trim();
-  }
-
-  function getArxivId(link){
-    const match = link.match(/arxiv\\.org\\/(?:abs|pdf)\\/([^/?#]+)/i);
-    return match ? match[1] : '';
-  }
 
   function clearStatus(){
     statusEl.innerHTML = '';
@@ -1113,232 +1182,116 @@ def generate_app_js() -> str:
     statusEl.appendChild(card);
   }
 
-  /**
-   * 提取论文概述部分作为预览
-   * @param {string} markdown
-   * @returns {string}
-   */
-  function extractOverview(markdown){
-    // 尝试提取 "## 论文概述" 部分
-    const overviewMatch = markdown.match(/##\\s*论文概述[\\s\\S]*?(?=##|$)/);
-    if(overviewMatch){
-      // 移除标题行和标记符号，只保留内容
-      let content = overviewMatch[0]
-        .replace(/##\\s*论文概述\\s*/, '')
-        .replace(/#+\\s+/g, '')
-        .replace(/\\*\\*/g, '')
-        .replace(/`/g, '')
-        .trim();
-      return content.substring(0, 200);
-    }
-    // 回退：如果找不到论文概述，使用原有逻辑
-    return markdown.replace(/#+\\s+/g, '').replace(/\\*\\*/g, '').substring(0, 200);
+  function buildSearchText(item){
+    return [
+      item.title || '',
+      item.preview_text || '',
+      item.research_unit || '',
+      item.arxiv_id || ''
+    ].join(' ').toLowerCase();
   }
 
-  /**
-   * @param {Array} items  已过滤后的项目
-   */
+  function filterItems(items, query){
+    const keyword = (query || '').trim().toLowerCase();
+    if(!keyword){
+      return items;
+    }
+    return items.filter((item) => buildSearchText(item).includes(keyword));
+  }
+
   function renderGroups(items){
     if(!items.length){
       groupsEl.innerHTML = '';
       return;
     }
 
-    const map = new Map();
-    items.forEach(it=>{ if(!map.has(it.date)) map.set(it.date, []); map.get(it.date).push(it); });
-    const dates = Array.from(map.keys()).sort((a,b)=> b.localeCompare(a));
+    const grouped = new Map();
+    items.forEach((item) => {
+      if(!grouped.has(item.date)){
+        grouped.set(item.date, []);
+      }
+      grouped.get(item.date).push(item);
+    });
 
+    const dates = Array.from(grouped.keys()).sort((a, b) => b.localeCompare(a));
     groupsEl.innerHTML = '';
-    dates.forEach(d => {
+
+    dates.forEach((date) => {
       const group = document.createElement('section');
       group.className = 'group';
 
       const heading = document.createElement('div');
       heading.className = 'group-heading';
 
-      const h = document.createElement('h2');
-      h.textContent = d;
+      const h2 = document.createElement('h2');
+      h2.textContent = date;
 
       const count = document.createElement('div');
       count.className = 'group-count';
-      count.textContent = `${map.get(d).length} 篇`;
+      count.textContent = `${grouped.get(date).length} 篇`;
 
       const grid = document.createElement('div');
       grid.className = 'grid';
 
-      map.get(d).forEach(it => {
-        const card = document.createElement('button');
-        card.type = 'button';
-        card.className = 'card';
-        card.setAttribute('aria-label', `查看论文：${it.title}`);
-        card.addEventListener('click', ()=> openDetail(it, card));
+      grouped.get(date).forEach((item) => {
+        const cardLink = document.createElement('a');
+        cardLink.className = 'card-link';
+        cardLink.href = item.detail_path;
+        cardLink.setAttribute('aria-label', `查看论文：${item.title}`);
 
-        const title = document.createElement('div');
-        title.className = 'title';
-        title.textContent = it.title;
+        const card = document.createElement('article');
+        card.className = 'card';
 
         const tags = document.createElement('div');
         tags.className = 'card-tags';
 
-        const researchUnit = extractResearchUnit(it.summary_markdown);
-        if(researchUnit){
+        if(item.research_unit){
           const orgTag = document.createElement('div');
           orgTag.className = 'card-tag primary';
-          orgTag.textContent = researchUnit;
+          orgTag.textContent = item.research_unit;
           tags.appendChild(orgTag);
         }
 
-        const arxivId = getArxivId(it.link);
-        if(arxivId){
+        if(item.arxiv_id){
           const idTag = document.createElement('div');
           idTag.className = 'card-tag';
-          idTag.textContent = arxivId;
+          idTag.textContent = item.arxiv_id;
           tags.appendChild(idTag);
         }
 
+        const title = document.createElement('div');
+        title.className = 'title';
+        title.textContent = item.title;
+
         const preview = document.createElement('div');
         preview.className = 'summary-preview';
-        preview.textContent = extractOverview(it.summary_markdown);
+        preview.textContent = item.preview_text || '暂无摘要预览';
 
         const footer = document.createElement('div');
         footer.className = 'card-footer';
+
         const readMore = document.createElement('div');
         readMore.className = 'read-more';
         readMore.textContent = '阅读详情';
 
         footer.appendChild(readMore);
+
         if(tags.childNodes.length){
           card.appendChild(tags);
         }
         card.appendChild(title);
         card.appendChild(preview);
         card.appendChild(footer);
-        grid.appendChild(card);
+        cardLink.appendChild(card);
+        grid.appendChild(cardLink);
       });
-      heading.appendChild(h);
+
+      heading.appendChild(h2);
       heading.appendChild(count);
       group.appendChild(heading);
       group.appendChild(grid);
       groupsEl.appendChild(group);
     });
-  }
-
-  /**
-   * 从 arxiv.org 链接中提取论文 ID，并生成幻觉翻译链接
-   * @param {string} link
-   * @returns {string|null} 幻觉翻译链接，如果不是 arxiv 链接则返回 null
-   */
-  function getTranslationLink(link){
-    // 匹配 arxiv.org/abs/ 或 arxiv.org/pdf/ 等格式
-    const match = link.match(/arxiv\\.org\\/(?:abs|pdf)\\/([\\d.]+)/i);
-    if(match && match[1]){
-      return `https://hjfy.top/arxiv/${match[1]}`;
-    }
-    return null;
-  }
-
-  function renderDetailMeta(it){
-    detailMeta.innerHTML = '';
-    detailMeta.append(document.createTextNode(it.date));
-
-    const sourceLink = document.createElement('a');
-    sourceLink.href = it.link;
-    sourceLink.target = '_blank';
-    sourceLink.rel = 'noopener noreferrer';
-    sourceLink.textContent = '原文链接';
-
-    detailMeta.append(document.createTextNode(' · '));
-    detailMeta.appendChild(sourceLink);
-
-    const translationLink = getTranslationLink(it.link);
-    if(translationLink){
-      const translated = document.createElement('a');
-      translated.href = translationLink;
-      translated.target = '_blank';
-      translated.rel = 'noopener noreferrer';
-      translated.textContent = '幻觉翻译';
-      detailMeta.append(document.createTextNode(' · '));
-      detailMeta.appendChild(translated);
-    }
-  }
-
-  function slugifyHeading(text, index){
-    const slug = (text || '')
-      .trim()
-      .toLowerCase()
-      .replace(/[^\\w\\u4e00-\\u9fff]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-    return slug ? `section-${index}-${slug}` : `section-${index}`;
-  }
-
-  function buildDetailToc(){
-    detailTocNav.innerHTML = '';
-    const headings = Array.from(detailBody.querySelectorAll('h2'));
-
-    if(!headings.length){
-      detailToc.classList.add('hidden');
-      return;
-    }
-
-    headings.forEach((heading, index) => {
-      if(!heading.id){
-        heading.id = slugifyHeading(heading.textContent, index + 1);
-      }
-      const link = document.createElement('a');
-      link.className = 'detail-toc-link';
-      link.href = `#${heading.id}`;
-      link.textContent = heading.textContent || `章节 ${index + 1}`;
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-      detailTocNav.appendChild(link);
-    });
-
-    detailToc.classList.remove('hidden');
-  }
-
-  function showDetail(it){
-    currentItem = it;
-    detailTitle.textContent = it.title;
-    renderDetailMeta(it);
-    detailBody.innerHTML = it.summary_html; // 已在后端修复换行并渲染
-    buildDetailToc();
-    detailView.classList.remove('hidden');
-    document.body.classList.add('detail-open');
-    window.scrollTo(0, 0);
-    detailBack.focus();
-  }
-
-  function openDetail(it, card){
-    lastScrollY = window.scrollY || 0;
-    lastFocusedCard = card || document.activeElement;
-    showDetail(it);
-    history.pushState({ view: 'detail', item: it }, '', window.location.href);
-  }
-
-  function hideDetail(){
-    detailView.classList.add('hidden');
-    detailToc.classList.add('hidden');
-    detailTocNav.innerHTML = '';
-    currentItem = null;
-    document.body.classList.remove('detail-open');
-  }
-
-  function restoreListState(){
-    requestAnimationFrame(() => window.scrollTo(0, lastScrollY));
-    if(lastFocusedCard && typeof lastFocusedCard.focus === 'function'){
-      lastFocusedCard.focus();
-    }
-  }
-
-  function closeDetail(){
-    if(history.state && history.state.view === 'detail'){
-      history.back();
-      return;
-    }
-    hideDetail();
-    restoreListState();
   }
 
   function sync(){
@@ -1372,32 +1325,17 @@ def generate_app_js() -> str:
     renderGroups(items);
   }
 
-  detailBack.addEventListener('click', closeDetail);
-  document.addEventListener('keydown', (event) => {
-    if(event.key === 'Escape' && !detailView.classList.contains('hidden')){
-      event.preventDefault();
-      closeDetail();
-    }
-  });
-
-  window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.view === 'detail' && e.state.item) {
-      showDetail(e.state.item);
-    } else {
-      hideDetail();
-      restoreListState();
-    }
-  });
-
   searchEl.addEventListener('input', sync);
 
   async function loadData(){
     renderStatus('loading', '正在加载论文列表', '页面正在读取静态数据并构建卡片，你可以稍后直接开始搜索。');
+
     try{
       const response = await fetch('assets/data.json');
       if(!response.ok){
         throw new Error(`HTTP ${response.status}`);
       }
+
       DATA = await response.json();
       sync();
     } catch (error) {
@@ -1417,6 +1355,123 @@ def generate_app_js() -> str:
 """.strip()
 
 
+def generate_paper_js() -> str:
+    return """
+/**
+ * @file paper.js
+ * @description 论文详情页逻辑：构建目录并按 arXiv id 记录滚动进度。
+ */
+(function(){
+  const $ = (sel) => document.querySelector(sel);
+  const detailBody = $('#detail-body');
+  const detailToc = $('#detail-toc');
+  const detailTocNav = $('#detail-toc-nav');
+  const paperId = document.body.dataset.paperId || '';
+
+  function slugifyHeading(text, index){
+    const slug = (text || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^\\w\\u4e00-\\u9fff]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    return slug ? `section-${index}-${slug}` : `section-${index}`;
+  }
+
+  function buildDetailToc(){
+    if(!detailBody || !detailToc || !detailTocNav){
+      return;
+    }
+
+    detailTocNav.innerHTML = '';
+    const headings = Array.from(detailBody.querySelectorAll('h2'));
+
+    if(!headings.length){
+      detailToc.classList.add('hidden');
+      return;
+    }
+
+    headings.forEach((heading, index) => {
+      if(!heading.id){
+        heading.id = slugifyHeading(heading.textContent, index + 1);
+      }
+
+      const link = document.createElement('a');
+      link.className = 'detail-toc-link';
+      link.href = `#${heading.id}`;
+      link.textContent = heading.textContent || `章节 ${index + 1}`;
+      detailTocNav.appendChild(link);
+    });
+
+    detailToc.classList.remove('hidden');
+  }
+
+  function getStorageKey(){
+    return paperId ? `paper-scroll:${paperId}` : '';
+  }
+
+  function restoreScroll(){
+    if(!paperId || window.location.hash){
+      return;
+    }
+
+    const storageKey = getStorageKey();
+    if(!storageKey){
+      return;
+    }
+
+    try{
+      const saved = window.localStorage.getItem(storageKey);
+      if(saved === null){
+        return;
+      }
+
+      const scrollY = Number(saved);
+      if(!Number.isFinite(scrollY) || scrollY <= 0){
+        return;
+      }
+
+      window.requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    } catch (error) {
+      console.warn('恢复滚动进度失败', error);
+    }
+  }
+
+  function saveScroll(){
+    const storageKey = getStorageKey();
+    if(!storageKey){
+      return;
+    }
+
+    try{
+      window.localStorage.setItem(storageKey, String(window.scrollY || 0));
+    } catch (error) {
+      console.warn('保存滚动进度失败', error);
+    }
+  }
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if(ticking){
+      return;
+    }
+
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      saveScroll();
+      ticking = false;
+    });
+  }, { passive: true });
+
+  window.addEventListener('pagehide', saveScroll);
+
+  buildDetailToc();
+  restoreScroll();
+})();
+""".strip()
+
+
 def main() -> int:
     if not INPUT_MD.exists():
         print(f"未找到 {INPUT_MD}", file=sys.stderr)
@@ -1424,13 +1479,19 @@ def main() -> int:
 
     md_text = read_text(INPUT_MD)
     records = parse_markdown_table(md_text)
-    data = build_data(records)
+    site_records = build_site_records(records)
+    list_data = build_list_data(site_records)
 
-    # 输出静态资源
+    shutil.rmtree(PAPERS_DIR, ignore_errors=True)
+
     write_text(SITE_DIR / "index.html", generate_index_html())
     write_text(ASSETS_DIR / "style.css", generate_style_css())
     write_text(ASSETS_DIR / "app.js", generate_app_js())
-    write_text(ASSETS_DIR / "data.json", json.dumps(data, ensure_ascii=False, indent=2))
+    write_text(ASSETS_DIR / "paper.js", generate_paper_js())
+    write_text(ASSETS_DIR / "data.json", json.dumps(list_data, ensure_ascii=False, indent=2))
+
+    for record in site_records:
+        write_text(PAPERS_DIR / record["page_dir"] / "index.html", generate_paper_html(record))
 
     print(f"生成完成：{SITE_DIR}")
     return 0

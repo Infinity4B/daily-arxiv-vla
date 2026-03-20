@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ST4VLA: Spatially Guided Training for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="提出 ST4VLA 框架，旨在通过空间引导训练（Spatially Guided Training）将视觉-语言模型（VLM）的空间先验知识与机器人具身控制对齐，解决指令到具体动作的转化难题。 核心目标是弥补大型多模态模型在理解与物理世界执行之间的鸿沟，确保机器人不仅理解“做什么”还能决定“在哪里”和“如何”行动。 论文揭示了直接将VLM微调为VLA模型会导致空间先验知识崩塌，而简单的空间提示（s" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2602.10109">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">ST4VLA: Spatially Guided Training for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2026-02-10 · <a href="http://arxiv.org/abs/2602.10109" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2602.10109" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2602.10109</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>上海人工智能实验室 (Shanghai AI Laboratory)</strong></li><li><strong>香港科技大学 (The Hong Kong University of Science and Technology)</strong></li><li><strong>南方科技大学 (Southern University of Science and Technology)</strong></li><li><strong>复旦大学 (Fudan University)</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>提出 <strong>ST4VLA</strong> 框架，旨在通过<strong>空间引导训练</strong>（Spatially Guided Training）将视觉-语言模型（VLM）的空间先验知识与机器人具身控制对齐，解决指令到具体动作的转化难题。</li><li>核心目标是弥补大型多模态模型在理解与物理世界执行之间的鸿沟，确保机器人不仅理解“做什么”还能决定“在哪里”和“如何”行动。</li><li>论文揭示了直接将VLM微调为VLA模型会导致空间先验知识崩塌，而简单的空间提示（spatial prompting）能有效缓解此问题。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出了<strong>ST4VLA</strong>框架，这是一个双系统（VLM规划器和动作专家）、双阶段（空间预训练和空间引导的后训练）的视觉-语言-动作训练框架。</li><li>引入了<strong>空间引导训练</strong>策略，通过在动作数据训练时使用空间提示（Spatial Prompting），使多模态感知和目标动作的优化动态对齐，避免了朴素联合训练中的梯度冲突。</li><li>在<strong>Google Robot</strong>和<strong>WidowX Robot</strong>等多个公开基准测试和真实世界任务中，实现了显著的性能提升，并达到了新的最先进（SOTA）水平。</li><li>系统地分析了感知与动作的协同优化，并提出了<strong>投影空间相似性（PSS）</strong> 来量化空间接地目标与动作策略目标之间的梯度对齐程度。</li><li>开源了<strong>代码、数据和模型</strong>。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>方法基于<strong>双系统架构</strong>：<strong>系统2 (VLM规划器)</strong> 作为多模态编码器，负责捕捉空间和语义先验；<strong>系统1 (动作专家)</strong> 使用紧凑的<strong>扩散Transformer (DiT)</strong> 和<strong>DINOv2</strong>视觉编码器，负责特定具身的控制。</li><li><strong>关键技术/创新点</strong>：</li></ul>
+<p> - <strong>空间接地预训练（Stage 1）</strong>：在大规模网络多模态空间数据（如RefCOCO, LLaVA-OneVision）与机器人特定数据集（如RoboRefIt， A0）上统一训练，使VLM获得可迁移的空间先验（如点、框、轨迹预测）。</p>
+<p> - <strong>空间引导的动作后训练（Stage 2）</strong>：在动作训练时，通过在任务指令后附加<strong>空间提示</strong>（如“Figure out how to execute it, then locate the key object needed”）来激活VLM的空间感知能力，其产生的潜在特征用于引导动作专家。</p>
+<p> - 使用轻量级的<strong>查询Transformer</strong>连接规划器与动作专家，并引入<strong>梯度衰减因子</strong>，以在保持规划器语义推理能力的同时实现有效联合优化。</p>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li><strong>使用的数据集</strong>：</li></ul>
+<p> - <strong>空间接地数据</strong>：RefCOCO、LLaVA-OneVision、RoboRefIt、A0、ST4VLA Data（机器人专用）。</p>
+<p> - <strong>动作数据</strong>：OXE数据集、Google Robot数据集、WidowX数据集、<strong>大尺度合成拣放数据集</strong>（200个任务，超过3000个物体/容器）、真实世界拣放轨迹（1K）。</p>
+<ul><li><strong>模型规模与参数量</strong>：基于 <strong>Qwen2.5-VL</strong> (3B) 构建VLM规划器，动作专家使用DiT和DINOv2编码器，查询Transformer仅8.7 MB。</li><li><strong>训练资源</strong>：未在提供的片段中明确说明，但通常此类大规模训练需要使用大量GPU/TPU集群。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li><strong>评估环境与基准</strong>：</li></ul>
+<p> - 公开模拟基准：<strong>SimplerEnv</strong>（Google Robot VM/VA， WidowX）、<strong>LIBERO</strong>。</p>
+<p> - 大尺度模拟拣放基准：在Isaac-Sim中构建的200个任务，评估<strong>分布内、未见物体、新背景、新指令</strong>四个维度。</p>
+<p> - 真实世界评估：使用<strong>Franka Research 3</strong>机器人进行拣放和<strong>长视野操作</strong>（如桌面整理、制作三明治）任务。</p>
+<ul><li><strong>主要评估指标</strong>：<strong>成功率 (Success Rate)</strong>。多模态理解评估使用MME、MMVet等基准的常见指标。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 在<strong>Google Robot (SimplerEnv)</strong>上，<strong>ST4VLA</strong>的VM和VA平均成功率分别达到<strong>84.6%</strong> 和 <strong>75.9%</strong>，显著优于Vanilla VLA的66.1%/63.5%。</p>
+<p> - 在<strong>WidowX (SimplerEnv)</strong>上，<strong>ST4VLA</strong>达到<strong>73.2%</strong> 的平均成功率，优于基线如GR00T N1.5 (61.9%)。</p>
+<p> - 在大尺度模拟拣放基准上，在四个泛化维度上均超越 <strong>π₀</strong> 和 <strong>GR00T N1.5</strong>。</p>
+<p> - 在真实世界泛化测试中，平均成功率 (<strong>65%</strong>) 显著高于 <strong>π₀ (31%)</strong> 和 <strong>GR00T N1.5 (48%)</strong>。</p>
+<p> - 在真实世界长视野操作任务中，在分布内、物理干扰和任务重规划三种设置下均表现最佳。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

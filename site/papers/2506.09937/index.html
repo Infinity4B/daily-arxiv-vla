@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SAFE: Multitask Failure Detection for Vision-Language-Action Models - VLA 论文精选</title>
+    <meta name="description" content="论文针对视觉-语言-动作（VLA）模型在部署于新任务时成功率有限的问题，提出了一个名为SAFE的多任务失败检测框架。SAFE旨在作为VLA等通用机器人策略的即插即用型失败检测器，通过分析VLA的内部特征来预测任务失败的可能性，从而允许机器人及时停止、回溯或寻求帮助。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2506.09937">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">SAFE: Multitask Failure Detection for Vision-Language-Action Models</h1>
+          <div class="detail-meta">2025-06-11 · <a href="http://arxiv.org/abs/2506.09937" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2506.09937" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2506.09937</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">论文研究单位</h2>
+<p>多伦多大学、多伦多大学机器人研究所、Vector研究所、丰田研究所。</p>
+<h2 class="section-title">论文概述</h2>
+<p>论文针对视觉-语言-动作（VLA）模型在部署于新任务时成功率有限的问题，提出了一个名为SAFE的多任务失败检测框架。SAFE旨在作为VLA等通用机器人策略的即插即用型失败检测器，通过分析VLA的内部特征来预测任务失败的可能性，从而允许机器人及时停止、回溯或寻求帮助。</p>
+<h2 class="section-title">论文核心贡献点</h2>
+<ol><li>通过分析VLA的潜在空间，发现不同任务中成功与失败轨迹的内部特征在特征空间中存在明显且一致的分离现象。</li><li>提出了SAFE框架，一个可扩展的、基于VLA内部特征的多任务失败检测方法。SAFE通过训练学习任务通用的失败表示，并使用保形预测（CP）校准阈值。</li><li>在多个VLA模型（OpenVLA, π₀, π₀-FAST）上进行了广泛的模拟和真实世界实验，并与多种基线方法比较，验证了SAFE的先进性能。</li></ol>
+<h2 class="section-title">论文方法描述</h2>
+<ol><li><strong>视觉分析</strong>：使用t-SNE可视化VLA（如π₀-FAST）在LIBERO-10数据集上的特征，发现失败轨迹的特征会聚集在一个“失败区”，且该现象在不同任务间具有普遍性。</li><li><strong>特征探测失败检测</strong>：SAFE从VLA最后一层提取特征，并使用简单的MLP或LSTM网络将特征回归为一个标量失败分数。MLP模型对每个时间步的特征独立处理并累加分数，使用L1损失；LSTM模型则序列处理特征，使用二元交叉熵损失。</li><li><strong>保形预测阈值选择</strong>：采用功能型保形预测（CP），利用校准集上成功轨迹的分数分布，构建一个随时间变化的预测带。在测试时，若预测分数超出该带，则判定为失败，从而在保持低误报率的同时平衡检测的准确性与及时性。</li></ol>
+<h2 class="section-title">论文使用数据集和训练资源</h2>
+<ol><li><strong>数据集</strong>：</li></ol>
+<p> - 模拟：LIBERO-10（10个长时序任务）、SimplerEnv（基于RT系列和BridgeData V2的高保真环境）。</p>
+<p> - 真实世界：在Franka Emika Panda机器人上部署π₀-FAST-DROID模型，设计了13个任务，收集了30个成功和30个失败轨迹；在WidowX机器人上部署OpenVLA，收集了8个任务的532个轨迹。</p>
+<ol><li><strong>训练资源</strong>：论文未明确提及具体的硬件资源，但SAFE本身是一个轻量级模型（如LSTM含230万参数），引入的计算开销极小（<1毫秒）。</li></ol>
+<h2 class="section-title">论文使用的评估环境和评估指标</h2>
+<ol><li><strong>评估环境</strong>：</li></ol>
+<p> - 在多个模拟环境（LIBERO-10, SimplerEnv）和真实世界机器人（Franka, WidowX）上对三种VLA模型（OpenVLA, π₀, π₀-FAST）进行评估。</p>
+<p> - 任务被划分为训练集（Seen任务）、验证集和测试集（Unseen任务）以评估跨任务的零样本泛化能力。</p>
+<ol><li><strong>评估指标</strong>：</li></ol>
+<p> - ROC曲线下面积（ROC-AUC）：衡量所有可能阈值下区分成功与失败的平均性能。</p>
+<p> - 平衡准确率、真阳性率、假阳性率：用于使用保形预测阈值时的二分类性能评估。</p>
+<p> - 平均检测时间（T-det）：检测到失败的相对时间步，衡量检测的及时性。</p>
+<p> - 此外，通过可视化失败模式与人类判断的匹配程度进行定性评估。</p></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

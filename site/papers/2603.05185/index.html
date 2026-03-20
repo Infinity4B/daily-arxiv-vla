@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Critic in the Loop: A Tri-System VLA Framework for Robust Long-Horizon Manipulation - VLA 论文精选</title>
+    <meta name="description" content="论文提出 Tri-System VLA 框架，旨在解决机器人长周期操作任务中高层语义推理与底层反应控制之间的平衡问题。 核心引入 Critic in the Loop 机制，通过动态调度 VLM 与 VLA 专家，实现高效、鲁棒的自主执行与异常恢复。 该框架显著提升了系统在分布外场景下的泛化能力与任务成功率，无需依赖大量紧急情况数据。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2603.05185">
+    <div class="bg-gradient"></div>
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <span class="detail-site-name">VLA 论文精选</span>
+        </div>
+        <div class="detail-hero">
+          <p class="detail-kicker">论文详情</p>
+          <h1 class="detail-page-title">Critic in the Loop: A Tri-System VLA Framework for Robust Long-Horizon Manipulation</h1>
+          <div class="detail-meta">2026-03-05 · <a href="http://arxiv.org/abs/2603.05185" target="_blank" rel="noopener noreferrer">原文链接</a> · <a href="https://hjfy.top/arxiv/2603.05185" target="_blank" rel="noopener noreferrer">幻觉翻译</a> · <span class="meta-id">2603.05185</span></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <div class="detail-main">
+          <article id="detail-body"><h2 class="section-title">研究单位</h2>
+<ul><li><strong>中国科学院自动化研究所</strong></li><li><strong>中国科学院大学人工智能学院</strong></li></ul>
+<h2 class="section-title">论文概述</h2>
+<ul><li>论文提出 <strong>Tri-System VLA</strong> 框架，旨在解决机器人长周期操作任务中高层语义推理与底层反应控制之间的平衡问题。</li><li>核心引入 <strong>Critic in the Loop</strong> 机制，通过动态调度 VLM 与 VLA 专家，实现高效、鲁棒的自主执行与异常恢复。</li><li>该框架显著提升了系统在分布外场景下的泛化能力与任务成功率，无需依赖大量紧急情况数据。</li></ul>
+<h2 class="section-title">核心贡献</h2>
+<ul><li>提出 <strong>自适应认知切换</strong> 机制，通过Critic引导的异步调度，动态调用高层推理，大幅提升计算效率与物理响应速度。</li><li>实现 <strong>主动异常检测与恢复</strong>，将人类启发的规则与数据驱动策略相结合，直观打破无限重试循环，增强系统鲁棒性与自主性。</li><li>开发 <strong>可扩展的子任务标注管道</strong>，自动化分割演示并提取语义标签，消除人工标注瓶颈，支持从多样化数据集中进行稳健训练。</li></ul>
+<h2 class="section-title">方法描述</h2>
+<ul><li>提出 <strong>三系统架构</strong>：<strong>System One (Cerebellum)</strong> 基于 Flow Matching 的 VLA 专家负责高频反应式执行；<strong>System Two (Brain)</strong> 基于 VLM 的高层规划器负责生成语义子目标；<strong>System Three (Critic)</strong> 轻量级视觉-语言模型负责持续监控执行进度与异常检测。</li><li>创新点在于 <strong>事件驱动的异步调度</strong>，Critic 持续评估状态，仅在子任务完成、检测到异常或停滞时唤醒 System Two，避免同步耦合导致的延迟与僵化。</li><li>通过将异常标记与进度值统一到文本输出空间，实现端到端的 <strong>Critic 训练</strong>，简化了模型架构并有效处理长尾故障案例。</li></ul>
+<h2 class="section-title">数据集与资源</h2>
+<ul><li>使用 <strong>Cobot Magic ALOHA</strong> 双臂机器人平台进行真实世界评估。</li><li>为每个任务收集 <strong>200条遥操作轨迹</strong> 用于策略训练，额外收集 <strong>100条</strong> 用于特定场景（如杯子倒地恢复）。</li><li>Critic 模型采用 <strong>Florence-2-base</strong> (约 <strong>0.2B</strong> 参数)，在冻结视觉塔后微调语言与投影层，学习率 <strong>1e-6</strong>，批大小 <strong>64</strong>。</li></ul>
+<h2 class="section-title">评估与结果</h2>
+<ul><li>在两个复杂长周期任务上进行评估：<strong>“整理餐具”</strong> (四种场景：有序、散乱、左杯、倒地) 和 <strong>“整理桌面”</strong> (涉及可变形物体)。</li><li>主要评估指标为任务成功率（10次试验中的成功次数）。</li><li>实验结果表明，<strong>Tri-System π₀.₅</strong> 在所有场景中均显著优于 <strong>单系统</strong> 和 <strong>双系统</strong> 基线，尤其在 OOD 场景（如左杯、倒地）中优势明显，成功率达到 <strong>70-70%</strong>，而基线方法成功率接近 <strong>0%</strong>。</li></ul></article>
+        </div>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">内容目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>数据来源：<a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+      </div>
+    </footer>
+
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
