@@ -11,6 +11,8 @@
 - 📱 响应式设计，支持移动端
 - 🎨 现代化暗色主题界面
 - 📄 每篇论文生成独立静态详情页
+- 🖼️ 自动从论文 HTML 提取首图，优先作为论文卡封面
+- 🎭 当 HTML 原图不可直接下载时，自动使用 Playwright 截取页面里的首个 figure 作为兜底封面
 - 💾 按 arXiv ID 独立记录论文页滚动进度
 - ⏰ **定时任务**: 每日中午12点自动更新内容
 
@@ -54,6 +56,20 @@ python scripts/arxiv_crawler.py
 
 # 生成论文摘要
 python scripts/generate_summaries.py
+
+# 抓取论文首图（可选，GitHub Actions 会自动执行）
+python scripts/fetch_paper_images.py --max-items 30
+
+# 为剩余缺图论文生成 Playwright 截图兜底队列
+python scripts/build_paper_image_fallback_queue.py --max-items 20
+
+# 安装 Playwright 并执行截图兜底
+npm install
+npx playwright install chromium
+npm run paper-image:fallbacks
+
+# 将截图结果注册进 manifest
+python scripts/register_paper_image_fallbacks.py
 ```
 
 ### 构建网站
@@ -62,7 +78,7 @@ python scripts/generate_summaries.py
 python scripts/build_site.py
 ```
 
-这将在 `site/` 目录下生成静态网站文件，包括首页、轻量数据文件，以及每篇论文对应的独立静态详情页。
+这将在 `site/` 目录下生成静态网站文件，包括首页、轻量数据文件、论文首图资源，以及每篇论文对应的独立静态详情页。
 
 ### 本地预览
 
@@ -112,8 +128,11 @@ npx serve site
 每次推送到 `master` 或 `main` 分支时，GitHub Actions 会自动：
 
 1. 检出代码
-2. 运行构建脚本
-3. 部署到 GitHub Pages
+2. 爬取新论文并生成摘要
+3. 抓取最新论文的首图
+4. 对无法直接下载原图的论文执行 Playwright 截图兜底
+5. 运行构建脚本
+6. 部署到 GitHub Pages
 
 ### 4. 定时任务
 
@@ -121,8 +140,10 @@ GitHub Actions 还会在每日中午12点自动执行：
 
 1. 爬取ArXiv上的新论文
 2. 为待生成的论文生成AI摘要
-3. 提交更改到仓库
-4. 重新构建和部署网站
+3. 抓取最新论文的首图
+4. 对无法直接下载原图的论文执行 Playwright 截图兜底
+5. 提交更改到仓库
+6. 重新构建和部署网站
 
 ### 5. 访问网站
 
@@ -147,6 +168,10 @@ arxiv/
 ├── scripts/
 │   ├── arxiv_crawler.py         # ArXiv论文爬虫
 │   ├── generate_summaries.py    # AI摘要生成脚本
+│   ├── fetch_paper_images.py    # 从论文HTML提取首图
+│   ├── build_paper_image_fallback_queue.py
+│   ├── register_paper_image_fallbacks.py
+│   ├── render_paper_image_fallbacks.mjs
 │   └── build_site.py            # 网站构建脚本
 ├── site/                        # 生成的静态网站
 │   ├── index.html
@@ -154,6 +179,8 @@ arxiv/
 │   │   └── <arxiv-id>/
 │   │       └── index.html
 │   └── assets/
+│       ├── paper-images/        # 下载到本地的论文首图
+│       ├── paper-images.json    # 论文首图 manifest
 │       ├── style.css
 │       ├── app.js
 │       ├── paper.js

@@ -1,9 +1,9 @@
 /**
  * @file paper.js
- * @description 论文详情页逻辑：构建目录并按 arXiv id 记录滚动进度。
+ * @description 论文详情页逻辑：构建目录、标记当前阅读卡，并按 arXiv id 记录滚动进度。
  */
 (function(){
-  const $ = (sel) => document.querySelector(sel);
+  const $ = (selector) => document.querySelector(selector);
   const detailBody = $('#detail-body');
   const detailToc = $('#detail-toc');
   const detailTocNav = $('#detail-toc-nav');
@@ -24,12 +24,14 @@
     }
 
     detailTocNav.innerHTML = '';
-    const headings = Array.from(detailBody.querySelectorAll('h2'));
+    const headings = Array.from(detailBody.querySelectorAll('.reading-card-section h2'));
 
     if(!headings.length){
       detailToc.classList.add('hidden');
       return;
     }
+
+    const links = new Map();
 
     headings.forEach((heading, index) => {
       if(!heading.id){
@@ -41,7 +43,25 @@
       link.href = `#${heading.id}`;
       link.textContent = heading.textContent || `章节 ${index + 1}`;
       detailTocNav.appendChild(link);
+      links.set(heading.id, link);
     });
+
+    if('IntersectionObserver' in window){
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const link = links.get(entry.target.id);
+          if(link && entry.isIntersecting){
+            detailTocNav.querySelectorAll('.detail-toc-link').forEach((item) => item.classList.remove('is-active'));
+            link.classList.add('is-active');
+          }
+        });
+      }, {
+        rootMargin: '-18% 0px -58% 0px',
+        threshold: 0
+      });
+
+      headings.forEach((heading) => observer.observe(heading));
+    }
 
     detailToc.classList.remove('hidden');
   }
