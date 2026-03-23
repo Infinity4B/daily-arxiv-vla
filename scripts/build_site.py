@@ -29,6 +29,8 @@ ASSETS_DIR = SITE_DIR / "assets"
 PAPERS_DIR = SITE_DIR / "papers"
 COVERS_DIR = SITE_DIR / "covers"
 PAPER_IMAGES_MANIFEST = ASSETS_DIR / "paper-images.json"
+DEFAULT_ARXIV_QUERY = 'all:"VLA" OR all:"Vision-Language-Action"'
+DEFAULT_ARXIV_KEYWORD_LABEL = "VLA / Vision-Language-Action"
 
 COVER_THEMES = [
     {
@@ -124,6 +126,13 @@ def load_json(path: Path) -> object:
         return json.loads(read_text(path))
     except json.JSONDecodeError:
         return {}
+
+
+def get_arxiv_keyword_label() -> str:
+    keyword = os.getenv("ARXIV_QUERY_KEYWORD") or DEFAULT_ARXIV_QUERY
+    if keyword == DEFAULT_ARXIV_QUERY:
+        return DEFAULT_ARXIV_KEYWORD_LABEL
+    return keyword
 
 
 def parse_markdown_table(md_text: str) -> List[Dict[str, str]]:
@@ -674,7 +683,7 @@ def generate_head(title: str, description: str, stylesheet_prefix: str = "") -> 
 
 
 def generate_index_html() -> str:
-    keyword = os.getenv("ARXIV_QUERY_KEYWORD", "VLA")
+    keyword = get_arxiv_keyword_label()
     site_title = f"{keyword} 每日论文卡"
     site_description = f"{keyword} 论文精选卡片"
 
@@ -726,7 +735,7 @@ def generate_index_html() -> str:
 
 
 def generate_paper_html(record: Dict[str, object]) -> str:
-    keyword = os.getenv("ARXIV_QUERY_KEYWORD", "VLA")
+    keyword = get_arxiv_keyword_label()
     site_title = f"{keyword} 每日论文卡"
     page_title = str(record["title"])
     page_description = str(record["preview_text"] or f"{keyword} 论文详情")
@@ -796,7 +805,7 @@ def generate_paper_html(record: Dict[str, object]) -> str:
 
 
 def generate_cover_html(record: Dict[str, object]) -> str:
-    keyword = os.getenv("ARXIV_QUERY_KEYWORD", "VLA")
+    keyword = get_arxiv_keyword_label()
     site_title = f"{keyword} 每日论文卡"
     page_title = f"{record['title']} - 封面卡"
     description = str(record["hook_text"])
