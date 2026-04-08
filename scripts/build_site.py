@@ -1736,6 +1736,10 @@ input[type=search]:focus {
   padding: 0 6px;
 }
 
+.lazy-sentinel {
+  height: 1px;
+}
+
 .footer {
   padding: 28px 0 36px;
   text-align: center;
@@ -2002,9 +2006,84 @@ def generate_app_js() -> str:
     return cardLink;
   }
 
+  const GROUPS_PER_BATCH = 3;
+  let pendingDates = [];
+  let pendingGrouped = new Map();
+  let sentinelEl = null;
+  let lazyObserver = null;
+
+  function createGroupSection(date, items){
+    const section = document.createElement('section');
+    section.className = 'group';
+
+    const heading = document.createElement('div');
+    heading.className = 'group-heading';
+
+    const h2 = document.createElement('h2');
+    h2.textContent = date;
+
+    const count = document.createElement('div');
+    count.className = 'group-count';
+    count.textContent = `${items.length} 篇`;
+
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+
+    items.forEach((item) => {
+      grid.appendChild(createFeedCard(item));
+    });
+
+    heading.appendChild(h2);
+    heading.appendChild(count);
+    section.appendChild(heading);
+    section.appendChild(grid);
+    return section;
+  }
+
+  function removeSentinel(){
+    if(sentinelEl && sentinelEl.parentNode){
+      sentinelEl.parentNode.removeChild(sentinelEl);
+    }
+    sentinelEl = null;
+  }
+
+  function destroyLazyObserver(){
+    if(lazyObserver){
+      lazyObserver.disconnect();
+      lazyObserver = null;
+    }
+    removeSentinel();
+  }
+
+  function loadNextBatch(){
+    if(!pendingDates.length){
+      removeSentinel();
+      return;
+    }
+
+    const batch = pendingDates.splice(0, GROUPS_PER_BATCH);
+    removeSentinel();
+
+    batch.forEach((date) => {
+      groupsEl.appendChild(createGroupSection(date, pendingGrouped.get(date)));
+    });
+
+    if(pendingDates.length){
+      sentinelEl = document.createElement('div');
+      sentinelEl.className = 'lazy-sentinel';
+      sentinelEl.setAttribute('aria-hidden', 'true');
+      groupsEl.appendChild(sentinelEl);
+      if(lazyObserver){
+        lazyObserver.observe(sentinelEl);
+      }
+    }
+  }
+
   function renderGroups(items){
+    destroyLazyObserver();
+    groupsEl.innerHTML = '';
+
     if(!items.length){
-      groupsEl.innerHTML = '';
       return;
     }
 
@@ -2017,35 +2096,27 @@ def generate_app_js() -> str:
     });
 
     const dates = Array.from(grouped.keys()).sort((a, b) => b.localeCompare(a));
-    groupsEl.innerHTML = '';
 
-    dates.forEach((date) => {
-      const section = document.createElement('section');
-      section.className = 'group';
+    pendingGrouped = grouped;
+    pendingDates = dates.slice(GROUPS_PER_BATCH);
 
-      const heading = document.createElement('div');
-      heading.className = 'group-heading';
-
-      const h2 = document.createElement('h2');
-      h2.textContent = date;
-
-      const count = document.createElement('div');
-      count.className = 'group-count';
-      count.textContent = `${grouped.get(date).length} 篇`;
-
-      const grid = document.createElement('div');
-      grid.className = 'grid';
-
-      grouped.get(date).forEach((item) => {
-        grid.appendChild(createFeedCard(item));
-      });
-
-      heading.appendChild(h2);
-      heading.appendChild(count);
-      section.appendChild(heading);
-      section.appendChild(grid);
-      groupsEl.appendChild(section);
+    dates.slice(0, GROUPS_PER_BATCH).forEach((date) => {
+      groupsEl.appendChild(createGroupSection(date, grouped.get(date)));
     });
+
+    if(pendingDates.length){
+      lazyObserver = new IntersectionObserver((entries) => {
+        if(entries.some((e) => e.isIntersecting)){
+          loadNextBatch();
+        }
+      }, { rootMargin: '400px' });
+
+      sentinelEl = document.createElement('div');
+      sentinelEl.className = 'lazy-sentinel';
+      sentinelEl.setAttribute('aria-hidden', 'true');
+      groupsEl.appendChild(sentinelEl);
+      lazyObserver.observe(sentinelEl);
+    }
   }
 
   function sync(){
