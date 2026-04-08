@@ -734,7 +734,7 @@ def generate_index_html() -> str:
 """.strip()
 
 
-def generate_paper_html(record: Dict[str, object]) -> str:
+def generate_paper_html(record: Dict[str, object], prev_record: Dict[str, object] | None = None, next_record: Dict[str, object] | None = None) -> str:
     keyword = get_arxiv_keyword_label()
     site_title = f"{keyword} 每日论文卡"
     page_title = str(record["title"])
@@ -747,6 +747,21 @@ def generate_paper_html(record: Dict[str, object]) -> str:
         else render_note_cover(record)
     )
     detail_body_html = render_detail_sections(record)
+
+    nav_parts: List[str] = []
+    if prev_record:
+        nav_parts.append(
+            f'<a class="paper-nav-link paper-nav-prev" href="../../papers/{escape(str(prev_record["page_dir"]), quote=True)}/">'
+            f'<span class="paper-nav-label">\u2190 上一篇</span>'
+            f'<span class="paper-nav-title">{escape(str(prev_record["title"]))}</span></a>'
+        )
+    if next_record:
+        nav_parts.append(
+            f'<a class="paper-nav-link paper-nav-next" href="../../papers/{escape(str(next_record["page_dir"]), quote=True)}/">'
+            f'<span class="paper-nav-label">下一篇 \u2192</span>'
+            f'<span class="paper-nav-title">{escape(str(next_record["title"]))}</span></a>'
+        )
+    nav_html = "\n      ".join(nav_parts)
 
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -790,6 +805,7 @@ def generate_paper_html(record: Dict[str, object]) -> str:
           <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
         </aside>
       </div>
+      <nav class="paper-nav">{nav_html}</nav>
     </main>
 
     <footer class="footer">
@@ -1705,6 +1721,58 @@ input[type=search]:focus {
   color: var(--accent);
 }
 
+.paper-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.paper-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.paper-nav-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(215, 92, 47, 0.28);
+}
+
+.paper-nav-prev {
+  grid-column: 1;
+}
+
+.paper-nav-next {
+  grid-column: 2;
+  text-align: right;
+}
+
+.paper-nav-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.paper-nav-title {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .cover-page {
   min-height: 100vh;
 }
@@ -1750,6 +1818,7 @@ input[type=search]:focus {
 .back-link:focus-visible,
 .cover-preview-link:focus-visible,
 .detail-toc-link:focus-visible,
+.paper-nav-link:focus-visible,
 input[type=search]:focus-visible,
 .status-action:focus-visible {
   outline: none;
@@ -1805,6 +1874,14 @@ input[type=search]:focus-visible,
 
   .detail-page-title {
     font-size: 2.1rem;
+  }
+
+  .paper-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-nav-next {
+    grid-column: 1;
   }
 
   .note-cover-standalone {
@@ -1901,11 +1978,18 @@ def generate_app_js() -> str:
   }
 
   function filterItems(items, query){
-    const keyword = (query || '').trim().toLowerCase();
-    if(!keyword){
+    const raw = (query || '').trim().toLowerCase();
+    if(!raw){
       return items;
     }
-    return items.filter((item) => buildSearchText(item).includes(keyword));
+    const tokens = raw.split(/\s+/).filter(Boolean);
+    if(!tokens.length){
+      return items;
+    }
+    return items.filter((item) => {
+      const hay = buildSearchText(item).replace(/[-_]/g, '');
+      return tokens.every((t) => hay.includes(t.replace(/[-_]/g, '')));
+    });
   }
 
   function createFeedCard(item){
@@ -2138,6 +2222,7 @@ def generate_app_js() -> str:
           label: '清空搜索',
           onClick: () => {
             searchEl.value = '';
+            syncSearchURL();
             sync();
             searchEl.focus();
           }
@@ -2151,7 +2236,21 @@ def generate_app_js() -> str:
     restoreScroll();
   }
 
-  searchEl.addEventListener('input', sync);
+  function syncSearchURL(){
+    const q = (searchEl.value || '').trim();
+    const url = new URL(window.location);
+    if(q){
+      url.searchParams.set('q', q);
+    } else {
+      url.searchParams.delete('q');
+    }
+    window.history.replaceState(null, '', url);
+  }
+
+  searchEl.addEventListener('input', () => {
+    syncSearchURL();
+    sync();
+  });
 
   function restoreScroll(){
     if(restoredScroll || window.location.hash){
@@ -2169,6 +2268,10 @@ def generate_app_js() -> str:
       restoredScroll = true;
       if(!Number.isFinite(scrollY) || scrollY <= 0){
         return;
+      }
+
+      while(pendingDates.length && document.documentElement.scrollHeight < scrollY + window.innerHeight){
+        loadNextBatch();
       }
 
       window.requestAnimationFrame(() => {
@@ -2224,6 +2327,11 @@ def generate_app_js() -> str:
         { label: '重新加载', onClick: loadData }
       );
     }
+  }
+
+  const initialQuery = new URL(window.location).searchParams.get('q') || '';
+  if(initialQuery){
+    searchEl.value = initialQuery;
   }
 
   loadData();
@@ -2387,8 +2495,10 @@ def main() -> int:
     write_text(ASSETS_DIR / "paper.js", generate_paper_js())
     write_text(ASSETS_DIR / "data.json", json.dumps(list_data, ensure_ascii=False, indent=2))
 
-    for record in site_records:
-      write_text(PAPERS_DIR / str(record["page_dir"]) / "index.html", generate_paper_html(record))
+    for idx, record in enumerate(site_records):
+      prev_rec = site_records[idx - 1] if idx > 0 else None
+      next_rec = site_records[idx + 1] if idx < len(site_records) - 1 else None
+      write_text(PAPERS_DIR / str(record["page_dir"]) / "index.html", generate_paper_html(record, prev_rec, next_rec))
       write_text(COVERS_DIR / str(record["page_dir"]) / "index.html", generate_cover_html(record))
 
     print(f"生成完成：{SITE_DIR}")
