@@ -21,6 +21,12 @@ from html import escape
 from pathlib import Path
 from typing import Dict, List
 
+try:
+    from PIL import Image
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INPUT_MD = PROJECT_ROOT / "papers.md"
@@ -28,6 +34,7 @@ SITE_DIR = PROJECT_ROOT / "site"
 ASSETS_DIR = SITE_DIR / "assets"
 PAPERS_DIR = SITE_DIR / "papers"
 COVERS_DIR = SITE_DIR / "covers"
+IMAGE_DIR = ASSETS_DIR / "paper-images"
 PAPER_IMAGES_MANIFEST = ASSETS_DIR / "paper-images.json"
 DEFAULT_ARXIV_QUERY = 'all:"VLA" OR all:"Vision-Language-Action"'
 DEFAULT_ARXIV_KEYWORD_LABEL = "VLA / Vision-Language-Action"
@@ -625,7 +632,8 @@ def build_site_records(records: List[Dict[str, str]], paper_image_manifest: Dict
     return built
 
 
-def build_list_data(records: List[Dict[str, object]]) -> List[Dict[str, object]]:
+def build_list_data(records: List[Dict[str, object]], thumb_map: Dict[str, str] | None = None) -> List[Dict[str, object]]:
+    thumb_map = thumb_map or {}
     return [
         {
             "date": record["date"],
@@ -634,7 +642,7 @@ def build_list_data(records: List[Dict[str, object]]) -> List[Dict[str, object]]
             "arxiv_id": record["arxiv_id"],
             "detail_path": record["detail_path"],
             "cover_path": record["cover_path"],
-            "paper_image_path": record["paper_image_path"],
+            "paper_image_path": thumb_map.get(str(record["paper_image_path"]), record["paper_image_path"]),
             "preview_text": record["preview_text"],
             "research_unit": record["research_unit"],
             "hook_text": record["hook_text"],
@@ -2476,15 +2484,114 @@ def generate_paper_js() -> str:
 """.strip()
 
 
+THUMB_DIR = IMAGE_DIR / "thumbs"
+THUMB_MAX_WIDTH = 600
+WEBP_QUALITY = 82
+
+
+def optimize_paper_images() -> Dict[str, str]:
+    """将 paper-images/ 下的 PNG/JPG 转为 WebP，同时生成缩略图。
+
+    返回 {原始相对路径: 缩略图相对路径} 的映射。
+    跳过已经是 WebP 且缩略图已存在的文件。
+    """
+    if not HAS_PIL:
+        print("警告: 未安装 Pillow，跳过图片优化")
+        return {}
+
+    if not IMAGE_DIR.exists():
+        return {}
+
+    THUMB_DIR.mkdir(parents=True, exist_ok=True)
+
+    thumb_map: Dict[str, str] = {}
+    converted = 0
+    skipped = 0
+
+    for src_path in sorted(IMAGE_DIR.iterdir()):
+        if src_path.is_dir():
+            continue
+        if src_path.suffix.lower() not in (".png", ".jpg", ".jpeg", ".webp"):
+            continue
+
+        stem = src_path.stem
+        webp_path = src_path.with_suffix(".webp")
+        thumb_path = THUMB_DIR / f"{stem}.webp"
+
+        # 原图的最终相对路径（相对于 site/）
+        webp_rel = f"assets/paper-images/{stem}.webp"
+        thumb_rel = f"assets/paper-images/thumbs/{stem}.webp"
+
+        # 如果 WebP 全尺寸和缩略图都已存在，跳过
+        if webp_path.exists() and thumb_path.exists() and src_path.suffix.lower() == ".webp":
+            thumb_map[webp_rel] = thumb_rel
+            skipped += 1
+            continue
+
+        try:
+            img = Image.open(src_path)
+            img = img.convert("RGB") if img.mode in ("RGBA", "P", "LA") else img
+
+            # 保存 WebP 全尺寸
+            if src_path.suffix.lower() != ".webp":
+                img.save(webp_path, "WEBP", quality=WEBP_QUALITY)
+            elif not webp_path.exists():
+                img.save(webp_path, "WEBP", quality=WEBP_QUALITY)
+
+            # 生成缩略图
+            if img.width > THUMB_MAX_WIDTH:
+                ratio = THUMB_MAX_WIDTH / img.width
+                thumb_size = (THUMB_MAX_WIDTH, round(img.height * ratio))
+                thumb_img = img.resize(thumb_size, Image.LANCZOS)
+                thumb_img.save(thumb_path, "WEBP", quality=WEBP_QUALITY)
+            else:
+                # 原图已经够小，缩略图直接用原图
+                img.save(thumb_path, "WEBP", quality=WEBP_QUALITY)
+
+            # 只有全尺寸和缩略图都成功后，才删除旧格式原图
+            if src_path.suffix.lower() != ".webp" and src_path.exists():
+                src_path.unlink()
+
+            thumb_map[webp_rel] = thumb_rel
+            converted += 1
+        except Exception as exc:
+            print(f"警告: 图片优化失败 {src_path.name}: {exc}")
+            # 保留原文件，不生成映射
+            continue
+
+    print(f"图片优化: 转换 {converted} 张, 跳过 {skipped} 张")
+    return thumb_map
+
+
 def main() -> int:
     if not INPUT_MD.exists():
         print(f"未找到 {INPUT_MD}", file=sys.stderr)
         return 1
 
+    # 优化图片：转 WebP + 生成缩略图
+    thumb_map = optimize_paper_images()
+
     records = parse_markdown_table(read_text(INPUT_MD))
     paper_image_manifest = load_paper_image_manifest()
+
+    # 更新 manifest 中的路径（PNG/JPG -> WebP）
+    if thumb_map:
+        for arxiv_id, entry in paper_image_manifest.items():
+            if not isinstance(entry, dict):
+                continue
+            old_path = entry.get("path", "")
+            if not isinstance(old_path, str):
+                continue
+            new_path = re.sub(r"\.(png|jpe?g)$", ".webp", old_path, flags=re.IGNORECASE)
+            if new_path != old_path and (SITE_DIR / new_path).exists():
+                entry["path"] = new_path
+
+        write_text(PAPER_IMAGES_MANIFEST, json.dumps(paper_image_manifest, ensure_ascii=False, indent=2))
+
     site_records = build_site_records(records, paper_image_manifest)
-    list_data = build_list_data(site_records)
+
+    # 为首页列表数据使用缩略图路径
+    list_data = build_list_data(site_records, thumb_map)
 
     shutil.rmtree(PAPERS_DIR, ignore_errors=True)
     shutil.rmtree(COVERS_DIR, ignore_errors=True)
