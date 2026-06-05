@@ -36,18 +36,28 @@ class ArxivCollector:
 		- ARXIV_QUERY_KEYWORD: 搜索关键词（默认同时检索 "VLA" 和 "Vision-Language-Action"）
 		- ARXIV_INIT_RESULTS: 初始化抓取数量（默认 500）
 		- ARXIV_DAILY_RESULTS: 每日抓取数量（默认 20）
+		- ARXIV_PAGE_SIZE: 单次请求返回数量（默认 20，避免 arxiv 库默认请求 100 条触发限流）
+		- ARXIV_DELAY_SECONDS: arXiv 请求间隔（默认 10 秒）
 		"""
 		self.papers_path = papers_path
 		self.init_results = init_results or int(os.getenv("ARXIV_INIT_RESULTS", "500"))
 		self.daily_results = daily_results or int(os.getenv("ARXIV_DAILY_RESULTS", "20"))
 		self.query_keyword = query_keyword or os.getenv("ARXIV_QUERY_KEYWORD") or DEFAULT_ARXIV_QUERY
-		self._client = arxiv.Client()
+		self.arxiv_page_size = int(os.getenv("ARXIV_PAGE_SIZE", "20"))
+		self.arxiv_delay_seconds = float(os.getenv("ARXIV_DELAY_SECONDS", "10"))
 
 	def _search(self, max_results: int) -> List[arxiv.Result]:
 		"""
 		搜索 arXiv 论文，带重试机制
 		"""
 		max_retries = int(os.getenv("ARXIV_MAX_RETRIES", "3"))
+		retry_base_seconds = float(os.getenv("ARXIV_RETRY_BASE_SECONDS", "30"))
+		page_size = max(1, min(max_results, self.arxiv_page_size))
+		client = arxiv.Client(
+			page_size=page_size,
+			delay_seconds=self.arxiv_delay_seconds,
+			num_retries=0,
+		)
 
 		for attempt in range(max_retries):
 			try:
@@ -57,11 +67,15 @@ class ArxivCollector:
 					sort_by=arxiv.SortCriterion.SubmittedDate,
 					sort_order=arxiv.SortOrder.Descending,
 				)
-				return list(self._client.results(search))
+				return list(client.results(search))
 			except Exception as e:
 				if attempt < max_retries - 1:
-					print(f"arXiv搜索失败，重试 {attempt + 1}/{max_retries}: {repr(e)}")
-					time.sleep(2 ** attempt)
+					wait_seconds = retry_base_seconds * (2 ** attempt)
+					print(
+						f"arXiv搜索失败，等待 {wait_seconds:.0f} 秒后重试 "
+						f"{attempt + 1}/{max_retries}: {repr(e)}"
+					)
+					time.sleep(wait_seconds)
 				else:
 					print(f"arXiv搜索失败，已达最大重试次数: {repr(e)}")
 					return []
