@@ -1,12 +1,15 @@
 import os
 import re
 import time
-from typing import List, Tuple
+from typing import List, Set, Tuple
 
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 from tqdm import tqdm
+
+
+RATE_LIMITED_MODELS: Set[str] = set()
 
 
 """
@@ -97,16 +100,33 @@ def get_model_list() -> List[str]:
     return [single_model]
 
 
+def mark_model_rate_limited(model: str) -> None:
+    """
+    记录本次运行中已被判定为限流的模型，后续论文不再从它重试。
+    """
+    RATE_LIMITED_MODELS.add(model)
+
+
+def get_available_model_list(model: str = None) -> List[str]:
+    """
+    获取当前仍可用的模型列表，跳过本次运行中已经限流的模型。
+    """
+    if model is not None:
+        return [] if model in RATE_LIMITED_MODELS else [model]
+
+    return [candidate for candidate in get_model_list() if candidate not in RATE_LIMITED_MODELS]
+
+
 def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> str:
     """
     抓取 arXiv HTML 原文并让模型基于 HTML 生成简要总结。
     包含模型回退机制和重试机制。
     """
-    # 获取模型列表
-    if model is None:
-        model_list = get_model_list()
-    else:
-        model_list = [model]
+    # 获取模型列表，跳过本次运行中已经判定为限流的模型。
+    model_list = get_available_model_list(model)
+    if not model_list:
+        print(f"✗ 所有模型都已被判定为限流，跳过摘要生成: {link}")
+        return ""
 
     # 将 /abs/ 链接转换为 /html/ 页面
     html_url = re.sub(r"/abs/", "/html/", link)
@@ -149,8 +169,8 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
     if len(html_content) > max_chars:
         html_content = html_content[:max_chars]
 
-    # 遍历模型列表，依次尝试
-    api_max_retries = int(os.getenv("API_MAX_RETRIES", "3"))
+    # 遍历模型列表，依次尝试。单个模型最多调用两次：第二次仍失败则认为已被限流，直接切换下一个模型。
+    api_max_retries = max(1, min(int(os.getenv("API_MAX_RETRIES", "3")), 2))
 
     for model_idx, current_model in enumerate(model_list):
         print(f"尝试使用模型 [{model_idx + 1}/{len(model_list)}]: {current_model}")
@@ -218,6 +238,8 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
                         time.sleep(2 ** attempt)
                         continue
                     else:
+                        mark_model_rate_limited(current_model)
+                        print(f"✗ 模型 {current_model} 第二次调用仍失败，切换下一个模型")
                         break  # 尝试下一个模型
 
                 text = getattr(response.choices[0].message, "content", "")
@@ -227,6 +249,8 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
                         time.sleep(2 ** attempt)
                         continue
                     else:
+                        mark_model_rate_limited(current_model)
+                        print(f"✗ 模型 {current_model} 第二次调用仍失败，切换下一个模型")
                         break  # 尝试下一个模型
 
                 text = text.strip()
@@ -249,6 +273,8 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
                         time.sleep(2 ** attempt)
                         continue
                     else:
+                        mark_model_rate_limited(current_model)
+                        print(f"✗ 模型 {current_model} 第二次调用仍失败，切换下一个模型")
                         break  # 尝试下一个模型
 
                 # 成功生成摘要
@@ -263,13 +289,15 @@ def generate_summary_for_link(client: OpenAI, link: str, model: str = None) -> s
                 ])
 
                 if is_quota_error:
+                    mark_model_rate_limited(current_model)
                     print(f"✗ 模型 {current_model} 配额已用完")
                     break  # 直接尝试下一个模型，不重试
                 elif attempt < api_max_retries - 1:
                     print(f"API调用失败，重试 {attempt + 1}/{api_max_retries}: {repr(e)}")
                     time.sleep(2 ** attempt)
                 else:
-                    print(f"✗ 模型 {current_model} 调用失败，已达最大重试次数: {repr(e)}")
+                    mark_model_rate_limited(current_model)
+                    print(f"✗ 模型 {current_model} 第二次调用仍失败，切换下一个模型: {repr(e)}")
                     break  # 尝试下一个模型
 
     # 所有模型都失败
@@ -380,5 +408,3 @@ def update_papers_md() -> Tuple[int, int]:
 if __name__ == "__main__":
     total, updated = update_papers_md()
     print(f"需要生成摘要的条目: {total}，已更新: {updated}")
-
-
