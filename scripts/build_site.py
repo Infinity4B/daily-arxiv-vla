@@ -332,7 +332,7 @@ def extract_bullets(markdown: str) -> List[str]:
         return []
 
     sentences = re.split(r"(?<=[。！？；;.!?])\s+", plain)
-    return [truncate_text(sentence, 90) for sentence in sentences if sentence.strip()][:3]
+    return [sentence.strip() for sentence in sentences if sentence.strip()][:3]
 
 
 def parse_markdown_sections(markdown: str) -> List[Dict[str, str]]:
@@ -409,11 +409,11 @@ def extract_research_unit(sections: List[Dict[str, str]]) -> str:
 def build_preview(sections: List[Dict[str, str]]) -> str:
     overview = find_section(sections, "论文概述", "摘要")
     if overview and overview["plain_text"]:
-        return truncate_text(overview["plain_text"], 210)
+        return overview["plain_text"].strip()
 
     for section in sections:
         if section["plain_text"]:
-            return truncate_text(section["plain_text"], 210)
+            return section["plain_text"].strip()
 
     return "待生成"
 
@@ -432,21 +432,21 @@ def build_key_points(sections: List[Dict[str, str]], preview_text: str) -> List[
             continue
         for bullet in section["bullets"]:
             if bullet and bullet not in points:
-                points.append(truncate_text(bullet, 72))
+                points.append(bullet.strip())
             if len(points) >= 3:
                 return points
 
     if preview_text:
-        return [truncate_text(preview_text, 72)]
+        return [preview_text.strip()]
 
     return ["摘要还在生成中"]
 
 
 def build_hook_text(key_points: List[str], preview_text: str) -> str:
     if key_points:
-        return truncate_text(key_points[0], 90)
+        return key_points[0].strip()
     if preview_text:
-        return truncate_text(preview_text, 90)
+        return preview_text.strip()
     return "打开这张卡片，快速看懂论文重点。"
 
 
@@ -547,7 +547,7 @@ def render_paper_figure(record: Dict[str, object], image_src: str, context: str)
 
     return f"""
 <figure class="paper-figure-card paper-figure-card-{context}">
-  <img class="paper-figure-image" src="{escape(image_src, quote=True)}" alt="{title}" loading="lazy" />
+  <img class="paper-figure-image" src="{escape(image_src, quote=True)}" alt="{title}" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
   <figcaption class="paper-figure-caption">{caption}</figcaption>
 </figure>
 """.strip()
@@ -643,6 +643,7 @@ def build_list_data(records: List[Dict[str, object]], thumb_map: Dict[str, str] 
             "detail_path": record["detail_path"],
             "cover_path": record["cover_path"],
             "paper_image_path": thumb_map.get(str(record["paper_image_path"]), record["paper_image_path"]),
+            "paper_image_full_path": record["paper_image_path"],
             "preview_text": record["preview_text"],
             "research_unit": record["research_unit"],
             "hook_text": record["hook_text"],
@@ -672,7 +673,7 @@ def generate_head(title: str, description: str, stylesheet_prefix: str = "") -> 
     favicon = (
         "data:image/svg+xml,"
         "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E"
-        "%3Crect width='64' height='64' rx='18' fill='%23d75c2f'/%3E"
+        "%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E"
         "%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' "
         "font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E"
         "%3C/svg%3E"
@@ -685,7 +686,7 @@ def generate_head(title: str, description: str, stylesheet_prefix: str = "") -> 
     <link rel="icon" href="{favicon}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{escape(stylesheet_path, quote=True)}" />
 """.strip()
 
@@ -707,12 +708,32 @@ def generate_index_html() -> str:
 
     <header class="header">
       <div class="container">
+        <nav class="site-nav" aria-label="站点导航">
+          <a class="site-brand" href="index.html" aria-label="返回首页">
+            <span class="site-brand-mark">VLA</span>
+            <span>Research Brief</span>
+          </a>
+          <span class="site-nav-status">
+            <span class="site-nav-dot" aria-hidden="true"></span>
+            每日自动更新
+          </span>
+        </nav>
         <div class="header-content">
           <div class="header-copy">
-            <p class="eyebrow">ArXiv Daily Cards</p>
-            <h1 class="site-title">{escape(site_title)}</h1>
+            <p class="eyebrow">VLA Intelligence Feed</p>
+            <h1 class="site-title">{escape(keyword)} <span class="site-title-nowrap">每日论文卡</span></h1>
+            <p class="site-subtitle">聚合最新论文，提炼核心贡献、方法与实验结果，用更清晰的阅读路径持续跟进前沿研究。</p>
+            <div class="hero-tags" aria-label="站点特点">
+              <span class="hero-tag">中文精读</span>
+              <span class="hero-tag">核心贡献提炼</span>
+              <span class="hero-tag">论文原图速览</span>
+            </div>
           </div>
           <div class="search-panel">
+            <div class="search-panel-heading">
+              <span class="search-panel-title">探索论文库</span>
+              <span class="search-availability"><span id="paper-count">加载中</span></span>
+            </div>
             <label class="search-label" for="search">搜标题、机构、摘要亮点</label>
             <div class="search-wrapper">
               <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -720,6 +741,7 @@ def generate_index_html() -> str:
               </svg>
               <input id="search" type="search" placeholder="比如：OpenVLA、香港大学、实时推理..." aria-label="搜索论文卡片" />
             </div>
+            <p class="search-hint">支持同时输入多个关键词，将在标题、机构、摘要和 arXiv ID 中检索。</p>
           </div>
         </div>
       </div>
@@ -736,6 +758,7 @@ def generate_index_html() -> str:
       </div>
     </footer>
 
+    <script src="assets/media.js"></script>
     <script src="assets/app.js"></script>
   </body>
 </html>
@@ -822,6 +845,7 @@ def generate_paper_html(record: Dict[str, object], prev_record: Dict[str, object
       </div>
     </footer>
 
+    <script src="../../assets/media.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>
 </html>
@@ -857,7 +881,7 @@ def generate_cover_html(record: Dict[str, object]) -> str:
 
 
 def generate_style_css() -> str:
-    return """
+    base_stylesheet = """
 :root {
   --bg: #f7efe5;
   --bg-secondary: #fffaf3;
@@ -2023,6 +2047,207 @@ input[type=search]:focus-visible,
 }
 """.strip()
 
+    modern_stylesheet_path = PROJECT_ROOT / "scripts" / "modern_ui.css"
+    return f"{base_stylesheet}\n\n{read_text(modern_stylesheet_path)}"
+
+
+def generate_media_js() -> str:
+    return """
+/**
+ * @file media.js
+ * @description 通用论文图片灯箱：支持点击放大、滚轮缩放、拖拽查看和键盘关闭。
+ */
+(function(){
+  let lightboxEl = null;
+  let imageEl = null;
+  let captionEl = null;
+  let scaleLabelEl = null;
+  let closeButtonEl = null;
+  let imageScale = 1;
+  let imageOffsetX = 0;
+  let imageOffsetY = 0;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragOriginX = 0;
+  let dragOriginY = 0;
+  let activePointerId = null;
+  let returnFocusEl = null;
+
+  function clampScale(value){
+    return Math.min(4, Math.max(1, value));
+  }
+
+  function renderTransform(){
+    if(!imageEl || !scaleLabelEl){
+      return;
+    }
+
+    imageEl.style.transform = `translate3d(${imageOffsetX}px, ${imageOffsetY}px, 0) scale(${imageScale})`;
+    imageEl.classList.toggle('is-zoomed', imageScale > 1);
+    scaleLabelEl.textContent = `${Math.round(imageScale * 100)}%`;
+  }
+
+  function setScale(nextScale){
+    const normalizedScale = clampScale(nextScale);
+    if(normalizedScale === 1){
+      imageOffsetX = 0;
+      imageOffsetY = 0;
+    }
+    imageScale = normalizedScale;
+    renderTransform();
+  }
+
+  function resetImagePosition(){
+    imageScale = 1;
+    imageOffsetX = 0;
+    imageOffsetY = 0;
+    renderTransform();
+  }
+
+  function ensureLightbox(){
+    if(lightboxEl){
+      return;
+    }
+
+    lightboxEl = document.createElement('div');
+    lightboxEl.className = 'image-lightbox';
+    lightboxEl.setAttribute('aria-hidden', 'true');
+    lightboxEl.innerHTML = `
+      <div class="image-lightbox-stage" data-image-lightbox-close>
+        <img class="image-lightbox-image" alt="" draggable="false" />
+      </div>
+      <div class="image-lightbox-topbar">
+        <p class="image-lightbox-caption"></p>
+        <button class="image-lightbox-close" type="button" aria-label="关闭图片预览">×</button>
+      </div>
+      <div class="image-lightbox-controls" aria-label="图片缩放控制">
+        <button type="button" data-image-zoom-out aria-label="缩小图片">−</button>
+        <button class="image-lightbox-scale" type="button" data-image-zoom-reset aria-label="恢复原始缩放">100%</button>
+        <button type="button" data-image-zoom-in aria-label="放大图片">+</button>
+      </div>
+    `;
+
+    document.body.appendChild(lightboxEl);
+    imageEl = lightboxEl.querySelector('.image-lightbox-image');
+    captionEl = lightboxEl.querySelector('.image-lightbox-caption');
+    scaleLabelEl = lightboxEl.querySelector('.image-lightbox-scale');
+    closeButtonEl = lightboxEl.querySelector('.image-lightbox-close');
+    const stageEl = lightboxEl.querySelector('.image-lightbox-stage');
+
+    lightboxEl.addEventListener('click', (event) => {
+      if(event.target.closest('[data-image-lightbox-close]') && event.target !== imageEl){
+        close();
+      }
+    });
+
+    closeButtonEl.addEventListener('click', close);
+    lightboxEl.querySelector('[data-image-zoom-out]').addEventListener('click', () => setScale(imageScale - 0.5));
+    lightboxEl.querySelector('[data-image-zoom-in]').addEventListener('click', () => setScale(imageScale + 0.5));
+    lightboxEl.querySelector('[data-image-zoom-reset]').addEventListener('click', resetImagePosition);
+
+    stageEl.addEventListener('wheel', (event) => {
+      if(!lightboxEl.classList.contains('is-open')){
+        return;
+      }
+      event.preventDefault();
+      setScale(imageScale + (event.deltaY < 0 ? 0.25 : -0.25));
+    }, { passive: false });
+
+    imageEl.addEventListener('dblclick', () => {
+      setScale(imageScale > 1 ? 1 : 2);
+    });
+
+    imageEl.addEventListener('pointerdown', (event) => {
+      if(imageScale <= 1){
+        return;
+      }
+      activePointerId = event.pointerId;
+      dragStartX = event.clientX;
+      dragStartY = event.clientY;
+      dragOriginX = imageOffsetX;
+      dragOriginY = imageOffsetY;
+      imageEl.setPointerCapture(event.pointerId);
+      imageEl.classList.add('is-dragging');
+    });
+
+    imageEl.addEventListener('pointermove', (event) => {
+      if(activePointerId !== event.pointerId){
+        return;
+      }
+      imageOffsetX = dragOriginX + event.clientX - dragStartX;
+      imageOffsetY = dragOriginY + event.clientY - dragStartY;
+      renderTransform();
+    });
+
+    function stopDragging(event){
+      if(activePointerId !== event.pointerId){
+        return;
+      }
+      activePointerId = null;
+      imageEl.classList.remove('is-dragging');
+    }
+
+    imageEl.addEventListener('pointerup', stopDragging);
+    imageEl.addEventListener('pointercancel', stopDragging);
+
+    window.addEventListener('keydown', (event) => {
+      if(!lightboxEl.classList.contains('is-open')){
+        return;
+      }
+      if(event.key === 'Escape'){
+        event.preventDefault();
+        close();
+      }
+      if(event.key === '+' || event.key === '='){
+        setScale(imageScale + 0.5);
+      }
+      if(event.key === '-'){
+        setScale(imageScale - 0.5);
+      }
+    });
+  }
+
+  function open(options){
+    if(!options || !options.src){
+      return;
+    }
+
+    ensureLightbox();
+    returnFocusEl = options.returnFocus || document.activeElement;
+    imageEl.src = options.src;
+    imageEl.alt = options.alt || '论文图片放大预览';
+    captionEl.textContent = options.caption || options.alt || '';
+    captionEl.classList.toggle('hidden', !captionEl.textContent);
+    resetImagePosition();
+    lightboxEl.classList.add('is-open');
+    lightboxEl.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('has-image-lightbox');
+    window.requestAnimationFrame(() => closeButtonEl.focus());
+  }
+
+  function close(){
+    if(!lightboxEl || !lightboxEl.classList.contains('is-open')){
+      return;
+    }
+
+    lightboxEl.classList.remove('is-open');
+    lightboxEl.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('has-image-lightbox');
+    imageEl.removeAttribute('src');
+    if(returnFocusEl && typeof returnFocusEl.focus === 'function'){
+      returnFocusEl.focus({ preventScroll: true });
+    }
+    returnFocusEl = null;
+  }
+
+  function isOpen(){
+    return Boolean(lightboxEl && lightboxEl.classList.contains('is-open'));
+  }
+
+  window.PaperImageViewer = { open, close, isOpen };
+})();
+""".strip()
+
 
 def generate_app_js() -> str:
     return """
@@ -2031,15 +2256,283 @@ def generate_app_js() -> str:
  * @description 首页逻辑：加载 data.json，渲染信息流卡片与搜索。
  */
 (function(){
-  /** @type {Array<{date:string,title:string,link:string,arxiv_id:string,detail_path:string,cover_path:string,paper_image_path:string,preview_text:string,research_unit:string,hook_text:string,key_points:string[],reading_minutes:number,section_count:number,cover_theme:Record<string,string>}>} */
+  /** @type {Array<{date:string,title:string,link:string,arxiv_id:string,detail_path:string,cover_path:string,paper_image_path:string,paper_image_full_path:string,preview_text:string,research_unit:string,hook_text:string,key_points:string[],reading_minutes:number,section_count:number,cover_theme:Record<string,string>}>} */
   let DATA = [];
 
   const $ = (selector) => document.querySelector(selector);
   const statusEl = $('#status');
   const groupsEl = $('#groups');
   const searchEl = $('#search');
+  const paperCountEl = $('#paper-count');
   const homeScrollKey = 'home-scroll:index';
+  const paperModalQueryKey = 'paper';
   let restoredScroll = false;
+  let paperModalEl = null;
+  let paperModalFrameEl = null;
+  let paperModalTitleEl = null;
+  let paperModalOpenLinkEl = null;
+  let paperModalLoaderEl = null;
+  let modalReturnFocusEl = null;
+  let modalCleanupTimerId = null;
+  let modalSessionId = 0;
+
+  function getPaperIdentifier(item){
+    return item.arxiv_id || item.detail_path;
+  }
+
+  function getStandalonePaperURL(detailPath){
+    return new URL(detailPath, window.location.href).href;
+  }
+
+  function getEmbeddedPaperURL(detailPath){
+    const embeddedURL = new URL(detailPath, window.location.href);
+    embeddedURL.searchParams.set('embed', '1');
+    return embeddedURL.href;
+  }
+
+  function replacePaperModalFrameLocation(frameURL){
+    if(!paperModalFrameEl){
+      return;
+    }
+
+    try {
+      if(paperModalFrameEl.contentWindow){
+        paperModalFrameEl.contentWindow.location.replace(frameURL);
+        return;
+      }
+    } catch (error) {
+      console.warn('无法替换论文浮窗地址，改用 iframe src 导航', error);
+    }
+
+    paperModalFrameEl.src = frameURL;
+  }
+
+  function ensurePaperModal(){
+    if(paperModalEl){
+      return;
+    }
+
+    paperModalEl = document.createElement('div');
+    paperModalEl.className = 'paper-modal';
+    paperModalEl.setAttribute('aria-hidden', 'true');
+    paperModalEl.innerHTML = `
+      <div class="paper-modal-backdrop" data-paper-modal-close></div>
+      <section class="paper-modal-panel" role="dialog" aria-modal="true" aria-labelledby="paper-modal-title">
+        <header class="paper-modal-toolbar">
+          <div class="paper-modal-heading">
+            <span class="paper-modal-kicker">论文阅读</span>
+            <span id="paper-modal-title" class="paper-modal-title"></span>
+          </div>
+          <div class="paper-modal-actions">
+            <a class="paper-modal-open-link" href="#" target="_blank" rel="noopener noreferrer">新页面打开 ↗</a>
+            <button class="paper-modal-close" type="button" aria-label="关闭论文浮窗">×</button>
+          </div>
+        </header>
+        <div class="paper-modal-content">
+          <div class="paper-modal-loader" aria-hidden="true">
+            <span class="paper-modal-spinner"></span>
+            <span>正在打开论文阅读卡</span>
+          </div>
+          <iframe class="paper-modal-frame" title="论文详情" loading="eager"></iframe>
+        </div>
+      </section>
+    `;
+
+    document.body.appendChild(paperModalEl);
+    paperModalFrameEl = paperModalEl.querySelector('.paper-modal-frame');
+    paperModalTitleEl = paperModalEl.querySelector('.paper-modal-title');
+    paperModalOpenLinkEl = paperModalEl.querySelector('.paper-modal-open-link');
+    paperModalLoaderEl = paperModalEl.querySelector('.paper-modal-loader');
+
+    paperModalEl.querySelector('[data-paper-modal-close]').addEventListener('click', requestClosePaperModal);
+    paperModalEl.querySelector('.paper-modal-close').addEventListener('click', requestClosePaperModal);
+    paperModalFrameEl.addEventListener('load', () => {
+      connectPaperModalImageZoom();
+      paperModalLoaderEl.classList.add('hidden');
+      paperModalFrameEl.classList.add('is-ready');
+    });
+  }
+
+  function connectPaperModalImageZoom(){
+    if(!paperModalFrameEl || !window.PaperImageViewer){
+      return;
+    }
+
+    let frameDocument = null;
+    try {
+      frameDocument = paperModalFrameEl.contentDocument;
+    } catch (error) {
+      console.warn('无法访问论文浮窗内容，保留嵌入页自身的图片预览逻辑', error);
+      return;
+    }
+
+    if(!frameDocument){
+      return;
+    }
+
+    frameDocument.querySelectorAll('.paper-figure-image').forEach((imageEl) => {
+      if(imageEl.dataset.parentZoomBound === 'true'){
+        return;
+      }
+      imageEl.dataset.parentZoomBound = 'true';
+
+      const openImage = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const figureEl = imageEl.closest('.paper-figure-card');
+        const captionEl = figureEl ? figureEl.querySelector('.paper-figure-caption') : null;
+        window.PaperImageViewer.open({
+          src: imageEl.currentSrc || imageEl.src,
+          alt: imageEl.alt || '论文图片',
+          caption: captionEl ? captionEl.textContent.trim() : imageEl.alt || ''
+        });
+      };
+
+      imageEl.addEventListener('click', openImage, true);
+      imageEl.addEventListener('keydown', (event) => {
+        if(event.key === 'Enter' || event.key === ' '){
+          openImage(event);
+        }
+      }, true);
+    });
+  }
+
+  function openPaperModal(item, options){
+    if(!item){
+      return;
+    }
+
+    const settings = options || {};
+    ensurePaperModal();
+    modalSessionId += 1;
+    if(modalCleanupTimerId !== null){
+      window.clearTimeout(modalCleanupTimerId);
+      modalCleanupTimerId = null;
+    }
+    modalReturnFocusEl = settings.returnFocus || modalReturnFocusEl || document.activeElement;
+    paperModalTitleEl.textContent = item.title || '论文详情';
+    paperModalOpenLinkEl.href = getStandalonePaperURL(item.detail_path);
+    paperModalFrameEl.title = `论文详情：${item.title || ''}`;
+    paperModalFrameEl.classList.remove('is-ready');
+    paperModalLoaderEl.classList.remove('hidden');
+    replacePaperModalFrameLocation(getEmbeddedPaperURL(item.detail_path));
+    paperModalEl.classList.add('is-open');
+    paperModalEl.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('has-paper-modal');
+
+    if(settings.updateHistory){
+      const modalURL = new URL(window.location.href);
+      const paperIdentifier = getPaperIdentifier(item);
+      const currentHistoryState = window.history.state && typeof window.history.state === 'object'
+        ? window.history.state
+        : {};
+      modalURL.searchParams.set(paperModalQueryKey, paperIdentifier);
+      window.history.pushState(
+        { ...currentHistoryState, paperModal: paperIdentifier },
+        '',
+        modalURL
+      );
+    }
+
+    window.requestAnimationFrame(() => {
+      paperModalEl.querySelector('.paper-modal-close').focus();
+    });
+  }
+
+  function hidePaperModal(){
+    if(!paperModalEl || !paperModalEl.classList.contains('is-open')){
+      return;
+    }
+
+    const closingSessionId = modalSessionId;
+    paperModalEl.classList.remove('is-open');
+    paperModalEl.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('has-paper-modal');
+    if(modalCleanupTimerId !== null){
+      window.clearTimeout(modalCleanupTimerId);
+    }
+    modalCleanupTimerId = window.setTimeout(() => {
+      modalCleanupTimerId = null;
+      const modalWasNotReopened = modalSessionId === closingSessionId;
+      if(modalWasNotReopened && !paperModalEl.classList.contains('is-open')){
+        replacePaperModalFrameLocation('about:blank');
+      }
+    }, 220);
+
+    if(modalReturnFocusEl && typeof modalReturnFocusEl.focus === 'function'){
+      modalReturnFocusEl.focus({ preventScroll: true });
+    }
+    modalReturnFocusEl = null;
+  }
+
+  function requestClosePaperModal(){
+    if(window.PaperImageViewer && window.PaperImageViewer.isOpen()){
+      window.PaperImageViewer.close();
+      return;
+    }
+
+    const modalURL = new URL(window.location.href);
+    const paperIdentifier = modalURL.searchParams.get(paperModalQueryKey);
+    const historyPaperIdentifier = window.history.state && typeof window.history.state === 'object'
+      ? window.history.state.paperModal
+      : null;
+    const canReturnToPreviousHistoryEntry = Boolean(
+      paperIdentifier && historyPaperIdentifier === paperIdentifier
+    );
+
+    hidePaperModal();
+
+    if(canReturnToPreviousHistoryEntry){
+      window.history.back();
+      return;
+    }
+
+    modalURL.searchParams.delete(paperModalQueryKey);
+    const replacementHistoryState = window.history.state && typeof window.history.state === 'object'
+      ? { ...window.history.state }
+      : null;
+    if(replacementHistoryState){
+      delete replacementHistoryState.paperModal;
+    }
+    window.history.replaceState(replacementHistoryState, '', modalURL);
+  }
+
+  function openPaperModalFromURL(){
+    const paperIdentifier = new URL(window.location.href).searchParams.get(paperModalQueryKey);
+    if(!paperIdentifier){
+      hidePaperModal();
+      return;
+    }
+
+    const item = DATA.find((candidate) => getPaperIdentifier(candidate) === paperIdentifier);
+    if(item){
+      openPaperModal(item, { updateHistory: false });
+    }
+  }
+
+  function openPaperImage(item, imageEl){
+    if(!window.PaperImageViewer){
+      return;
+    }
+
+    window.PaperImageViewer.open({
+      src: item.paper_image_full_path || item.paper_image_path,
+      alt: item.title || imageEl.alt,
+      caption: item.title || '',
+      returnFocus: imageEl
+    });
+  }
+
+  function updatePaperCount(visibleCount){
+    if(!paperCountEl){
+      return;
+    }
+
+    const hasQuery = Boolean((searchEl.value || '').trim());
+    paperCountEl.textContent = hasQuery
+      ? `${visibleCount} / ${DATA.length} 篇`
+      : `${DATA.length} 篇已收录`;
+  }
 
   function applyCoverTheme(el, theme){
     if(!el || !theme){
@@ -2115,7 +2608,7 @@ def generate_app_js() -> str:
     if(!raw){
       return items;
     }
-    const tokens = raw.split(/\s+/).filter(Boolean);
+    const tokens = raw.split(/\\s+/).filter(Boolean);
     if(!tokens.length){
       return items;
     }
@@ -2130,6 +2623,15 @@ def generate_app_js() -> str:
     cardLink.className = 'feed-card-link';
     cardLink.href = item.detail_path;
     cardLink.setAttribute('aria-label', `查看论文：${item.title}`);
+    cardLink.setAttribute('aria-haspopup', 'dialog');
+    cardLink.addEventListener('click', (event) => {
+      const shouldUseNormalNavigation = event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+      if(shouldUseNormalNavigation){
+        return;
+      }
+      event.preventDefault();
+      openPaperModal(item, { updateHistory: true, returnFocus: cardLink });
+    });
 
     const card = document.createElement('article');
     card.className = 'feed-card';
@@ -2145,6 +2647,12 @@ def generate_app_js() -> str:
       image.src = item.paper_image_path;
       image.alt = item.title || '论文首图';
       image.loading = 'lazy';
+      image.dataset.zoomable = 'true';
+      image.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        openPaperImage(item, image);
+      });
 
       figure.appendChild(image);
       coverWrap.appendChild(figure);
@@ -2338,6 +2846,7 @@ def generate_app_js() -> str:
 
   function sync(){
     const items = filterItems(DATA, searchEl.value);
+    updatePaperCount(items.length);
 
     if(!DATA.length){
       renderGroups([]);
@@ -2439,6 +2948,50 @@ def generate_app_js() -> str:
 
   window.addEventListener('pagehide', saveScroll);
 
+  window.addEventListener('popstate', openPaperModalFromURL);
+
+  window.addEventListener('message', (event) => {
+    if(event.origin !== window.location.origin || !paperModalFrameEl || event.source !== paperModalFrameEl.contentWindow){
+      return;
+    }
+
+    const message = event.data || {};
+    if(message.type === 'paper-modal-close'){
+      requestClosePaperModal();
+      return;
+    }
+
+    if(message.type === 'paper-modal-ready'){
+      if(message.title){
+        paperModalTitleEl.textContent = message.title;
+      }
+      if(message.url){
+        const standaloneURL = new URL(message.url, window.location.href);
+        standaloneURL.searchParams.delete('embed');
+        paperModalOpenLinkEl.href = standaloneURL.href;
+      }
+      return;
+    }
+
+    if(message.type === 'paper-image-open' && window.PaperImageViewer){
+      window.PaperImageViewer.open({
+        src: message.src,
+        alt: message.alt || '论文图片',
+        caption: message.caption || message.alt || ''
+      });
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if(event.defaultPrevented || event.key !== 'Escape'){
+      return;
+    }
+    if(paperModalEl && paperModalEl.classList.contains('is-open')){
+      event.preventDefault();
+      requestClosePaperModal();
+    }
+  });
+
   async function loadData(){
     renderStatus('loading', '正在加载论文卡片', '页面正在读取静态数据并搭建阅读流，你可以稍后直接开始搜索。');
 
@@ -2450,6 +3003,7 @@ def generate_app_js() -> str:
 
       DATA = await response.json();
       sync();
+      openPaperModalFromURL();
     } catch (error) {
       console.error(error);
       renderGroups([]);
@@ -2484,6 +3038,94 @@ def generate_paper_js() -> str:
   const detailToc = $('#detail-toc');
   const detailTocNav = $('#detail-toc-nav');
   const paperId = document.body.dataset.paperId || '';
+  const isEmbedded = window.parent !== window && new URL(window.location.href).searchParams.get('embed') === '1';
+
+  function getImagePayload(imageEl){
+    const figureEl = imageEl.closest('.paper-figure-card');
+    const captionEl = figureEl ? figureEl.querySelector('.paper-figure-caption') : null;
+    return {
+      src: imageEl.currentSrc || imageEl.src,
+      alt: imageEl.alt || '论文图片',
+      caption: captionEl ? captionEl.textContent.trim() : imageEl.alt || ''
+    };
+  }
+
+  function openPaperImage(imageEl){
+    const payload = getImagePayload(imageEl);
+    if(isEmbedded){
+      try {
+        if(window.parent.PaperImageViewer){
+          window.parent.PaperImageViewer.open(payload);
+          return;
+        }
+      } catch (error) {
+        console.warn('无法直接调用父页面图片预览，改用消息转发', error);
+      }
+      window.parent.postMessage({ type: 'paper-image-open', ...payload }, window.location.origin);
+      return;
+    }
+
+    if(window.PaperImageViewer){
+      window.PaperImageViewer.open({ ...payload, returnFocus: imageEl });
+    }
+  }
+
+  window.openPaperFigureImage = openPaperImage;
+
+  function initializeImageZoom(){
+    document.querySelectorAll('.paper-figure-image').forEach((imageEl) => {
+      imageEl.dataset.zoomable = 'true';
+      imageEl.tabIndex = 0;
+      imageEl.setAttribute('role', 'button');
+      imageEl.setAttribute('aria-label', `放大查看：${imageEl.alt || '论文图片'}`);
+      imageEl.addEventListener('keydown', (event) => {
+        if(event.key === 'Enter' || event.key === ' '){
+          event.preventDefault();
+          openPaperImage(imageEl);
+        }
+      });
+    });
+  }
+
+  function initializeEmbeddedMode(){
+    if(!isEmbedded){
+      return;
+    }
+
+    document.body.classList.add('embedded-detail');
+    const backLinkEl = document.querySelector('.back-link');
+    if(backLinkEl){
+      backLinkEl.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.parent.postMessage({ type: 'paper-modal-close' }, window.location.origin);
+      });
+    }
+
+    document.querySelectorAll('.paper-nav-link').forEach((linkEl) => {
+      linkEl.addEventListener('click', (event) => {
+        event.preventDefault();
+        const targetURL = new URL(linkEl.href, window.location.href);
+        targetURL.searchParams.set('embed', '1');
+        window.location.href = targetURL.href;
+      });
+    });
+
+    const standaloneURL = new URL(window.location.href);
+    standaloneURL.searchParams.delete('embed');
+    window.parent.postMessage({
+      type: 'paper-modal-ready',
+      title: document.querySelector('.detail-page-title')?.textContent || document.title,
+      url: standaloneURL.href
+    }, window.location.origin);
+
+    window.addEventListener('keydown', (event) => {
+      if(event.defaultPrevented || event.key !== 'Escape'){
+        return;
+      }
+      event.preventDefault();
+      window.parent.postMessage({ type: 'paper-modal-close' }, window.location.origin);
+    });
+  }
 
   function slugifyHeading(text, index){
     const slug = (text || '')
@@ -2603,6 +3245,8 @@ def generate_paper_js() -> str:
 
   window.addEventListener('pagehide', saveScroll);
 
+  initializeEmbeddedMode();
+  initializeImageZoom();
   buildDetailToc();
   restoreScroll();
 })();
@@ -2723,6 +3367,7 @@ def main() -> int:
 
     write_text(SITE_DIR / "index.html", generate_index_html())
     write_text(ASSETS_DIR / "style.css", generate_style_css())
+    write_text(ASSETS_DIR / "media.js", generate_media_js())
     write_text(ASSETS_DIR / "app.js", generate_app_js())
     write_text(ASSETS_DIR / "paper.js", generate_paper_js())
     write_text(ASSETS_DIR / "data.json", json.dumps(list_data, ensure_ascii=False, indent=2))
