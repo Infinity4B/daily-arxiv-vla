@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>OG-VLA: 3D-Aware Vision Language Action Model via Orthographic Image Generation - VLA / Vision-Language-Action 每日论文卡</title>
-    <meta name="description" content="论文研究单位 南加州大学 (University of Southern California) NVIDIA 论文概述 OG-VLA 是一种新颖的架构和学习框架，结合了视觉语言动作模型 (VLA) 的泛化能力和 3D 感知策略的鲁棒性。 该方法解决了将自然语言指令和一个或多个 RGBD 观测映射到准静态机器人动作的挑战。 通过利用语言和视觉基础模型中的先验知识，提升了 3D 感知关键帧策略的泛化能力。 核心创新是…" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23d75c2f'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <meta name="description" content="论文研究单位 南加州大学 (University of Southern California) NVIDIA 论文概述 OG-VLA 是一种新颖的架构和学习框架，结合了视觉语言动作模型 (VLA) 的泛化能力和 3D 感知策略的鲁棒性。 该方法解决了将自然语言指令和一个或多个 RGBD 观测映射到准静态机器人动作的挑战。 通过利用语言和视觉基础模型中的先验知识，提升了 3D 感知关键帧策略的泛化能力。 核心创新是将输入观测反投影为点云，并从正交视图渲染，确保输入视图不变性和输入输出空间一致性。 实验表明，在 Arnold 和 Colosseum 基准测试中，对未见过环境的泛化能力有超过 40% 的相对提升，同时在已见设置中保持鲁棒性能。 论文核心贡献点 提出了一种结合 VLA 泛化能力与 3D 感知策略鲁棒性的新型架构 OG-VLA。 引入正交图像生成机制，通过将 RGBD 输入转换为点云并渲染正交视图，实现输入视图不变性。 使用视觉骨干网络、LLM 和图像扩散模型生成编码末端执行器位置和方向的图像。 在 Arnold 和 Colosseum 基准测试中实现了最先进的泛化性能，相对提升超过 40%。 展示了真实机器人上的快速适应能力，仅需 3-5 个演示即可学习任务。 论文方法描述 系统输入为语言指令和一组带姿态的 RGBD 观测，输出为末端执行器状态（位置和旋转）。 点云渲染：将多视角输入观测反投影为点云，再从固定正交视图（如前、上、左、右）渲染场景。 多模态处理：使用视觉编码器处理正交视图，生成 CLS 和块嵌入。 LLM 处理：将嵌入投影到 LLM 空间，与指令提示拼接后输入 LLM，生成动作 token。 图像生成：使用 Stable Diffusion 1.5 将动作 token 解码为正交视图上的热图，编码位置和旋转。 3D 姿态解码：通过优化问题从热图中解码 3D 位置和欧拉角，并处理夹爪状态。 训练细节：冻结视觉编码器，使用 DeepSpeed 训练 LLM、投影层和图像生成器，采用 SE(3) 数据增强。 论文使用数据集和训练资源 数据集：Arnold（8 个任务，约 500 个演示/任务，2 关键帧/演示）和 Colosseum（20 个任务，100 个演示/任务）。 训练资源：8 × A100 GPU，批量大小 64；Arnold 训练 30k 次迭代（1.5 天）或 100k 次（5 天），Colosseum 训练 250k 次；真实世界微调使用 4 × L40 GPU。 论文使用的评估环境和评估指标 评估环境：模拟环境（Arnold 和 Colosseum 基准）及真实世界（Franka Emika Panda 机械臂）。 评估指标：成功率（%），覆盖任务完成统计；Arnold 测试分 Novel Pose、Object、Scene、State；Colosseum 测试集为 all perturbation；真实世界测试 novel object 和 scene 变体。 额外指标：模型延迟（秒/步、步数/回合、总时间），与基线（如 π₀-FAST、PerAct）比较。" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2506.01196">
@@ -25,14 +25,14 @@
 
         <div class="detail-hero-grid">
           <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="../../assets/paper-images/2506.01196.webp" alt="OG-VLA: 3D-Aware Vision Language Action Model via Orthographic Image Generation" loading="lazy" />
+  <img class="paper-figure-image" src="../../assets/paper-images/2506.01196.webp" alt="OG-VLA: 3D-Aware Vision Language Action Model via Orthographic Image Generation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
   <figcaption class="paper-figure-caption">论文研究单位</figcaption>
 </figure></div>
           <div class="detail-hero-copy">
             <p class="eyebrow">论文详情</p>
             <h1 class="detail-page-title">OG-VLA: 3D-Aware Vision Language Action Model via Orthographic Image Generation</h1>
             <div class="detail-meta">2025-06-01 · <a href="http://arxiv.org/abs/2506.01196" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2506.01196" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2506.01196</span></div>
-            <p class="detail-summary">论文研究单位 南加州大学 (University of Southern California) NVIDIA 论文概述 OG-VLA 是一种新颖的架构和学习框架，结合了视觉语言动作模型 (VLA) 的泛化能力和 3D 感知策略的鲁棒性。 该方法解决了将自然语言指令和一个或多个 RGBD 观测映射到准静态机器人动作的挑战。 通过利用语言和视觉基础模型中的先验知识，提升了 3D 感知关键帧策略的泛化能力。 核心创新是…</p>
+            <p class="detail-summary">论文研究单位 南加州大学 (University of Southern California) NVIDIA 论文概述 OG-VLA 是一种新颖的架构和学习框架，结合了视觉语言动作模型 (VLA) 的泛化能力和 3D 感知策略的鲁棒性。 该方法解决了将自然语言指令和一个或多个 RGBD 观测映射到准静态机器人动作的挑战。 通过利用语言和视觉基础模型中的先验知识，提升了 3D 感知关键帧策略的泛化能力。 核心创新是将输入观测反投影为点云，并从正交视图渲染，确保输入视图不变性和输入输出空间一致性。 实验表明，在 Arnold 和 Colosseum 基准测试中，对未见过环境的泛化能力有超过 40% 的相对提升，同时在已见设置中保持鲁棒性能。 论文核心贡献点 提出了一种结合 VLA 泛化能力与 3D 感知策略鲁棒性的新型架构 OG-VLA。 引入正交图像生成机制，通过将 RGBD 输入转换为点云并渲染正交视图，实现输入视图不变性。 使用视觉骨干网络、LLM 和图像扩散模型生成编码末端执行器位置和方向的图像。 在 Arnold 和 Colosseum 基准测试中实现了最先进的泛化性能，相对提升超过 40%。 展示了真实机器人上的快速适应能力，仅需 3-5 个演示即可学习任务。 论文方法描述 系统输入为语言指令和一组带姿态的 RGBD 观测，输出为末端执行器状态（位置和旋转）。 点云渲染：将多视角输入观测反投影为点云，再从固定正交视图（如前、上、左、右）渲染场景。 多模态处理：使用视觉编码器处理正交视图，生成 CLS 和块嵌入。 LLM 处理：将嵌入投影到 LLM 空间，与指令提示拼接后输入 LLM，生成动作 token。 图像生成：使用 Stable Diffusion 1.5 将动作 token 解码为正交视图上的热图，编码位置和旋转。 3D 姿态解码：通过优化问题从热图中解码 3D 位置和欧拉角，并处理夹爪状态。 训练细节：冻结视觉编码器，使用 DeepSpeed 训练 LLM、投影层和图像生成器，采用 SE(3) 数据增强。 论文使用数据集和训练资源 数据集：Arnold（8 个任务，约 500 个演示/任务，2 关键帧/演示）和 Colosseum（20 个任务，100 个演示/任务）。 训练资源：8 × A100 GPU，批量大小 64；Arnold 训练 30k 次迭代（1.5 天）或 100k 次（5 天），Colosseum 训练 250k 次；真实世界微调使用 4 × L40 GPU。 论文使用的评估环境和评估指标 评估环境：模拟环境（Arnold 和 Colosseum 基准）及真实世界（Franka Emika Panda 机械臂）。 评估指标：成功率（%），覆盖任务完成统计；Arnold 测试分 Novel Pose、Object、Scene、State；Colosseum 测试集为 all perturbation；真实世界测试 novel object 和 scene 变体。 额外指标：模型延迟（秒/步、步数/回合、总时间），与基线（如 π₀-FAST、PerAct）比较。</p>
             <div class="detail-micro-meta">
               <span class="meta-pill">12 分钟读完</span>
               <span class="meta-pill">7 张阅读卡</span>
@@ -172,6 +172,7 @@
       </div>
     </footer>
 
+    <script src="../../assets/media.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>
 </html>

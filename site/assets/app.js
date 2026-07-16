@@ -3,15 +3,283 @@
  * @description 首页逻辑：加载 data.json，渲染信息流卡片与搜索。
  */
 (function(){
-  /** @type {Array<{date:string,title:string,link:string,arxiv_id:string,detail_path:string,cover_path:string,paper_image_path:string,preview_text:string,research_unit:string,hook_text:string,key_points:string[],reading_minutes:number,section_count:number,cover_theme:Record<string,string>}>} */
+  /** @type {Array<{date:string,title:string,link:string,arxiv_id:string,detail_path:string,cover_path:string,paper_image_path:string,paper_image_full_path:string,preview_text:string,research_unit:string,hook_text:string,key_points:string[],reading_minutes:number,section_count:number,cover_theme:Record<string,string>}>} */
   let DATA = [];
 
   const $ = (selector) => document.querySelector(selector);
   const statusEl = $('#status');
   const groupsEl = $('#groups');
   const searchEl = $('#search');
+  const paperCountEl = $('#paper-count');
   const homeScrollKey = 'home-scroll:index';
+  const paperModalQueryKey = 'paper';
   let restoredScroll = false;
+  let paperModalEl = null;
+  let paperModalFrameEl = null;
+  let paperModalTitleEl = null;
+  let paperModalOpenLinkEl = null;
+  let paperModalLoaderEl = null;
+  let modalReturnFocusEl = null;
+  let modalCleanupTimerId = null;
+  let modalSessionId = 0;
+
+  function getPaperIdentifier(item){
+    return item.arxiv_id || item.detail_path;
+  }
+
+  function getStandalonePaperURL(detailPath){
+    return new URL(detailPath, window.location.href).href;
+  }
+
+  function getEmbeddedPaperURL(detailPath){
+    const embeddedURL = new URL(detailPath, window.location.href);
+    embeddedURL.searchParams.set('embed', '1');
+    return embeddedURL.href;
+  }
+
+  function replacePaperModalFrameLocation(frameURL){
+    if(!paperModalFrameEl){
+      return;
+    }
+
+    try {
+      if(paperModalFrameEl.contentWindow){
+        paperModalFrameEl.contentWindow.location.replace(frameURL);
+        return;
+      }
+    } catch (error) {
+      console.warn('无法替换论文浮窗地址，改用 iframe src 导航', error);
+    }
+
+    paperModalFrameEl.src = frameURL;
+  }
+
+  function ensurePaperModal(){
+    if(paperModalEl){
+      return;
+    }
+
+    paperModalEl = document.createElement('div');
+    paperModalEl.className = 'paper-modal';
+    paperModalEl.setAttribute('aria-hidden', 'true');
+    paperModalEl.innerHTML = `
+      <div class="paper-modal-backdrop" data-paper-modal-close></div>
+      <section class="paper-modal-panel" role="dialog" aria-modal="true" aria-labelledby="paper-modal-title">
+        <header class="paper-modal-toolbar">
+          <div class="paper-modal-heading">
+            <span class="paper-modal-kicker">论文阅读</span>
+            <span id="paper-modal-title" class="paper-modal-title"></span>
+          </div>
+          <div class="paper-modal-actions">
+            <a class="paper-modal-open-link" href="#" target="_blank" rel="noopener noreferrer">新页面打开 ↗</a>
+            <button class="paper-modal-close" type="button" aria-label="关闭论文浮窗">×</button>
+          </div>
+        </header>
+        <div class="paper-modal-content">
+          <div class="paper-modal-loader" aria-hidden="true">
+            <span class="paper-modal-spinner"></span>
+            <span>正在打开论文阅读卡</span>
+          </div>
+          <iframe class="paper-modal-frame" title="论文详情" loading="eager"></iframe>
+        </div>
+      </section>
+    `;
+
+    document.body.appendChild(paperModalEl);
+    paperModalFrameEl = paperModalEl.querySelector('.paper-modal-frame');
+    paperModalTitleEl = paperModalEl.querySelector('.paper-modal-title');
+    paperModalOpenLinkEl = paperModalEl.querySelector('.paper-modal-open-link');
+    paperModalLoaderEl = paperModalEl.querySelector('.paper-modal-loader');
+
+    paperModalEl.querySelector('[data-paper-modal-close]').addEventListener('click', requestClosePaperModal);
+    paperModalEl.querySelector('.paper-modal-close').addEventListener('click', requestClosePaperModal);
+    paperModalFrameEl.addEventListener('load', () => {
+      connectPaperModalImageZoom();
+      paperModalLoaderEl.classList.add('hidden');
+      paperModalFrameEl.classList.add('is-ready');
+    });
+  }
+
+  function connectPaperModalImageZoom(){
+    if(!paperModalFrameEl || !window.PaperImageViewer){
+      return;
+    }
+
+    let frameDocument = null;
+    try {
+      frameDocument = paperModalFrameEl.contentDocument;
+    } catch (error) {
+      console.warn('无法访问论文浮窗内容，保留嵌入页自身的图片预览逻辑', error);
+      return;
+    }
+
+    if(!frameDocument){
+      return;
+    }
+
+    frameDocument.querySelectorAll('.paper-figure-image').forEach((imageEl) => {
+      if(imageEl.dataset.parentZoomBound === 'true'){
+        return;
+      }
+      imageEl.dataset.parentZoomBound = 'true';
+
+      const openImage = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const figureEl = imageEl.closest('.paper-figure-card');
+        const captionEl = figureEl ? figureEl.querySelector('.paper-figure-caption') : null;
+        window.PaperImageViewer.open({
+          src: imageEl.currentSrc || imageEl.src,
+          alt: imageEl.alt || '论文图片',
+          caption: captionEl ? captionEl.textContent.trim() : imageEl.alt || ''
+        });
+      };
+
+      imageEl.addEventListener('click', openImage, true);
+      imageEl.addEventListener('keydown', (event) => {
+        if(event.key === 'Enter' || event.key === ' '){
+          openImage(event);
+        }
+      }, true);
+    });
+  }
+
+  function openPaperModal(item, options){
+    if(!item){
+      return;
+    }
+
+    const settings = options || {};
+    ensurePaperModal();
+    modalSessionId += 1;
+    if(modalCleanupTimerId !== null){
+      window.clearTimeout(modalCleanupTimerId);
+      modalCleanupTimerId = null;
+    }
+    modalReturnFocusEl = settings.returnFocus || modalReturnFocusEl || document.activeElement;
+    paperModalTitleEl.textContent = item.title || '论文详情';
+    paperModalOpenLinkEl.href = getStandalonePaperURL(item.detail_path);
+    paperModalFrameEl.title = `论文详情：${item.title || ''}`;
+    paperModalFrameEl.classList.remove('is-ready');
+    paperModalLoaderEl.classList.remove('hidden');
+    replacePaperModalFrameLocation(getEmbeddedPaperURL(item.detail_path));
+    paperModalEl.classList.add('is-open');
+    paperModalEl.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('has-paper-modal');
+
+    if(settings.updateHistory){
+      const modalURL = new URL(window.location.href);
+      const paperIdentifier = getPaperIdentifier(item);
+      const currentHistoryState = window.history.state && typeof window.history.state === 'object'
+        ? window.history.state
+        : {};
+      modalURL.searchParams.set(paperModalQueryKey, paperIdentifier);
+      window.history.pushState(
+        { ...currentHistoryState, paperModal: paperIdentifier },
+        '',
+        modalURL
+      );
+    }
+
+    window.requestAnimationFrame(() => {
+      paperModalEl.querySelector('.paper-modal-close').focus();
+    });
+  }
+
+  function hidePaperModal(){
+    if(!paperModalEl || !paperModalEl.classList.contains('is-open')){
+      return;
+    }
+
+    const closingSessionId = modalSessionId;
+    paperModalEl.classList.remove('is-open');
+    paperModalEl.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('has-paper-modal');
+    if(modalCleanupTimerId !== null){
+      window.clearTimeout(modalCleanupTimerId);
+    }
+    modalCleanupTimerId = window.setTimeout(() => {
+      modalCleanupTimerId = null;
+      const modalWasNotReopened = modalSessionId === closingSessionId;
+      if(modalWasNotReopened && !paperModalEl.classList.contains('is-open')){
+        replacePaperModalFrameLocation('about:blank');
+      }
+    }, 220);
+
+    if(modalReturnFocusEl && typeof modalReturnFocusEl.focus === 'function'){
+      modalReturnFocusEl.focus({ preventScroll: true });
+    }
+    modalReturnFocusEl = null;
+  }
+
+  function requestClosePaperModal(){
+    if(window.PaperImageViewer && window.PaperImageViewer.isOpen()){
+      window.PaperImageViewer.close();
+      return;
+    }
+
+    const modalURL = new URL(window.location.href);
+    const paperIdentifier = modalURL.searchParams.get(paperModalQueryKey);
+    const historyPaperIdentifier = window.history.state && typeof window.history.state === 'object'
+      ? window.history.state.paperModal
+      : null;
+    const canReturnToPreviousHistoryEntry = Boolean(
+      paperIdentifier && historyPaperIdentifier === paperIdentifier
+    );
+
+    hidePaperModal();
+
+    if(canReturnToPreviousHistoryEntry){
+      window.history.back();
+      return;
+    }
+
+    modalURL.searchParams.delete(paperModalQueryKey);
+    const replacementHistoryState = window.history.state && typeof window.history.state === 'object'
+      ? { ...window.history.state }
+      : null;
+    if(replacementHistoryState){
+      delete replacementHistoryState.paperModal;
+    }
+    window.history.replaceState(replacementHistoryState, '', modalURL);
+  }
+
+  function openPaperModalFromURL(){
+    const paperIdentifier = new URL(window.location.href).searchParams.get(paperModalQueryKey);
+    if(!paperIdentifier){
+      hidePaperModal();
+      return;
+    }
+
+    const item = DATA.find((candidate) => getPaperIdentifier(candidate) === paperIdentifier);
+    if(item){
+      openPaperModal(item, { updateHistory: false });
+    }
+  }
+
+  function openPaperImage(item, imageEl){
+    if(!window.PaperImageViewer){
+      return;
+    }
+
+    window.PaperImageViewer.open({
+      src: item.paper_image_full_path || item.paper_image_path,
+      alt: item.title || imageEl.alt,
+      caption: item.title || '',
+      returnFocus: imageEl
+    });
+  }
+
+  function updatePaperCount(visibleCount){
+    if(!paperCountEl){
+      return;
+    }
+
+    const hasQuery = Boolean((searchEl.value || '').trim());
+    paperCountEl.textContent = hasQuery
+      ? `${visibleCount} / ${DATA.length} 篇`
+      : `${DATA.length} 篇已收录`;
+  }
 
   function applyCoverTheme(el, theme){
     if(!el || !theme){
@@ -102,6 +370,15 @@
     cardLink.className = 'feed-card-link';
     cardLink.href = item.detail_path;
     cardLink.setAttribute('aria-label', `查看论文：${item.title}`);
+    cardLink.setAttribute('aria-haspopup', 'dialog');
+    cardLink.addEventListener('click', (event) => {
+      const shouldUseNormalNavigation = event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+      if(shouldUseNormalNavigation){
+        return;
+      }
+      event.preventDefault();
+      openPaperModal(item, { updateHistory: true, returnFocus: cardLink });
+    });
 
     const card = document.createElement('article');
     card.className = 'feed-card';
@@ -117,6 +394,12 @@
       image.src = item.paper_image_path;
       image.alt = item.title || '论文首图';
       image.loading = 'lazy';
+      image.dataset.zoomable = 'true';
+      image.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        openPaperImage(item, image);
+      });
 
       figure.appendChild(image);
       coverWrap.appendChild(figure);
@@ -310,6 +593,7 @@
 
   function sync(){
     const items = filterItems(DATA, searchEl.value);
+    updatePaperCount(items.length);
 
     if(!DATA.length){
       renderGroups([]);
@@ -411,6 +695,50 @@
 
   window.addEventListener('pagehide', saveScroll);
 
+  window.addEventListener('popstate', openPaperModalFromURL);
+
+  window.addEventListener('message', (event) => {
+    if(event.origin !== window.location.origin || !paperModalFrameEl || event.source !== paperModalFrameEl.contentWindow){
+      return;
+    }
+
+    const message = event.data || {};
+    if(message.type === 'paper-modal-close'){
+      requestClosePaperModal();
+      return;
+    }
+
+    if(message.type === 'paper-modal-ready'){
+      if(message.title){
+        paperModalTitleEl.textContent = message.title;
+      }
+      if(message.url){
+        const standaloneURL = new URL(message.url, window.location.href);
+        standaloneURL.searchParams.delete('embed');
+        paperModalOpenLinkEl.href = standaloneURL.href;
+      }
+      return;
+    }
+
+    if(message.type === 'paper-image-open' && window.PaperImageViewer){
+      window.PaperImageViewer.open({
+        src: message.src,
+        alt: message.alt || '论文图片',
+        caption: message.caption || message.alt || ''
+      });
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if(event.defaultPrevented || event.key !== 'Escape'){
+      return;
+    }
+    if(paperModalEl && paperModalEl.classList.contains('is-open')){
+      event.preventDefault();
+      requestClosePaperModal();
+    }
+  });
+
   async function loadData(){
     renderStatus('loading', '正在加载论文卡片', '页面正在读取静态数据并搭建阅读流，你可以稍后直接开始搜索。');
 
@@ -422,6 +750,7 @@
 
       DATA = await response.json();
       sync();
+      openPaperModalFromURL();
     } catch (error) {
       console.error(error);
       renderGroups([]);

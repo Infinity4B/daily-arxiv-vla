@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Unified Lexical Representation for Interpretable Visual-Language Alignment - VLA / Vision-Language-Action 每日论文卡</title>
-    <meta name="description" content="好的，我将以论文阅读专家的身份，根据提供的Arxiv论文HTML原文，总结论文的要点。我将遵循你的要求，只提供Markdown格式文本，不使用加粗，不输出其他内容，并将总结分为你指定的几个部分。 论文研究单位: 我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Services）。 论文概述: 我将概括论文的背景、问题陈述和主要目…" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23d75c2f'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <meta name="description" content="好的，我将以论文阅读专家的身份，根据提供的Arxiv论文HTML原文，总结论文的要点。我将遵循你的要求，只提供Markdown格式文本，不使用加粗，不输出其他内容，并将总结分为你指定的几个部分。 论文研究单位: 我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Services）。 论文概述: 我将概括论文的背景、问题陈述和主要目标。这篇论文介绍了一个名为LexVLA的框架，用于视觉-语言对齐（VLA），旨在通过学习统一的词汇表示来解决现有方法（如CLIP）的可解释性差和训练复杂的问题。 论文核心贡献点: 我将从引言的“We contribute”部分提取贡献点。 贡献1：利用单模态预训练模型（用于视觉的DINOv2，用于文本的Llama 2），利用它们独特的优势（如局部特征和上下文预测能力）进行VLA。 贡献2：提出了一种统一的词汇表示方法，但为视觉和文本模态使用独立的码本，以避免削弱预训练能力。 贡献3：引入了过度使用惩罚（overuse penalty），以鼓励稀疏嵌入并防止无意义激活。 贡献4：在更少的多模态训练数据下实现了卓越的检索性能，并使用提出的PatchDis指标获得了更好的可解释性。 论文方法描述: 我将总结方法的关键步骤和组件，基于第3节“LexVLA”。 词汇表示: 使用共享词汇表但为视觉和文本模态设置不同的码本。码本初始化为Llama 2的输出码本；文本码本被冻结，视觉码本被微调。表示被稀疏化，通过阈值化（值大于1/√V）。 词汇编码器: 文本编码器: 使用Llama 2，并通过上下文提示（如“关键词提取”）使其执行词汇预测，而不是简单的标题嵌入。 视觉编码器: 使用DINOv2作为冻结的骨干网络。特征通过一个适配器（自注意力+2个MLP）处理，然后映射到视觉词汇表示。 训练: 使用标准的对比学习目标，并加入过度使用惩罚。训练采用增量微调：对于文本，使用LoRA；对于视觉，只训练适配器和映射器。 论文使用数据集和训练资源: 我将从“实验”部分（第4节）中提取数据集和计算细节。 数据集: 训练在CC-12M上进行。在Flickr30K和MSCOCO上进行零样本跨模态检索评估。 训练资源: 文本编码器基于Llama 2（7B），视觉骨干网络为DINOv2（ViT-L/14）。使用单个8x A100 GPU进行训练。提及使用LoRA进行文本微调以减少资源消耗。 论文使用的评估环境和评估指标: 我将从“实验”部分提取评估设置和指标。 评估环境: 标准零样本跨模态检索设置（图像到文本和文本到图像检索）。 评估指标: 在Flickr30K和MSCOCO上的检索指标（R@1, R@5, R@10, mean Recall）。此外，引入了一个新的可解释性指标“PatchDis”来量化模型在未经过细粒度任务训练的情况下的块级对齐能力。" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2407.17827">
@@ -25,14 +25,14 @@
 
         <div class="detail-hero-grid">
           <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="../../assets/paper-images/2407.17827.webp" alt="Unified Lexical Representation for Interpretable Visual-Language Alignment" loading="lazy" />
+  <img class="paper-figure-image" src="../../assets/paper-images/2407.17827.webp" alt="Unified Lexical Representation for Interpretable Visual-Language Alignment" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
   <figcaption class="paper-figure-caption">论文研究单位:</figcaption>
 </figure></div>
           <div class="detail-hero-copy">
             <p class="eyebrow">论文详情</p>
             <h1 class="detail-page-title">Unified Lexical Representation for Interpretable Visual-Language Alignment</h1>
             <div class="detail-meta">2024-07-25 · <a href="http://arxiv.org/abs/2407.17827" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2407.17827" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2407.17827</span></div>
-            <p class="detail-summary">好的，我将以论文阅读专家的身份，根据提供的Arxiv论文HTML原文，总结论文的要点。我将遵循你的要求，只提供Markdown格式文本，不使用加粗，不输出其他内容，并将总结分为你指定的几个部分。 论文研究单位: 我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Services）。 论文概述: 我将概括论文的背景、问题陈述和主要目…</p>
+            <p class="detail-summary">好的，我将以论文阅读专家的身份，根据提供的Arxiv论文HTML原文，总结论文的要点。我将遵循你的要求，只提供Markdown格式文本，不使用加粗，不输出其他内容，并将总结分为你指定的几个部分。 论文研究单位: 我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Services）。 论文概述: 我将概括论文的背景、问题陈述和主要目标。这篇论文介绍了一个名为LexVLA的框架，用于视觉-语言对齐（VLA），旨在通过学习统一的词汇表示来解决现有方法（如CLIP）的可解释性差和训练复杂的问题。 论文核心贡献点: 我将从引言的“We contribute”部分提取贡献点。 贡献1：利用单模态预训练模型（用于视觉的DINOv2，用于文本的Llama 2），利用它们独特的优势（如局部特征和上下文预测能力）进行VLA。 贡献2：提出了一种统一的词汇表示方法，但为视觉和文本模态使用独立的码本，以避免削弱预训练能力。 贡献3：引入了过度使用惩罚（overuse penalty），以鼓励稀疏嵌入并防止无意义激活。 贡献4：在更少的多模态训练数据下实现了卓越的检索性能，并使用提出的PatchDis指标获得了更好的可解释性。 论文方法描述: 我将总结方法的关键步骤和组件，基于第3节“LexVLA”。 词汇表示: 使用共享词汇表但为视觉和文本模态设置不同的码本。码本初始化为Llama 2的输出码本；文本码本被冻结，视觉码本被微调。表示被稀疏化，通过阈值化（值大于1/√V）。 词汇编码器: 文本编码器: 使用Llama 2，并通过上下文提示（如“关键词提取”）使其执行词汇预测，而不是简单的标题嵌入。 视觉编码器: 使用DINOv2作为冻结的骨干网络。特征通过一个适配器（自注意力+2个MLP）处理，然后映射到视觉词汇表示。 训练: 使用标准的对比学习目标，并加入过度使用惩罚。训练采用增量微调：对于文本，使用LoRA；对于视觉，只训练适配器和映射器。 论文使用数据集和训练资源: 我将从“实验”部分（第4节）中提取数据集和计算细节。 数据集: 训练在CC-12M上进行。在Flickr30K和MSCOCO上进行零样本跨模态检索评估。 训练资源: 文本编码器基于Llama 2（7B），视觉骨干网络为DINOv2（ViT-L/14）。使用单个8x A100 GPU进行训练。提及使用LoRA进行文本微调以减少资源消耗。 论文使用的评估环境和评估指标: 我将从“实验”部分提取评估设置和指标。 评估环境: 标准零样本跨模态检索设置（图像到文本和文本到图像检索）。 评估指标: 在Flickr30K和MSCOCO上的检索指标（R@1, R@5, R@10, mean Recall）。此外，引入了一个新的可解释性指标“PatchDis”来量化模型在未经过细粒度任务训练的情况下的块级对齐能力。</p>
             <div class="detail-micro-meta">
               <span class="meta-pill">10 分钟读完</span>
               <span class="meta-pill">7 张阅读卡</span>
@@ -51,7 +51,7 @@
     <a class="cover-preview-link" href="../../covers/2407.17827/">封面预览</a>
   </div>
   <p class="reading-intro-hook">论文研究单位:</p>
-  <ul class="reading-intro-points"><li>论文研究单位:</li><li>我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Ser…</li><li>论文概述:</li></ul>
+  <ul class="reading-intro-points"><li>论文研究单位:</li><li>我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Services）。</li><li>论文概述:</li></ul>
 </section>
 <section class="reading-card reading-card-section">
   <div class="reading-card-topline">
@@ -161,6 +161,7 @@
       </div>
     </footer>
 
+    <script src="../../assets/media.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>
 </html>
