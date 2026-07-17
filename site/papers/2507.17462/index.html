@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ERMV: Editing 4D Robotic Multi-view images to enhance embodied agents - VLA / Vision-Language-Action 每日论文卡</title>
     <meta name="description" content="论文研究单位 上海交通大学自动化与智能感知学院及系统控制与信息处理教育部重点实验室 剑桥大学工程系 论文概述 论文提出ERMV（Editing 4D Robotic Multi-view images）框架，用于编辑4D机器人多视角序列图像，以缓解具身智能体（如VLA模型）训练中的数据稀缺问题。现有方法面临三大挑战：动态多视角下的时空一致性维护、计算成本限制导致的工作窗口狭小、以及关键物体（如机械臂）的语义完整性维护。ERMV通过视觉引导、状态注入、稀疏时空建模和反馈干预机制解决这些问题，显著提升下游策略的鲁棒性和泛化性。 论文核心贡献点 提出首个面向4D机器人多视角序列编辑的框架ERMV，有效增强VLA模型训练数据 设计极线运动感知注意力（EMA-Attn）处理运动模糊，结合稀疏时空模块（SST）实现大窗口低计算编辑 引入多模态大语言模型（MLLM）的反馈干预机制，最小化人工参与下保障核心物体一致性 在仿真、真实数据集和物理机器人平台验证效果，并证明其缩小sim-to-real差距的能力 论文方法描述 基于潜在扩散模型（LDM），学习条件分布 p(X&#x27;\|X,C_guide,C_state,C_history) 视觉引导：使用单帧编辑图像通过CLIP编码作为精确语义目标，避免文本歧义 状态注入：融合相机位姿P_t^(v)、机器人动作q_t及其运动差分ΔP_t^(v)、Δq_t，经MLP编码为时空条件 稀疏时空模块：随机采样K张图像（K&lt;&lt;L×N），解耦时空维度，将4D编辑重构为单帧多视角问题 极线运动感知注意力：在应用几何约束前预测运动引起的像素偏移，保持运动模糊下的跨视图一致性 反馈干预：MLLM检测编辑不一致性，仅在必要时请求专家提供分割掩码修正 论文使用数据集和训练资源 仿真数据集：RoboTwin多视角操作基准 真实数据集：RDT真实机器人数据集及自建双臂机器人平台数据 训练资源：单个消费级GPU（通过稀疏采样降低内存需求） 论文使用的评估环境和评估指标 仿真环境：RoboTwin基准测试 真实环境：RDT数据集评估及物理双臂机器人部署 评估指标： VLA模型任务成功率 未知环境泛化性能 编辑结果的时空一致性指标 sim-to-real差距缩小程度" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,7 +37,25 @@
       <div class="container">
         <div class="detail-page-topbar">
           <a class="back-link" href="../../index.html">返回列表</a>
-          <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
         </div>
 
         <div class="detail-hero-grid">
@@ -96,6 +131,7 @@
       </div>
     </footer>
 
+    <script src="../../assets/theme.js"></script>
     <script src="../../assets/media.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>

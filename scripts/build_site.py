@@ -683,11 +683,49 @@ def generate_head(title: str, description: str, stylesheet_prefix: str = "") -> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{escape(title)}</title>
     <meta name="description" content="{escape(description, quote=True)}" />
+    <script>
+      (function() {{
+        try {{
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        }} catch (error) {{
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }}
+      }})();
+    </script>
     <link rel="icon" href="{favicon}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{escape(stylesheet_path, quote=True)}" />
+""".strip()
+
+
+def render_theme_toggle() -> str:
+    return """
+<button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
 """.strip()
 
 
@@ -713,10 +751,13 @@ def generate_index_html() -> str:
             <span class="site-brand-mark">VLA</span>
             <span>Research Brief</span>
           </a>
-          <span class="site-nav-status">
-            <span class="site-nav-dot" aria-hidden="true"></span>
-            每日自动更新
-          </span>
+          <div class="site-nav-actions">
+            <span class="site-nav-status">
+              <span class="site-nav-dot" aria-hidden="true"></span>
+              每日自动更新
+            </span>
+            {render_theme_toggle()}
+          </div>
         </nav>
         <div class="header-content">
           <div class="header-copy">
@@ -758,6 +799,7 @@ def generate_index_html() -> str:
       </div>
     </footer>
 
+    <script src="assets/theme.js"></script>
     <script src="assets/media.js"></script>
     <script src="assets/app.js"></script>
   </body>
@@ -808,7 +850,10 @@ def generate_paper_html(record: Dict[str, object], prev_record: Dict[str, object
       <div class="container">
         <div class="detail-page-topbar">
           <a class="back-link" href="../../index.html">返回列表</a>
-          <span class="detail-site-name">{escape(site_title)}</span>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">{escape(site_title)}</span>
+            {render_theme_toggle()}
+          </div>
         </div>
 
         <div class="detail-hero-grid">
@@ -845,6 +890,7 @@ def generate_paper_html(record: Dict[str, object], prev_record: Dict[str, object
       </div>
     </footer>
 
+    <script src="../../assets/theme.js"></script>
     <script src="../../assets/media.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>
@@ -871,10 +917,14 @@ def generate_cover_html(record: Dict[str, object]) -> str:
         {cover_html}
         <div class="cover-preview-toolbar">
           <a class="back-link" href="../../papers/{escape(str(record["page_dir"]), quote=True)}/index.html">返回详情</a>
-          <span class="detail-site-name">{escape(site_title)}</span>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">{escape(site_title)}</span>
+            {render_theme_toggle()}
+          </div>
         </div>
       </div>
     </main>
+    <script src="../../assets/theme.js"></script>
   </body>
 </html>
 """.strip()
@@ -2049,6 +2099,104 @@ input[type=search]:focus-visible,
 
     modern_stylesheet_path = PROJECT_ROOT / "scripts" / "modern_ui.css"
     return f"{base_stylesheet}\n\n{read_text(modern_stylesheet_path)}"
+
+
+def generate_theme_js() -> str:
+    return """
+/**
+ * @file theme.js
+ * @description 在日间、夜间和跟随设备三种主题偏好间循环切换。
+ */
+(function(){
+  const themeStorageKey = 'color-theme';
+  const themePreferences = ['system', 'light', 'dark'];
+  const themeLabels = {
+    system: '设备',
+    light: '日间',
+    dark: '夜间'
+  };
+  const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function normalizeThemePreference(themePreference){
+    return themePreferences.includes(themePreference) ? themePreference : 'system';
+  }
+
+  function readThemePreference(){
+    try {
+      return normalizeThemePreference(window.localStorage.getItem(themeStorageKey));
+    } catch (error) {
+      return 'system';
+    }
+  }
+
+  function resolveTheme(themePreference){
+    if(themePreference === 'system'){
+      return systemThemeQuery.matches ? 'dark' : 'light';
+    }
+    return themePreference;
+  }
+
+  function updateThemeToggle(themePreference){
+    const themeLabel = themeLabels[themePreference];
+    document.querySelectorAll('[data-theme-toggle]').forEach((themeToggleEl) => {
+      themeToggleEl.dataset.themePreference = themePreference;
+      themeToggleEl.setAttribute('aria-label', `当前主题：${themeLabel}，点击切换主题`);
+      themeToggleEl.setAttribute('title', `当前主题：${themeLabel}`);
+      const themeToggleLabelEl = themeToggleEl.querySelector('[data-theme-toggle-label]');
+      if(themeToggleLabelEl){
+        themeToggleLabelEl.textContent = themeLabel;
+      }
+    });
+  }
+
+  function applyThemePreference(themePreference, shouldPersist){
+    const normalizedThemePreference = normalizeThemePreference(themePreference);
+    const resolvedTheme = resolveTheme(normalizedThemePreference);
+    document.documentElement.dataset.theme = resolvedTheme;
+    document.documentElement.dataset.themePreference = normalizedThemePreference;
+    document.documentElement.style.colorScheme = resolvedTheme;
+    updateThemeToggle(normalizedThemePreference);
+
+    if(shouldPersist){
+      try {
+        window.localStorage.setItem(themeStorageKey, normalizedThemePreference);
+      } catch (error) {
+        console.warn('无法保存主题偏好', error);
+      }
+    }
+  }
+
+  function cycleThemePreference(){
+    const currentThemePreference = normalizeThemePreference(
+      document.documentElement.dataset.themePreference || readThemePreference()
+    );
+    const currentThemeIndex = themePreferences.indexOf(currentThemePreference);
+    const nextThemePreference = themePreferences[(currentThemeIndex + 1) % themePreferences.length];
+    applyThemePreference(nextThemePreference, true);
+  }
+
+  document.addEventListener('click', (event) => {
+    const themeToggleEl = event.target.closest('[data-theme-toggle]');
+    if(themeToggleEl){
+      cycleThemePreference();
+    }
+  });
+
+  systemThemeQuery.addEventListener('change', () => {
+    if(readThemePreference() === 'system'){
+      applyThemePreference('system', false);
+    }
+  });
+
+  window.addEventListener('storage', (event) => {
+    if(event.key === themeStorageKey){
+      applyThemePreference(event.newValue || 'system', false);
+    }
+  });
+
+  applyThemePreference(readThemePreference(), false);
+})();
+""".strip()
 
 
 def generate_media_js() -> str:
@@ -3367,6 +3515,7 @@ def main() -> int:
 
     write_text(SITE_DIR / "index.html", generate_index_html())
     write_text(ASSETS_DIR / "style.css", generate_style_css())
+    write_text(ASSETS_DIR / "theme.js", generate_theme_js())
     write_text(ASSETS_DIR / "media.js", generate_media_js())
     write_text(ASSETS_DIR / "app.js", generate_app_js())
     write_text(ASSETS_DIR / "paper.js", generate_paper_js())
