@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Unified Lexical Representation for Interpretable Visual-Language Alignment - VLA / Vision-Language-Action 每日论文卡</title>
     <meta name="description" content="好的，我将以论文阅读专家的身份，根据提供的Arxiv论文HTML原文，总结论文的要点。我将遵循你的要求，只提供Markdown格式文本，不使用加粗，不输出其他内容，并将总结分为你指定的几个部分。 论文研究单位: 我将从作者信息中提取研究机构。根据HTML，作者单位是复旦大学（Fudan University）和亚马逊云科技（Amazon Web Services）。 论文概述: 我将概括论文的背景、问题陈述和主要目标。这篇论文介绍了一个名为LexVLA的框架，用于视觉-语言对齐（VLA），旨在通过学习统一的词汇表示来解决现有方法（如CLIP）的可解释性差和训练复杂的问题。 论文核心贡献点: 我将从引言的“We contribute”部分提取贡献点。 贡献1：利用单模态预训练模型（用于视觉的DINOv2，用于文本的Llama 2），利用它们独特的优势（如局部特征和上下文预测能力）进行VLA。 贡献2：提出了一种统一的词汇表示方法，但为视觉和文本模态使用独立的码本，以避免削弱预训练能力。 贡献3：引入了过度使用惩罚（overuse penalty），以鼓励稀疏嵌入并防止无意义激活。 贡献4：在更少的多模态训练数据下实现了卓越的检索性能，并使用提出的PatchDis指标获得了更好的可解释性。 论文方法描述: 我将总结方法的关键步骤和组件，基于第3节“LexVLA”。 词汇表示: 使用共享词汇表但为视觉和文本模态设置不同的码本。码本初始化为Llama 2的输出码本；文本码本被冻结，视觉码本被微调。表示被稀疏化，通过阈值化（值大于1/√V）。 词汇编码器: 文本编码器: 使用Llama 2，并通过上下文提示（如“关键词提取”）使其执行词汇预测，而不是简单的标题嵌入。 视觉编码器: 使用DINOv2作为冻结的骨干网络。特征通过一个适配器（自注意力+2个MLP）处理，然后映射到视觉词汇表示。 训练: 使用标准的对比学习目标，并加入过度使用惩罚。训练采用增量微调：对于文本，使用LoRA；对于视觉，只训练适配器和映射器。 论文使用数据集和训练资源: 我将从“实验”部分（第4节）中提取数据集和计算细节。 数据集: 训练在CC-12M上进行。在Flickr30K和MSCOCO上进行零样本跨模态检索评估。 训练资源: 文本编码器基于Llama 2（7B），视觉骨干网络为DINOv2（ViT-L/14）。使用单个8x A100 GPU进行训练。提及使用LoRA进行文本微调以减少资源消耗。 论文使用的评估环境和评估指标: 我将从“实验”部分提取评估设置和指标。 评估环境: 标准零样本跨模态检索设置（图像到文本和文本到图像检索）。 评估指标: 在Flickr30K和MSCOCO上的检索指标（R@1, R@5, R@10, mean Recall）。此外，引入了一个新的可解释性指标“PatchDis”来量化模型在未经过细粒度任务训练的情况下的块级对齐能力。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,7 +37,25 @@
       <div class="container">
         <div class="detail-page-topbar">
           <a class="back-link" href="../../index.html">返回列表</a>
-          <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
         </div>
 
         <div class="detail-hero-grid">
@@ -161,6 +196,7 @@
       </div>
     </footer>
 
+    <script src="../../assets/theme.js"></script>
     <script src="../../assets/media.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>

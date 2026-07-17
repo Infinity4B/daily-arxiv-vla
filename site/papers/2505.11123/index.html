@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Conditioning Matters: Training Diffusion Policies is Faster Than You Think - VLA / Vision-Language-Action 每日论文卡</title>
     <meta name="description" content="论文研究单位 天津大学 清华大学 华为诺亚方舟实验室 论文概述 该论文指出了在训练视觉-语言-动作（VLA）模型时，条件扩散策略存在的一个核心挑战：当生成条件难以区分时，训练目标会退化为建模边际动作分布，这一现象被称为“损失坍塌”。为解决此问题，论文提出了一种名为Cocos（condition-conditioned source distribution）的通用解决方案。该方法通过修改条件流匹配中的源分布，使其依赖于条件输入，具体做法是利用一个自编码器从条件中提取语义，并将源分布的中心锚定在该语义上，同时保持固定的标准差。Cocos鼓励模型更强地整合条件信息，从而防止损失坍塌，显著提升了训练效率和最终性能。 论文核心贡献点 构建了带生成条件的流匹配数学框架，并证明了当条件难以区分时，策略网络会主动忽略这些条件。 提出了Cocos方法，这是一种简单且有效的源分布修改技术，可以防止损失坍塌，并显著提高扩散策略的训练效率和性能。 建立了一个全面的评估基准，涵盖了从模拟（LIBERO, MetaWorld）到真实世界（低成本SO-100和高性能xArm机器人）的多种任务设置，验证了Cocos作为一种通用、即插即用解决方案的有效性。 论文方法描述 Cocos的核心思想是替换标准条件流匹配中与条件无关的源分布（通常是标准高斯分布）。具体实现上，该方法使用一个视觉-语言自编码器来压缩条件（如观察图像和语言指令）的表示，将其作为均值来构建一个条件化的高斯源分布 q(z\|c)，其中c代表条件输入，而标准差则保持固定。通过这种方式，扩散过程的起点本身就包含了条件的语义信息，强制策略网络在训练的每一步都必须利用条件，从而从根本上解决了条件被忽略和损失坍塌的问题。 论文使用数据集和训练资源 数据集: 模拟环境：LIBERO和MetaWorld基准中的70个任务。 真实世界环境：在开源低成本SO-100机器人平台上的10个任务，以及在高性能xArm机器人平台上的10个任务。 训练资源: 计算资源：使用配备了8块NVIDIA A100 GPU的服务器进行实验。 论文使用的评估环境和评估指标 评估环境: 模拟环境：LIBERO和MetaWorld。 真实世界环境：配备摄像头的SO-100和xArm机器人手臂。 评估指标: 任务成功率：在不同任务上成功完成任务的比率。 训练效率/收敛速度：达到特定性能水平（如π₀性能）所需的梯度步数或训练时间。论文中特别使用了达到目标性能所需的时间倍数来衡量加速比。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,7 +37,25 @@
       <div class="container">
         <div class="detail-page-topbar">
           <a class="back-link" href="../../index.html">返回列表</a>
-          <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
         </div>
 
         <div class="detail-hero-grid">
@@ -101,6 +136,7 @@
       </div>
     </footer>
 
+    <script src="../../assets/theme.js"></script>
     <script src="../../assets/media.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>
