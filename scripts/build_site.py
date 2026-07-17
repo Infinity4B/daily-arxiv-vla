@@ -3404,6 +3404,46 @@ def generate_paper_js() -> str:
 THUMB_DIR = IMAGE_DIR / "thumbs"
 THUMB_MAX_WIDTH = 600
 WEBP_QUALITY = 82
+WEBP_MAX_DIMENSION = 8192
+EXTREME_PORTRAIT_RATIO = 3
+CARD_THUMB_ASPECT_RATIO = 16 / 10
+
+
+def resize_image_for_webp(image: Image.Image) -> tuple[Image.Image, bool]:
+    """将超出 WebP 安全尺寸的图片等比例缩小。"""
+    largest_dimension = max(image.width, image.height)
+    if largest_dimension <= WEBP_MAX_DIMENSION:
+        return image, False
+
+    resize_ratio = WEBP_MAX_DIMENSION / largest_dimension
+    resized_dimensions = (
+        max(1, round(image.width * resize_ratio)),
+        max(1, round(image.height * resize_ratio)),
+    )
+    resized_image = image.resize(resized_dimensions, Image.LANCZOS)
+    return resized_image, True
+
+
+def create_paper_thumbnail(image: Image.Image) -> Image.Image:
+    """生成列表缩略图，并避免极端纵向图片产生超长资源。"""
+    thumbnail_source = image
+    is_extreme_portrait = image.height > image.width * EXTREME_PORTRAIT_RATIO
+    if is_extreme_portrait:
+        crop_height = max(1, round(image.width / CARD_THUMB_ASPECT_RATIO))
+        crop_top = max(0, (image.height - crop_height) // 2)
+        thumbnail_source = image.crop(
+            (0, crop_top, image.width, min(image.height, crop_top + crop_height))
+        )
+
+    if thumbnail_source.width <= THUMB_MAX_WIDTH:
+        return thumbnail_source
+
+    resize_ratio = THUMB_MAX_WIDTH / thumbnail_source.width
+    thumbnail_dimensions = (
+        THUMB_MAX_WIDTH,
+        max(1, round(thumbnail_source.height * resize_ratio)),
+    )
+    return thumbnail_source.resize(thumbnail_dimensions, Image.LANCZOS)
 
 
 def optimize_paper_images() -> Dict[str, str]:
@@ -3423,6 +3463,7 @@ def optimize_paper_images() -> Dict[str, str]:
 
     thumb_map: Dict[str, str] = {}
     converted = 0
+    resized = 0
     skipped = 0
 
     for src_path in sorted(IMAGE_DIR.iterdir()):
@@ -3448,6 +3489,13 @@ def optimize_paper_images() -> Dict[str, str]:
         try:
             img = Image.open(src_path)
             img = img.convert("RGB") if img.mode in ("RGBA", "P", "LA") else img
+            img, was_resized = resize_image_for_webp(img)
+            if was_resized:
+                resized += 1
+                print(
+                    f"图片缩放: {src_path.name} -> "
+                    f"{img.width}x{img.height}（最长边限制 {WEBP_MAX_DIMENSION}px）"
+                )
 
             # 保存 WebP 全尺寸
             if src_path.suffix.lower() != ".webp":
@@ -3455,15 +3503,9 @@ def optimize_paper_images() -> Dict[str, str]:
             elif not webp_path.exists():
                 img.save(webp_path, "WEBP", quality=WEBP_QUALITY)
 
-            # 生成缩略图
-            if img.width > THUMB_MAX_WIDTH:
-                ratio = THUMB_MAX_WIDTH / img.width
-                thumb_size = (THUMB_MAX_WIDTH, round(img.height * ratio))
-                thumb_img = img.resize(thumb_size, Image.LANCZOS)
-                thumb_img.save(thumb_path, "WEBP", quality=WEBP_QUALITY)
-            else:
-                # 原图已经够小，缩略图直接用原图
-                img.save(thumb_path, "WEBP", quality=WEBP_QUALITY)
+            # 极端纵向图片使用居中卡片预览，完整内容仍保留在全尺寸 WebP 中。
+            thumb_img = create_paper_thumbnail(img)
+            thumb_img.save(thumb_path, "WEBP", quality=WEBP_QUALITY)
 
             # 只有全尺寸和缩略图都成功后，才删除旧格式原图
             if src_path.suffix.lower() != ".webp" and src_path.exists():
@@ -3476,7 +3518,7 @@ def optimize_paper_images() -> Dict[str, str]:
             # 保留原文件，不生成映射
             continue
 
-    print(f"图片优化: 转换 {converted} 张, 跳过 {skipped} 张")
+    print(f"图片优化: 转换 {converted} 张, 缩放 {resized} 张, 跳过 {skipped} 张")
     return thumb_map
 
 
