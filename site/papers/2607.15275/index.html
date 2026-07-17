@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RoboTTT: Context Scaling for Robot Policies - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="提出RoboTTT（测试时训练机器人策略），将测试时训练（TTT）机制集成到机器人基础模型（如视觉-语言-动作策略）中，旨在解决现有机器人基础模型视觉运动上下文过短（单步或短历史）的问题 将机器人策略的视觉运动上下文扩展到8K时间步（比现有技术高三个数量级），且不增加推理延迟 解锁新的机器人能力：从人类视频一次模仿、在线策略改进、抗外部扰动、长程多阶段任务更强性能" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.15275">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.15275.webp" alt="RoboTTT: Context Scaling for Robot Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出RoboTTT（测试时训练机器人策略），将测试时训练（TTT）机制集成到机器人基础模型（如视觉-语言-动作策略）中，旨在解决现有机器人基础模型视觉运动上下文过短（单步或短历史）的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">RoboTTT: Context Scaling for Robot Policies</h1>
+            <div class="detail-meta">2026-07-16 · <a href="http://arxiv.org/abs/2607.15275" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.15275" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.15275</span></div>
+            <p class="detail-summary">提出RoboTTT（测试时训练机器人策略），将测试时训练（TTT）机制集成到机器人基础模型（如视觉-语言-动作策略）中，旨在解决现有机器人基础模型视觉运动上下文过短（单步或短历史）的问题 将机器人策略的视觉运动上下文扩展到8K时间步（比现有技术高三个数量级），且不增加推理延迟 解锁新的机器人能力：从人类视频一次模仿、在线策略改进、抗外部扰动、长程多阶段任务更强性能</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">5 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">NVIDIA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.15275/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出RoboTTT（测试时训练机器人策略），将测试时训练（TTT）机制集成到机器人基础模型（如视觉-语言-动作策略）中，旨在解决现有机器人基础模型视觉运动上下文过短（单步或短历史）的问题</p>
+  <ul class="reading-intro-points"><li>提出RoboTTT（测试时训练机器人策略），将测试时训练（TTT）机制集成到机器人基础模型（如视觉-语言-动作策略）中，旨在解决现有机器人基础模型视觉运动上下文过短（单步或短历史）的问题</li><li>将机器人策略的视觉运动上下文扩展到8K时间步（比现有技术高三个数量级），且不增加推理延迟</li><li>解锁新的机器人能力：从人类视频一次模仿、在线策略改进、抗外部扰动、长程多阶段任务更强性能</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>NVIDIA</li><li>Stanford University</li><li>The University of Texas at Austin</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>RoboTTT</strong>（测试时训练机器人策略），将测试时训练（TTT）机制集成到机器人基础模型（如视觉-语言-动作策略）中，旨在解决现有机器人基础模型视觉运动上下文过短（单步或短历史）的问题</li><li>将机器人策略的视觉运动上下文扩展到<strong>8K时间步</strong>（比现有技术高三个数量级），且不增加推理延迟</li><li>解锁新的机器人能力：从人类视频一次模仿、在线策略改进、抗外部扰动、长程多阶段任务更强性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次将测试时训练（TTT）的快速权重机制集成到机器人基础模型中，以快速权重作为循环状态，实现上下文压缩的同时保持推理延迟恒定</li><li>提出训练配方结合<strong>序列动作强制</strong>与<strong>截断反向传播通过时间（TBPTT）</strong>，使长上下文训练在固定GPU内存预算下可行</li><li>解锁新的机器人能力：从单个人类视频演示实现一次模仿，在线通过DAgger Distillation实现策略改进，对外部扰动具有更强鲁棒性，完全完成5分钟10阶段的长程组装任务</li><li>首次发现预训练上下文长度增长可带来闭环性能稳定提升，证明上下文长度是机器人基础模型的新缩放轴</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>架构上在<strong>GR00T N1.7</strong>基础模型的DiT动作头后添加TTT层，注意力层处理单步信息，TTT层处理跨时间信息，采用<strong>tanh门控</strong>保留预训练模型的知识</li><li>训练上采用<strong>序列动作强制</strong>：序列中每个动作块独立采样噪声水平，提升序列训练稳定性；采用<strong>TBPTT</strong>：输入序列分段，梯度仅在段内传播，快速权重跨段传播，使GPU内存消耗由段长而非总序列长决定</li><li>有效学习上下文上，通过掩码流匹配损失实现从人类视频演示的上下文模仿；提出<strong>DAgger Distillation</strong>，将人类修正与子最优机器人动作的失败-修正映射蒸馏到快速权重，实现在线策略改进</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>预训练数据集：桌面双臂机器人数据与第一人称人类数据</li><li>模型规模：基于<strong>GR00T N1.7</strong>，在16个DiT层各添加1个TTT层，每个快速模型为两层MLP</li><li>训练资源：<strong>16块NVIDIA GB200 GPU</strong>，预训练30K步，每个下游任务后训练20K步，最大预训练上下文长度8K时间步</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：<strong>YAM双臂机器人平台</strong>，配备4个RGB相机（顶部、底部、左手腕、右手腕），三个长程多阶段组装任务：Pup Go Car、Circuit、Gear Bot，分别收集8、6、5小时真实机器人数据，平均episode长度为2分钟、1分钟、5分钟</li><li>评估指标：基于评分规则的任务完成得分（归一化到[0,1]，报告为百分制）、完全成功的trial数量</li><li>关键实验结果：平均任务完成得分为79%，比单步上下文基线高87%，是唯一在5分钟10阶段的Gear Bot任务上实现完全成功的方法；从单个人类视频实现一次模仿，成功率6/10，基线方法完全失败；外部扰动恢复成功率为83%，比最佳短上下文基线高30个百分点；DAgger Distillation比标准DAgger平均提升33%；8K上下文预训练的模型比1K上下文的同模型高62%，上下文长度增长带来稳定性能提升</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2607.15038/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Video = World + Event Stream</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
