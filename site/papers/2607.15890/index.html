@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exo2EgoPose: Leveraging Exocentric Demonstrations for Vision-Language guided Egocentric 3D Hand Pose Forecasting - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="论文首次探索了Vision-Language guided Egocentric 3D Hand Pose Forecasting (VL-EHPF) 任务，旨在基于第一人称视觉观测、语言指令和手部姿态状态，预测未来时间步的第一人称3D手部关键点（每只手21个关键点，共42个，包含3D坐标），为增强现实、机器人操控等应用提供技术支撑 指出现有方法存在两类核心局限：一类仅依赖视觉输入预测粗粒度动作，缺乏语言、细粒度姿态等完整任务上下文；另一类遵循VRM/VLA范式，受限于机器人数据规模不足、人机embodiment差异，难以有效迁移人类动作知识 针对第一人称视角视野有限、手部动作动态性强的固有挑战，提出Exo2EgoPose框架，创新性地利用配对的 holistic 稳定的第三视角（Exocentric, Exo）示范视频作为引导，弥补第一人称视角的局部、动态信息不足" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.15890">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.15890.webp" alt="Exo2EgoPose: Leveraging Exocentric Demonstrations for Vision-Language guided Egocentric 3D Hand Pose Forecasting" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文首次探索了Vision-Language guided Egocentric 3D Hand Pose Forecasting (VL-EHPF) 任务，旨在基于第一人称视觉观测、语言指令和手部姿态状态，预测未来时间步的第一人称3D手部关键点（每只手21个关键点，共42个，包含3D坐标），为增强现实、机器人操控等应用提供技术支撑</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Exo2EgoPose: Leveraging Exocentric Demonstrations for Vision-Language guided Egocentric 3D Hand Pose Forecasting</h1>
+            <div class="detail-meta">2026-07-17 · <a href="http://arxiv.org/abs/2607.15890" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.15890" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.15890</span></div>
+            <p class="detail-summary">论文首次探索了Vision-Language guided Egocentric 3D Hand Pose Forecasting (VL-EHPF) 任务，旨在基于第一人称视觉观测、语言指令和手部姿态状态，预测未来时间步的第一人称3D手部关键点（每只手21个关键点，共42个，包含3D坐标），为增强现实、机器人操控等应用提供技术支撑 指出现有方法存在两类核心局限：一类仅依赖视觉输入预测粗粒度动作，缺乏语言、细粒度姿态等完整任务上下文；另一类遵循VRM/VLA范式，受限于机器人数据规模不足、人机embodiment差异，难以有效迁移人类动作知识 针对第一人称视角视野有限、手部动作动态性强的固有挑战，提出Exo2EgoPose框架，创新性地利用配对的 holistic 稳定的第三视角（Exocentric, Exo）示范视频作为引导，弥补第一人称视角的局部、动态信息不足</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">电子科技大学（University of Electronic Science and Technol…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.15890/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文首次探索了Vision-Language guided Egocentric 3D Hand Pose Forecasting (VL-EHPF) 任务，旨在基于第一人称视觉观测、语言指令和手部姿态状态，预测未来时间步的第一人称3D手部关键点（每只手21个关键点，共42个，包含3D坐标），为增强现实、机器人操控等应用提供技术支撑</p>
+  <ul class="reading-intro-points"><li>论文首次探索了Vision-Language guided Egocentric 3D Hand Pose Forecasting (VL-EHPF) 任务，旨在基于第一人称视觉观测、语言指令和手部姿态状态，预测未来时间步的第一人称3D手部关键点（每只手21个关键点，共42个，包含3D坐标），为增强现实、机器人操控等应用提供技术支撑</li><li>指出现有方法存在两类核心局限：一类仅依赖视觉输入预测粗粒度动作，缺乏语言、细粒度姿态等完整任务上下文；另一类遵循VRM/VLA范式，受限于机器人数据规模不足、人机embodiment差异，难以有效迁移人类动作知识</li><li>针对第一人称视角视野有限、手部动作动态性强的固有挑战，提出Exo2EgoPose框架，创新性地利用配对的 holistic 稳定的第三视角（Exocentric, Exo）示范视频作为引导，弥补第一人称视角的局部、动态信息不足</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>电子科技大学（University of Electronic Science and Technology of China）</strong>，位于中国四川成都，邮编611731</li><li>论文作者为Zhaofeng Shi, Heqian Qiu, Lanxiao Wang, Xiang Li, Hongliang Li</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文首次探索了<strong>Vision-Language guided Egocentric 3D Hand Pose Forecasting (VL-EHPF)</strong> 任务，旨在基于第一人称视觉观测、语言指令和手部姿态状态，预测未来时间步的第一人称3D手部关键点（每只手21个关键点，共42个，包含3D坐标），为增强现实、机器人操控等应用提供技术支撑</li><li>指出现有方法存在两类核心局限：一类仅依赖视觉输入预测粗粒度动作，缺乏语言、细粒度姿态等完整任务上下文；另一类遵循VRM/VLA范式，受限于机器人数据规模不足、人机embodiment差异，难以有效迁移人类动作知识</li><li>针对第一人称视角视野有限、手部动作动态性强的固有挑战，提出<strong>Exo2EgoPose</strong>框架，创新性地利用配对的 holistic 稳定的第三视角（Exocentric, Exo）示范视频作为引导，弥补第一人称视角的局部、动态信息不足</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次提出VL-EHPF任务与<strong>Exo2EgoPose</strong>框架，是首个探索利用第三视角示范视频弥补第一人称手部姿态预测信息不足的研究</li><li>设计<strong>Dual-level Exocentric Reconstruction Module (DERM)</strong>，通过重建视频级和分块帧级的第三视角表示，建模第一人称场景的复杂时空上下文；设计<strong>Global-to-Local Modulation Module (GLMM)</strong>，利用分层第三视角表示，通过注意力机制和自适应调制单元（AMU）实现渐进式全局到局部的特征细化，提升预测精度</li><li>构建新基准<strong>EgoMe-pose</strong>，在<strong>AssemblyHands</strong>、<strong>Ego-Exo4D</strong>、<strong>EgoMe-pose</strong>三个基准上均大幅超越现有最优方法（SOTA），同时验证了框架有效的人机知识迁移能力，在<strong>CALVIN</strong>机器人数据集上取得明显性能提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>首先采用多模态分词模块：分别用文本编码器、<strong>MAE</strong>视觉编码器、<strong>DINOv2</strong>视觉编码器、姿态编码器提取语言、第一人称视觉、手部姿态的特征，经MLP投影到统一表示空间，添加时间嵌入保留时序顺序，输入Transformer架构进行推理</li><li>核心创新之一是<strong>DERM</strong>模块：训练阶段引入与第一人称视频配对的第三视角示范视频作为监督，通过可学习的查询重建第三视角的视频级（全局时序运动模式）和分块帧级（未来帧的细粒度空间上下文）表示，构建第一-第三视角的跨视角对应关系，建模第一人称场景的时空动态</li><li>核心创新之二是<strong>GLMM</strong>模块：将重建的分层第三视角表示作为引导，先通过全局调制模块（GMM）利用视频级第三视角表示，经自适应调制和交叉注意力校准全局特征分布、捕捉长程时序动态；再通过局部调制模块（LMM）利用分块帧级第三视角表示，经交叉注意力和自适应调制实现帧级软对齐与细粒度特征校准，最终由MLP输出未来3D手部姿态和关节有效性掩码</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用数据集：<strong>AssemblyHands</strong>、<strong>Ego-Exo4D</strong>、新构建的<strong>EgoMe-pose</strong>（基于EgoMe数据集，包含真实场景下观察者和跟随者视角的配对视频，经自动3D手部姿态标注构建），人机迁移验证使用<strong>CALVIN</strong>机器人数据集</li><li>模型规模：论文未明确公开具体参数量，基于Transformer架构，视觉编码部分采用MAE、DINOv2预训练模型</li><li>训练资源：论文未明确说明具体使用的GPU/TPU等训练硬件信息</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：在<strong>AssemblyHands</strong>（15fps）、<strong>Ego-Exo4D</strong>（30fps）、<strong>EgoMe-pose</strong>（15fps）三个基准的测试集上进行手部姿态预测任务评估，在<strong>CALVIN</strong>数据集上进行人机知识迁移验证</li><li>主要评估指标：<strong>MPJPE（平均每关节位置误差，越低越好）</strong>、<strong>MPJVE（平均每关节速度误差，越低越好）</strong>，关节有效性预测采用二分类交叉熵（BCE）损失</li><li>关键实验结果：1. 在三个手部姿态预测基准的测试集上，所提方法均大幅超越现有最优方法（SOTA），定量结果显著优于USST、GCBC、MCIL等基线方法；2. 在CALVIN机器人数据集上的实验验证了框架有效的人机知识迁移能力，可实现人类手部动作知识向机器人操控任务的高效迁移，取得明显的性能提升；3. 消融实验验证了DERM和GLMM两个核心模块的有效性，定性分析显示模型能够准确预测未来手部姿态，特征调制机制可有效校准特征分布；4. 超参敏感性分析与模型复杂度分析表明所提框架具有较好的稳定性和效率</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2607.15714/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">AC-VLA: Robust Out-of-Distribution Action Execution via Compositional Learning</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
