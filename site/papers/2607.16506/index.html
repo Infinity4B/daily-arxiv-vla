@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Foresight Residual RL for Long-Horizon Robot Manipulation with Vision-Language-Action Models - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="针对长 horizon 机器人操作中视觉-语言-动作（VLA）策略在接触密集型装配任务上的失败问题，揭示其核心原因是子任务间存在因果耦合：当前子任务的几何成功终端状态可能不适用于下游子任务，而标准残差RL仅优化单子任务的稀疏成功奖励，无法控制终端状态质量，导致子任务拼接后全任务成功率无提升 提出Foresight Residual RL（前瞻残差强化学习）框架，通过离线估计的前瞻价值函数（当前子任务终端状态下后续子任务的预期成功概率）增强每个子任务的稀疏奖励，引导策略输出更适合下游任务的高质量终端状态 在 Isaac Gym 仿真的扳手螺母紧固装配任务上验证方法有效性，解决长 horizon 操作的子任务耦合问题，证明优化终端状态质量而非仅提升单子任务成功率是提升长 horizon 任务性能的关键" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.16506">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.16506.webp" alt="Foresight Residual RL for Long-Horizon Robot Manipulation with Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对长 horizon 机器人操作中视觉-语言-动作（VLA）策略在接触密集型装配任务上的失败问题，揭示其核心原因是子任务间存在因果耦合：当前子任务的几何成功终端状态可能不适用于下游子任务，而标准残差RL仅优化单子任务的稀疏成功奖励，无法控制终端状态质量，导致子任务拼接后全任务成功率无提升</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Foresight Residual RL for Long-Horizon Robot Manipulation with Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-07-17 · <a href="http://arxiv.org/abs/2607.16506" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.16506" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.16506</span></div>
+            <p class="detail-summary">针对长 horizon 机器人操作中视觉-语言-动作（VLA）策略在接触密集型装配任务上的失败问题，揭示其核心原因是子任务间存在因果耦合：当前子任务的几何成功终端状态可能不适用于下游子任务，而标准残差RL仅优化单子任务的稀疏成功奖励，无法控制终端状态质量，导致子任务拼接后全任务成功率无提升 提出Foresight Residual RL（前瞻残差强化学习）框架，通过离线估计的前瞻价值函数（当前子任务终端状态下后续子任务的预期成功概率）增强每个子任务的稀疏奖励，引导策略输出更适合下游任务的高质量终端状态 在 Isaac Gym 仿真的扳手螺母紧固装配任务上验证方法有效性，解决长 horizon 操作的子任务耦合问题，证明优化终端状态质量而非仅提升单子任务成功率是提升长 horizon 任务性能的关键</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者均隶属于罗格斯大学计算机科学系</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.16506/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对长 horizon 机器人操作中视觉-语言-动作（VLA）策略在接触密集型装配任务上的失败问题，揭示其核心原因是子任务间存在因果耦合：当前子任务的几何成功终端状态可能不适用于下游子任务，而标准残差RL仅优化单子任务的稀疏成功奖励，无法控制终端状态质量，导致子任务拼接后全任务成功率无提升</p>
+  <ul class="reading-intro-points"><li>针对长 horizon 机器人操作中视觉-语言-动作（VLA）策略在接触密集型装配任务上的失败问题，揭示其核心原因是子任务间存在因果耦合：当前子任务的几何成功终端状态可能不适用于下游子任务，而标准残差RL仅优化单子任务的稀疏成功奖励，无法控制终端状态质量，导致子任务拼接后全任务成功率无提升</li><li>提出Foresight Residual RL（前瞻残差强化学习）框架，通过离线估计的前瞻价值函数（当前子任务终端状态下后续子任务的预期成功概率）增强每个子任务的稀疏奖励，引导策略输出更适合下游任务的高质量终端状态</li><li>在 Isaac Gym 仿真的扳手螺母紧固装配任务上验证方法有效性，解决长 horizon 操作的子任务耦合问题，证明优化终端状态质量而非仅提升单子任务成功率是提升长 horizon 任务性能的关键</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者均隶属于<strong>罗格斯大学计算机科学系</strong></li><li>研究受美国国家科学基金会（NSF）2132972项目资助</li><li>项目公开网站：jaysparrow.github.io/foresight-residual-rl</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对长 horizon 机器人操作中<strong>视觉-语言-动作（VLA）策略</strong>在接触密集型装配任务上的失败问题，揭示其核心原因是子任务间存在<strong>因果耦合</strong>：当前子任务的几何成功终端状态可能不适用于下游子任务，而标准残差RL仅优化单子任务的稀疏成功奖励，无法控制终端状态质量，导致子任务拼接后全任务成功率无提升</li><li>提出<strong>Foresight Residual RL（前瞻残差强化学习）</strong>框架，通过离线估计的<strong>前瞻价值函数</strong>（当前子任务终端状态下后续子任务的预期成功概率）增强每个子任务的稀疏奖励，引导策略输出更适合下游任务的高质量终端状态</li><li>在 Isaac Gym 仿真的扳手螺母紧固装配任务上验证方法有效性，解决长 horizon 操作的子任务耦合问题，证明优化终端状态质量而非仅提升单子任务成功率是提升长 horizon 任务性能的关键</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 Foresight Residual RL 理论框架，将MAXQ分层RL框架中的完成函数实例化为针对线性任务图的<strong>前瞻价值函数</strong>，通过优化子任务终端状态的前瞻价值，对齐局部技能执行与全局任务成功，从理论上解决长 horizon 操作的子任务因果依赖问题</li><li>提出面向 VLA 模型的可扩展实用实现，设计“离线视觉前瞻学习 + 反向前瞻归纳”的两阶段训练范式，支持在冻结的π0 VLA 基础策略上进行高效的端到端残差RL训练，无需联合优化所有子任务策略，避免非平稳性和样本复杂度问题</li><li>在高度挑战性的接触密集型扳手螺母装配任务上验证方法性能，相比标准残差RL将全任务成功率提升31.1%，且不损害单子任务的几何成功能力，有效弥补了孤立子任务性能与拼接任务性能之间的差距</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于残差RL框架，在冻结的预训练VLA基础策略上叠加小尺度的残差修正策略，残差策略仅输出动作增量，与基础策略输出以α=0.1的尺度叠加后执行，保留基础策略的通用操作先验；基础VLA采用动作块（action chunking）机制，规划步长H=20，仅在动作缓冲区耗尽或阶段切换时重新规划</li><li>核心创新是引入<strong>前瞻价值函数</strong>，定义为从当前子任务终端状态出发，后续所有子任务序列的期望折扣最终阶段成功概率，直接衡量终端状态对全任务的长期价值，替代传统方法使用的分布重叠等代理目标</li><li>前瞻价值通过离线视觉预测器估计：首先收集基础VLA策略的子任务成功终端状态，对每个终端状态多次rollout下游子任务策略统计成功概率作为标签，训练二项式负对数似然损失的视觉预测器，从终端图像输入直接预测下游子任务成功概率，避免在线Monte Carlo估计的高方差和高计算开销</li><li>采用<strong>反向前瞻归纳</strong>策略训练：从最后一个子任务开始反向训练，最后子任务使用标准稀疏成功奖励，前序子任务的奖励为“当前子任务成功标志 × 前瞻预测器输出”，引导前序子任务输出更适合下游的高质量终端状态；下游策略在训练上游阶段保持固定，保证前瞻估计的平稳性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用<strong>NVIDIA Isaac Gym</strong>仿真的扳手螺母装配任务，无真实世界数据集；任务包含5种不同尺寸的扳手螺母变体，每次重置时随机化 wrench 支架、螺母、螺栓的初始位姿，要求亚毫米级插入精度；共收集每个子任务2560条专家演示数据，由使用特权信息（真实物体位姿、本体感知、已知资产几何）的状态机专家生成</li><li>模型规模：基础VLA采用<strong>π0</strong>通用策略；残差策略的视觉backbone为<strong>DINOv2-S/14</strong>，通过LoRA（秩为8）微调；残差策略网络包含384→12通道CNN、256隐藏单元2层LSTM、512→256→128维MLP，单独配置动作头和值函数头，动作输出层零初始化保证训练初期残差接近零</li><li>训练资源：基于GPU加速的PhysX接触仿真环境，使用<strong>rl_games</strong>框架训练，配置128个并行环境；残差策略用PPO算法训练，包含10轮仅critic预热阶段和300轮联合actor-critic训练阶段；前瞻预测器训练耗时不足5分钟</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：7自由度Kuka IIWA机械臂搭配11自由度Robotiq 3指夹爪，任务分为三个阶段：抓取（160步）、移动插入（200步）、旋转（200步），控制频率20Hz；策略观测为2张256×256 RGB图像（第三人称+腕部相机）和8维本体感知数据，无地面真值物体位姿和力反馈，动作为7维操作空间控制增量</li><li>评估基准：对比端到端π0、链式拼接π0、π0+标准残差RL（常数稀疏奖励）、π0+本文带前瞻的残差RL共4种方法，每个方法测试512个episode，重复4次随机种子，报告成功率均值和标准差</li><li>主要评估指标：单子任务成功率（神谕初始化）、连续两阶段拼接成功率、全任务成功率、终端状态的前瞻预测器得分</li><li>关键实验结果：</li></ul>
+<p> - 前瞻预测器质量达标：抓取→插入边界预测准确率86.2%，插入→旋转边界达93.9%，均高于多数类基线，可有效区分几何成功但下游表现不同的终端状态</p>
+<p> - 全任务性能：本文方法达到<strong>85.6%±3.9%</strong>的全任务成功率，大幅超过标准残差RL（54.5%±3.6%）、端到端π0（54.9%±5.3%）和链式π0（41.4%±3.3%）</p>
+<p> - 单子任务性能无下降：两种残差RL方法在神谕初始化下的单子任务成功率均超过91%，说明本文方法仅优化终端状态质量，不损害单子任务的几何成功能力</p>
+<p> - 终端状态质量验证：标准残差RL的抓取终端前瞻得分从基础策略的0.64降至0.32，本文方法提升至0.73；插入终端得分本文方法达0.91，高于标准残差的0.86，直接证明方法成功引导策略输出更适合下游的高质量终端状态</p>
+<p> - 连续阶段提升最显著的为抓取→插入边界，成功率从55.5%提升至87.3%（+31.8%），与该边界预测器的更大判别裕度一致</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.16636/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">PhyAgentOS: A Self-Evolving Operating System for Embodied Agents with Decoupled Cognitive Planning and Physical Execution</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.15890/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Exo2EgoPose: Leveraging Exocentric Demonstrations for Vision-Language guided Egocentric 3D Hand Pose Forecasting</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
