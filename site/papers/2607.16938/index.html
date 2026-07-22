@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What Do They See? Interpreting Complex Road Scenarios Through the Eyes of Vision-Language-Action Models for Safe and Trustworthy Autonomous Vehicle Learning - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="针对端到端自动驾驶视觉-语言-动作（VLA）模型内部决策逻辑不透明、无法确定哪些场景物体实际影响驾驶决策的问题，提出Counterfactual Vision Action Analysis (CVAA) 反事实归因框架，以及配套基准数据集Counter-nuScenes 通过 photorealisitic 生成式修图逐个移除前摄像头图像中的检测物体，生成反事实图像对，避免传统黑块、模糊等扰动带来的分布偏移，更准确地隔离单个物体的因果作用 除黑盒行为归因外，结合机制可解释性工具开展白盒分析，探究行为层面的归因结果如何对应模型内部表征，最终提升自动驾驶系统的可解释性与人机信任度" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.16938">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.16938.webp" alt="What Do They See? Interpreting Complex Road Scenarios Through the Eyes of Vision-Language-Action Models for Safe and Trustworthy Autonomous Vehicle Learning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对端到端自动驾驶视觉-语言-动作（VLA）模型内部决策逻辑不透明、无法确定哪些场景物体实际影响驾驶决策的问题，提出Counterfactual Vision Action Analysis (CVAA) 反事实归因框架，以及配套基准数据集Counter-nuScenes</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">What Do They See? Interpreting Complex Road Scenarios Through the Eyes of Vision-Language-Action Models for Safe and Trustworthy Autonomous Vehicle Learning</h1>
+            <div class="detail-meta">2026-07-18 · <a href="http://arxiv.org/abs/2607.16938" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.16938" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.16938</span></div>
+            <p class="detail-summary">针对端到端自动驾驶视觉-语言-动作（VLA）模型内部决策逻辑不透明、无法确定哪些场景物体实际影响驾驶决策的问题，提出Counterfactual Vision Action Analysis (CVAA) 反事实归因框架，以及配套基准数据集Counter-nuScenes 通过 photorealisitic 生成式修图逐个移除前摄像头图像中的检测物体，生成反事实图像对，避免传统黑块、模糊等扰动带来的分布偏移，更准确地隔离单个物体的因果作用 除黑盒行为归因外，结合机制可解释性工具开展白盒分析，探究行为层面的归因结果如何对应模型内部表征，最终提升自动驾驶系统的可解释性与人机信任度</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Birla Institute of Technology and Science, Pilani（印…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.16938/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对端到端自动驾驶视觉-语言-动作（VLA）模型内部决策逻辑不透明、无法确定哪些场景物体实际影响驾驶决策的问题，提出Counterfactual Vision Action Analysis (CVAA) 反事实归因框架，以及配套基准数据集Counter-nuScenes</p>
+  <ul class="reading-intro-points"><li>针对端到端自动驾驶视觉-语言-动作（VLA）模型内部决策逻辑不透明、无法确定哪些场景物体实际影响驾驶决策的问题，提出Counterfactual Vision Action Analysis (CVAA) 反事实归因框架，以及配套基准数据集Counter-nuScenes</li><li>通过 photorealisitic 生成式修图逐个移除前摄像头图像中的检测物体，生成反事实图像对，避免传统黑块、模糊等扰动带来的分布偏移，更准确地隔离单个物体的因果作用</li><li>除黑盒行为归因外，结合机制可解释性工具开展白盒分析，探究行为层面的归因结果如何对应模型内部表征，最终提升自动驾驶系统的可解释性与人机信任度</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Birla Institute of Technology and Science, Pilani</strong>（印度皮尔安比特理工学院）计算机科学与信息系统系</li><li><strong>University of California, Merced</strong>（美国加州大学默塞德分校）<strong>Machine Intelligence, Interaction, and Imagination (Mi³) Lab</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对端到端自动驾驶视觉-语言-动作（VLA）模型内部决策逻辑不透明、无法确定哪些场景物体实际影响驾驶决策的问题，提出<strong>Counterfactual Vision Action Analysis (CVAA)</strong> 反事实归因框架，以及配套基准数据集<strong>Counter-nuScenes</strong></li><li>通过 photorealisitic 生成式修图逐个移除前摄像头图像中的检测物体，生成反事实图像对，避免传统黑块、模糊等扰动带来的分布偏移，更准确地隔离单个物体的因果作用</li><li>除黑盒行为归因外，结合机制可解释性工具开展白盒分析，探究行为层面的归因结果如何对应模型内部表征，最终提升自动驾驶系统的可解释性与人机信任度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>构建<strong>Counter-nuScenes</strong>反事实基准：基于210个nuScenes场景，通过逐物体 photorealistic inpainting 生成3062个分布内反事实图像对，为VLA模型的可解释性评估提供标准化数据集</li><li>提出<strong>CVAA AD</strong>（平均偏差）和<strong>CVAA FD</strong>（最终偏差）两个分布偏移指标，无需真实未来位姿即可量化单个物体对模型轨迹预测的因果影响，解决了传统准确率指标无法衡量行为敏感性的问题</li><li>完成对<strong>Alpamayo 1</strong>轨迹预测器的黑盒系统性评估，系统分析不同物体类别、掩码大小、场景结构下的归因模式，揭示模型存在过度依赖无关物体、排名稳定性极低等安全问题</li><li>开展白盒机制分析，追踪物体移除在模型各层的因果传播路径，识别出4种传播机制，发现轨迹专家是能将微小输入扰动放大上千倍的非线性放大器</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基准构建流程：从<strong>nuScenes v1.0-trainval</strong>中筛选前摄像头关键帧，用YOLOv8检测场景物体，再用SAM2生成像素级实例掩码；使用Gemini imgen修图工具（同时提供开源LaMa+FLUX Fill 1.0备选方案）逐个移除掩码对应的物体，生成与原图配对的反事实图像，构建<strong>Counter-nuScenes</strong>数据集</li><li>因果归因指标定义：对每张原始/反事实图像运行模型得到K条随机轨迹样本，取平均轨迹作为预测分布摘要；AD衡量全时程的平均轨迹偏移，反映物体的累积因果影响；FD衡量终点位置的轨迹偏移，直接关联规划安全边际；按AD对物体排序得到因果重要性归因顺序</li><li>白盒分析流程：将物体 bounding box 投影到模型的视觉编码器和VLM的patch网格，定位对应token位置；计算原始与反事实隐藏状态的层间余弦delta，追踪物体移除的影响在模型各层的传播；结合Logit Lens分析物体类别表征的层间演化，计算视觉patch位置的空间KL散度图，提取轨迹交接token的注意力权重，进一步探究内部表征与行为归因的对应关系</li><li>创新点1：采用 photorealisitic inpainting 替代传统人工黑块、模糊等扰动，将分布偏移控制在最小范围，确保模型输出变化仅由物体移除引起而非渲染伪影</li><li>创新点2：提出的AD/FD指标衡量分布偏移而非与真实轨迹的匹配度，更适配因果归因场景，避免了minADE/minFDE等准确率指标无法捕捉行为敏感性的问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>基础数据集：<strong>nuScenes v1.0-trainval</strong>，包含700个约20秒的驾驶场景，覆盖波士顿和新加坡的城区交通场景，提供多摄像头同步数据、激光雷达点云和高频自车位姿</li><li>构建的数据集：<strong>Counter-nuScenes</strong>，包含210个筛选后的前摄像头关键帧，对应3062个反事实图像对，每个场景仅移除一个独立物体，覆盖6-32个有效检测物体的不同交通密度场景</li><li>评估模型：<strong>Alpamayo 1</strong>，架构包含27块视觉编码器、36层VLM（序列长度3006，每张前摄像头图对应180个视觉token）、36层去噪轨迹专家</li><li>训练资源：论文未明确给出具体GPU/TPU等训练硬件配置</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：基于<strong>nuScenes</strong>前摄像头场景评估<strong>Alpamayo 1</strong>模型，设置黑盒、白盒两个评估 regime，使用3个随机种子（42、7、123）验证结果稳定性</li><li>主要评估指标：AD（平均偏差）、FD（最终偏差）、排名稳定性、场景级z-score、层间隐藏状态余弦delta、Logit Lens概率差、注意力权重等</li><li>黑盒关键结果：大型车辆（公交、卡车）移除后轨迹偏移最大，是模型最敏感的场景物体</li><li>黑盒关键结果：交通灯的影响远超其图像面积占比，其中红灯状态的交通灯移除后平均AD（0.758m）是绿灯状态（0.229m）的3倍以上，符合安全驾驶逻辑</li><li>黑盒关键结果：存在无关物体（如网球拍）成为场景中因果影响最大的物体的情况，说明模型存在不符合人类驾驶逻辑的偏差</li><li>黑盒关键结果：49.3%的物体移除后模型最佳轨迹更接近真实值，说明模型过度依赖非安全关键物体，而非仅关注核心交通参与者</li><li>黑盒关键结果：物体排名跨种子稳定性极低，仅5.7%的物体AD排名、6.4%的物体FD排名保持不变，说明模型不依赖单个物体，而是依赖整体场景表示</li><li>黑盒关键结果：70.5%的场景中存在单个物体的AD值显著高于场景均值（z>2），单物体主导轨迹偏移是普遍现象</li><li>黑盒关键结果：掩码大小与物体因果影响显著正相关，场景物体总数与峰值偏差无相关性，说明物体在场景中的位置和尺度比密度更重要</li><li>白盒关键结果：视觉编码器的修图信号无法直接传递到VLM，LM前15层无显著信号分化，15层后信号才按物体类别分化</li><li>白盒关键结果：识别出4种因果传播机制：耦合型（33%，信号从LM传递到输出，公交/摩托车占比最高）、透明型（33.1%，全阶段信号微弱，轿车占比最高）、解耦型（16.9%，轨迹交接处有信号但输出收敛）、静默型（16.9%，交接处无信号但输出偏差大）</li><li>白盒关键结果：轨迹专家是能将微小输入扰动放大115-180倍（最高超1000倍）的非线性放大器，是静默型变体产生高输出偏差的核心机制</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.17157/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VLA-ReID: Video-Level Association for Re-Identification in Multi-Object Tracking with Highly Similar Objects</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.16636/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">PhyAgentOS: A Self-Evolving Operating System for Embodied Agents with Decoupled Cognitive Planning and Physical Execution</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

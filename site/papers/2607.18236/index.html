@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Patch Policy: Efficient Embodied Control via Dense Visual Representations - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="针对现有机器人策略的两大缺陷：全局视觉特征压缩丢失细粒度空间细节、大 Vision-Language-Action (VLA) 模型计算成本过高，提出 Patch Policy 轻量策略架构，目标是高效利用预训练密集视觉特征实现具身控制，同时保留高频实时控制所需的训练和推理效率。 核心要解决的问题：如何在不引入十亿参数大模型开销的前提下，充分利用 Vision Transformer (ViT) 的密集 patch 级空间表征，提升机器人操纵策略的性能和效率。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.18236">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.18236.webp" alt="Patch Policy: Efficient Embodied Control via Dense Visual Representations" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对现有机器人策略的两大缺陷：全局视觉特征压缩丢失细粒度空间细节、大 Vision-Language-Action (VLA) 模型计算成本过高，提出 Patch Policy 轻量策略架构，目标是高效利用预训练密集视觉特征实现具身控制，同时保留高频实时控制所需的训练和推理效率。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Patch Policy: Efficient Embodied Control via Dense Visual Representations</h1>
+            <div class="detail-meta">2026-07-20 · <a href="http://arxiv.org/abs/2607.18236" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.18236" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.18236</span></div>
+            <p class="detail-summary">针对现有机器人策略的两大缺陷：全局视觉特征压缩丢失细粒度空间细节、大 Vision-Language-Action (VLA) 模型计算成本过高，提出 Patch Policy 轻量策略架构，目标是高效利用预训练密集视觉特征实现具身控制，同时保留高频实时控制所需的训练和推理效率。 核心要解决的问题：如何在不引入十亿参数大模型开销的前提下，充分利用 Vision Transformer (ViT) 的密集 patch 级空间表征，提升机器人操纵策略的性能和效率。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">纽约大学Courant Institute</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.18236/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对现有机器人策略的两大缺陷：全局视觉特征压缩丢失细粒度空间细节、大 Vision-Language-Action (VLA) 模型计算成本过高，提出 Patch Policy 轻量策略架构，目标是高效利用预训练密集视觉特征实现具身控制，同时保留高频实时控制所需的训练和推理效率。</p>
+  <ul class="reading-intro-points"><li>针对现有机器人策略的两大缺陷：全局视觉特征压缩丢失细粒度空间细节、大 Vision-Language-Action (VLA) 模型计算成本过高，提出 Patch Policy 轻量策略架构，目标是高效利用预训练密集视觉特征实现具身控制，同时保留高频实时控制所需的训练和推理效率。</li><li>核心要解决的问题：如何在不引入十亿参数大模型开销的前提下，充分利用 Vision Transformer (ViT) 的密集 patch 级空间表征，提升机器人操纵策略的性能和效率。</li><li>提出 Patch Policy 模块化 Transformer 策略架构，通过 block-causal 注意力掩码直接消费预训练 ViT 的密集 patch 特征，在保留时间因果性的同时保留 fine-grained 空间信息，无需承担全 VLM 的计算开销。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>纽约大学Courant Institute</li><li>Meta-FAIR</li><li>AMI Labs</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对现有机器人策略的两大缺陷：全局视觉特征压缩丢失细粒度空间细节、大 Vision-Language-Action (VLA) 模型计算成本过高，提出 <strong>Patch Policy</strong> 轻量策略架构，目标是高效利用预训练密集视觉特征实现具身控制，同时保留高频实时控制所需的训练和推理效率。</li><li>核心要解决的问题：如何在不引入十亿参数大模型开销的前提下，充分利用 Vision Transformer (ViT) 的密集 patch 级空间表征，提升机器人操纵策略的性能和效率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Patch Policy</strong> 模块化 Transformer 策略架构，通过 block-causal 注意力掩码直接消费预训练 ViT 的密集 patch 特征，在保留时间因果性的同时保留 fine-grained 空间信息，无需承担全 VLM 的计算开销。</li><li>验证密集 patch 特征的控制效能：在 4 个模拟和 3 个真实机器人任务中，比使用全局池化/CLS token 的同类型策略实现 40% 的相对性能提升，同时超越微调的 <strong>OpenVLA-OFT</strong> 18%，但参数仅为其 0.7%。</li><li>系统评估 5 种 SOTA 预训练视觉表示（DINOv2、DINOv3、WebSSL、V-JEPA 2、SigLIP 2）对下游策略学习的影响，确认 <strong>WebSSL</strong> 和 <strong>DINOv2</strong> 是最优的机器人学习视觉 backbone，且表示质量独立于下游策略架构。</li><li>证明真实世界精确操纵的可行性：在 3 个真实 Franka 机械臂任务中均优于基线，在低容差（~2mm）的电缆插入任务中提升最显著。</li><li>实现极致的计算效率：训练仅需 6.5 GPU-hours（1xL40S），推理延迟低至 ~11ms，远超大 VLA 模型的效率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Patch Policy</strong> 分为观测主干（Observation Trunk）和策略头（Policy Learning）两部分：观测主干将输入图像送入预训练 ViT 编码器，提取形状为 $T \times P \times D$ 的密集 patch 特征（$T$ 为时间步，$P$ 为每帧 patch 数，$D$ 为嵌入维度），支持目标图像或向量的条件输入，拼接后得到策略输入张量；策略头将时空 patch 特征展平为长度为 $T \times P$ 的序列，加入可学习 1D 位置嵌入后，应用 <strong>block-causal 注意力掩码</strong>（帧内保持全双向注意力、帧间采用因果掩码），在保证时间因果性的同时充分建模每帧的空间信息，最终通过动作头输出动作块。</li><li>兼容 <strong>VQ-BeT</strong> 和 <strong>Diffusion Policy</strong> 两种主流动作头，训练时采用对应动作头的标准损失函数，推理时通过滚动上下文窗口和滚动时域控制输出动作。</li><li>核心创新点是 block-causal 注意力掩码设计，以及直接利用冻结的预训练 ViT patch 特征的范式，无需微调视觉 backbone，也不引入大语言/多模态模型的开销。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集/环境：模拟环境包括 <strong>Push-T</strong>、<strong>LIBERO Goal</strong>、<strong>BlockPush</strong>、<strong>Cube</strong> 4 个操纵基准；真实世界任务为 7-DoF Franka 机械臂的 3 项精确操纵任务：电缆插入、笔收集、工具悬挂。</li><li>模型规模：以常用配置为例，<strong>VQ-BeT (DINOv2)</strong> 版本总参数 51.55M，可训练参数 29.49M；<strong>VQ-BeT (WebSSL)</strong> 版本总参数 334M，可训练参数 30.34M；对比基线 <strong>OpenVLA-OFT</strong> 总参数 7.61B，可训练参数 177.90M。</li><li>训练资源：推理延迟测试在 <strong>NVIDIA H200 GPU</strong> 上进行；训练使用 L40S GPU，Patch Policy (DINOv2) 仅需 1 块 L40S 训练 6.5 小时，对比 OpenVLA-OFT 需 4 块 L40S 训练 16 小时，ACT 需 2 块 L40S 训练 24 小时。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：覆盖 4 个模拟环境和 3 个真实机器人环境，基线包括全局特征基线（DynaMo、CLS Token、全局平均池化）、<strong>ACT</strong>、<strong>OpenVLA-OFT</strong>。</li><li>主要评估指标：模拟环境采用目标覆盖率（Push-T）、任务成功率（LIBERO Goal）、平均正确放置物体数（BlockPush、Cube）；真实环境采用任务各阶段的累积成功率。</li><li>关键实验结果：</li></ul>
+<p> - 模拟任务中，<strong>Patch Policy</strong> 在所有 4 个基准上均超越同策略的全局特征版本，在需要精细空间推理的 BlockPush、Cube 任务上提升最显著，且全面超越微调的 OpenVLA-OFT。</p>
+<p> - 真实任务中，电缆插入任务的完全插入成功率达 0.70，高于 OpenVLA-OFT 的 0.30；笔收集任务的第三支笔放置成功率达 0.85，高于 OpenVLA-OFT 的 0.60；工具悬挂任务的最终放置成功率达 0.90，高于 OpenVLA-OFT 的 0.65。</p>
+<p> - 计算效率上，<strong>VQ-BeT (DINOv2)</strong> 版本推理延迟仅 10.99ms，远低于 OpenVLA-OFT 的 61.71ms，与 ACT 的 8.63ms 处于同一量级，满足高频实时控制需求。</p>
+<p> - 预训练表示评估显示，<strong>WebSSL</strong> 和 <strong>DINOv2</strong> 在多数任务上表现最优，SigLIP 2 因过度侧重语义对齐、牺牲了几何特征，表现最差。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.18580/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">STeP: Signal Temporal Logic for Precise Specifications for Action Generation with Vision Language Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.18231/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">FM-VLA: Force-based Memory for Vision-Language-Action Models in Contact-Rich Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

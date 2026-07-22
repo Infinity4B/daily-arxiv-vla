@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reasoning as a Double-Edged Sword: Architecture and Cross-Stage Robustness in Vision-Language-Action Models - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="本文核心研究问题是：在视觉-语言-动作（VLA）模型中引入推理步骤，是否真的能提升模型对抗扰动的鲁棒性，以及暴露的推理输出能否作为运行时安全信号 研究通过跨三个覆盖不同推理谱系（无推理、文本链式思考、潜空间迭代推理）的VLA模型，在视觉、推理、动作三个阶段分别注入扰动，系统测试推理架构对鲁棒性的影响 核心发现反直觉：潜空间迭代推理模型反而是鲁棒性最差的，推理并非鲁棒性的天然保证，基于推理输出的运行时监控在公平测试下也完全失效" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.17786">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.17786.webp" alt="Reasoning as a Double-Edged Sword: Architecture and Cross-Stage Robustness in Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文核心研究问题是：在视觉-语言-动作（VLA）模型中引入推理步骤，是否真的能提升模型对抗扰动的鲁棒性，以及暴露的推理输出能否作为运行时安全信号</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Reasoning as a Double-Edged Sword: Architecture and Cross-Stage Robustness in Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-07-20 · <a href="http://arxiv.org/abs/2607.17786" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.17786" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.17786</span></div>
+            <p class="detail-summary">本文核心研究问题是：在视觉-语言-动作（VLA）模型中引入推理步骤，是否真的能提升模型对抗扰动的鲁棒性，以及暴露的推理输出能否作为运行时安全信号 研究通过跨三个覆盖不同推理谱系（无推理、文本链式思考、潜空间迭代推理）的VLA模型，在视觉、推理、动作三个阶段分别注入扰动，系统测试推理架构对鲁棒性的影响 核心发现反直觉：潜空间迭代推理模型反而是鲁棒性最差的，推理并非鲁棒性的天然保证，基于推理输出的运行时监控在公平测试下也完全失效</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者均来自墨尔本大学（University of Melbourne），位于澳大利亚维多利亚州帕克…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.17786/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">本文核心研究问题是：在视觉-语言-动作（VLA）模型中引入推理步骤，是否真的能提升模型对抗扰动的鲁棒性，以及暴露的推理输出能否作为运行时安全信号</p>
+  <ul class="reading-intro-points"><li>本文核心研究问题是：在视觉-语言-动作（VLA）模型中引入推理步骤，是否真的能提升模型对抗扰动的鲁棒性，以及暴露的推理输出能否作为运行时安全信号</li><li>研究通过跨三个覆盖不同推理谱系（无推理、文本链式思考、潜空间迭代推理）的VLA模型，在视觉、推理、动作三个阶段分别注入扰动，系统测试推理架构对鲁棒性的影响</li><li>核心发现反直觉：潜空间迭代推理模型反而是鲁棒性最差的，推理并非鲁棒性的天然保证，基于推理输出的运行时监控在公平测试下也完全失效</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者均来自<strong>墨尔本大学（University of Melbourne）</strong>，位于澳大利亚维多利亚州帕克维尔</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文核心研究问题是：在视觉-语言-动作（VLA）模型中引入推理步骤，是否真的能提升模型对抗扰动的鲁棒性，以及暴露的推理输出能否作为运行时安全信号</li><li>研究通过跨三个覆盖不同推理谱系（无推理、文本链式思考、潜空间迭代推理）的VLA模型，在视觉、推理、动作三个阶段分别注入扰动，系统测试推理架构对鲁棒性的影响</li><li>核心发现反直觉：潜空间迭代推理模型反而是鲁棒性最差的，推理并非鲁棒性的天然保证，基于推理输出的运行时监控在公平测试下也完全失效</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次系统实证了不同推理架构的VLA在跨阶段扰动下的鲁棒性差异，发现潜空间迭代推理模型（RD-VLA）的脆弱性是<strong>结构性的而非累积性的</strong>，其任务成功率在高斯噪声下跌至14.8%，白盒PGD攻击下完全失效（0.0%）</li><li>通过推理深度K的扫描实验，证伪了传统Lipschitz直觉下“推理深度越深，扰动累积放大越严重”的假设，证明扰动放大是架构的固有属性，与推理深度无关</li><li>揭示了基于推理输出的运行时防御的固有局限：计划-动作一致性探针在自适应攻击下检测性能从近完美（AUC=0.996）降至随机水平（AUC=0.493），与动作异常探针的融合也无法在匹配假阳性率下提升防御成功率</li><li>明确了后续VLA防御研究的前置条件：任何可行的输出级防御必须首先突破本文揭示的行为探针性能上界</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>选取三个覆盖推理谱系的VLA模型作为研究对象：<strong>OpenVLA-OFT</strong>（~7B参数，无推理模块，Prismatic backbone+MLPResNet动作头）、<strong>DeepThinkVLA（DT）</strong>（~3B参数，文本链式思考推理，PaliGemma backbone+离散动作token头）、<strong>RD-VLA</strong>（0.5B参数，K=12的权重共享潜空间迭代推理，Prismatic backbone+线性动作投影头），所有主实验模型均为LIBERO微调版本</li><li>设计跨阶段攻击矩阵，分别在视觉阶段（FGSM/PGD-10白盒攻击、高斯噪声）、推理阶段（仅DT的实体替换CoT攻击）、动作阶段（7-DOF动作空间高斯噪声）注入扰动，在LIBERO和SimplerEnv基准上测试</li><li>采用严谨的评估协议：包括Carlini标准自适应评估、Holm-Bonferroni多重检验校正、bootstrap置信区间计算，同时通过EOT测试、梯度无关Square Attack排除梯度掩蔽等干扰因素</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集/基准：<strong>LIBERO</strong>（4个任务套件×10个任务×3个随机种子，共12个评估单元格，每个单元格为50轮episode的平均任务成功率）、<strong>SimplerEnv</strong>（用于跨基准外部效度验证）</li><li>模型规模：三个模型参数量分别为OpenVLA-OFT ~7B、DeepThinkVLA ~3B、RD-VLA 0.5B</li><li>训练/计算资源：RD-VLA的白盒PGD攻击通过激活检查点实现；补充了100次查询的梯度无关Square Attack；实验通过Holm-Bonferroni校正和bootstrap置信区间处理多测试和种子方差</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：在<strong>LIBERO</strong>和<strong>SimplerEnv</strong>两个机器人操作模拟基准上进行，主实验覆盖LIBERO全部4个任务套件，跨3个随机种子，共12个匹配（套件，种子）评估单元格</li><li>主要评估指标：任务成功率（SR）、扰动放大率ρ(K)、探针检测AUC、假阳性率（FPR）等</li><li>关键实验结果：</li></ul>
+<p> - 高斯视觉噪声（σ=0.2）下，RD-VLA成功率仅14.8%（较清洁条件下降74.3个百分点），DT（92.7%）和OFT（89.0%）保持高鲁棒性；白盒PGD-10攻击下呈现三层严格排序：DT（49.8%）> OFT（18.2%）> RD-VLA（0.0%）</p>
+<p> - RD-VLA的K步扫描实验显示，推理深度从8提升到12时，扰动放大率几乎无变化（ρ(12)/ρ(8)=1.005），远低于Lipschitz直觉预测的2.0倍，证伪了“推理深度越深，扰动累积放大越严重”的假设，证明放大是架构固有结构性属性</p>
+<p> - 动作阶段的高斯噪声在σ=0.1到0.5之间导致所有模型成功率出现悬崖式下降，说明动作攻击会绕过推理模块直接作用于策略执行</p>
+<p> - 仅在FGSM攻击下OFT的鲁棒性反超DT（83.5% vs 55.8%），该现象与OFT损失面曲率相关，已通过EOT测试和梯度无关Square Attack排除梯度掩蔽的干扰</p>
+<p> - 运行时防御完全失效：计划-动作一致性探针在自适应攻击下检测AUC从0.996骤降至0.493（接近随机水平）；在匹配假阳性率（FPR）校准下，融合该探针与动作异常探针无法在任何PGD-10测试单元格中提升防御成功率超过无防御基线</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.17977/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RynnBrain 1.1: Towards More Capable and Generalizable Embodied Foundation Model</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.17157/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">VLA-ReID: Video-Level Association for Re-Identification in Multi-Object Tracking with Highly Similar Objects</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FM-VLA: Force-based Memory for Vision-Language-Action Models in Contact-Rich Manipulation - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="提出FM-VLA，首个具备基于力/扭矩（wrench）长期记忆的视觉-语言-动作（VLA）模型，面向接触丰富操作中的非马尔可夫决策场景 解决现有VLA依赖马尔可夫假设、视觉记忆在接触事件视觉模糊/遮挡时失效、现有力感知VLA仅利用短期力信号无法积累长期接触时序信息三类核心问题 在三个需要时序上下文推理的接触丰富双臂操作任务上验证模型有效性，平均成功率超过80%" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.18231">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.18231.webp" alt="FM-VLA: Force-based Memory for Vision-Language-Action Models in Contact-Rich Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出FM-VLA，首个具备基于力/扭矩（wrench）长期记忆的视觉-语言-动作（VLA）模型，面向接触丰富操作中的非马尔可夫决策场景</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FM-VLA: Force-based Memory for Vision-Language-Action Models in Contact-Rich Manipulation</h1>
+            <div class="detail-meta">2026-07-20 · <a href="http://arxiv.org/abs/2607.18231" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.18231" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.18231</span></div>
+            <p class="detail-summary">提出FM-VLA，首个具备基于力/扭矩（wrench）长期记忆的视觉-语言-动作（VLA）模型，面向接触丰富操作中的非马尔可夫决策场景 解决现有VLA依赖马尔可夫假设、视觉记忆在接触事件视觉模糊/遮挡时失效、现有力感知VLA仅利用短期力信号无法积累长期接触时序信息三类核心问题 在三个需要时序上下文推理的接触丰富双臂操作任务上验证模型有效性，平均成功率超过80%</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">清华大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.18231/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出FM-VLA，首个具备基于力/扭矩（wrench）长期记忆的视觉-语言-动作（VLA）模型，面向接触丰富操作中的非马尔可夫决策场景</p>
+  <ul class="reading-intro-points"><li>提出FM-VLA，首个具备基于力/扭矩（wrench）长期记忆的视觉-语言-动作（VLA）模型，面向接触丰富操作中的非马尔可夫决策场景</li><li>解决现有VLA依赖马尔可夫假设、视觉记忆在接触事件视觉模糊/遮挡时失效、现有力感知VLA仅利用短期力信号无法积累长期接触时序信息三类核心问题</li><li>在三个需要时序上下文推理的接触丰富双臂操作任务上验证模型有效性，平均成功率超过80%</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>清华大学</li><li>微软研究院</li><li>复旦大学</li><li>中国科学技术大学（USTC）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>FM-VLA</strong>，首个具备基于力/扭矩（wrench）长期记忆的视觉-语言-动作（VLA）模型，面向接触丰富操作中的非马尔可夫决策场景</li><li>解决现有VLA依赖马尔可夫假设、视觉记忆在接触事件视觉模糊/遮挡时失效、现有力感知VLA仅利用短期力信号无法积累长期接触时序信息三类核心问题</li><li>在三个需要时序上下文推理的接触丰富双臂操作任务上验证模型有效性，平均成功率超过80%</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首个将本体感受的力/扭矩流作为轻量长期记忆的VLA模型，支持非马尔可夫接触丰富操作的时序上下文推理</li><li>设计基于变分自编码器（VAE）的轻量压缩模块，将高频噪声的长期力历史编码为紧凑的力记忆token，显著优于直接端到端注入力信号的基线方案</li><li>引入短期关节状态历史token补充力记忆的不足，缓解预接触阶段的重复动作问题，在双臂机器人三类记忆依赖任务上大幅超越无记忆和视觉记忆基线</li><li>验证了力记忆方案在推理效率上的优势，仅带来极小的额外延迟</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于开源VLA模型<strong>π₀.₅</strong>搭建，π₀.₅由PaliGemma视觉-语言模型（VLM）和流匹配动作专家组成，原模型仅依赖当前观察做马尔可夫决策</li><li>力信号预处理：对原始6轴力/扭矩信号做一阶指数移动平均（EMA）平滑降噪，训练时通过随机长度的高斯噪声预填充消除序列长度带来的捷径学习，避免模型依赖序列长度而非信号内容做决策</li><li>力记忆编码：使用预训练的Perceiver-IO架构VAE，以掩码证据下界（ELBO）为损失做时间序列重建预训练，将长期力历史压缩为固定数量的紧凑力记忆token，提取力幅值、接触 onset、接触次数等任务相关时序特征</li><li>双流记忆注入与训练：将力记忆token和短窗口（最近1秒）关节状态历史经轻量投影得到的单状态token，共同注入到流匹配动作专家的后缀（噪声动作token之后），两阶段训练：第一阶段仅预训练力VAE学习任务无关的力信号时序表征，第二阶段冻结VAE编码器，联合微调VLM、动作专家、两个投影层，以流匹配损失优化动作生成</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>实验数据集：通过VR遥操作在<strong>AgiBot G1</strong>双臂人形机器人上收集三类接触丰富任务的演示数据，分别为：找杯子下方块任务200条、按指定次数按钮任务350条、擦指定次数碗任务200条，总计750条演示</li><li>模型规模：基础模型为<strong>π₀.₅</strong>，其视觉-语言骨干为3B参数的PaliGemma模型，附加的力VAE为轻量Perceiver-IO架构，输出8个力记忆token，整体附加参数量和计算开销极小</li><li>硬件资源：机器人平台配备两个7自由度双臂、两个1自由度夹爪，每个手腕搭载100Hz采样的6轴力/扭矩传感器，搭配头部+双腕共三个RGB摄像头采集视觉输入；推理测试采用<strong>RTX 4090</strong> GPU，训练硬件未明确说明</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估设置：在AgiBot G1机器人上评估三类记忆依赖任务，对比三个基线：无记忆的<strong>π₀.₅</strong>、仅利用短期力窗口的<strong>TA-VLA</strong>、基于视觉记忆的<strong>π-MEM</strong></li><li>评估指标：任务成功率，判定标准为机器人完成任务后进入稳定终止状态（夹爪打开、3秒无运动）</li><li>关键实验结果：<strong>FM-VLA平均成功率达83.3%</strong>，大幅超过所有基线：无记忆π₀.₅为27.8%，短期力方案TA-VLA为22.2%，视觉记忆方案π-MEM为53.7%；在视觉变化极小的按按钮、擦碗任务上优势最显著，按按钮任务中FM-VLA成功率达72.2%，是视觉记忆基线的2倍以上</li><li>效率评估：FM-VLA仅比基础π₀.₅增加3ms推理延迟（总延迟64ms），而视觉记忆方案π-MEM（K=5）延迟增加39.1ms，K=16时延迟达190ms，力记忆方案的推理效率优势显著</li><li>消融实验结论：仅用力记忆或仅用状态历史都会导致性能大幅下降，VAE编码器优于GRU、Q-Former等替代架构，8个力记忆token为最优容量配置</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.18236/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Patch Policy: Efficient Embodied Control via Dense Visual Representations</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.18060/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RoboHarness: Memory-Driven Orchestration of Heterogeneous Robot Policies for Long-Horizon Planning</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
