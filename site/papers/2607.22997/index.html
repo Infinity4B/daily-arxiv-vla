@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Real2Sim2Real for Vision-Language-Action Manipulation: An AMD ROCm-Based Pipeline - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="聚焦Physical AI（物理AI）领域的具身操作技术，针对现有视觉-语言-动作（VLA）模型训练部署高度依赖CUDA生态、社区迭代门槛高的问题，提出完全基于AMD ROCm开放栈的端到端技术方案 通过4个递进演示覆盖从模拟训练、真实部署、真实场景数据回流到强化学习训练的全链路，证明无需CUDA即可完成完整的具身智能研究闭环 所有 pipeline 均可通过免费的Radeon云平台复现，大幅降低具身AI研究的硬件和生态门槛" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.22997">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.22997.webp" alt="Real2Sim2Real for Vision-Language-Action Manipulation: An AMD ROCm-Based Pipeline" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">聚焦Physical AI（物理AI）领域的具身操作技术，针对现有视觉-语言-动作（VLA）模型训练部署高度依赖CUDA生态、社区迭代门槛高的问题，提出完全基于AMD ROCm开放栈的端到端技术方案</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Real2Sim2Real for Vision-Language-Action Manipulation: An AMD ROCm-Based Pipeline</h1>
+            <div class="detail-meta">2026-07-25 · <a href="http://arxiv.org/abs/2607.22997" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.22997" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.22997</span></div>
+            <p class="detail-summary">聚焦Physical AI（物理AI）领域的具身操作技术，针对现有视觉-语言-动作（VLA）模型训练部署高度依赖CUDA生态、社区迭代门槛高的问题，提出完全基于AMD ROCm开放栈的端到端技术方案 通过4个递进演示覆盖从模拟训练、真实部署、真实场景数据回流到强化学习训练的全链路，证明无需CUDA即可完成完整的具身智能研究闭环 所有 pipeline 均可通过免费的Radeon云平台复现，大幅降低具身AI研究的硬件和生态门槛</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">AMD AIG Team（第一作者同时隶属于第二单位）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.22997/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">聚焦Physical AI（物理AI）领域的具身操作技术，针对现有视觉-语言-动作（VLA）模型训练部署高度依赖CUDA生态、社区迭代门槛高的问题，提出完全基于AMD ROCm开放栈的端到端技术方案</p>
+  <ul class="reading-intro-points"><li>聚焦Physical AI（物理AI）领域的具身操作技术，针对现有视觉-语言-动作（VLA）模型训练部署高度依赖CUDA生态、社区迭代门槛高的问题，提出完全基于AMD ROCm开放栈的端到端技术方案</li><li>通过4个递进演示覆盖从模拟训练、真实部署、真实场景数据回流到强化学习训练的全链路，证明无需CUDA即可完成完整的具身智能研究闭环</li><li>所有 pipeline 均可通过免费的Radeon云平台复现，大幅降低具身AI研究的硬件和生态门槛</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>AMD AIG Team</strong>（第一作者同时隶属于第二单位）</li><li><strong>北京理工大学</strong></li><li>论文发表于WAIC Academic (WAICA) 2026的具身智能与空间交互论坛</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>聚焦<strong>Physical AI（物理AI）</strong>领域的具身操作技术，针对现有视觉-语言-动作（VLA）模型训练部署高度依赖CUDA生态、社区迭代门槛高的问题，提出完全基于AMD ROCm开放栈的端到端技术方案</li><li>通过4个递进演示覆盖从模拟训练、真实部署、真实场景数据回流到强化学习训练的全链路，证明无需CUDA即可完成完整的具身智能研究闭环</li><li>所有 pipeline 均可通过免费的Radeon云平台复现，大幅降低具身AI研究的硬件和生态门槛</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次构建了覆盖数据中心、工作站、边缘设备的AMD全栈具身操作技术栈，统一基于<strong>ROCm + PyTorch</strong>生态，完全摆脱CUDA锁定</li><li>设计了4个递进式技术演示，完整验证了Sim-to-Real操作、语言 grounded 语义物体选择、Real2Sim合成数据生成、足式/人形机器人强化学习四大核心场景的可行性</li><li>验证了轻量级<strong>SmolVLA-450M</strong>模型可在单块桌面级Radeon PRO GPU上完成训练和部署，4000步训练仅需7-11分钟，峰值VRAM占用低于2.4GB，无需额外真实数据微调即可实现真实机械臂部署</li><li>提出了融合<strong>3D高斯泼溅（3DGS）</strong>与Genesis物理引擎的Real2Sim数据生成 pipeline，可自动将真实场景重建结果转换为高保真、可交互的模拟训练数据，支持可控域随机化提升数据多样性</li><li>开源了全部 demo 代码、Real2Sim插件及Radeon云平台可运行 notebooks，社区可免费复现全流程，降低具身AI研究门槛</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>全栈基于开放的ROCm + HIP软件生态，原生集成到PyTorch和JAX框架，可直接迁移现有CUDA代码</li><li>Demo 1（Sim-to-Real）：使用Genesis物理引擎生成机器人操作合成数据，转换为LeRobot标准格式后训练SmolVLA模型，直接部署到Franka机械臂实现闭环操作</li><li>Demo 2（语义选择）：在基础VLA框架上增加语言-视觉融合分支，实现自然语言指令下的 clutter 场景目标物体选择，验证模型的语义 grounding 能力</li><li>Demo 3（Real2Sim）：先通过3DGS重建真实场景的几何与外观，加载到Genesis模拟器作为静态背景，再注入带物理属性的动态物体和机器人，支持大规模可控域随机化生成VLA训练数据</li><li>Demo 4（RL训练）：基于Unilab框架，使用FastSAC、FlashSAC、PPO等算法，在四足（Unitree Go2）和人形（Unitree G1）机器人上验证大规模强化学习的训练效率</li><li>创新点：全链路无CUDA依赖，所有环节（3D重建、渲染、物理模拟、模型训练、部署）均在ROCm栈上运行；Real2Sim采用真实静态背景+程序化动态内容的混合表示，兼顾视觉保真度和物理交互可控性；利用Ryzen AI MAX的统一内存架构消除主机-设备拷贝开销，提升RL等紧耦合任务的效率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：使用<strong>LeRobot</strong>标准的机器人数据集格式，合成数据来自Genesis物理引擎生成，真实场景数据用于3DGS场景重建</li><li>模型规模：采用轻量级<strong>SmolVLA-450M</strong>作为VLA backbone，参数量仅4.5亿</li><li>训练资源：桌面级采用<strong>Radeon PRO W7900</strong>（RDNA3.5，48GB GDDR6）、<strong>Radeon AI PRO R9700</strong>（RDNA4，32GB GDDR6，128个AI加速器）；数据中心采用AMD Instinct MI系列（Gen1 192GB HBM3，Gen2 288GB HBM3E CDNA4架构）；边缘设备采用<strong>Ryzen AI MAX+ 395</strong>（128GB统一内存，2026年新一代Gorgon Halo将升级至192GB）；提供免费的Radeon云平台供社区复现</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：本地RDNA3.5/RDNA4 GPU工作站、Ryzen AI MAX边缘设备、Radeon云平台，以<strong>RTX 4090</strong>为性能基准进行对比</li><li>评估指标：Sim-to-Real任务的成功率、模型训练收敛时间、VRAM占用、RL训练步数/秒吞吐量、语义选择任务准确率</li><li>关键实验结果：</li></ul>
+<p> - Sim-to-Real抓取任务合成数据生成成功率100%，SmolVLA-450M训练4000步仅需7-11分钟，峰值VRAM占用低于2.4GB，训练得到的策略无需额外真实微调即可直接部署到Franka机械臂，全流程闭环耗时不到1小时</p>
+<p> - 语义选择任务验证了VLA模型的语义 grounding 能力，可与基础操作能力解耦，用于分离诊断故障模式</p>
+<p> - Real2Sim pipeline 可在30分钟内完成从真实照片到可部署操作策略的全流程，无需物理硬件支持</p>
+<p> - RL训练中，Ryzen AI MAX 395在FastSAC/G1全身追踪、FlashSAC/Go2摇杆 locomotion 任务上的吞吐量超过RTX 4090+AMD 9950X3D的组合，证明统一内存架构对紧耦合模拟-训练任务的显著优势</p>
+<p> - 不同RL算法的硬件性能差异显著，跨硬件基准测试需按算法单独评估而非仅看聚合指标</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.22999/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">WCM: World-Cognition Model for Generalizable Human-Robot Interaction</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.21725/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Addressing the Orchestration Gap in Generalist Robots via Physical Agency</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
