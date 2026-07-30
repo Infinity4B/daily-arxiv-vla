@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Explicit Kinematic Guidance from Analytic Concepts for Vision-Language-Action Models - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="针对当前视觉-语言-动作（VLA）模型主要依赖2D输入、缺乏3D物理世界中的物体结构信息和常识知识，导致空间感知能力不足、复杂高精度操作泛化性差的问题，本文提出SAGE框架，通过引入可执行的Analytic Concepts（分析性概念）为VLA提供对象中心的显式结构化先验，解决VLA下游任务微调数据密集、泛化能力弱的痛点 研究目标是在监督微调（SFT）和强化学习（RL）两种场景下，提升VLA模型的操作任务成功率与学习效率，尤其针对铰接物体等复杂操作任务优化性能" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.26513">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.26513.webp" alt="Explicit Kinematic Guidance from Analytic Concepts for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对当前视觉-语言-动作（VLA）模型主要依赖2D输入、缺乏3D物理世界中的物体结构信息和常识知识，导致空间感知能力不足、复杂高精度操作泛化性差的问题，本文提出SAGE框架，通过引入可执行的Analytic Concepts（分析性概念）为VLA提供对象中心的显式结构化先验，解决VLA下游任务微调数据密集、泛化能力弱的痛点</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Explicit Kinematic Guidance from Analytic Concepts for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-07-29 · <a href="http://arxiv.org/abs/2607.26513" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.26513" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.26513</span></div>
+            <p class="detail-summary">针对当前视觉-语言-动作（VLA）模型主要依赖2D输入、缺乏3D物理世界中的物体结构信息和常识知识，导致空间感知能力不足、复杂高精度操作泛化性差的问题，本文提出SAGE框架，通过引入可执行的Analytic Concepts（分析性概念）为VLA提供对象中心的显式结构化先验，解决VLA下游任务微调数据密集、泛化能力弱的痛点 研究目标是在监督微调（SFT）和强化学习（RL）两种场景下，提升VLA模型的操作任务成功率与学习效率，尤其针对铰接物体等复杂操作任务优化性能</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">浙江大学（中国杭州）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.26513/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对当前视觉-语言-动作（VLA）模型主要依赖2D输入、缺乏3D物理世界中的物体结构信息和常识知识，导致空间感知能力不足、复杂高精度操作泛化性差的问题，本文提出SAGE框架，通过引入可执行的Analytic Concepts（分析性概念）为VLA提供对象中心的显式结构化先验，解决VLA下游任务微调数据密集、泛化能力弱的痛点</p>
+  <ul class="reading-intro-points"><li>针对当前视觉-语言-动作（VLA）模型主要依赖2D输入、缺乏3D物理世界中的物体结构信息和常识知识，导致空间感知能力不足、复杂高精度操作泛化性差的问题，本文提出SAGE框架，通过引入可执行的Analytic Concepts（分析性概念）为VLA提供对象中心的显式结构化先验，解决VLA下游任务微调数据密集、泛化能力弱的痛点</li><li>研究目标是在监督微调（SFT）和强化学习（RL）两种场景下，提升VLA模型的操作任务成功率与学习效率，尤其针对铰接物体等复杂操作任务优化性能</li><li>提出全新的VLA微调范式，通过Analytic Concepts的可执行对象中心结构化先验增强策略学习，弥补2D VLA模型的3D感知与物理推理缺陷</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>浙江大学（中国杭州）</li><li>上海创新研究院（中国上海）</li><li>复旦大学（中国上海）</li><li>西湖大学（中国杭州）</li><li>上海交通大学（中国上海）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对当前视觉-语言-动作（VLA）模型主要依赖2D输入、缺乏3D物理世界中的物体结构信息和常识知识，导致空间感知能力不足、复杂高精度操作泛化性差的问题，本文提出<strong>SAGE框架</strong>，通过引入可执行的<strong>Analytic Concepts（分析性概念）</strong>为VLA提供对象中心的显式结构化先验，解决VLA下游任务微调数据密集、泛化能力弱的痛点</li><li>研究目标是在监督微调（SFT）和强化学习（RL）两种场景下，提升VLA模型的操作任务成功率与学习效率，尤其针对铰接物体等复杂操作任务优化性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出全新的VLA微调范式，通过<strong>Analytic Concepts</strong>的可执行对象中心结构化先验增强策略学习，弥补2D VLA模型的3D感知与物理推理缺陷</li><li>设计<strong>Concept Expert（概念专家）</strong>模块，实现分析性概念参数的实例化与动态跟踪，打通对象结构与VLA策略执行的对齐链路</li><li>开发统一的显式知识注入机制，将分析性概念转化为动作空间约束正则化项与稠密几何感知奖励，适配SFT与RL两种微调范式</li><li>在仿真与真实机器人平台上验证方法的有效性，证明结构化概念引导可显著提升VLA在复杂操作任务上的性能与样本效率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>核心框架为<strong>SAGE（Spatial Analytic-concept Guided Enhancement）</strong>，包含两个协同工作的核心阶段：① 初始实例化阶段（t=0）：利用视觉基础模型<strong>VGGT</strong>、<strong>SAM 2</strong>提取3D视觉特征，通过结构参数头估计分析性概念的<strong>结构参数Pₛ</strong>与初始运动参数Pₖ⁰，建立场景的初始结构化理解；② 动态跟踪阶段（t>0）：提取VLA模型的中间层特征，经Adapter适配后输入动态参数头，实时跟踪运动参数Pₖᵗ的变化，同时通过<strong>VLA特征对齐损失Lₐₗᵢgₙ</strong>最小化VLA内部特征与VGGT空间特征的余弦相似度误差，强制VLA学习符合物理结构的隐式表示</li><li>微调阶段提供两种显式引导信号：① <strong>运动约束监督损失Lₖcₛ</strong>：计算VLA预测动作方向与概念推导的最优交互方向v*的余弦损失，直接约束动作输出符合物体运动学约束；② <strong>概念衍生奖励Rₐc</strong>：分为运动进度奖励（基于当前运动参数与目标参数的差异计算稠密进度反馈）与可供性对齐奖励（基于机器人末端执行器与概念定义的最优抓取姿态的几何距离计算奖励），解决操作任务的奖励稀疏问题</li><li>总优化目标结合任务专属损失、运动约束监督损失与特征对齐损失，通过超参数平衡不同项的权重</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真环境数据集：<strong>SimplerEnv</strong>仿真平台、基于<strong>ShapeNet Mobility</strong>数据集构建的Sapien仿真铰接物体操作任务集（包含水龙头、微波炉、笔记本电脑、储物柜、锅、水桶6类任务）</li><li>真实实验平台：<strong>AGILE PiPER</strong>双臂机器人，搭载Orbbec DABAI相机作为视觉输入</li><li>基础模型：基于<strong>OpenVLA-OFT</strong>、π₀.5等预训练VLA模型进行微调，依赖的预训练基础模型包括VGGT（视觉几何基础Transformer）、SAM 2（通用分割模型），论文未明确说明具体模型参数量与训练所用GPU/TPU硬件资源</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：SimplerEnv仿真环境、Sapien仿真环境、真实世界AGILE PiPER双臂机器人平台</li><li>评估指标：任务成功率、训练收敛速度、样本效率、真实场景任务完成率</li><li>关键实验结果：① 离线SFT场景下，<strong>SAGE-SFT</strong>将OpenVLA-OFT的平均任务成功率从54.3%提升至69.0%，将π₀的平均成功率从56.8%提升至66.3%；② 离线RL场景下，<strong>SAGE-CQL</strong>平均成功率达71.7%，超过专门设计3D输入优化的SpatialVLA(FT)基线（70.6%），在“开/关抽屉”这类运动学复杂的任务上提升尤为显著；③ 在线RL场景下，PPO(SAGE)与GRPO(SAGE)在SimplerEnv的Open Drawer任务、Sapien的6类铰接物体操作任务上均显著优于对应基线，收敛速度更快、最终成功率更高，PPO(SAGE)在微波炉、储物柜、锅类任务上接近100%成功率；④ 真实世界实验中，SAGE增强的π₀.5在5项复杂多步操作任务上的成功率平均提升15%以上，例如“将订书机放入下层抽屉”任务成功率从60%提升至85%；⑤ 消融实验表明，移除特征对齐损失Lₐₗᵢgₙ会导致性能下降，使用真实运动参数仅带来轻微性能提升，说明SAGE估计的参数精度已足够支撑策略学习</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.26789/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">CheckVLA: Execution-Time Verification with Action-Conditioned World Model for Long-Horizon Mobile Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.26452/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">CG-World: A Large-Scale World-State Dataset and Protocol for World Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
