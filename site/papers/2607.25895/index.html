@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="解决可部署机器人操作策略学习中的数据瓶颈问题：真实机器人遥操作成本高、难以规模化，而现有的无机器人 UMI（Universal Manipulation Interface）数据因保真度不足（轨迹漂移、相对位姿重建误差、同步误差、视野狭窄）通常只能用于预训练，后训练仍需少量真实机器人数据作为&quot;锚点&quot;。 提出 HiFi-UMI，一个便携式高保真数据生产系统，通过软硬件协同设计（头戴式离线 SLAM、原生相对位姿测量、GPIO 微秒级同步、超广角六视角传感）实现毫米级轨迹精度，验证&quot;零机器人后训练&quot;假设——仅使用 HiFi-UMI 数据即可让策略直接部署到真实机器人并匹配遥操作性能。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2607.25895">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2607.25895.webp" alt="HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">解决可部署机器人操作策略学习中的数据瓶颈问题：真实机器人遥操作成本高、难以规模化，而现有的无机器人 UMI（Universal Manipulation Interface）数据因保真度不足（轨迹漂移、相对位姿重建误差、同步误差、视野狭窄）通常只能用于预训练，后训练仍需少量真实机器人数据作为&quot;锚点&quot;。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone</h1>
+            <div class="detail-meta">2026-07-28 · <a href="http://arxiv.org/abs/2607.25895" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2607.25895" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.25895</span></div>
+            <p class="detail-summary">解决可部署机器人操作策略学习中的数据瓶颈问题：真实机器人遥操作成本高、难以规模化，而现有的无机器人 UMI（Universal Manipulation Interface）数据因保真度不足（轨迹漂移、相对位姿重建误差、同步误差、视野狭窄）通常只能用于预训练，后训练仍需少量真实机器人数据作为&quot;锚点&quot;。 提出 HiFi-UMI，一个便携式高保真数据生产系统，通过软硬件协同设计（头戴式离线 SLAM、原生相对位姿测量、GPIO 微秒级同步、超广角六视角传感）实现毫米级轨迹精度，验证&quot;零机器人后训练&quot;假设——仅使用 HiFi-UMI 数据即可让策略直接部署到真实机器人并匹配遥操作性能。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Simple AI（论文作者所属机构）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2607.25895/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">解决可部署机器人操作策略学习中的数据瓶颈问题：真实机器人遥操作成本高、难以规模化，而现有的无机器人 UMI（Universal Manipulation Interface）数据因保真度不足（轨迹漂移、相对位姿重建误差、同步误差、视野狭窄）通常只能用于预训练，后训练仍需少量真实机器人数据作为&quot;锚点&quot;。</p>
+  <ul class="reading-intro-points"><li>解决可部署机器人操作策略学习中的数据瓶颈问题：真实机器人遥操作成本高、难以规模化，而现有的无机器人 UMI（Universal Manipulation Interface）数据因保真度不足（轨迹漂移、相对位姿重建误差、同步误差、视野狭窄）通常只能用于预训练，后训练仍需少量真实机器人数据作为&quot;锚点&quot;。</li><li>提出 HiFi-UMI，一个便携式高保真数据生产系统，通过软硬件协同设计（头戴式离线 SLAM、原生相对位姿测量、GPIO 微秒级同步、超广角六视角传感）实现毫米级轨迹精度，验证&quot;零机器人后训练&quot;假设——仅使用 HiFi-UMI 数据即可让策略直接部署到真实机器人并匹配遥操作性能。</li><li>提出端到端高保真数据生产系统 HiFi-UMI Capture：头戴式离线立体惯性 SLAM 提供 ~3mm 末端执行器精度，共享 GPIO 触发实现微秒级跨传感器同步，双手各配备两个非平行广角相机覆盖 ~200° 视野，全掌手套形态 preserving 自然接触，无需外部跟踪基础设施。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Simple AI</strong>（论文作者所属机构）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>解决可部署机器人操作策略学习中的数据瓶颈问题：真实机器人遥操作成本高、难以规模化，而现有的无机器人 UMI（Universal Manipulation Interface）数据因保真度不足（轨迹漂移、相对位姿重建误差、同步误差、视野狭窄）通常只能用于预训练，后训练仍需少量真实机器人数据作为"锚点"。</li><li>提出 <strong>HiFi-UMI</strong>，一个便携式高保真数据生产系统，通过软硬件协同设计（头戴式离线 SLAM、原生相对位姿测量、GPIO 微秒级同步、超广角六视角传感）实现毫米级轨迹精度，验证"<strong>零机器人后训练</strong>"假设——仅使用 HiFi-UMI 数据即可让策略直接部署到真实机器人并匹配遥操作性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出端到端高保真数据生产系统 <strong>HiFi-UMI Capture</strong>：头戴式离线立体惯性 SLAM 提供 ~3mm 末端执行器精度，共享 GPIO 触发实现微秒级跨传感器同步，双手各配备两个非平行广角相机覆盖 ~200° 视野，全掌手套形态 preserving 自然接触，无需外部跟踪基础设施。</li><li>首次在三个不同骨架上（2 个 VLA、1 个 WAM）证明<strong>纯无机器人后训练</strong>可匹配同场景真实机器人遥操作，成功率差异分别为 -2.5、+3.1 和 -0.6 个百分点，均在采样噪声范围内；最强策略在精密插入任务上达到 <strong>85%</strong> 成功率。</li><li>证明大规模 UMI 预训练的收益：4000 小时预训练可将 10 个未见任务的动作误差降低 <strong>41%</strong>，并在 StarVLA-QwenPI 上将真实机器人成功率再提升 <strong>18.1</strong> 个百分点，且预训练收益取决于交互动力学覆盖度而非物体可见性。</li><li>开源大规模数据集 <strong>HiFi-UMI-2K</strong>：2000 小时微秒同步、超广角、可重放的高保真数据集，包含 482,100+ 个片段，支持预训练和后训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>采集设备</strong>：采用头戴式双目相机+IMU 进行<strong>离线</strong>立体惯性 SLAM（ORB-SLAM3），避免腕部相机的遮挡和漂移问题；双手 marker cube 由同一头相机观测，实现<strong>原生</strong>的双手相对位姿测量；每手配备两个非平行鱼眼相机实现 ~200°×200° 超广角覆盖；全掌手套式抓手（非触发式）保留自然力反馈；共享 GPIO 硬件触发实现所有传感器（6 相机、IMU、编码器）的微秒级同步。</li><li><strong>数据处理流水线</strong>：六阶段自动处理流程——(1) 采集与上传，(2) 轨迹重建与自动清洗（滑动窗口局部一致性约束，98% 重建成功率），(3) 仿真重定向与可执行性验证（98% 通过率），(4) AI 辅助标注（多视角联合推理），(5) 人工验证（聚焦低置信度样本），(6) 数据分析与导出（统计平衡、版本化导出）。整体保留约 <strong>96%</strong> 原始捕获数据。</li><li><strong>训练设置</strong>：统一动作语义为<strong>机器人坐标系下的相对位姿增量 + 绝对手爪开度</strong>（每臂 3+6+1=10 通道，双手共 20 通道）。测试三个强基线——<strong>StarVLA-QwenPI</strong>（Qwen3-VL-4B + π-style DiT action head）、<strong>OpenPI-π₀.₅</strong> 和 <strong>LingBot-VA</strong>——固定架构、初始化、优化和部署接口，仅改变任务特定数据来源（HiFi-UMI vs. 同场景遥操作）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>完整数据集</strong>：<strong>20,000+</strong> 小时，<strong>4,320,000+</strong> 个片段，<strong>480+</strong> 个场景，每个片段包含 6 视角同步视频、校准双手轨迹、手爪状态、语言标注和子任务边界。</li><li><strong>发布数据集</strong>：<strong>HiFi-UMI-2K</strong>，<strong>2,000</strong> 小时，<strong>482,100+</strong> 个片段，<strong>110+</strong> 场景，采用 CC BY 4.0 许可，面部已打码。</li><li><strong>模型规模</strong>：StarVLA-QwenPI 基于 <strong>Qwen3-VL-4B-Instruct</strong>（4B 参数，36 层 Transformer，隐藏维度 2,560）；OpenPI-π₀.₅ 和 LingBot-VA 为公开强基线。</li><li>训练硬件：HTML 原文中未明确提及 GPU/TPU 具体型号与数量（相关内容在截断部分之前）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境与基准</strong>：在冻结的 benchmark 上进行真实机器人评估（共 <strong>960</strong> 次 rollout），采用测试实例构建与策略执行分离、策略顺序随机化、记录终止原因等严格协议。</li><li><strong>主要指标</strong>：任务成功率（success rate）、离线动作预测误差（action prediction error）。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>零机器人后训练匹配遥操作</strong>：在 StarVLA-QwenPI、OpenPI-π₀.₅、LingBot-VA 上，HiFi-UMI-only 后训练与同场景遥操作的差距分别为 -2.5、+3.1、-0.6 个百分点，均在采样噪声范围内，尽管遥操作数据直接采集于评估场景而 HiFi-UMI 数据并非如此。</p>
+<p> - <strong>预训练收益</strong>：4000 小时 HiFi-UMI 预训练将 StarVLA-QwenPI 在 10 个未见任务上的动作误差降低 <strong>41%</strong>，并将真实机器人成功率额外提升 <strong>18.1</strong> 个百分点，以四分之一任务数据即可匹配从头训练的基线。</p>
+<p> - <strong>泛化性</strong>：在场景偏移下仍保持性能；预训练收益与预训练混合数据中是否覆盖某类交互动力学相关，而非是否见过测试物体。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.25912/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SAM3D-Guided Object-Centric Representation Alignment for Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.25516/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">A Causality-aware Infer-diagnose-refine Framework for Test-time Modality Adaptation in VLA Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
