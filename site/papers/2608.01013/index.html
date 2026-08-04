@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RL Bootstrapping of OpenVLA-OFT for a Novel Robot Embodiment - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="当前视觉-语言-动作（VLA）模型适配新机器人形态的标准流程依赖针对该机器人的任务演示数据集，对于形态差异较大的定制机器人存在明显限制 本文研究零示例场景下，将预训练OpenVLA-OFT模型适配到新型电缆驱动并联机器人（CDPR）的可行性，仅通过强化学习（RL）与仿真器密集奖励完成本体对齐，无需任何针对该机器人的演示数据 研究目标是验证RL-only引导能否为全新机器人形态提供首个可用的语言条件控制器，解决新机器人无演示数据时VLA模型无法完成适配的实际问题" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.01013">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.01013.webp" alt="RL Bootstrapping of OpenVLA-OFT for a Novel Robot Embodiment" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">当前视觉-语言-动作（VLA）模型适配新机器人形态的标准流程依赖针对该机器人的任务演示数据集，对于形态差异较大的定制机器人存在明显限制</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">RL Bootstrapping of OpenVLA-OFT for a Novel Robot Embodiment</h1>
+            <div class="detail-meta">2026-08-02 · <a href="http://arxiv.org/abs/2608.01013" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.01013" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.01013</span></div>
+            <p class="detail-summary">当前视觉-语言-动作（VLA）模型适配新机器人形态的标准流程依赖针对该机器人的任务演示数据集，对于形态差异较大的定制机器人存在明显限制 本文研究零示例场景下，将预训练OpenVLA-OFT模型适配到新型电缆驱动并联机器人（CDPR）的可行性，仅通过强化学习（RL）与仿真器密集奖励完成本体对齐，无需任何针对该机器人的演示数据 研究目标是验证RL-only引导能否为全新机器人形态提供首个可用的语言条件控制器，解决新机器人无演示数据时VLA模型无法完成适配的实际问题</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文未在提供的内容中标注作者所属的具体研究机构</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.01013/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">当前视觉-语言-动作（VLA）模型适配新机器人形态的标准流程依赖针对该机器人的任务演示数据集，对于形态差异较大的定制机器人存在明显限制</p>
+  <ul class="reading-intro-points"><li>当前视觉-语言-动作（VLA）模型适配新机器人形态的标准流程依赖针对该机器人的任务演示数据集，对于形态差异较大的定制机器人存在明显限制</li><li>本文研究零示例场景下，将预训练OpenVLA-OFT模型适配到新型电缆驱动并联机器人（CDPR）的可行性，仅通过强化学习（RL）与仿真器密集奖励完成本体对齐，无需任何针对该机器人的演示数据</li><li>研究目标是验证RL-only引导能否为全新机器人形态提供首个可用的语言条件控制器，解决新机器人无演示数据时VLA模型无法完成适配的实际问题</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文未在提供的内容中标注作者所属的具体研究机构</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>当前视觉-语言-动作（VLA）模型适配新机器人形态的标准流程依赖针对该机器人的任务演示数据集，对于形态差异较大的定制机器人存在明显限制</li><li>本文研究零示例场景下，将预训练<strong>OpenVLA-OFT</strong>模型适配到新型<strong>电缆驱动并联机器人（CDPR）</strong>的可行性，仅通过强化学习（RL）与仿真器密集奖励完成本体对齐，无需任何针对该机器人的演示数据</li><li>研究目标是验证RL-only引导能否为全新机器人形态提供首个可用的语言条件控制器，解决新机器人无演示数据时VLA模型无法完成适配的实际问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>针对新型<strong>电缆驱动并联机器人（CDPR）</strong>，提出基于<strong>OpenVLA-OFT</strong>的零示例RL引导适配方案，无需任何针对该机器人的演示数据</li><li>设计了基于仿真器几何信息的密集奖励函数，为形态差异较大的新机器人提供本体对齐的shaping信号，解决早期成功轨迹稀疏的问题</li><li>提出两阶段<strong>PPO→GRPO</strong>的训练流程，在4个基础方向指令上的平均成功率从34.25%提升至53.50%，显著优于单阶段PPO的结果</li><li>将指令空间扩展到8类目标物体的“移动到<物体>”导航指令，验证了策略的语言条件泛化能力，同时通过与已有VLA-RL工作的对比明确了当前方法的适用边界与改进空间</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>技术栈基于<strong>MuJoCo</strong>仿真环境搭建电缆驱动并联机器人的完整仿真流程，包含本体建模、奖励定义、<strong>YCB</strong>与<strong>LIBERO</strong>资产库驱动的随机场景生成，以及<strong>OpenVLA-OFT</strong>的RL微调模块</li><li>策略骨干为公开的7B参数<strong>OpenVLA-OFT</strong>预训练模型，输入为全局相机与腕部相机的双路RGB图像，输出5维动作（x/y/z方向笛卡尔位移、偏航角旋转、夹爪开合），低层控制由仿真器内的PID控制器实现</li><li>训练采用两阶段课程式RL流程：第一阶段使用<strong>PPO</strong>训练4种基础方向动作原语（左移、右移、前移、后移），让策略先掌握指令语义到机器人动作空间的映射；第二阶段从PPO的checkpoint继续使用<strong>GRPO</strong>训练，扩展指令空间至8类目标物体的导航指令</li><li>核心创新点为完全跳过针对新机器人的演示数据收集环节，仅依靠仿真器提供的密集几何奖励完成本体对齐，同时通过两阶段课程降低训练难度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>场景生成使用公开的<strong>YCB</strong>与<strong>LIBERO</strong>资产库构建随机化仿真场景，未使用任何针对该电缆驱动机器人的真实或仿真演示数据集</li><li>模型规模：基于7B参数的<strong>OpenVLA-OFT</strong>预训练模型，仅微调适配器（Adapter）与动作头参数，预训练主干权重保持冻结</li><li>训练资源：使用2块<strong>NVIDIA A40</strong> GPU，第一阶段<strong>PPO</strong>训练耗时约175小时，第二阶段<strong>GRPO</strong>训练耗时约170小时，总RL训练时长约345小时</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：在随机化生成的仿真场景留出测试集上评估，每个基础方向指令测试100次rollout，目标导航指令共测试400次rollout</li><li>主要评估指标：任务严格成功率</li><li>关键实验结果：① 4个基础方向指令的平均成功率从PPO阶段的34.25%提升至PPO→GRPO阶段的53.50%，其中左移、后移指令提升幅度最大（分别提升35、33个百分点）；② 目标导航指令的严格成功率为9.75%（39/400），但多数失败rollout显示策略在后期失稳前已能正确接近目标物体，具备基础的目标条件导航能力；③ 验证了密集奖励在零示例新机器人适配场景中的必要性，相比依赖演示数据的稀疏奖励VLA-RL方法，本方法在无演示场景下更具可行性</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.01028/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VLAGuard: A Framework for Evaluating and Mitigating Physical Attention Hijacking in Vision-Language-Action Robots within Wireless Sensor Networks</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.00569/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Latency-Tolerant Cloud-Edge Collaborative Vision-Language-Action Models via Emergent Representational Specialization</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
