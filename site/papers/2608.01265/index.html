@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hermite Curves as Trajectory Priors for Vision-Language-Action Models - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="解决现有Vision-Language-Action (VLA) 模型将动作块（action chunk）建模为扁平时间步控制序列导致的运动抖动和边界不连续问题 提出Hermite轨迹先验，将动作块参数化为分段三次Hermite曲线，通过端点位置和速度显式建模轨迹平滑性与连续性 在离散自回归与连续生成两种范式下验证该先验的有效性，并揭示其作为训练阶段归纳偏置优于推理阶段约束" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.01265">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.01265.webp" alt="Hermite Curves as Trajectory Priors for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">解决现有Vision-Language-Action (VLA) 模型将动作块（action chunk）建模为扁平时间步控制序列导致的运动抖动和边界不连续问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Hermite Curves as Trajectory Priors for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-08-02 · <a href="http://arxiv.org/abs/2608.01265" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.01265" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.01265</span></div>
+            <p class="detail-summary">解决现有Vision-Language-Action (VLA) 模型将动作块（action chunk）建模为扁平时间步控制序列导致的运动抖动和边界不连续问题 提出Hermite轨迹先验，将动作块参数化为分段三次Hermite曲线，通过端点位置和速度显式建模轨迹平滑性与连续性 在离散自回归与连续生成两种范式下验证该先验的有效性，并揭示其作为训练阶段归纳偏置优于推理阶段约束</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">哈尔滨工业大学（深圳）计算机科学与技术学院</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.01265/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">解决现有Vision-Language-Action (VLA) 模型将动作块（action chunk）建模为扁平时间步控制序列导致的运动抖动和边界不连续问题</p>
+  <ul class="reading-intro-points"><li>解决现有Vision-Language-Action (VLA) 模型将动作块（action chunk）建模为扁平时间步控制序列导致的运动抖动和边界不连续问题</li><li>提出Hermite轨迹先验，将动作块参数化为分段三次Hermite曲线，通过端点位置和速度显式建模轨迹平滑性与连续性</li><li>在离散自回归与连续生成两种范式下验证该先验的有效性，并揭示其作为训练阶段归纳偏置优于推理阶段约束</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>哈尔滨工业大学（深圳）计算机科学与技术学院</strong></li><li><strong>江苏赛脱智能科技有限公司</strong></li><li><strong>新加坡国立大学电气与计算机工程系及Show Lab</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>解决现有<strong>Vision-Language-Action (VLA)</strong> 模型将动作块（action chunk）建模为扁平时间步控制序列导致的运动抖动和边界不连续问题</li><li>提出<strong>Hermite轨迹先验</strong>，将动作块参数化为分段三次Hermite曲线，通过端点位置和速度显式建模轨迹平滑性与连续性</li><li>在离散自回归与连续生成两种范式下验证该先验的有效性，并揭示其作为训练阶段归纳偏置优于推理阶段约束</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出紧凑的三次<strong>Hermite算子</strong>，通过端点位置和速度对动作块进行参数化，将块内平滑性与块间边界连续性直接嵌入VLA动作学习</li><li>系统整合轨迹先验到离散与连续VLA建模，提出<strong>Hermite-VLA_DH</strong>（离散Hermite令牌）、<strong>Hermite-VLA_CH</strong>（连续Hermite支架）和<strong>Hermite-VLA_Reg</strong>（Hermite正则化）三种变体</li><li>理论分析与实验表明，将Hermite结构严格作为辅助训练目标（而非推理时显式参与）可获得最优性能且零推理开销</li><li>提供运动学精细分析，证明该先验有效降低jerk、抑制高频分量并减轻接缝瞬态</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>将动作块中连续变化的通道（如平移、旋转位移）建模为分段三次Hermite曲线，每个线段由4个边界变量（起点/终点位置与速度）定义</li><li>定义固定<strong>Hermite轨迹算子</strong> $\mathcal{D}_H(\boldsymbol{\theta}) = \mathbf{H}\boldsymbol{\theta}$，其中 $\mathbf{H} \in \mathbb{R}^{T \times 4K}$ 为预计算基矩阵，实现边界变量到密集轨迹的线性映射</li><li><strong>Hermite-VLA_DH</strong>：将边界变量量化为离散令牌，以自回归方式逐段预测，解码后通过 $\mathcal{D}_H$ 重构轨迹</li><li><strong>Hermite-VLA_CH</strong>：在流匹配（flow matching）框架下，将干净动作估计分解为Hermite支架 $\mathcal{D}_H(\boldsymbol{\theta})$ 与每时间步残差之和</li><li><strong>Hermite-VLA_Reg</strong>：保留原始连续动作头与采样流程，仅通过辅助MLP头预测Hermite边界变量并添加重构损失，推理时丢弃该分支</li><li>目标编码采用均匀网格放置 $K+1$ 个节点，通过一阶前向/后向差分估计端点速度，确保编码目标在内部节点处 $C^0$ 精确且软 $C^1$ 一致</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO</strong> 仿真基准（标准任务集）</li><li><strong>LIBERO-plus</strong>（分布偏移场景）</li><li>4个真实机器人操作任务（涵盖单臂与双臂）</li><li>基线模型：<strong>π0.5</strong>、<strong>π0-FAST</strong></li><li>模型规模：基于现有VLA主干网络，具体参数量未在摘要中说明</li><li>训练硬件：未明确说明</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：<strong>LIBERO</strong>仿真、<strong>LIBERO-plus</strong>分布偏移测试、真实机器人平台</li><li>评估指标：任务成功率（success rate）</li><li><strong>Hermite-VLA_Reg</strong> 在LIBERO上将<strong>π0.5</strong>基线成功率从95.9%提升至<strong>98.7%</strong></li><li>在<strong>LIBERO-plus</strong>上从85.7%提升至<strong>90.9%</strong></li><li>在4个真实机器人任务上从63.4%大幅提升至<strong>90.0%</strong>，且无额外推理开销</li><li><strong>Hermite-VLA_DH</strong> 在LIBERO上将<strong>π0-FAST</strong>从85.5%提升至<strong>95.4%</strong>，在LIBERO-plus上从61.6%提升至<strong>69.4%</strong></li><li>消融实验表明，Hermite先验作为训练阶段归纳偏置的效果优于作为推理阶段约束</li><li>运动分析显示该方法显著降低轨迹jerk、抑制高频噪声并缓解多块拼接处的速度跳变</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.01381/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">DreamTrajectory: Trajectory-Guided Action Generation with World Model Alignment for Mobile Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.01066/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">OC-VLA++: Monocular Geometry-Guided Cross-View Consistency for Viewpoint-Robust Robotic Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Multi-View Unified Camera Fields: Geometry-Shaped Action-Facing Representations for RGB-Only Multi-Camera VLA Policies - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="针对多摄像头 VLA 策略中，视觉表示缺乏度量深度和跨视图一致性的问题，提出 MVUCF 框架 在训练阶段向动作模块的隐状态注入几何结构，使得深度可恢复且同一物理点在多视图下的 token 对齐 推理时仅需 RGB 图像，无需深度、相机标定或额外几何模块，保持原有推理图" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.01826">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.01826.webp" alt="Multi-View Unified Camera Fields: Geometry-Shaped Action-Facing Representations for RGB-Only Multi-Camera VLA Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对多摄像头 VLA 策略中，视觉表示缺乏度量深度和跨视图一致性的问题，提出 MVUCF 框架</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Multi-View Unified Camera Fields: Geometry-Shaped Action-Facing Representations for RGB-Only Multi-Camera VLA Policies</h1>
+            <div class="detail-meta">2026-08-03 · <a href="http://arxiv.org/abs/2608.01826" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.01826" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.01826</span></div>
+            <p class="detail-summary">针对多摄像头 VLA 策略中，视觉表示缺乏度量深度和跨视图一致性的问题，提出 MVUCF 框架 在训练阶段向动作模块的隐状态注入几何结构，使得深度可恢复且同一物理点在多视图下的 token 对齐 推理时仅需 RGB 图像，无需深度、相机标定或额外几何模块，保持原有推理图</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">5 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者所属的研究机构未在提供的 HTML 原文中明确列出</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.01826/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对多摄像头 VLA 策略中，视觉表示缺乏度量深度和跨视图一致性的问题，提出 MVUCF 框架</p>
+  <ul class="reading-intro-points"><li>针对多摄像头 VLA 策略中，视觉表示缺乏度量深度和跨视图一致性的问题，提出 MVUCF 框架</li><li>在训练阶段向动作模块的隐状态注入几何结构，使得深度可恢复且同一物理点在多视图下的 token 对齐</li><li>推理时仅需 RGB 图像，无需深度、相机标定或额外几何模块，保持原有推理图</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者所属的研究机构未在提供的 HTML 原文中明确列出</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对多摄像头 VLA 策略中，视觉表示缺乏度量深度和跨视图一致性的问题，提出 <strong>MVUCF</strong> 框架</li><li>在训练阶段向动作模块的隐状态注入几何结构，使得深度可恢复且同一物理点在多视图下的 token 对齐</li><li>推理时仅需 RGB 图像，无需深度、相机标定或额外几何模块，保持原有推理图</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>通过 token 级诊断揭示了原生多摄像头 VLA 表示在度量深度恢复和跨视图对应上的不足</li><li>提出 <strong>MVUCF</strong>，将坐标查询深度目标与预处理感知的跨视图对应目标联合注入，重塑动作模块的隐状态</li><li>在 <strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin</strong> 三大模拟基准及真实机器人上验证了有效性，显著提升任务成功率</li><li>证明外部深度几何特征（如 VGGT）的深层特征并不保留 token 级身份，需要直接监督动作模块的隐状态</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于 <strong>GR00T-N1.6</strong>，在训练时利用同步的 RGB、深度和相机标定，在 backbone 上层（8–15 层）注入几何信息</li><li><strong>坐标查询深度头</strong>：在连续网格坐标上预测度量深度，结合不确定度监督，强调近场操作空间和局部梯度</li><li><strong>跨视图对应头</strong>：通过几何反投影与重投影，结合精确的预处理映射，对齐同一物理点的 token，采用软高斯分布目标和多种负样本策略</li><li>注入后移除辅助头和几何输入，冻结 backbone，再训练动作模块，保持 RGB-only 推理</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>LIBERO</strong>（含 Spatial、Object、Goal、Long 四个子集）、<strong>LIBERO-Plus</strong>（七种扰动类型）和 <strong>RoboTwin</strong>（六任务，分 Touch、Move/Place、Contact 三类）</li><li>真实机器人实验使用 <strong>Agibot Expedition A2</strong> 人形机器人，每个任务 100 条演示</li><li>模型基于 <strong>GR00T-N1.6</strong>，全局批量 128，几何注入 50k 步，约 18 小时（2–4 块 NVIDIA H100 GPU）</li><li>动作训练步数：LIBERO 60k，RoboTwin 180k（联合训练），推理时无额外参数或 FLOPs</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>在 <strong>LIBERO</strong> 上，MVUCF 平均成功率 98.9%，比基础模型（97.4%）提升 1.5 个百分点，长序列任务提升最大（+4.1）</li><li>在 <strong>LIBERO-Plus</strong> 零样本鲁棒性测试中，总成功率提升 22.4 个百分点，所有七类扰动均有改善</li><li>在 <strong>RoboTwin</strong> 六任务评估中，平均成功率从 38.6% 提升至 61.9%（+23.3），Move/Place 和 Contact 类任务提升显著</li><li>真实机器人实验中，MVUCF 成功率 81.7%（95% CI 70.1–89.4%），优于基础模型的 66.7%</li><li>诊断结果显示，MVUCF 使深度平均绝对误差从 4.9 cm 降至 0.44 cm，跨视图检索命中率从 0.4% 提升至 64%，且动作注意力更集中于操作对象</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.01851/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Weights or Skills? A Survey of Robot-Learning Techniques: from Action-Predicting Weights to Robots that Write their Own Skills</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.01824/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ReTouch: Empowering Contact-Rich Dexterous Manipulation with Online-Refined Tactile Prediction</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
