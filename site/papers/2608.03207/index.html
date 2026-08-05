@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DRIFT: Derailing Denoising Trajectories of Flow-Matching VLAs with Adversarial Patch Attack - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="现有研究表明flow-matching视觉语言动作（VLA）模型（如π₀、π₀.₅）相比自回归VLA更具对抗鲁棒性，本文指出该结论是幻觉，源于既往攻击方法忽略了flow-matching模型的多步去噪普通微分方程（ODE）核心结构。 本文提出DRIFT（Denoising Redirection via Input perturbation of the Flow-matching Trajectory），一种测试时通用对抗补丁，可放置在机器人夹爪的腕部相机视野内，通过攻击冻结部署策略的去噪速度场实现任务破坏，无需修改模型权重或访问训练流程。 研究目标是验证针对现成flow-matching VLA的测试时攻击可行性，揭示去噪过程的漏洞，解决既往攻击要么忽略去噪结构、要么依赖训练时后门的不实用问题。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.03207">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.03207.webp" alt="DRIFT: Derailing Denoising Trajectories of Flow-Matching VLAs with Adversarial Patch Attack" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有研究表明flow-matching视觉语言动作（VLA）模型（如π₀、π₀.₅）相比自回归VLA更具对抗鲁棒性，本文指出该结论是幻觉，源于既往攻击方法忽略了flow-matching模型的多步去噪普通微分方程（ODE）核心结构。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">DRIFT: Derailing Denoising Trajectories of Flow-Matching VLAs with Adversarial Patch Attack</h1>
+            <div class="detail-meta">2026-08-04 · <a href="http://arxiv.org/abs/2608.03207" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.03207" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.03207</span></div>
+            <p class="detail-summary">现有研究表明flow-matching视觉语言动作（VLA）模型（如π₀、π₀.₅）相比自回归VLA更具对抗鲁棒性，本文指出该结论是幻觉，源于既往攻击方法忽略了flow-matching模型的多步去噪普通微分方程（ODE）核心结构。 本文提出DRIFT（Denoising Redirection via Input perturbation of the Flow-matching Trajectory），一种测试时通用对抗补丁，可放置在机器人夹爪的腕部相机视野内，通过攻击冻结部署策略的去噪速度场实现任务破坏，无需修改模型权重或访问训练流程。 研究目标是验证针对现成flow-matching VLA的测试时攻击可行性，揭示去噪过程的漏洞，解决既往攻击要么忽略去噪结构、要么依赖训练时后门的不实用问题。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Yonsei University School of Integrated Technology（论…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.03207/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有研究表明flow-matching视觉语言动作（VLA）模型（如π₀、π₀.₅）相比自回归VLA更具对抗鲁棒性，本文指出该结论是幻觉，源于既往攻击方法忽略了flow-matching模型的多步去噪普通微分方程（ODE）核心结构。</p>
+  <ul class="reading-intro-points"><li>现有研究表明flow-matching视觉语言动作（VLA）模型（如π₀、π₀.₅）相比自回归VLA更具对抗鲁棒性，本文指出该结论是幻觉，源于既往攻击方法忽略了flow-matching模型的多步去噪普通微分方程（ODE）核心结构。</li><li>本文提出DRIFT（Denoising Redirection via Input perturbation of the Flow-matching Trajectory），一种测试时通用对抗补丁，可放置在机器人夹爪的腕部相机视野内，通过攻击冻结部署策略的去噪速度场实现任务破坏，无需修改模型权重或访问训练流程。</li><li>研究目标是验证针对现成flow-matching VLA的测试时攻击可行性，揭示去噪过程的漏洞，解决既往攻击要么忽略去噪结构、要么依赖训练时后门的不实用问题。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Yonsei University School of Integrated Technology</strong>（论文作者所属机构）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有研究表明flow-matching视觉语言动作（VLA）模型（如π₀、π₀.₅）相比自回归VLA更具对抗鲁棒性，本文指出该结论是幻觉，源于既往攻击方法忽略了flow-matching模型的多步去噪普通微分方程（ODE）核心结构。</li><li>本文提出<strong>DRIFT（Denoising Redirection via Input perturbation of the Flow-matching Trajectory）</strong>，一种测试时通用对抗补丁，可放置在机器人夹爪的腕部相机视野内，通过攻击冻结部署策略的去噪速度场实现任务破坏，无需修改模型权重或访问训练流程。</li><li>研究目标是验证针对现成flow-matching VLA的测试时攻击可行性，揭示去噪过程的漏洞，解决既往攻击要么忽略去噪结构、要么依赖训练时后门的不实用问题。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出新的攻击面与实际威胁模型：DRIFT是首个针对flow-matching VLA去噪速度场的测试时对抗补丁攻击，无需像FlowHijack那样依赖训练后门和修改模型，也不同于忽略去噪ODE的动作空间、嵌入空间攻击，仅通过单个物理贴纸即可破坏未修改的部署策略。</li><li>揭示“少步攻击反而更强”的反直觉现象：证明针对测试时补丁，仅攻击第一个去噪步的效果优于攻击更宽的早期去噪步窗口，这与训练时后门场景的规律完全相反。</li><li>通过梯度冲突给出机理解释：将“少即是多”效应归因于输入空间优化特有的梯度冲突——不同去噪步的补丁梯度方向不一致，累加时会相互抵消，该分析填补了训练时工作的空白，解释了为何仅攻击第一步足够且增加步数会降低效果。</li><li>实现高效攻击：DRIFT仅需攻击单个去噪步，每次迭代仅需一次速度场的前向和反向传播，相比全轨迹攻击将优化成本降低K倍（K为去噪步数），同时攻击效果更强。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>DRIFT采用测试时通用对抗补丁攻击方案，补丁被固定在机器人腕部相机视野的夹爪区域，通过投影梯度下降（PGD）优化，目标是最小化干净观测与补丁扰动观测下的去噪速度场的L2距离，仅针对第一个去噪步（k=0）进行攻击。</li><li>创新点与关键技术：1. 首次针对flow-matching VLA的去噪速度场设计测试时攻击，利用去噪ODE的“早期注入、全路径放大”级联效应，使第一步的误差在剩余去噪步骤中被逐级放大；2. 揭示输入空间优化下的梯度冲突现象：不同去噪步的补丁梯度存在方向冲突，累加时会抵消信号，因此仅攻击单步反而比攻击多步效果更好；3. 优化过程仅需单步去噪的前向反向传播，计算效率高，补丁可离线优化后通用部署。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：<strong>LIBERO基准</strong>，包含Spatial、Goal、Object、Long四个任务套件，每个套件含10个操作任务；补丁优化采用696张LIBERO腕部相机帧作为通用观察集，评估时每个任务运行10次预定义初始状态的试验，每个套件共100轮评估。</li><li>模型： victim模型为<strong>π₀</strong>和<strong>π₀.₅</strong>，均为公开可用的LIBERO微调flow-matching VLA检查点，推理时保持权重冻结，π₀默认去噪步数K=10。</li><li>训练资源：补丁优化在单张<strong>NVIDIA RTX 3090（24GB显存）</strong>上完成，共500次PGD迭代，步长α=0.01，每次迭代仅需单步去噪的前向反向传播。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：在LIBERO基准的四个套件上评估，补丁在分布内的libero_spatial套件上优化，在四个套件上测试泛化性，对比基线包括随机未训练补丁、动作空间攻击UADA、嵌入空间攻击EDPA，所有攻击采用相同的补丁尺寸预算。</li><li>主要评估指标：1. 攻击成功率（ASR）：(干净任务成功率TSR - 攻击后TSR)/干净TSR，衡量攻击打破原本可完成任务的比率，越高代表攻击效果越强；2. 归一化动作差异（NAD）：衡量攻击后动作与干净策略输出动作的偏差，越高代表动作扰动越大。</li><li>关键实验结果：1. 针对π₀的实验中，DRIFT（32px补丁）在四个LIBERO套件上平均ASR达99.8%，几乎打破所有原本可完成的任务，远超过同尺寸的UADA（平均13.2% ASR）和EDPA（平均25.3% ASR，且EDPA在32px尺寸下无效，需64px才能生效）；2. 单步攻击效果优于多步攻击：攻击3个早期去噪步时平均ASR降至77.5%，攻击5步时为79.7%，验证了梯度冲突导致的“少即是多”效应；3. DRIFT在分布外的Goal、Object、Long套件上也保持高ASR，说明通用补丁具有良好的跨任务泛化性；4. 针对鲁棒性更强的π₀.₅，DRIFT采用64px补丁也可达到高攻击成功率。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.03231/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Structure-Aware Robust Fine-Tuning: Defending Vision-Language-Action Robots Against Physical Attention Hijacking</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.03052/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">How Should Vision-Language-Action Models Use Proprioceptive State?</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

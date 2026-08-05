@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Continue or Replan? Bernoulli-Continuation Policy Learning for Adaptive Horizon Execution - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="论文针对现有基于动作块（action chunking）的 VLA 模型在执行时采用固定执行边界（execution horizon）的问题，指出了这种与任务进度无关的周期性重规划会导致在关键操作阶段执行过时动作块的失败模式。 提出了一种名为 Bernoulli-Continuation Policy (BCP) 的轻量级、即插即用框架，用于自适应地决定当前动作块应该执行多少步后再进行重规划。 核心思想是将执行边界的选择建模为一系列“继续或重规划”的有序决策，并通过强化学习从轨迹级结果中学习，同时引入重规划效率奖励，以鼓励任务成功和高效使用 VLA。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.03483">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.03483.webp" alt="Continue or Replan? Bernoulli-Continuation Policy Learning for Adaptive Horizon Execution" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对现有基于动作块（action chunking）的 VLA 模型在执行时采用固定执行边界（execution horizon）的问题，指出了这种与任务进度无关的周期性重规划会导致在关键操作阶段执行过时动作块的失败模式。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Continue or Replan? Bernoulli-Continuation Policy Learning for Adaptive Horizon Execution</h1>
+            <div class="detail-meta">2026-08-04 · <a href="http://arxiv.org/abs/2608.03483" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.03483" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.03483</span></div>
+            <p class="detail-summary">论文针对现有基于动作块（action chunking）的 VLA 模型在执行时采用固定执行边界（execution horizon）的问题，指出了这种与任务进度无关的周期性重规划会导致在关键操作阶段执行过时动作块的失败模式。 提出了一种名为 Bernoulli-Continuation Policy (BCP) 的轻量级、即插即用框架，用于自适应地决定当前动作块应该执行多少步后再进行重规划。 核心思想是将执行边界的选择建模为一系列“继续或重规划”的有序决策，并通过强化学习从轨迹级结果中学习，同时引入重规划效率奖励，以鼓励任务成功和高效使用 VLA。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Microsoft Research Asia</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.03483/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文针对现有基于动作块（action chunking）的 VLA 模型在执行时采用固定执行边界（execution horizon）的问题，指出了这种与任务进度无关的周期性重规划会导致在关键操作阶段执行过时动作块的失败模式。</p>
+  <ul class="reading-intro-points"><li>论文针对现有基于动作块（action chunking）的 VLA 模型在执行时采用固定执行边界（execution horizon）的问题，指出了这种与任务进度无关的周期性重规划会导致在关键操作阶段执行过时动作块的失败模式。</li><li>提出了一种名为 Bernoulli-Continuation Policy (BCP) 的轻量级、即插即用框架，用于自适应地决定当前动作块应该执行多少步后再进行重规划。</li><li>核心思想是将执行边界的选择建模为一系列“继续或重规划”的有序决策，并通过强化学习从轨迹级结果中学习，同时引入重规划效率奖励，以鼓励任务成功和高效使用 VLA。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Microsoft Research Asia</strong></li><li><strong>Shanghai Jiao Tong University</strong></li><li><strong>Tsinghua University</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对现有基于动作块（action chunking）的 VLA 模型在执行时采用固定执行边界（execution horizon）的问题，指出了这种与任务进度无关的周期性重规划会导致在关键操作阶段执行过时动作块的失败模式。</li><li>提出了一种名为 <strong>Bernoulli-Continuation Policy (BCP)</strong> 的轻量级、即插即用框架，用于自适应地决定当前动作块应该执行多少步后再进行重规划。</li><li>核心思想是将执行边界的选择建模为一系列“继续或重规划”的有序决策，并通过强化学习从轨迹级结果中学习，同时引入重规划效率奖励，以鼓励任务成功和高效使用 VLA。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别出重规划时间错位是固定边界块执行的一个关键失败模式，并将自适应执行边界选择形式化为一系列“继续或重规划”的决策序列，捕捉了候选边界的序数和前缀共享结构。</li><li>提出了 <strong>Bernoulli-Continuation Policy (BCP)</strong> 框架，该框架保持基础 VLA 模型冻结，使用强化学习（RL）从轨迹级结果进行训练，无需逐块监督标签。</li><li>引入了一种 <strong>Replanning-Efficiency Reward</strong>，该奖励联合奖励任务成功和执行效率，防止策略坍缩到不必要的短边界，从而在成功率和推理成本之间取得平衡。</li><li>在 <strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong>、<strong>LIBERO-PRO</strong> 和真实机器人上验证了 BCP 的有效性，展示了其性能提升、对随机化环境的泛化能力以及跨不同基础策略的可迁移性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>问题形式化</strong>：给定一个预训练的 VLA 模型生成的固定长度动作块，BCP 的任务是从一组离散的候选执行边界 \(\mathcal{E}\) 中选择一个边界 \(E_t\)，然后执行动作块的前缀并重新规划。</li><li><strong>Bernoulli-Continuation Head</strong>：这是一个附加在冻结 VLA 上的轻量级 Transformer 编码器，它利用 VLA 生成的视觉-语言 token 和动作特征，输出一系列伯努利概率 \(p_t^i\)，表示从一个边界继续到下一个边界的概率。这种设计强制执行了序数归纳偏差，使得长边界只有在前序边界都判断为“继续”时才能被选中。</li><li><strong>RL 与 Replanning-Efficiency Reward</strong>：使用 <strong>GRPO</strong> 算法从轨迹级奖励优化 BCP。为了解决无监督学习问题，提出了一个奖励函数 \(R_i = S_i(1 + \delta_+ \max(\eta_i, 0) + \delta_- \min(\eta_i, 0))\)，其中 \(S_i\) 是成功标志，\(\eta_i\) 通过比较自适应轨迹与固定边界参考轨迹的 VLA 调用次数来衡量效率。成功任务通过获得更高的奖励来鼓励更少的 VLA 调用，而失败任务奖励为零，防止策略崩溃。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>RoboTwin 2.0</strong>（50个任务，包含Clean和Randomized设置）、<strong>LIBERO</strong>、<strong>LIBERO-PRO</strong>。</li><li><strong>模型规模</strong>：BCP 本身是一个 <strong>2层 Transformer 编码器</strong>，参数量极小。基础 VLA 模型包括 <strong>LingBot-VLA</strong>、<strong>ABot-M0</strong>、<strong>ACT</strong> 和 <strong>\(\pi_{0.5}\)</strong>。</li><li><strong>训练资源</strong>：在 <strong>8块 NVIDIA A100 GPU (40GB)</strong> 上使用 GRPO 训练 300 步，组大小为 8。训练时使用 256 个并行环境，全局批大小为 512。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：在 <strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong>、<strong>LIBERO-PRO</strong> 仿真环境和 <strong>AGIBOT G1</strong> 真实机器人上进行评估。</li><li><strong>主要评估指标</strong>：<strong>成功率 (Success Rate)</strong>、<strong>VLA 调用次数</strong>、<strong>执行步数</strong>、<strong>运行时间</strong>。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 在 RoboTwin 2.0 上，以 LingBot-VLA 为基础，BCP 在 13 个低成功率任务上提升了 <strong>+11.08%</strong>，在所有 50 个任务上提升了 <strong>+4.06%</strong>（从 89.88% 到 <strong>93.94%</strong>），并泛化到 Randomized 设置（+4.06%）。</p>
+<p> - 迁移到基础策略 \(\pi_{0.5}\) 后，在 LIBERO 上提升 <strong>+1.7%</strong>，在更难的 LIBERO-PRO 上提升 <strong>+6.8%</strong>（从 30.9% 到 37.7%）。</p>
+<p> - 在真实机器人上，两个操作任务的成功率分别从 74% 提升到 <strong>92%</strong> 和从 44% 提升到 <strong>84%</strong>。</p>
+<p> - 与固定边界基线相比，BCP 的单次推理开销可以忽略不计（2.03 ms），由于执行步数减少，总体运行时间甚至更低（从 10.43s 降至 10.24s）。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.03563/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Unified Visuomotor Targets: Supervising VLAs Beyond Physical Actions</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.03231/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Structure-Aware Robust Fine-Tuning: Defending Vision-Language-Action Robots Against Physical Attention Hijacking</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
