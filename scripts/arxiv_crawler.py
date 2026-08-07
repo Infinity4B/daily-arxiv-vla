@@ -6,7 +6,11 @@ from typing import List, Set
 
 import arxiv
 
-DEFAULT_ARXIV_QUERY = 'all:"VLA" OR all:"Vision-Language-Action"'
+DEFAULT_ARXIV_QUERY = (
+	'all:"VLA" OR all:"Vision-Language-Action" OR '
+	'all:"World Action Model" OR all:"World-Action Model" OR '
+	'all:"action world model"'
+)
 
 
 class ArxivCollector:
@@ -15,7 +19,7 @@ class ArxivCollector:
 	 * @class ArxivCollector
 	 * @description 每日自动获取 arXiv 上包含指定关键词的论文，并维护项目根目录下的
 	 * `papers.md` 表格（列：日期、标题、链接）。首次运行无数据时执行初始化，之后每日增量并去重。
-	 * 关键词可通过环境变量 ARXIV_QUERY_KEYWORD 配置，默认同时检索 "VLA" 和 "Vision-Language-Action"。
+	 * 关键词可通过环境变量 ARXIV_QUERY_KEYWORD 配置，默认同时检索 VLA 与 World Action Model 相关短语。
 	 */
 	"""
 
@@ -33,7 +37,7 @@ class ArxivCollector:
 		"""
 		初始化 ArxivCollector
 		参数可通过环境变量配置：
-		- ARXIV_QUERY_KEYWORD: 搜索关键词（默认同时检索 "VLA" 和 "Vision-Language-Action"）
+		- ARXIV_QUERY_KEYWORD: 搜索关键词（默认同时检索 VLA 与 World Action Model）
 		- ARXIV_INIT_RESULTS: 初始化抓取数量（默认 500）
 		- ARXIV_DAILY_RESULTS: 每日抓取数量（默认 20）
 		- ARXIV_PAGE_SIZE: 单次请求返回数量（默认 20，避免 arxiv 库默认请求 100 条触发限流）
