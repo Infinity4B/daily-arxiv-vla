@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beyond Flat Policies: Hierarchical Post-Training for Embodied Agents in Robotic Manipulation - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="针对现有视觉-语言-动作（VLA）模型后训练普遍采用扁平策略，无法显式建模长程操作任务的阶段进展、易受执行误差累积影响导致失败的问题，本文提出名为HiRoC的层次化后训练框架 HiRoC将高层任务规划与低层动作执行解耦：高层规划器负责将全局任务指令分解为可执行的中间子目标，为低层执行器提供显式语义指导；低层执行器负责根据当前子目标生成低层动作序列 通过解决规划器与执行器之间的分布偏移问题，结合在线强化学习优化执行器，提升VLA模型在长程机器人操作任务上的鲁棒性和成功率" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.05999">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.05999.webp" alt="Beyond Flat Policies: Hierarchical Post-Training for Embodied Agents in Robotic Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对现有视觉-语言-动作（VLA）模型后训练普遍采用扁平策略，无法显式建模长程操作任务的阶段进展、易受执行误差累积影响导致失败的问题，本文提出名为HiRoC的层次化后训练框架</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Beyond Flat Policies: Hierarchical Post-Training for Embodied Agents in Robotic Manipulation</h1>
+            <div class="detail-meta">2026-08-06 · <a href="http://arxiv.org/abs/2608.05999" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.05999" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.05999</span></div>
+            <p class="detail-summary">针对现有视觉-语言-动作（VLA）模型后训练普遍采用扁平策略，无法显式建模长程操作任务的阶段进展、易受执行误差累积影响导致失败的问题，本文提出名为HiRoC的层次化后训练框架 HiRoC将高层任务规划与低层动作执行解耦：高层规划器负责将全局任务指令分解为可执行的中间子目标，为低层执行器提供显式语义指导；低层执行器负责根据当前子目标生成低层动作序列 通过解决规划器与执行器之间的分布偏移问题，结合在线强化学习优化执行器，提升VLA模型在长程机器人操作任务上的鲁棒性和成功率</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">第一所属机构：He Kong、Zengjue Chen、Qi Wang、Runliang Niu、Sh…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.05999/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对现有视觉-语言-动作（VLA）模型后训练普遍采用扁平策略，无法显式建模长程操作任务的阶段进展、易受执行误差累积影响导致失败的问题，本文提出名为HiRoC的层次化后训练框架</p>
+  <ul class="reading-intro-points"><li>针对现有视觉-语言-动作（VLA）模型后训练普遍采用扁平策略，无法显式建模长程操作任务的阶段进展、易受执行误差累积影响导致失败的问题，本文提出名为HiRoC的层次化后训练框架</li><li>HiRoC将高层任务规划与低层动作执行解耦：高层规划器负责将全局任务指令分解为可执行的中间子目标，为低层执行器提供显式语义指导；低层执行器负责根据当前子目标生成低层动作序列</li><li>通过解决规划器与执行器之间的分布偏移问题，结合在线强化学习优化执行器，提升VLA模型在长程机器人操作任务上的鲁棒性和成功率</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>第一所属机构：He Kong、Zengjue Chen、Qi Wang、Runliang Niu、Shiqi Wang、Yi Chang的所属单位（标注为上标1）</li><li>第二所属机构：Qianli Xing的所属单位（标注为上标2）</li><li>第三所属机构：Peidong Liu、Jiawei Li的所属单位（标注为上标3）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对现有视觉-语言-动作（VLA）模型后训练普遍采用扁平策略，无法显式建模长程操作任务的阶段进展、易受执行误差累积影响导致失败的问题，本文提出名为<strong>HiRoC</strong>的层次化后训练框架</li><li>HiRoC将高层任务规划与低层动作执行解耦：高层规划器负责将全局任务指令分解为可执行的中间子目标，为低层执行器提供显式语义指导；低层执行器负责根据当前子目标生成低层动作序列</li><li>通过解决规划器与执行器之间的分布偏移问题，结合在线强化学习优化执行器，提升VLA模型在长程机器人操作任务上的鲁棒性和成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出HiRoC层次化后训练框架，显式分离高层任务规划与低层动作执行，通过规划器生成的子目标分解显式建模任务进展，为长程操作提供结构化推理能力</li><li>设计规划-执行协同训练策略：先通过子目标条件监督微调（SFT）对齐规划器生成的子目标与执行器，缓解执行器的子目标条件冷启动问题；进一步提出<strong>层次化GRPO（Group Relative Policy Optimization）</strong>目标，联合利用任务级完成奖励和子目标级进度信号，提升长程任务的策略优化效率</li><li>在多样化机器人操作基准上取得一致性能提升，平均成功率较基线提升10.06%，在长程任务套件上达到98%的SOTA成功率</li><li>通过消融实验、分布偏移分析、零样本迁移测试等验证各组件的必要性，同时实现在真实机器人上的零样本sim-to-real部署</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>整体架构：HiRoC包含两个核心模块：① 高层<strong>规划器（Planner）</strong>：基于Qwen2.5-VL-3B初始化，负责根据当前观测和全局任务指令生成中间子目标，训练完成后在后续流程中保持冻结；② 低层<strong>执行器（Executor）</strong>：基于OpenVLA-OFT初始化，负责根据当前观测和规划器生成的子目标输出低层动作序列</li><li>规划器训练：清洗重组VLA-OS的多模态轨迹数据得到规划器训练集$\mathcal{D}_{\text{plan}}$，通过自回归交叉熵损失优化规划器，使其具备任务分解和子目标生成能力</li><li>执行器训练分为两阶段：① 分布偏移缓解阶段：将原始轨迹按子目标拆分为子目标级训练样本$\mathcal{D}_{\text{exe}}$，通过子目标条件SFT预训练执行器，解决预训练执行器仅 conditioned 全局目标导致的分布偏移和冷启动问题；② 强化学习调优阶段：采用在线GRPO优化执行器，提出层次化优势函数，通过自适应权重平衡全局任务级优势和局部子目标级优势，最终采用PPO风格的裁剪actor目标更新执行器策略</li><li>创新点：① 首次将显式层次化任务分解引入VLA后训练流程，解决扁平策略无法建模长程任务进展的痛点；② 提出规划-执行对齐的预训练策略，缓解模块间的分布偏移问题；③ 设计层次化GRPO优化目标，利用子目标级中间监督信号提升长程任务的信用分配效率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：<strong>LIBERO基准</strong>（含Spatial、Object、Goal、Long四个任务套件，共40个长/短程操作任务）、<strong>LIBERO-Plus</strong>（用于零样本鲁棒性评估，增加7类环境扰动）、VLA-OS多模态轨迹数据集（用于规划器训练）、仿真环境收集的机器人操作轨迹（用于执行器训练）</li><li>模型规模：高层规划器为<strong>Qwen2.5-VL-3B</strong>（30亿参数），低层执行器基于<strong>OpenVLA-OFT</strong>，真实机器人部署使用<strong>JoyRA-0.1</strong>作为基础VLA模型</li><li>训练资源：所有仿真实验在8块<strong>NVIDIA H200 GPU</strong>上开展，采用BF16全分片数据并行（FSDP）训练；强化学习训练中，仿真环境GRPO组大小为8，真实环境组大小为64，每个worker包含16个rollout epoch per策略更新，单条轨迹长度为512环境步</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：仿真环境为LIBERO四个任务套件及LIBERO-Plus扰动测试集；真实机器人环境为桌面操作场景，评估任务为将修正液瓶放入二层盒子</li><li>主要评估指标：任务成功率（Success Rate, SR）、任务排名（Rank）</li><li>关键实验结果：</li></ul>
+<p> - 整体性能：在LIBERO基准上平均成功率达到<strong>93.5%</strong>，排名10.3，超越所有对比基线（包括OpenVLA、SmolVLA、ThinkAct、TGRPO、World-Env、GRAPE等）；在长程任务套件LIBERO-Long上成功率达到<strong>98%</strong>，显著优于其他方法</p>
+<p> - 零样本迁移能力：在LIBERO-Plus的所有扰动类型上均取得最佳泛化性能，优于仅用SFT的OpenVLA和基于世界模型的WorldVLA，验证了在线交互探索对泛化能力的提升作用</p>
+<p> - 消融实验结果：去除规划器（w/oP）后成功率降至92.6%，去除全局GRPO（w/oG）后成功率骤降至4%，去除局部子目标级GRPO（w/oL）后成功率为95.2%，证明层次化分解和双信号优化的必要性</p>
+<p> - 真实场景部署：训练好的策略无需额外真实数据微调，即可在真实机器人上零样本完成修正液抓取放置任务，验证了方法的sim-to-real迁移能力</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.06374/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">DyPES-VLA: Learning Shared Dynamics Priors and Embodiment-Specific Control for Cross-Embodiment Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.05970/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SkillMemo: Expert-guided Skill Memory Framework for Compositional Embodied Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
