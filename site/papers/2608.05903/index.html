@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robust-WAM: Bridging Generative Pretraining and Semantic Foresight in World-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Robust-WAM，一种通用的后训练方法，旨在保持视频生成式世界-动作模型（WAMs）中大规模预训练获得的动力学先验，同时通过语义预见对齐提升对视觉分布外（OOD）变化的鲁棒性。 解决现有 WAMs 面临的困境：VAE 潜空间模型继承强大的预训练先验但对光照、纹理等外观变化敏感；语义潜空间模型鲁棒却无法利用大规模视频预训练。 通过向行动流注入轻量级语义对齐目标，使模型在保留 VAE 生成路径的前提下，获得外观不变的动态理解，从而在视觉偏移下保持策略稳定。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.05903">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.05903.webp" alt="Robust-WAM: Bridging Generative Pretraining and Semantic Foresight in World-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 Robust-WAM，一种通用的后训练方法，旨在保持视频生成式世界-动作模型（WAMs）中大规模预训练获得的动力学先验，同时通过语义预见对齐提升对视觉分布外（OOD）变化的鲁棒性。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Robust-WAM: Bridging Generative Pretraining and Semantic Foresight in World-Action Models</h1>
+            <div class="detail-meta">2026-08-06 · <a href="http://arxiv.org/abs/2608.05903" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.05903" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.05903</span></div>
+            <p class="detail-summary">提出 Robust-WAM，一种通用的后训练方法，旨在保持视频生成式世界-动作模型（WAMs）中大规模预训练获得的动力学先验，同时通过语义预见对齐提升对视觉分布外（OOD）变化的鲁棒性。 解决现有 WAMs 面临的困境：VAE 潜空间模型继承强大的预训练先验但对光照、纹理等外观变化敏感；语义潜空间模型鲁棒却无法利用大规模视频预训练。 通过向行动流注入轻量级语义对齐目标，使模型在保留 VAE 生成路径的前提下，获得外观不变的动态理解，从而在视觉偏移下保持策略稳定。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">香港科技大学（广州）（The Hong Kong University of Science and…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.05903/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出 Robust-WAM，一种通用的后训练方法，旨在保持视频生成式世界-动作模型（WAMs）中大规模预训练获得的动力学先验，同时通过语义预见对齐提升对视觉分布外（OOD）变化的鲁棒性。</p>
+  <ul class="reading-intro-points"><li>提出 Robust-WAM，一种通用的后训练方法，旨在保持视频生成式世界-动作模型（WAMs）中大规模预训练获得的动力学先验，同时通过语义预见对齐提升对视觉分布外（OOD）变化的鲁棒性。</li><li>解决现有 WAMs 面临的困境：VAE 潜空间模型继承强大的预训练先验但对光照、纹理等外观变化敏感；语义潜空间模型鲁棒却无法利用大规模视频预训练。</li><li>通过向行动流注入轻量级语义对齐目标，使模型在保留 VAE 生成路径的前提下，获得外观不变的动态理解，从而在视觉偏移下保持策略稳定。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>香港科技大学（广州）</strong>（The Hong Kong University of Science and Technology (Guangzhou)）</li><li><strong>北京航空航天大学</strong>（Beihang University）</li><li><strong>华为基础模型部</strong>（Huawei Foundation Model Department）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Robust-WAM</strong>，一种通用的后训练方法，旨在保持视频生成式世界-动作模型（WAMs）中大规模预训练获得的动力学先验，同时通过语义预见对齐提升对视觉分布外（OOD）变化的鲁棒性。</li><li>解决现有 WAMs 面临的困境：VAE 潜空间模型继承强大的预训练先验但对光照、纹理等外观变化敏感；语义潜空间模型鲁棒却无法利用大规模视频预训练。</li><li>通过向行动流注入轻量级语义对齐目标，使模型在保留 VAE 生成路径的前提下，获得外观不变的动态理解，从而在视觉偏移下保持策略稳定。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Robust-WAM</strong> 通用后训练框架，首次在视频生成式 WAM 中保留 VAE 空间预训练，同时提升视觉 OOD 鲁棒性。</li><li>设计 <strong>语义预见对齐目标</strong>：引入可学习的查询令牌，对齐未来帧的冻结 <strong>DINOv3 CLS 嵌入</strong>，为行动流提供外观不变的预见；每个查询复用对应动作令牌的位置编码，建立精确的时间对应关系。</li><li>在多个 WAM 架构（<strong>FastWAM</strong>、<strong>GE-Act</strong>、<strong>LingBot-VA</strong>）和两个 OOD 基准（<strong>LIBERO-Plus</strong>、<strong>RoboTwin clean→random</strong>）及真实机器人上验证，一致提升 OOD 成功率且不牺牲分布内性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>保留原 WAM 的 VAE 视频生成路径不变，在行动流中附加语义对齐目标。</li><li>引入可学习的查询令牌（每未来帧每相机视图一个），前置到噪声行动令牌序列中。</li><li>每个查询令牌复用对应动作步的位置编码，以建立时间关联。</li><li>对齐目标：将查询令牌的输出隐藏状态通过线性头映射，与冻结的 <strong>DINOv3 ViT-B/16 CLS 嵌入</strong>（未来帧）计算余弦相似度损失。</li><li>仅训练时使用 DINOv3 和线性头，推理时丢弃，但保留查询令牌，使行动生成受益于语义预见。</li><li>适用于动作专家 WAM（如 <strong>GE-Act</strong>、<strong>FastWAM</strong>）和统一视频-行动 WAM（如 <strong>LingBot-VA</strong>），通过插入查询令牌并继承注意力掩码实现。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>LIBERO</strong>（四个标准套件）、<strong>LIBERO-Plus</strong>（七种扰动轴：相机、光照、背景、布局、初始状态、语言、传感器噪声）；<strong>RoboTwin</strong>（clean 和 random split，双机械臂任务）。</li><li>真实机器人：<strong>Franka Research 3</strong> 机械臂，三个桌面操作任务，在标准光照和两种未见光照（紫色、青色）下评估。</li><li>模型规模：对齐目标使用 <strong>DINOv3 ViT-B/16</strong>（CLS 嵌入维度 768）；查询令牌数 K=16（LIBERO）或 24（RoboTwin）；对齐损失权重 λ_align=0.1。</li><li>训练资源：未明确说明具体 GPU，但使用各自 WAM 的官方训练配方和预训练模型。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估基准：<strong>LIBERO-Plus</strong>、<strong>RoboTwin clean→random</strong>、真实机器人任务。</li><li>主要指标：任务成功率（%）。</li><li>关键结果：</li></ul>
+<p> - <strong>LIBERO-Plus</strong>：<strong>GE-Act + Robust-WAM</strong> 达到 80.9% 成功率，超过所有对比方法；<strong>FastWAM + Robust-WAM</strong> 提升 9.2 个百分点（49.7%→58.9%），<strong>GE-Act + Robust-WAM</strong> 提升 2.9 个百分点（78.0%→80.9%），同时保持分布内性能。</p>
+<p> - <strong>RoboTwin</strong>：<strong>LingBot-VA + Robust-WAM</strong> 将随机化成功率从 29.8% 提升至 34.4%（+4.6），清洁性能保持 81.2%。</p>
+<p> - 消融实验：<strong>DINOv3 CLS</strong> 目标优于 DINOv3 Patch、Depth Anything 3 等；未来帧目标显著优于当前帧；时间位置编码对性能至关重要。</p>
+<p> - 真实机器人：在光照变化下，<strong>Robust-WAM（基于 GE-Act）</strong> 明显缩小了 OOD 性能差距，展示了更强的实际部署鲁棒性。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.06008/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Adaptive-WAM: Quality-Guided Early-Exit Planning from Intermediate Video-Diffusion Features</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.04996/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">DreamWAM: Beyond RGB Future Prediction for World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LiLa-WAM: Lightweight Latent Reasoning World-Action Model for Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有世界动作模型（WAM）存在两类核心瓶颈：像素空间方法需合成大量与控制无关的视觉细节，隐式空间方法多阶段训练流程导致计算开销高，难以在 modest 算力条件下高效训练 本文提出轻量世界动作模型LiLa-WAM，在紧凑隐式空间中联合建模未来状态预测与动作生成，支持单张24GB GPU端到端训练，同时保持对操控任务的高度适配性 同时提出无语言任务表征Visual Transition Token（VTT），将任务编码为视觉特征空间的转换方向，测试时无需文本指令或目标图像即可完成任务指定，降低任务输入开销" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.03701">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.03701.webp" alt="LiLa-WAM: Lightweight Latent Reasoning World-Action Model for Robotic Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有世界动作模型（WAM）存在两类核心瓶颈：像素空间方法需合成大量与控制无关的视觉细节，隐式空间方法多阶段训练流程导致计算开销高，难以在 modest 算力条件下高效训练</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">LiLa-WAM: Lightweight Latent Reasoning World-Action Model for Robotic Manipulation</h1>
+            <div class="detail-meta">2026-08-04 · <a href="http://arxiv.org/abs/2608.03701" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.03701" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.03701</span></div>
+            <p class="detail-summary">现有世界动作模型（WAM）存在两类核心瓶颈：像素空间方法需合成大量与控制无关的视觉细节，隐式空间方法多阶段训练流程导致计算开销高，难以在 modest 算力条件下高效训练 本文提出轻量世界动作模型LiLa-WAM，在紧凑隐式空间中联合建模未来状态预测与动作生成，支持单张24GB GPU端到端训练，同时保持对操控任务的高度适配性 同时提出无语言任务表征Visual Transition Token（VTT），将任务编码为视觉特征空间的转换方向，测试时无需文本指令或目标图像即可完成任务指定，降低任务输入开销</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">天津大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.03701/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有世界动作模型（WAM）存在两类核心瓶颈：像素空间方法需合成大量与控制无关的视觉细节，隐式空间方法多阶段训练流程导致计算开销高，难以在 modest 算力条件下高效训练</p>
+  <ul class="reading-intro-points"><li>现有世界动作模型（WAM）存在两类核心瓶颈：像素空间方法需合成大量与控制无关的视觉细节，隐式空间方法多阶段训练流程导致计算开销高，难以在 modest 算力条件下高效训练</li><li>本文提出轻量世界动作模型LiLa-WAM，在紧凑隐式空间中联合建模未来状态预测与动作生成，支持单张24GB GPU端到端训练，同时保持对操控任务的高度适配性</li><li>同时提出无语言任务表征Visual Transition Token（VTT），将任务编码为视觉特征空间的转换方向，测试时无需文本指令或目标图像即可完成任务指定，降低任务输入开销</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>天津大学</strong></li><li><strong>深圳先进技术研究院</strong></li><li><strong>名内科技（Mininglamp Technology）</strong></li><li><strong>自然资源部信息中心</strong></li><li><strong>深信服科技股份有限公司</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有世界动作模型（WAM）存在两类核心瓶颈：像素空间方法需合成大量与控制无关的视觉细节，隐式空间方法多阶段训练流程导致计算开销高，难以在 modest 算力条件下高效训练</li><li>本文提出轻量世界动作模型<strong>LiLa-WAM</strong>，在紧凑隐式空间中联合建模未来状态预测与动作生成，支持单张24GB GPU端到端训练，同时保持对操控任务的高度适配性</li><li>同时提出无语言任务表征<strong>Visual Transition Token（VTT）</strong>，将任务编码为视觉特征空间的转换方向，测试时无需文本指令或目标图像即可完成任务指定，降低任务输入开销</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>LiLa-WAM</strong>轻量世界动作模型，在紧凑隐式空间同时完成未来状态预测与动作生成，可在单张24GB GPU上实现端到端训练，大幅降低训练算力门槛</li><li>提出<strong>视觉转换令牌（VTT）</strong>作为无语言任务表征，离线从任务演示数据计算得到，测试时无需文本或目标帧输入，提供轻量的任务指定方案</li><li>在<strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong>仿真基准与真实机器人任务上验证模型有效性，性能匹敌参数量大得多的现有主流策略</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>视觉 backbone 采用冻结的<strong>DINOv3-ViT-L/16</strong>自监督视觉编码器，提取第17、21层的多层级特征，经64查询的跨模态适配器压缩为固定长度的紧凑视觉令牌，适配器参数可训练</li><li>核心组件<strong>前瞻感知动作专家</strong>为12层Diffusion-Transformer（DiT）块，输入拼接动作令牌、本体感知状态令牌、VTT任务令牌、压缩视觉令牌，采用单流双向自注意力架构，联合输出动作速度与未来隐式状态</li><li>未来状态预测通过轻量Q-Former解码器投影回DINOv3特征空间进行余弦损失监督，训练完成后解码器直接丢弃，不会引入额外推理开销</li><li><strong>VTT</strong>离线计算规则为：对每个任务，取所有演示episode的首帧与末帧全局视觉嵌入的均值差，经轻量MLP投影后作为固定任务令牌注入动作专家，无需语言或目标图像参与</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的仿真数据集：<strong>RoboTwin 2.0</strong>（覆盖50个双手操作任务，包含干净演示与域随机化演示）、<strong>LIBERO</strong>（包含Spatial、Object、Goal、Long四个任务套件，共40个任务）；真实机器人实验基于Agilex Piper 6-DoF机械臂搭建4个日常操作任务</li><li>模型规模：总参数量0.5B，其中可训练参数0.2B，冻结的DINOv3 backbone 参数0.3B</li><li>训练资源：单张NVIDIA RTX 5090 GPU（24GB显存），50个RoboTwin 2.0任务联合训练总耗时约110 GPU小时；推理在NVIDIA RTX 4090上单步耗时85ms</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：RoboTwin 2.0（分为干净设置、随机域随机化设置）、LIBERO四个任务套件、真实机器人随机物体放置场景</li><li>主要评估指标：任务成功率（%）</li><li>关键实验结果：</li></ul>
+<p> - <strong>RoboTwin 2.0</strong>上平均成功率90.48%（干净设置）， surpass 8B参数的<strong>Motus</strong>和5B参数的<strong>GigaWorld-Policy</strong>，参数量仅为前者的1/16和1/10，略优于3B参数的<strong>Being-H0.7</strong></p>
+<p> - <strong>LIBERO</strong>上平均成功率97.1%，匹敌参数量约为其14倍的<strong>OpenVLA-OFT</strong>，超过同量级轻量模型<strong>EVO-1</strong>、<strong>SmolVLA</strong> 2.3和8.3个百分点</p>
+<p> - 真实机器人任务上平均成功率82.0%，比移除前瞻监督损失的无前瞻变体高8个百分点，验证前瞻建模对真实场景的有效性</p>
+<p> - 消融实验验证了前瞻监督损失、VTT任务表征、DINOv3多层级特征融合对性能的关键贡献，64查询适配器在性能与显存占用上达到最佳平衡</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.04404/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Faster-WAM: Efficient Inference-Time Future Conditioning for Robust World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.03244/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">UniNav: A Unified World-Action Diffusion Model for Visual Navigation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MobileWAM: Bridging World Action Models to Mobile Manipulation with Chain-of-Foresight - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="World Action Models (WAMs) 基于视频生成骨干网络，但当前仍局限于桌面操作；而移动操作需要在场景尺度动态中同时完成 locomotion 与 whole-body 操作，且现有方法依赖动态盲视觉编码器与手工设计的协调机制 论文提出 MobileWAM，一种 mixture-of-transformers 架构，通过 layerwise joint attention 将预训练视频扩散 transformer 与轻量级 action expert 融合，将互联网规模的运动先验迁移到 whole-body 控制 引入 Chain-of-Foresight (CoF) 和 Mobile MoE 分别解决时序监督稀疏性以及移动与操作异构动力学的冲突问题，在 ManiSkill-HAB 基准和真实 ARX Lift2 移动机械臂上验证效果" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.04657">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.04657.webp" alt="MobileWAM: Bridging World Action Models to Mobile Manipulation with Chain-of-Foresight" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">World Action Models (WAMs) 基于视频生成骨干网络，但当前仍局限于桌面操作；而移动操作需要在场景尺度动态中同时完成 locomotion 与 whole-body 操作，且现有方法依赖动态盲视觉编码器与手工设计的协调机制</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">MobileWAM: Bridging World Action Models to Mobile Manipulation with Chain-of-Foresight</h1>
+            <div class="detail-meta">2026-08-05 · <a href="http://arxiv.org/abs/2608.04657" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.04657" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.04657</span></div>
+            <p class="detail-summary">World Action Models (WAMs) 基于视频生成骨干网络，但当前仍局限于桌面操作；而移动操作需要在场景尺度动态中同时完成 locomotion 与 whole-body 操作，且现有方法依赖动态盲视觉编码器与手工设计的协调机制 论文提出 MobileWAM，一种 mixture-of-transformers 架构，通过 layerwise joint attention 将预训练视频扩散 transformer 与轻量级 action expert 融合，将互联网规模的运动先验迁移到 whole-body 控制 引入 Chain-of-Foresight (CoF) 和 Mobile MoE 分别解决时序监督稀疏性以及移动与操作异构动力学的冲突问题，在 ManiSkill-HAB 基准和真实 ARX Lift2 移动机械臂上验证效果</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Institute for AI Industry Research (AIR), Tsinghua…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.04657/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">World Action Models (WAMs) 基于视频生成骨干网络，但当前仍局限于桌面操作；而移动操作需要在场景尺度动态中同时完成 locomotion 与 whole-body 操作，且现有方法依赖动态盲视觉编码器与手工设计的协调机制</p>
+  <ul class="reading-intro-points"><li>World Action Models (WAMs) 基于视频生成骨干网络，但当前仍局限于桌面操作；而移动操作需要在场景尺度动态中同时完成 locomotion 与 whole-body 操作，且现有方法依赖动态盲视觉编码器与手工设计的协调机制</li><li>论文提出 MobileWAM，一种 mixture-of-transformers 架构，通过 layerwise joint attention 将预训练视频扩散 transformer 与轻量级 action expert 融合，将互联网规模的运动先验迁移到 whole-body 控制</li><li>引入 Chain-of-Foresight (CoF) 和 Mobile MoE 分别解决时序监督稀疏性以及移动与操作异构动力学的冲突问题，在 ManiSkill-HAB 基准和真实 ARX Lift2 移动机械臂上验证效果</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Institute for AI Industry Research (AIR), Tsinghua University</strong></li><li><strong>Shanghai Jiao Tong University</strong></li><li><strong>The Hong Kong University of Science and Technology (Guangzhou)</strong></li><li><strong>AIR Wuxi Innovation Center, Tsinghua University</strong></li><li><strong>The University of Adelaide</strong></li><li><strong>Wuhan University</strong></li><li><strong>Southeast University</strong></li><li><strong>Beijing Jiaotong University</strong></li><li><strong>Fudan University</strong></li><li><strong>Li Auto</strong></li><li><strong>School of Information, Renmin University of China</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li><strong>World Action Models (WAMs)</strong> 基于视频生成骨干网络，但当前仍局限于桌面操作；而移动操作需要在场景尺度动态中同时完成 locomotion 与 whole-body 操作，且现有方法依赖动态盲视觉编码器与手工设计的协调机制</li><li>论文提出 <strong>MobileWAM</strong>，一种 mixture-of-transformers 架构，通过 layerwise joint attention 将预训练视频扩散 transformer 与轻量级 action expert 融合，将互联网规模的运动先验迁移到 whole-body 控制</li><li>引入 <strong>Chain-of-Foresight (CoF)</strong> 和 <strong>Mobile MoE</strong> 分别解决时序监督稀疏性以及移动与操作异构动力学的冲突问题，在 <strong>ManiSkill-HAB</strong> 基准和真实 <strong>ARX Lift2</strong> 移动机械臂上验证效果</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>首个系统性适配</strong>：首次将视频生成型 WAMs 系统性适配到 whole-body 移动操作，仅使用 RGB 输入和单阶段训练即在 ManiSkill-HAB 上达到 SOTA</li><li><strong>Chain-of-Foresight (CoF)</strong>：提出递归的串行未来潜态预测目标，以零推理成本 densify 时序监督并强化长程时空与因果一致性</li><li><strong>Mobile MoE</strong>：在 action expert 的每一层前馈网络中设计三专家 mixture（shared、locomotion、manipulation），通过 motion intent 软路由解决移动与操作的异构动力学冲突</li><li><strong>真实机器人部署</strong>：在 ARX Lift2 上微调后，在五个递增 horizon 的家庭任务中持续优于 <strong>π₀.₅</strong>，且最长任务上增益最大</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Mixture-of-Transformers 架构</strong>：大型 world expert（预训练视频扩散 transformer，L=30 层，宽度 3072）与轻量级 action expert（宽度 1024）通过 layerwise joint attention 融合；动作 token 读取视觉 token，但视觉 token 不读取动作 token，保证训练与部署时当前帧表示一致</li><li><strong>Mobile MoE</strong>：action expert 的每一层前馈网络被替换为三专家 mixture（shared、locomotion、manipulation），路由器读取 noisy action embedding 的均值池化并通过温度缩放 softmax 产生软权重；路由器零初始化，专家从原始 dense 层克隆，无需负载均衡损失</li><li><strong>Chain-of-Foresight (CoF)</strong>：从骨干网络均匀抽取 4 层（{4,12,20,30}）通过两层 MLP g 融合为初始信念状态 h₀；深度特定模块 F₁,F₂,F₃（独立权重，初始化自后续骨干块）在未来潜态 z₁,z₂,z₃ 上串行展开，每步以 block-causal mask 对 (ℓ, sₜ, oₜ) 做 cross-attention，仅通过信念状态 hₖ₋₁ 传递信息；损失按深度衰减 w₁>w₂>w₃</li><li><strong>解耦去噪与推理效率</strong>：视频与动作使用 flow matching 独立训练；部署时丢弃 CoF 分支与视频生成，骨干网络仅做一次前向传播并缓存 KV，动作 token 在缓存的特征上迭代去噪，实现 current-frame encoder 推理</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真基准</strong>：<strong>ManiSkill-HAB</strong>（基于 ManiSkill3 的 Home Assistant Benchmark 低控复现），采用 <strong>SetTable</strong> 套件（7 个子任务：Pick Apple、Place Apple、Open Fridge、Pick Bowl、Place Bowl、Open Drawer、Close Drawer）</li><li><strong>真实机器人</strong>：<strong>ARX Lift2</strong> 移动机械臂</li><li><strong>输入模态</strong>：仅 RGB 图像（384×640，头部与腕部相机左右拼接）， Proprioceptive 状态（关节位置、速度、底盘里程计），语言指令</li><li><strong>模型规模</strong>：World expert 为 30 层 transformer（宽度 3072）；Action expert 为轻量级 transformer（宽度 1024）；CoF 链长度 K=3</li><li><strong>训练资源</strong>：单阶段训练，AdamW 优化器（学习率 10⁻⁵，余弦调度，bf16），全局 batch size 256；每子任务使用 1,000 条过滤演示轨迹；推理延迟测试在 <strong>NVIDIA A800</strong> 上进行</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：ManiSkill-HAB SetTable 套件（7 个子任务-物体-场景组合），closed-loop rollout 评估，成功率（S.R.）以三次独立评估的均值±标准差报告；真实机器人测试 5 个递增 horizon 任务（Tₐ→Tₑ）</li><li><strong>主要指标</strong>：仿真环境任务成功率（%）；真实机器人任务成功率（%）；单步预测推理延迟（ms）</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>ManiSkill-HAB</strong>：MobileWAM 取得 <strong>73.0%</strong> 平均成功率，在 7 个子任务中领先 5 个，且从未在任何任务上 collapse 到个位数；相比最强 baseline <strong>AnchorVLA</strong>（64.0%）提升 +9.0%，相比 <strong>AC-DiT</strong>（55.6%）提升 <strong>+17.4%</strong></p>
+<p> - <strong>消融实验</strong>：CoF 贡献 +3.5（65.4→68.9），Mobile MoE 贡献 +4.1（68.9→73.0）；Transformer-style CoF（58.2）显著优于 MLP-style（46.3）与并行 foresight（52.3）；均匀抽取 4 层（58.2）优于全 30 层（37.1）；链长 K=3 最优</p>
+<p> - <strong>真实机器人</strong>：在 ARX Lift2 上持续优于 <strong>π₀.₅</strong>，任务 Ta 到 Te 的成功率分别为 55%→15% vs π₀.₅ 的 35%→0%，且随 horizon 增长优势扩大</p>
+<p> - <strong>推理效率</strong>：单周期推理延迟仅 <strong>938 ms</strong>，相比 imagine-then-execute 的 Motus（4950 ms）与 LingBot-VA（8126 ms）分别加速 <strong>5.3×</strong> 与 <strong>8.7×</strong></p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.04996/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">DreamWAM: Beyond RGB Future Prediction for World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.04404/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Faster-WAM: Efficient Inference-Time Future Conditioning for Robust World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

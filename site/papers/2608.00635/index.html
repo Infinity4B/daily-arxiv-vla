@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FlowPilot: Real-Time World-Action Modeling for Agile UAV Navigation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 FlowPilot，一种用于基于深度信息的实时机载无人机导航的紧凑型 world-action model (WAM)，采用 flow matching 联合去噪未来深度观测与可执行轨迹 通过双流混合专家Transformer（MoT）耦合视频专家（未来深度预测）与动作专家（轨迹生成），利用共享注意力实现相互条件化，解决传统地图-规划 pipelines 延迟高、端到端策略缺乏显式场景预测的问题 在部署时以动作为中心运行，仅输出轨迹参考，无需解码未来深度，实现从感知到动作的端到端实时推理" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.00635">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.00635.webp" alt="FlowPilot: Real-Time World-Action Modeling for Agile UAV Navigation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 FlowPilot，一种用于基于深度信息的实时机载无人机导航的紧凑型 world-action model (WAM)，采用 flow matching 联合去噪未来深度观测与可执行轨迹</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FlowPilot: Real-Time World-Action Modeling for Agile UAV Navigation</h1>
+            <div class="detail-meta">2026-08-01 · <a href="http://arxiv.org/abs/2608.00635" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.00635" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.00635</span></div>
+            <p class="detail-summary">提出 FlowPilot，一种用于基于深度信息的实时机载无人机导航的紧凑型 world-action model (WAM)，采用 flow matching 联合去噪未来深度观测与可执行轨迹 通过双流混合专家Transformer（MoT）耦合视频专家（未来深度预测）与动作专家（轨迹生成），利用共享注意力实现相互条件化，解决传统地图-规划 pipelines 延迟高、端到端策略缺乏显式场景预测的问题 在部署时以动作为中心运行，仅输出轨迹参考，无需解码未来深度，实现从感知到动作的端到端实时推理</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">北京理工大学（自主智能无人系统全国重点实验室）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.00635/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出 FlowPilot，一种用于基于深度信息的实时机载无人机导航的紧凑型 world-action model (WAM)，采用 flow matching 联合去噪未来深度观测与可执行轨迹</p>
+  <ul class="reading-intro-points"><li>提出 FlowPilot，一种用于基于深度信息的实时机载无人机导航的紧凑型 world-action model (WAM)，采用 flow matching 联合去噪未来深度观测与可执行轨迹</li><li>通过双流混合专家Transformer（MoT）耦合视频专家（未来深度预测）与动作专家（轨迹生成），利用共享注意力实现相互条件化，解决传统地图-规划 pipelines 延迟高、端到端策略缺乏显式场景预测的问题</li><li>在部署时以动作为中心运行，仅输出轨迹参考，无需解码未来深度，实现从感知到动作的端到端实时推理</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>北京理工大学</strong>（自主智能无人系统全国重点实验室）</li><li><strong>中关村科学城管理委员会</strong>（中关村学院）</li><li><strong>上海交通大学</strong></li><li><strong>香港大学</strong>（机械工程系）</li><li>资助机构：国家自然科学基金、中关村学院、北京市自然科学基金</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>FlowPilot</strong>，一种用于基于深度信息的实时机载无人机导航的紧凑型 <strong>world-action model (WAM)</strong>，采用 <strong>flow matching</strong> 联合去噪未来深度观测与可执行轨迹</li><li>通过双流混合专家Transformer（MoT）耦合视频专家（未来深度预测）与动作专家（轨迹生成），利用共享注意力实现相互条件化，解决传统地图-规划 pipelines 延迟高、端到端策略缺乏显式场景预测的问题</li><li>在部署时以动作为中心运行，仅输出轨迹参考，无需解码未来深度，实现从感知到动作的端到端实时推理</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首个将 flow-matching world-action 建模应用于实时深度导航的紧凑机载模型，耦合未来场景预测与轨迹生成</li><li>提出 <strong>degree-7 Bernstein 多项式</strong> 动作表示，前3个控制点由当前位姿、速度、加速度硬约束，网络仅预测5个自由控制点，生成 <strong>C² 连续</strong> 且具有闭合形式导数的可跟踪轨迹</li><li>设计三级深度金字塔训练数据（IsaacLab 仿真 16h、Flightmare 照片级仿真 8h、真实机载数据 2h）及两阶段训练策略（世界模型预训练 + 世界-动作对齐）</li><li>在 <strong>Jetson Orin NX</strong> 上实现全机载部署，感知-动作延迟低于 <strong>18 ms</strong>，在杂乱室内和森林环境中达到 <strong>5.5 m/s</strong> 飞行速度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>双流 MoT 架构</strong>：视频专家使用冻结的 Wan2.2 VAE 编码深度帧并预测未来深度潜在变量的速度场；动作专家嵌入状态-目标向量（25维）、速度指令、先前轨迹 token 及噪声动作潜在变量，预测 Bernstein 控制点的速度场</li><li><strong>共享注意力机制</strong>：两个流通过联合自注意力交换信息，视频与动作 token 在去噪过程中相互条件化，使未来几何预测与动作生成在同一前向传播中耦合</li><li><strong>动作表示</strong>：采用 degree-7 Bernstein 多项式，前3个控制点由当前状态硬约束确保轨迹起点 consistency，剩余5个控制点由 flow matching 去噪生成，保证轨迹光滑且控制器可跟踪</li><li><strong>两阶段训练</strong>：第一阶段仅训练视频流学习世界动态先验（掩码排除动作 token）；第二阶段启用全联合注意力，使用 <strong>SUPER</strong> 规划器生成的高质量专家轨迹进行动作监督，同时保持视频损失以细化世界模型</li><li><strong>重规划一致性</strong>：将先前轨迹作为软条件 token（classifier-free guidance 风格，20% 概率替换为 null embedding），避免硬热启动导致的模式崩塌，保证连续重规划的时间一致性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>训练数据集</strong>：三级深度金字塔——<strong>IsaacLab</strong> GPU 并行仿真（16 小时，高吞吐量覆盖多样几何）、<strong>Flightmare</strong> 照片级仿真（8 小时，增加视觉与结构真实性）、真实四旋翼机载采集（2 小时，包含真实传感器噪声、丢包和测程限制）</li><li><strong>模型架构</strong>：双流 MoT，视频专家基于 Wan2.2 VAE（冻结），动作潜在变量维度为 5×3（15 自由度），输入深度分辨率 160×96，使用 TensorRT 加速部署</li><li><strong>计算资源</strong>：工作站训练使用 Intel Core i9-14900K CPU 与 NVIDIA GeForce RTX 4090 GPU；机载部署使用 <strong>NVIDIA Jetson Orin NX Super 16GB</strong>；深度相机为 Intel RealSense D455（最大测程 6 m）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：仿真环境（随机障碍物森林，稀疏度 10-15，commanded speeds 3-8 m/s，PX4 SITL 硬件在环）；真实环境（室内未见人工障碍物场景、户外丘陵密林地形，海拔变化 4 m）</li><li><strong>评估指标</strong>：闭环成功率、碰撞率、任务时间、平均/峰值速度、感知-动作延迟（各模块分解）</li><li><strong>关键结果</strong>：仿真中 FlowPilot 在 increasing clutter 和 speeds up to 8 m/s 下成功率优于 <strong>EGO-Planner</strong>、<strong>YOPO</strong> 及仅动作变体；同步未来深度去噪将碰撞率从 26.0% 降至 4.0%；机载总推理延迟平均 <strong>16.3 ms</strong>（流去噪 14.9 ms），MPC 延迟 2.4 ms；真实飞行在室内零样本泛化至未见紧密人工场景（3.8 m/s 和 3.1 m/s），户外森林达到 <strong>5.5 m/s</strong> 峰值速度并维持 4 m/s 通过密集区域</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.00725/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SelfWAM: A Self-Grounded Unified World Action Model for Fast Robot Control</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.00547/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Disentangling Visuo-Tactile Foresight: Oracle-Guided Interface Discovery for World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
