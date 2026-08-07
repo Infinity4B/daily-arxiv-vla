@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>In-Context VLA: Endowing Vision-Language-Action Models with Language via In-Context Post-Training and Agentic Tool Use - VLA / Vision-Language-Action 每日论文卡</title>
+    <meta name="description" content="现有Vision-Language-Action（VLA）模型普遍采用行为克隆训练，仅将语言指令作为静态条件，无法理解指令的复述或未见过的表述，也无法主动获取缺失的感知信息，泛化性和鲁棒性不足 直接为VLA添加自由形式文本链式思维（CoT）推理会严重损害低层控制性能，存在推理无 grounding、语言与动作监督目标冲突、自回归生成引入高延迟三重问题 本文提出VLA-Talker框架，核心目标是让VLA获得“消费 grounded 语言”的能力而非“生成语言”的能力，通过智能体工具调用获取结构化空间证据，结合上下文后训练和轨迹级强化学习，同时提升VLA的操控性能和推理效率" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.05738">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / Vision-Language-Action 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.05738.webp" alt="In-Context VLA: Endowing Vision-Language-Action Models with Language via In-Context Post-Training and Agentic Tool Use" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有Vision-Language-Action（VLA）模型普遍采用行为克隆训练，仅将语言指令作为静态条件，无法理解指令的复述或未见过的表述，也无法主动获取缺失的感知信息，泛化性和鲁棒性不足</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">In-Context VLA: Endowing Vision-Language-Action Models with Language via In-Context Post-Training and Agentic Tool Use</h1>
+            <div class="detail-meta">2026-08-06 · <a href="http://arxiv.org/abs/2608.05738" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.05738" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.05738</span></div>
+            <p class="detail-summary">现有Vision-Language-Action（VLA）模型普遍采用行为克隆训练，仅将语言指令作为静态条件，无法理解指令的复述或未见过的表述，也无法主动获取缺失的感知信息，泛化性和鲁棒性不足 直接为VLA添加自由形式文本链式思维（CoT）推理会严重损害低层控制性能，存在推理无 grounding、语言与动作监督目标冲突、自回归生成引入高延迟三重问题 本文提出VLA-Talker框架，核心目标是让VLA获得“消费 grounded 语言”的能力而非“生成语言”的能力，通过智能体工具调用获取结构化空间证据，结合上下文后训练和轨迹级强化学习，同时提升VLA的操控性能和推理效率</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">提供的截断HTML中未明确标注作者所属的具体研究机构，论文涉及的合作主体包括AgiBot（提供G1人形…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.05738/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有Vision-Language-Action（VLA）模型普遍采用行为克隆训练，仅将语言指令作为静态条件，无法理解指令的复述或未见过的表述，也无法主动获取缺失的感知信息，泛化性和鲁棒性不足</p>
+  <ul class="reading-intro-points"><li>现有Vision-Language-Action（VLA）模型普遍采用行为克隆训练，仅将语言指令作为静态条件，无法理解指令的复述或未见过的表述，也无法主动获取缺失的感知信息，泛化性和鲁棒性不足</li><li>直接为VLA添加自由形式文本链式思维（CoT）推理会严重损害低层控制性能，存在推理无 grounding、语言与动作监督目标冲突、自回归生成引入高延迟三重问题</li><li>本文提出VLA-Talker框架，核心目标是让VLA获得“消费 grounded 语言”的能力而非“生成语言”的能力，通过智能体工具调用获取结构化空间证据，结合上下文后训练和轨迹级强化学习，同时提升VLA的操控性能和推理效率</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>提供的截断HTML中未明确标注作者所属的具体研究机构，论文涉及的合作主体包括AgiBot（提供G1人形机器人实验平台）、OpenVLA开源项目组等</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有Vision-Language-Action（VLA）模型普遍采用行为克隆训练，仅将语言指令作为静态条件，无法理解指令的复述或未见过的表述，也无法主动获取缺失的感知信息，泛化性和鲁棒性不足</li><li>直接为VLA添加自由形式文本链式思维（CoT）推理会严重损害低层控制性能，存在推理无 grounding、语言与动作监督目标冲突、自回归生成引入高延迟三重问题</li><li>本文提出<strong>VLA-Talker</strong>框架，核心目标是让VLA获得“消费 grounded 语言”的能力而非“生成语言”的能力，通过智能体工具调用获取结构化空间证据，结合上下文后训练和轨迹级强化学习，同时提升VLA的操控性能和推理效率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次系统揭示了自由形式生成式CoT损害VLA低层控制的三重机理：推理与动作头共享视觉特征导致无新信息的 grounding 空白、语言token数量远多于动作token导致策略倾向于“叙述而非执行”、自回归生成推理文本引入数百token延迟并放大误差传播</li><li>提出了VLA-Talker框架，通过智能体工具调用模块（单目深度估计、开放词汇目标检测、夹爪解析投影、VLM回退）主动获取任务相关的 grounded 空间证据，仅将证据作为只读上下文注入prompt，仅对动作token计算损失，从根源上消除CoT的三重问题</li><li>设计了多样化的空间描述渲染引擎，通过变换参考系、措辞、深度表述方式等维度，将同一结构化证据生成多种自然语言实现，让模型学习映射多样化的语言表述到同一 grounded 语义，提升对未见语言表述的鲁棒性</li><li>引入轨迹级GRPO强化学习，采用稀疏任务成功奖励和格式正则项，通过组内相对优势计算无需额外价值函数，让模型自主决策何时调用工具，对齐工具调用策略与最终任务目标</li><li>在<strong>RoboCasa-GR1</strong>、<strong>SimplerEnv</strong>、<strong>LIBERO</strong>三个仿真基准和8个AgiBot G1真实机器人操作任务上均达到SOTA性能，同时推理效率比生成式CoT提升4.6倍</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>VLA-Talker保持原有VLA骨干网络和动作头完全不变，新增两个核心模块：①<strong>智能体工具调用循环</strong>：在关键帧调用单目深度估计器（DepthAnything）、开放词汇目标检测器（GroundingDino）、夹爪投影模块（基于 proprioception 和相机内外参的解析投影）、VLM回退模块（Qwen2.5-VL-7B），输出包含夹爪/目标的位置、深度、相对关系的结构化证据元组；②<strong>上下文后训练</strong>：将渲染后的证据作为只读上下文注入prompt，仅对动作token计算损失，所有上下文token的损失均被掩码，避免模型学习生成证据</li><li>关键技术包括：①<strong>关键帧门控机制</strong>，仅在初始帧、夹爪开合状态变化帧、周期性进度检查帧注入证据，其余帧保持空上下文，在推理时仅关键帧调用工具，大幅降低推理开销；②<strong>多样化证据渲染</strong>，通过变换参考模态、词汇形式、深度 verbalization 等渲染轴，生成同一证据的多种自然语言表述，避免模型过拟合到单一模板；③<strong>两阶段训练流程</strong>，先进行监督微调（SFT）的上下文冷启动，再用GRPO进行轨迹级强化学习对齐，两阶段互补，单独使用RL不稳定</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>RoboCasa-GR1</strong>（GR1人形机器人厨房操作基准，包含24个多样化任务的 pick-and-place 任务）、<strong>SimplerEnv</strong>（WidowX机械臂桌面操作基准，4个留出的未见配置任务）、<strong>LIBERO</strong>（四个语言条件任务套件：LIBERO-Spatial、LIBERO-Object、LIBERO-Goal、LIBERO-Long，每个任务50个随机初始条件）</li><li>真实数据集：<strong>AgiBot G1人形机器人</strong>的8个桌面操作任务</li><li>模型规模：基于公开<strong>OpenVLA-OFT</strong>权重初始化，工具模块采用GroundingDino（开放词汇检测）、DepthAnything（深度估计）、Qwen2.5-VL-7B（VLM回退）</li><li>训练资源：提供的截断HTML中未明确标注具体GPU/TPU硬件及总算力成本，仅说明上下文后训练阶段批次大小为64，RL阶段批次大小为128，优化器为AdamW，对应学习率分别为1×10⁻⁵和2×10⁻⁶，RL阶段采样M条轨迹 per prompt，采用组相对优势计算和KL散度锚定</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：覆盖三个仿真基准（RoboCasa-GR1、SimplerEnv、LIBERO）和AgiBot G1真实机器人平台，对比基线包括Diffusion Policy、OpenVLA、SpatialVLA、CoT-VLA、GR00T N1、F1、InternVLA-M1、π₀、π₀.₅、VLA-Thinker、<strong>Gen-CoT</strong>（匹配证据的生成式CoT基线）、TwinBrainVLA、PhysBrain、LangForce、ABot-M0、ThinkAct、CogACT、VideoVLA等主流VLA方法</li><li>主要评估指标：任务成功率（<strong>Success Rate, SR, %</strong>）、单步决策推理延迟（相对 latency）</li><li>关键实验结果：</li></ul>
+<p> - LIBERO基准上平均SR达<strong>97.4%</strong>，超过所有对比基线，其中在L-Object任务上达99.2%，L-Goal任务上达98.4%，为当前SOTA</p>
+<p> - RoboCasa-GR1基准24个任务平均SR达<strong>59.5%</strong>，在4个代表性pick-and-place任务上均优于Gen-CoT等基线，验证了方法在复杂场景和不同 embodiment 上的泛化性</p>
+<p> - SimplerEnv基准4个留出任务平均SR达<strong>72.4%</strong>，在未见过的桌面配置上泛化性显著优于基线（对比OpenVLA的4.2%、VLA-Thinker的42.7%），证明 grounded 证据注入降低了跨场景的泛化 gap</p>
+<p> - 推理效率：在匹配证据条件下，VLA-Talker的单步决策延迟与仅注入证据的基线一致，比生成式CoT（Gen-CoT）延迟降低4.6倍，同时成功率更高，实现了性能与效率的双赢</p>
+<p> - 消融实验验证：仅注入证据+仅监督动作的监督方案（VLA-Talker）SR达97.4%，远优于生成+监督文本的81.5%和注入+监督文本的89.7%；两阶段训练（SFT+GRPO）互补，单独使用GRPO不稳定，平均SR仅87.8%</p>
+<p> - 真实机器人8个桌面操作任务上验证了方法的实际有效性，相关实验细节和结果详见论文附录B</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.05970/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SkillMemo: Expert-guided Skill Memory Framework for Compositional Embodied Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.05369/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">World-to-Wrist: Task-Conditioned Future Wrist Modeling for Fine-Grained Robot Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
