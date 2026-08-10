@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cross-View Action Consistency for Camera-Robust Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）策略在场景相机视角变化（移动、碰撞、重装）下性能骤降的问题，本文在不引入深度、点云、相机标签、外参等额外输入、不改变单场景RGB推理接口的前提下，提升基于流的VLA对场景相机视角变化的鲁棒性 现有方法多通过改变推理接口（如加入3D输入、几何感知架构）或单纯使用相机多样数据微调，无法保证动作层面的视角不变性，本文聚焦训练目标改进，从动作生成的核心组件入手实现视角鲁棒性 通过构建同一物理状态下的动作等效视角对，在训练时加入跨视角一致性约束，验证方法在LIBERO-Plus仿真基准和实机held-out相机评估中的有效性" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.06965">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.06965.webp" alt="Cross-View Action Consistency for Camera-Robust Vision-Language-Action Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对视觉-语言-动作（VLA）策略在场景相机视角变化（移动、碰撞、重装）下性能骤降的问题，本文在不引入深度、点云、相机标签、外参等额外输入、不改变单场景RGB推理接口的前提下，提升基于流的VLA对场景相机视角变化的鲁棒性</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Cross-View Action Consistency for Camera-Robust Vision-Language-Action Policies</h1>
+            <div class="detail-meta">2026-08-07 · <a href="http://arxiv.org/abs/2608.06965" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.06965" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.06965</span></div>
+            <p class="detail-summary">针对视觉-语言-动作（VLA）策略在场景相机视角变化（移动、碰撞、重装）下性能骤降的问题，本文在不引入深度、点云、相机标签、外参等额外输入、不改变单场景RGB推理接口的前提下，提升基于流的VLA对场景相机视角变化的鲁棒性 现有方法多通过改变推理接口（如加入3D输入、几何感知架构）或单纯使用相机多样数据微调，无法保证动作层面的视角不变性，本文聚焦训练目标改进，从动作生成的核心组件入手实现视角鲁棒性 通过构建同一物理状态下的动作等效视角对，在训练时加入跨视角一致性约束，验证方法在LIBERO-Plus仿真基准和实机held-out相机评估中的有效性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">清华大学（Bingqi Huang、Bingchuan Wei、Yingkai Cai、Zhaokui…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.06965/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对视觉-语言-动作（VLA）策略在场景相机视角变化（移动、碰撞、重装）下性能骤降的问题，本文在不引入深度、点云、相机标签、外参等额外输入、不改变单场景RGB推理接口的前提下，提升基于流的VLA对场景相机视角变化的鲁棒性</p>
+  <ul class="reading-intro-points"><li>针对视觉-语言-动作（VLA）策略在场景相机视角变化（移动、碰撞、重装）下性能骤降的问题，本文在不引入深度、点云、相机标签、外参等额外输入、不改变单场景RGB推理接口的前提下，提升基于流的VLA对场景相机视角变化的鲁棒性</li><li>现有方法多通过改变推理接口（如加入3D输入、几何感知架构）或单纯使用相机多样数据微调，无法保证动作层面的视角不变性，本文聚焦训练目标改进，从动作生成的核心组件入手实现视角鲁棒性</li><li>通过构建同一物理状态下的动作等效视角对，在训练时加入跨视角一致性约束，验证方法在LIBERO-Plus仿真基准和实机held-out相机评估中的有效性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>清华大学</strong>（Bingqi Huang、Bingchuan Wei、Yingkai Cai、Zhaokui Wang）</li><li><strong>阿姆斯特丹大学信息学研究所、阿姆斯特丹自由大学理学院</strong>（Xuan Wang）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对视觉-语言-动作（VLA）策略在场景相机视角变化（移动、碰撞、重装）下性能骤降的问题，本文在不引入深度、点云、相机标签、外参等额外输入、不改变单场景RGB推理接口的前提下，提升基于流的VLA对场景相机视角变化的鲁棒性</li><li>现有方法多通过改变推理接口（如加入3D输入、几何感知架构）或单纯使用相机多样数据微调，无法保证动作层面的视角不变性，本文聚焦训练目标改进，从动作生成的核心组件入手实现视角鲁棒性</li><li>通过构建同一物理状态下的动作等效视角对，在训练时加入跨视角一致性约束，验证方法在LIBERO-Plus仿真基准和实机held-out相机评估中的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次将基于流的VLA场景相机视角鲁棒性形式化为动作等效视角下的局部动作流一致性问题，提出仅作用于训练目标的跨视角动作流一致性损失，直接正则化动作生成的velocity field，推理时不增加任何传感器、校准或相机特定输入</li><li>提出适配仿真和实机的动作等效视角对构建方案：仿真中通过重置MuJoCo状态重渲染标称/扰动视角，实机中使用同步多相机采集同一物理状态的多视角数据，保证配对的动作等效性</li><li>设计洗牌对控制实验与消融实验，验证跨视角损失的有效性，证明性能增益依赖于动作等效配对而非通用正则化</li><li>在LIBERO-Plus相机扰动基准上达到<strong>87.2±0.4%</strong>的rollout成功率，比同数据流匹配-only基线高7.4pp，比朴素混合相机SFT高12.5pp，同时保持标称相机下<strong>95.0±0.8%</strong>的性能</li><li>实机held-out相机评估中，成功率从基线的53.3%提升至74.4%，验证了方法从仿真到实机的迁移性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础框架基于流的VLA：策略通过积分学习的速度场生成连续动作块，输入为单张场景RGB图、语言指令和本体感知状态，全程掩码腕部摄像头流，避免未扰动的视觉捷径干扰场景相机鲁棒性的归因</li><li>动作等效对构建：对于同一物理状态，生成标称相机和扰动相机的RGB观测对，共享语言指令、本体感知状态和演示动作块，仅场景相机位姿不同</li><li>训练目标设计：每个视角对仍通过标准流匹配监督到同一动作目标，额外加入跨视角损失，鼓励同一采样流坐标下的两个视角预测的速度一致，总损失由流匹配损失和加权跨视角损失组成</li><li>理论解释：在局部Lipschitz假设下，证明速度场的一致性差异可以约束积分后动作块的差异，说明该方法直接作用于动作生成的核心组件，而非中间表示</li><li>控制实验设计：引入洗牌对实验，在保持单视角流匹配标签正确的前提下，将跨视角损失中的配对替换为不同物理状态的对，验证性能增益依赖于动作等效性而非通用平滑正则化</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真训练数据集：从<strong>LIBERO</strong>的4个子集（<strong>libero_spatial</strong>、<strong>libero_object</strong>、<strong>libero_goal</strong>、<strong>libero_100</strong>）通过重置MuJoCo状态重渲染构建动作等效对，共338,575对，扰动相机遵循<strong>LIBERO-Plus</strong>的C1/C2/C3扰动分布</li><li>仿真评估数据集：<strong>LIBERO-Plus相机扰动基准</strong>，包含1599个任务实例，分为C1（相机距离/尺度）、C2（球面相机位置）、C3（端点相机朝向）三类扰动场景</li><li>实机数据集：3个桌面任务（Pick & Place、Contact Rich、Dexterous Operation）的同步多相机演示数据集，用于构建训练用的动作等效对</li><li>模型规模：基于开源<strong>π₀.₅</strong>（Vision-Language-Action流模型）微调，训练步数为10,000步，超参数设置为K=2（每对采样的流点数）、λ_CV=0.10（跨视角损失权重）、流时间t_k服从Beta(2,3)分布</li><li>训练资源：6×<strong>NVIDIA RTX PRO 6000 Server Edition</strong> GPU</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真环境为LIBERO-Plus相机扰动基准和标准LIBERO标称相机基准；实机环境为3个桌面任务，包含3个训练时已见的相机位姿和3个从未用于数据采集的held-out相机位姿</li><li>评估指标：rollout成功率（二项比例），单种子结果报告Wilson 95%置信区间，多种子结果报告均值±标准差</li><li>关键仿真结果：在LIBERO-Plus相机扰动集上，该方法达到<strong>87.2±0.4%</strong>的成功率，比同数据流匹配-only基线高7.4pp，比朴素混合相机SFT高12.5pp；标称相机（ID）下保持<strong>95.0±0.8%</strong>的性能，与基线持平；洗牌对控制实验性能 collapse至25.8%，证明增益依赖动作等效配对；C1/C2/C3三类扰动上分别提升9.2pp、8.0pp、3.4pp</li><li>关键实机结果：held-out相机下，该方法成功67/90次rollout，基线仅48/90次，成功率从53.3%提升至74.4%；已见相机下两者性能接近（该方法79/90，基线80/90）；Laptop任务held-out下几乎无损（30/30），Headphone stand任务提升最大（5/30到14/30）</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.06994/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Decoupling Intention from Trajectory: A Representational Deduction Framework for World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.06729/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">AtlasVLA: Persistent World-Ego State Modeling for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
