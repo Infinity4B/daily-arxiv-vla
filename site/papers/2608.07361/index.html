@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Depth-Wise Probing and Pruning of the Planning Token in a Driving Vision-Language-Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究驾驶视觉-语言-动作（VLA）模型中，规划所需计算在解码器深度上的分布，旨在理解模型深度对规划性能的影响 分析一个代表性VLA模型中的规划令牌，通过从中间层解码该令牌，测量导航命令的可解码性和轨迹规划兼容性 探索是否可以通过剪枝方式移除冗余的解码器层，以降低计算延迟且不显著影响开环规划性能" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.07361">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.07361.webp" alt="Depth-Wise Probing and Pruning of the Planning Token in a Driving Vision-Language-Action Model" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">研究驾驶视觉-语言-动作（VLA）模型中，规划所需计算在解码器深度上的分布，旨在理解模型深度对规划性能的影响</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Depth-Wise Probing and Pruning of the Planning Token in a Driving Vision-Language-Action Model</h1>
+            <div class="detail-meta">2026-08-07 · <a href="http://arxiv.org/abs/2608.07361" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.07361" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.07361</span></div>
+            <p class="detail-summary">研究驾驶视觉-语言-动作（VLA）模型中，规划所需计算在解码器深度上的分布，旨在理解模型深度对规划性能的影响 分析一个代表性VLA模型中的规划令牌，通过从中间层解码该令牌，测量导航命令的可解码性和轨迹规划兼容性 探索是否可以通过剪枝方式移除冗余的解码器层，以降低计算延迟且不显著影响开环规划性能</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">5 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Robert Bosch GmbH, Stuttgart, Germany</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.07361/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">研究驾驶视觉-语言-动作（VLA）模型中，规划所需计算在解码器深度上的分布，旨在理解模型深度对规划性能的影响</p>
+  <ul class="reading-intro-points"><li>研究驾驶视觉-语言-动作（VLA）模型中，规划所需计算在解码器深度上的分布，旨在理解模型深度对规划性能的影响</li><li>分析一个代表性VLA模型中的规划令牌，通过从中间层解码该令牌，测量导航命令的可解码性和轨迹规划兼容性</li><li>探索是否可以通过剪枝方式移除冗余的解码器层，以降低计算延迟且不显著影响开环规划性能</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Robert Bosch GmbH</strong>, Stuttgart, Germany</li><li><strong>Karlsruhe Institute of Technology</strong>, Karlsruhe, Germany</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>研究驾驶视觉-语言-动作（VLA）模型中，规划所需计算在解码器深度上的分布，旨在理解模型深度对规划性能的影响</li><li>分析一个代表性VLA模型中的规划令牌，通过从中间层解码该令牌，测量导航命令的可解码性和轨迹规划兼容性</li><li>探索是否可以通过剪枝方式移除冗余的解码器层，以降低计算延迟且不显著影响开环规划性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出一种轨迹空间原生头透镜方法，用于测量中间层规划令牌与冻结的规划器的兼容性，并结合线性探测分析导航意图的可解码性</li><li>在Bench2Drive五个能力类别上进行了深度分析，发现导航命令在早期线性可解码，而规划兼容性随深度逐步提升，并在最终层达到最优</li><li>基于规划令牌输入输出余弦相似度进行剪枝，证明在相对开环误差增加约5%的情况下，可移除8层（共32层），实现1.33倍解码器加速，且该排序准则优于基于孤立解码质量的剪枝方法</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>以<strong>ORION</strong>模型为研究对象，该模型将规划压缩为单个规划令牌，由冻结的生成式规划器解码为轨迹</li><li>采用轨迹空间logit透镜方法，从每一层解码器读取规划令牌，利用原生规划器直接解码并评估轨迹误差，同时训练线性探针预测导航命令</li><li>剪枝策略基于规划令牌的输入输出余弦相似度，移除角度偏差最小的层，并对比了基于解码质量、连续块和随机等不同排序准则</li><li>还训练了残差MLP适配器和交叉注意力重采样器等学习型读出模块，以验证早期层信息的存在性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：<strong>Bench2Drive</strong> 验证集，包含多个场景类型，并映射到五个官方能力类别（合并、超车、紧急制动、让行、交通标志）</li><li>模型规模：32层LLaMA风格解码器，规划令牌维度为4096；学习型读出模块参数量约1M（MLP适配器）和约40M（重采样器）</li><li>训练资源：在单张A100 80GB GPU上进行解码器延迟测量，推理使用FP32精度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：基于Bench2Drive的开环评估，使用ST-P3平均位移误差（ADE）指标，包括Avg-L2、L2@2s和Final-L2</li><li>主要评估指标：线性探针分类准确率（命令解码）、轨迹误差（规划兼容性）、解码器前向延迟（剪枝效率）</li><li>关键实验结果：</li></ul>
+<p> - 导航命令在第一个解码器层后线性探针准确率达97.7%，而规划兼容性在最终层（第32层）才达到最低Avg-L2 2.11m</p>
+<p> - 剪枝8层后，Avg-L2从2.06m升至2.17m，相对误差增加约5%，解码器延迟从497.52ms降至373.22ms，实现1.33倍加速</p>
+<p> - 层级输入输出余弦是更优的剪枝准则，基于孤立解码误差的排序在首次移除即导致误差上升27%</p>
+<p> - 学习型读出模块可从第一层恢复大部分性能，其中重采样器将Avg-L2从8.51m降至2.98m（最终层基线2.17m），表明早期层已包含规划信息但格式不兼容</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.07468/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SimWAM: A Simple World Action Model for End-to-End Autonomous Driving</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.07314/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">TEMPO: Semantic-Action Decoupled RL Post-Training for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
