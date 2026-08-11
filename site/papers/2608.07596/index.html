@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LIRA: Local Cross-Layer Information Routing for Vision-Language-Action Decoding - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出LIRA（Local Cross-Layer Information Routing），一种针对视觉-语言-动作（VLA）模型的局部跨层动作条件机制，解决现有VLM到动作解码器的接口仅能访问单一VLM层特征、或全局聚合多层特征导致局部结构丢失的问题 核心研究目标是将VLM到动作的条件传递重构为深度感知的信息路由问题，通过利用相邻VLM层的互补特征提升VLA模型在机器人操控任务上的性能和分布偏移下的鲁棒性 方法基于VLA-Adapter架构改进，无需修改骨干网络、动作解码器和训练流程即可实现性能提升" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.07596">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.07596.webp" alt="LIRA: Local Cross-Layer Information Routing for Vision-Language-Action Decoding" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出LIRA（Local Cross-Layer Information Routing），一种针对视觉-语言-动作（VLA）模型的局部跨层动作条件机制，解决现有VLM到动作解码器的接口仅能访问单一VLM层特征、或全局聚合多层特征导致局部结构丢失的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">LIRA: Local Cross-Layer Information Routing for Vision-Language-Action Decoding</h1>
+            <div class="detail-meta">2026-08-06 · <a href="http://arxiv.org/abs/2608.07596" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.07596" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.07596</span></div>
+            <p class="detail-summary">论文提出LIRA（Local Cross-Layer Information Routing），一种针对视觉-语言-动作（VLA）模型的局部跨层动作条件机制，解决现有VLM到动作解码器的接口仅能访问单一VLM层特征、或全局聚合多层特征导致局部结构丢失的问题 核心研究目标是将VLM到动作的条件传递重构为深度感知的信息路由问题，通过利用相邻VLM层的互补特征提升VLA模型在机器人操控任务上的性能和分布偏移下的鲁棒性 方法基于VLA-Adapter架构改进，无需修改骨干网络、动作解码器和训练流程即可实现性能提升</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">注：提供的论文HTML原文未包含作者所属研究机构的具体信息</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.07596/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文提出LIRA（Local Cross-Layer Information Routing），一种针对视觉-语言-动作（VLA）模型的局部跨层动作条件机制，解决现有VLM到动作解码器的接口仅能访问单一VLM层特征、或全局聚合多层特征导致局部结构丢失的问题</p>
+  <ul class="reading-intro-points"><li>论文提出LIRA（Local Cross-Layer Information Routing），一种针对视觉-语言-动作（VLA）模型的局部跨层动作条件机制，解决现有VLM到动作解码器的接口仅能访问单一VLM层特征、或全局聚合多层特征导致局部结构丢失的问题</li><li>核心研究目标是将VLM到动作的条件传递重构为深度感知的信息路由问题，通过利用相邻VLM层的互补特征提升VLA模型在机器人操控任务上的性能和分布偏移下的鲁棒性</li><li>方法基于VLA-Adapter架构改进，无需修改骨干网络、动作解码器和训练流程即可实现性能提升</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>注：提供的论文HTML原文未包含作者所属研究机构的具体信息</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出<strong>LIRA（Local Cross-Layer Information Routing）</strong>，一种针对视觉-语言-动作（VLA）模型的局部跨层动作条件机制，解决现有VLM到动作解码器的接口仅能访问单一VLM层特征、或全局聚合多层特征导致局部结构丢失的问题</li><li>核心研究目标是将VLM到动作的条件传递重构为深度感知的信息路由问题，通过利用相邻VLM层的互补特征提升VLA模型在机器人操控任务上的性能和分布偏移下的鲁棒性</li><li>方法基于<strong>VLA-Adapter</strong>架构改进，无需修改骨干网络、动作解码器和训练流程即可实现性能提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>将VLM到动作的条件传递问题定义为深度感知的信息路由任务，提出VLM深度上的局部性先验：每个并行融合块（PFB）应访问以对应VLM层为中心的局部邻域特征，而非仅单层或全层特征</li><li>设计<strong>LIRA</strong>局部跨层路由机制，为每个PFB路由来自深度对齐局部窗口的LIRA Query特征，同时保留层对齐的任务标记分支，相比VLA-Adapter不引入额外可训练参数</li><li>在匹配的0.5B参数配置下，LIRA在LIBERO、CALVIN ABC→D、LIBERO-Plus仿真基准以及真实世界机械臂任务上均优于VLA-Adapter基线，在LIBERO-Plus零样本迁移中任务成功率从59.1%提升至78.0%，提升18.9个百分点</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于深度对齐的VLM-to-action接口构建：VLM同时处理视觉语言任务标记和可学习的<strong>LIRA Query标记</strong>，从每层VLM提取任务标记特征（包含视觉语言表征）和LIRA Query特征（作为VLM到动作解码器的条件接口），机器人本体感知状态通过可学习投影编码为嵌入向量</li><li>提出局部跨层路由机制：对于第i个PFB，选择以对应VLM层i为中心、宽度为r的局部邻域（默认r=1，即3层窗口，首尾层裁剪为2层窗口），沿标记维度拼接邻域内的LIRA Query特征，无需额外投影层即可直接输入PFB的交叉注意力操作</li><li>训练采用监督连续动作回归目标，与VLA-Adapter基线使用完全相同的训练流程，保证实验对比的公平性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用数据集：<strong>LIBERO</strong>（4个机器人操控任务套件）、<strong>LIBERO-Plus</strong>（10030个包含7类可控扰动的任务，用于鲁棒性评估）、<strong>CALVIN ABC→D</strong>（长 horizon 序列操控基准，A/B/C环境训练，D环境评估）、真实世界Franka Research 3机械臂操控数据集</li><li>模型规模：默认0.5B参数配置，使用<strong>Qwen2.5-0.5B</strong>作为VLM语言骨干，配备64个LIRA Query标记</li><li>训练资源：4块<strong>NVIDIA H100 GPU</strong>，LoRA微调（秩64），学习率1×10⁻⁴，批次大小16</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：LIBERO（500次试验/套件）、LIBERO-Plus（10030个任务各1次 rollout，分零样本迁移和目标任务微调两种设置）、CALVIN（1000个任务序列）、真实世界平台（每个任务10次试验）</li><li>主要评估指标：任务成功率、连续任务完成平均长度、训练内存占用、推理吞吐量</li><li>关键实验结果：</li></ul>
+<p> 1. 标准操控任务：LIBERO平均成功率从VLA-Adapter的97.3%提升至98.9%，LIBERO-Long（长序列任务）成功率从95.0%提升至97.6%</p>
+<p> 2. 序列任务完成：CALVIN五任务连续完成成功率从76.5%提升至80.5%，平均完成序列长度从4.42提升至4.52，在2-5个连续任务的成功率上均为对比方法中最优</p>
+<p> 3. 扰动鲁棒性：LIBERO-Plus零样本迁移整体成功率从59.1%提升至78.0%，超过最强对比方法OpenVLA-OFT（69.6%）8.4个百分点；7类扰动中LIRA在6类上取得最高成功率；微调后整体成功率82.9%，为最优</p>
+<p> 4. 真实世界任务：在所有4个递增复杂度的真实世界任务上均取得最高成功率，例如Pick-and-Place任务成功率从7/10提升至9/10，两阶段Collection任务的最终成功率从6/10提升至8/10</p>
+<p> 5. 资源效率：相比7B参数的OpenVLA-OFT，LIRA的骨干网络缩小14倍，训练内存降低79%（62GB→12.8GB），推理吞吐量提升2.61倍（71.4Hz→186.3Hz），同时LIBERO平均成功率高出1.8个百分点</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.07619/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">GWM-VLA: Geometry-Aware Latent World Modeling for Vision-Language-Action Learning</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.07468/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SimWAM: A Simple World Action Model for End-to-End Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

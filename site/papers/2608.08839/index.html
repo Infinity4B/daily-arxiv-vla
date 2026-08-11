@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SG-WAM: Text-Grounded and Spatial-aware Semantic Guidance for World-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有世界动作模型（WAMs）主要依赖视觉线索生成未来视频和动作，语言指令仅通过独立于视觉观察的文本编码器嵌入，导致生成内容与指令语义不对齐，动作预测精度下降 本文提出SG-WAM，一种面向世界动作模型的语义引导方法，利用视觉语言模型（VLM）作为语义规划器，生成文本接地且空间感知的语义预判，引导WAM的视频和动作生成忠实遵循语言指令 通过在仿真和真实机器人平台的大量实验，验证该方法在操作精度和指令跟随能力上的优越性" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.08839">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.08839.webp" alt="SG-WAM: Text-Grounded and Spatial-aware Semantic Guidance for World-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有世界动作模型（WAMs）主要依赖视觉线索生成未来视频和动作，语言指令仅通过独立于视觉观察的文本编码器嵌入，导致生成内容与指令语义不对齐，动作预测精度下降</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">SG-WAM: Text-Grounded and Spatial-aware Semantic Guidance for World-Action Models</h1>
+            <div class="detail-meta">2026-08-09 · <a href="http://arxiv.org/abs/2608.08839" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.08839" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.08839</span></div>
+            <p class="detail-summary">现有世界动作模型（WAMs）主要依赖视觉线索生成未来视频和动作，语言指令仅通过独立于视觉观察的文本编码器嵌入，导致生成内容与指令语义不对齐，动作预测精度下降 本文提出SG-WAM，一种面向世界动作模型的语义引导方法，利用视觉语言模型（VLM）作为语义规划器，生成文本接地且空间感知的语义预判，引导WAM的视频和动作生成忠实遵循语言指令 通过在仿真和真实机器人平台的大量实验，验证该方法在操作精度和指令跟随能力上的优越性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">香港科技大学（广州）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.08839/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有世界动作模型（WAMs）主要依赖视觉线索生成未来视频和动作，语言指令仅通过独立于视觉观察的文本编码器嵌入，导致生成内容与指令语义不对齐，动作预测精度下降</p>
+  <ul class="reading-intro-points"><li>现有世界动作模型（WAMs）主要依赖视觉线索生成未来视频和动作，语言指令仅通过独立于视觉观察的文本编码器嵌入，导致生成内容与指令语义不对齐，动作预测精度下降</li><li>本文提出SG-WAM，一种面向世界动作模型的语义引导方法，利用视觉语言模型（VLM）作为语义规划器，生成文本接地且空间感知的语义预判，引导WAM的视频和动作生成忠实遵循语言指令</li><li>通过在仿真和真实机器人平台的大量实验，验证该方法在操作精度和指令跟随能力上的优越性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>香港科技大学（广州）</li><li>Ola Dimensions（深圳）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有世界动作模型（WAMs）主要依赖视觉线索生成未来视频和动作，语言指令仅通过独立于视觉观察的文本编码器嵌入，导致生成内容与指令语义不对齐，动作预测精度下降</li><li>本文提出<strong>SG-WAM</strong>，一种面向世界动作模型的语义引导方法，利用视觉语言模型（VLM）作为语义规划器，生成文本接地且空间感知的语义预判，引导WAM的视频和动作生成忠实遵循语言指令</li><li>通过在仿真和真实机器人平台的大量实验，验证该方法在操作精度和指令跟随能力上的优越性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出全新的语义引导世界动作模型范式，以文本接地、空间感知的语义预判替代传统独立于视觉的文本嵌入，同时引导未来视频预测与动作解码</li><li>实现<strong>SG-WAM</strong>具体框架，基于VLM规划器生成互补的文本接地与空间感知语义预判，让未来视频生成和动作预测均能忠实匹配语言指令</li><li>设计三阶段渐进式训练范式，逐步对齐语义规划器、世界模型与动作专家，稳定训练过程并提升模型性能</li><li>在仿真与真实机器人场景的大量实验证明，SG-WAM达到state-of-the-art性能，具备精确操作能力与强指令跟随能力</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>整体架构分为<strong>VLM语义规划器</strong>和<strong>世界动作模型</strong>两部分：VLM规划器基于<strong>Qwen3.5 2B</strong>构建，通过添加可学习查询token，从隐藏状态中预测未来关键帧的两种语义预判；世界动作模型基于预训练<strong>LTX-Video</strong>视频扩散模型构建，耦合视频专家与动作专家，在语义预判引导下生成未来视频与动作序列</li><li>语义预判采用双分支设计：基础查询组学习共享语义知识，文本接地分支学习任务相关目标对象的语义，空间感知分支学习场景几何信息；文本接地分支对齐<strong>SigLIP2</strong>的视觉特征，空间感知分支对齐<strong>Depth Anything 3</strong>的几何特征，通过冻结教师模型提供监督信号</li><li>核心创新包括：1. 首次将文本接地+空间感知的语义预判作为WAM的高层引导，解决传统WAM的指令-视觉对齐不足问题；2. 双分支语义设计同时捕捉任务意图与操作所需的几何信息，为生成过程提供细粒度结构化引导；3. 通过门控融合将语义预判注入视频专家的每个模块，保留预训练视频模型的生成能力，同时通过训练时随机丢弃引导实现分类器自由引导，提升推理控制效果</li><li>训练采用三阶段范式：第一阶段单独预训练语义规划器，对齐未来帧的教师特征；第二阶段联合训练语义规划器与视频专家，让世界模型学会利用语义预判；第三阶段加入动作专家，三者联合训练，通过flow-matching损失优化生成效果</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>LIBERO</strong>（桌面操作benchmark，包含空间、物体、目标、长程4个任务套件）、<strong>LIBERO-Plus</strong>（在LIBERO基础上增加7类扰动：物体布局、相机视角、机器人初始状态、语言改写、光照、背景纹理、传感器噪声）、<strong>DROID</strong>（用于开箱指令跟随测试）</li><li>真实世界数据集：自采集的双臂操作数据集，基于<strong>AgileX Cobot</strong>双臂平台采集，包含4个基础任务（将猕猴桃放入篮子、按顺序堆叠碗、按顺序给锅加料、举锅）与2个泛化任务（未训练过的容器高度、未训练过的光照条件），每个任务采集100条遥操作演示，共400条演示数据</li><li>模型规模：语义规划器为<strong>Qwen3.5 2B</strong>，世界模型基于预训练<strong>LTX-Video</strong>视频扩散模型，文本接地监督教师为<strong>SigLIP2</strong>，空间感知监督教师为<strong>Depth Anything 3</strong>，后两者均为冻结状态</li><li>训练资源：使用8张<strong>NVIDIA H100 GPU</strong>进行训练，三阶段训练分别迭代20k、30k、30k步</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真环境覆盖LIBERO、LIBERO-Plus、DROID三个公开benchmark，真实机器人环境为AgileX Cobot双臂平台，配备3个RGB相机（1个底座前向相机、2个手腕Eye-on-Hand相机）</li><li>主要评估指标：任务成功率（success rate）</li><li>关键实验结果：</li></ul>
+<p> - 在LIBERO基准上，SG-WAM平均成功率达到<strong>98.7%</strong>，超过最强基线LingBot-VA的98.5%，达到state-of-the-art水平</p>
+<p> - 在LIBERO-Plus扰动测试中，SG-WAM平均成功率为<strong>81.3%</strong>，比最强基线高3.5个百分点，其中语言扰动场景下提升2.2个百分点，展现出最强的环境与指令扰动鲁棒性</p>
+<p> - 真实世界实验中，SG-WAM在4个基础任务和2个泛化任务上的成功率均最高，在未训练过的容器高度、未训练过的光照的泛化场景下仍保持最优性能，验证了方法的真实场景迁移能力</p>
+<p> - 消融实验验证了语义引导、双语义设计、三阶段训练三个核心组件的有效性，移除任意组件都会导致LIBERO上的成功率下降</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.08904/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">From Recovery to Drop-off: How Action Post-training Reduces a VLM&#x27;s Late-Layer Depth Decodability</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.08749/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">OnEvoMemory: Evolving Memory through Online Robot Rollouts for Pretrained Robot Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

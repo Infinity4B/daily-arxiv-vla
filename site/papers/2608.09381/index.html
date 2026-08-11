@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JEPA-WAM: Learning Vision-Language-Action Policies with Joint-Embedding World Modeling - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 JEPA-WAM，一种基于预训练V-JEPA表示空间的潜在世界动作模型（Latent WAM），旨在解决三类核心问题：传统视觉-语言-动作（VLA）策略仅隐式建模状态转移，分布外泛化能力不足；视频生成类世界动作模型（WAM）需迭代生成未来帧，部署成本高；现有潜在WAM的预测表示多被压缩为全局令牌，丢失细粒度空间信息，且转移监督与动作生成通路耦合弱，无法有效指导动作预测。 该方法通过设计空间结构化的联合当前-未来视觉目标，将潜藏状态转移预测与连续动作生成通过共享预测器耦合，在不引入显式未来帧生成的前提下，同时提升机器人策略的分布内性能与分布外泛化能力。 研究在多个仿真与真实机器人操作基准上验证了方法的有效性，同时证明了所设计的转移监督信号可无缝迁移至预训练VLA策略，进一步提升其性能。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.09381">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.09381.webp" alt="JEPA-WAM: Learning Vision-Language-Action Policies with Joint-Embedding World Modeling" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 JEPA-WAM，一种基于预训练V-JEPA表示空间的潜在世界动作模型（Latent WAM），旨在解决三类核心问题：传统视觉-语言-动作（VLA）策略仅隐式建模状态转移，分布外泛化能力不足；视频生成类世界动作模型（WAM）需迭代生成未来帧，部署成本高；现有潜在WAM的预测表示多被压缩为全局令牌，丢失细粒度空间信息，且转移监督与动作生成通路耦合弱，无法有效指导动作预测。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">JEPA-WAM: Learning Vision-Language-Action Policies with Joint-Embedding World Modeling</h1>
+            <div class="detail-meta">2026-08-10 · <a href="http://arxiv.org/abs/2608.09381" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.09381" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.09381</span></div>
+            <p class="detail-summary">论文提出 JEPA-WAM，一种基于预训练V-JEPA表示空间的潜在世界动作模型（Latent WAM），旨在解决三类核心问题：传统视觉-语言-动作（VLA）策略仅隐式建模状态转移，分布外泛化能力不足；视频生成类世界动作模型（WAM）需迭代生成未来帧，部署成本高；现有潜在WAM的预测表示多被压缩为全局令牌，丢失细粒度空间信息，且转移监督与动作生成通路耦合弱，无法有效指导动作预测。 该方法通过设计空间结构化的联合当前-未来视觉目标，将潜藏状态转移预测与连续动作生成通过共享预测器耦合，在不引入显式未来帧生成的前提下，同时提升机器人策略的分布内性能与分布外泛化能力。 研究在多个仿真与真实机器人操作基准上验证了方法的有效性，同时证明了所设计的转移监督信号可无缝迁移至预训练VLA策略，进一步提升其性能。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者分属多个研究机构，部分作者在 XYZ Embodied AI 开展实习研究，其余作者来自合作高…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.09381/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文提出 JEPA-WAM，一种基于预训练V-JEPA表示空间的潜在世界动作模型（Latent WAM），旨在解决三类核心问题：传统视觉-语言-动作（VLA）策略仅隐式建模状态转移，分布外泛化能力不足；视频生成类世界动作模型（WAM）需迭代生成未来帧，部署成本高；现有潜在WAM的预测表示多被压缩为全局令牌，丢失细粒度空间信息，且转移监督与动作生成通路耦合弱，无法有效指导动作预测。</p>
+  <ul class="reading-intro-points"><li>论文提出 JEPA-WAM，一种基于预训练V-JEPA表示空间的潜在世界动作模型（Latent WAM），旨在解决三类核心问题：传统视觉-语言-动作（VLA）策略仅隐式建模状态转移，分布外泛化能力不足；视频生成类世界动作模型（WAM）需迭代生成未来帧，部署成本高；现有潜在WAM的预测表示多被压缩为全局令牌，丢失细粒度空间信息，且转移监督与动作生成通路耦合弱，无法有效指导动作预测。</li><li>该方法通过设计空间结构化的联合当前-未来视觉目标，将潜藏状态转移预测与连续动作生成通过共享预测器耦合，在不引入显式未来帧生成的前提下，同时提升机器人策略的分布内性能与分布外泛化能力。</li><li>研究在多个仿真与真实机器人操作基准上验证了方法的有效性，同时证明了所设计的转移监督信号可无缝迁移至预训练VLA策略，进一步提升其性能。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者分属多个研究机构，部分作者在 <strong>XYZ Embodied AI</strong> 开展实习研究，其余作者来自合作高校及研究单位</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>JEPA-WAM</strong>，一种基于预训练V-JEPA表示空间的潜在世界动作模型（Latent WAM），旨在解决三类核心问题：传统视觉-语言-动作（VLA）策略仅隐式建模状态转移，分布外泛化能力不足；视频生成类世界动作模型（WAM）需迭代生成未来帧，部署成本高；现有潜在WAM的预测表示多被压缩为全局令牌，丢失细粒度空间信息，且转移监督与动作生成通路耦合弱，无法有效指导动作预测。</li><li>该方法通过设计空间结构化的联合当前-未来视觉目标，将潜藏状态转移预测与连续动作生成通过共享预测器耦合，在不引入显式未来帧生成的前提下，同时提升机器人策略的分布内性能与分布外泛化能力。</li><li>研究在多个仿真与真实机器人操作基准上验证了方法的有效性，同时证明了所设计的转移监督信号可无缝迁移至预训练VLA策略，进一步提升其性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>JEPA-WAM</strong> 架构：在预训练 <strong>V-JEPA 2.1</strong> 表示空间中构建潜在WAM，通过共享预测器将潜藏状态转移预测与连续动作生成耦合，无需显式生成未来观测帧，大幅降低部署成本。</li><li>设计<strong>空间结构化的联合当前-未来转移目标</strong>：该目标保留密集patch级对应关系，捕获当前与未来观测间的任务共享视觉时序结构，避免将转移信息压缩为少量全局潜藏令牌，保留细粒度空间信息；该目标 formulation 可无缝迁移至预训练VLA策略，无需修改其原有感知与动作通路。</li><li>在多个机器人操作基准上验证优越性：在 <strong>LIBERO-Plus</strong> 上以无大规模机器人策略预训练的条件取得79.2%的平均成功率（同类最优）；迁移至预训练 <strong>π₀.₅</strong> 后取得86.3%的全局最优成绩；同时在 <strong>RoboTwin 2.0</strong> 与真实双手操作场景中验证了强泛化能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于预训练 <strong>V-JEPA 2.1</strong> 表示空间构建模型，使用冻结的300M参数V-JEPA编码器提取多视角密集patch级视觉表示，保留空间结构与跨视角对应关系，作为当前视觉状态与转移目标的公共表示空间。</li><li>提出<strong>空间结构化的联合当前-未来转移目标</strong>：将当前观测与δ步后的未来观测按时间维度堆叠后联合输入V-JEPA编码器构造目标，捕获时序相对变化（稳定/变化区域、局部对象与空间关系演变），而非独立表示未来状态，同时保留patch级的空间对应关系。</li><li>设计<strong>共享预测器</strong>：以0.5B参数的 <strong>Qwen2.5-0.5B</strong> 作为共享骨干，输入投影后的视觉token、任务指令与动作占位token，同时输出两类表示：一是保留空间顺序的视觉时序隐藏状态，用于预测联合转移目标；二是聚合视觉与任务上下文的条件表示，输入基于DiT的流匹配动作专家生成动作，实现转移监督直接作用于动作生成的骨干网络。</li><li>训练时联合优化动作生成损失与patch级余弦转移预测损失，转移监督直接更新共享预测器的参数；部署时移除目标分支与预测头，仅保留动作生成通路，保证推理效率。</li><li>支持迁移至预训练VLA策略：在预训练VLA（如 <strong>π₀.₅</strong>）中引入未来token，将其隐藏状态重塑为二维特征图后经投影与上采样，与联合当前-未来目标对齐，无需修改原有感知与动作通路即可获得转移监督收益。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用数据集：仿真场景采用 <strong>LIBERO</strong> 四任务套件、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong>（20个双手操作任务），真实场景采用 <strong>AgileX COBOT Magic</strong> 双足操作平台</li><li>模型规模：冻结的300M参数 <strong>V-JEPA 2.1</strong> 视觉编码器，0.5B参数的 <strong>Qwen2.5-0.5B</strong> 共享预测器，基于DiT的流匹配动作专家；预训练迁移实例基于3B参数的 <strong>π₀.₅</strong> 策略</li><li>训练资源：原文未明确披露具体训练硬件（GPU/TPU）配置，仅提及采用单阶段微调的标准训练设置</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：覆盖LIBERO、LIBERO-Plus、RoboTwin 2.0仿真平台，以及AgileX COBOT Magic真实双手操作平台，测试场景包含相机视角偏移、物体位置偏移、布局变化、光照变化、背景干扰、噪声添加等多种分布外（OOD）场景</li><li>主要评估指标：任务成功率（%），同时评估分布内（ID）与分布外（OOD）场景下的性能表现</li><li>关键实验结果：</li></ul>
+<p> - 标准LIBERO仿真中，JEPA-WAM平均成功率达96.7%，与强基线性能持平；迁移至预训练 <strong>π₀.₅</strong> 后进一步提升至97.8%。</p>
+<p> - LIBERO-Plus OOD泛化测试中，无大规模预训练的JEPA-WAM取得79.2%的平均成功率，为无大规模机器人预训练的同类方法最优；迁移至 <strong>π₀.₅</strong> 后取得86.3%的全局最优成绩。</p>
+<p> - RoboTwin 2.0仿真中，JEPA-WAM在Clean场景下成功率达79.9%，Random强随机场景下达36.9%，大幅优于其他无预训练方法；迁移至 <strong>π₀.₅</strong> 后Clean场景下提升至84.6%，Random场景下维持37.5%的稳定性能。</p>
+<p> - 真实场景中，JEPA-WAM在视觉与空间偏移下展现强泛化能力，推理效率达85ms/次（11.76Hz），速度快于对比方法ABot-M0（125ms/次，7.99Hz）。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.09410/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Skills in Weights, Memory in Code: Hybrid Learning for Memory-Dependent Robot Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.09125/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Trajectory Divergence Horizon Decision for Reliable Dual-Arm Surgical Subtask Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

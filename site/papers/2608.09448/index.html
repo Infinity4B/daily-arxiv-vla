@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VANE: Reliable Test-Time Training for Vision-Language-Action Models via Future Visual Representation Prediction - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有视觉-语言-动作（VLA）策略的测试时训练（TTT）方法存在共享适配空间的跨任务干扰、无验证在线更新可能降低闭环控制性能的问题，难以在机器人操作中可靠部署 本文提出可靠TTT框架VANE，通过上下文路由的潜在提示混合、未来视觉表示预测的世界预测接口、注意力门控与验证驱动的TTT三个核心模块，解决预测式TTT的延迟目标和闭环耦合挑战，实现选择性、可逆的VLA策略适配 在SimplerEnv的WidowX和Google Robot基准上的实验表明，VANE在WidowX上平均成功率比对应TTT基线高3.2个百分点，验证了其证据驱动的适配方法的有效性" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.09448">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.09448.webp" alt="VANE: Reliable Test-Time Training for Vision-Language-Action Models via Future Visual Representation Prediction" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有视觉-语言-动作（VLA）策略的测试时训练（TTT）方法存在共享适配空间的跨任务干扰、无验证在线更新可能降低闭环控制性能的问题，难以在机器人操作中可靠部署</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">VANE: Reliable Test-Time Training for Vision-Language-Action Models via Future Visual Representation Prediction</h1>
+            <div class="detail-meta">2026-08-10 · <a href="http://arxiv.org/abs/2608.09448" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.09448" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.09448</span></div>
+            <p class="detail-summary">现有视觉-语言-动作（VLA）策略的测试时训练（TTT）方法存在共享适配空间的跨任务干扰、无验证在线更新可能降低闭环控制性能的问题，难以在机器人操作中可靠部署 本文提出可靠TTT框架VANE，通过上下文路由的潜在提示混合、未来视觉表示预测的世界预测接口、注意力门控与验证驱动的TTT三个核心模块，解决预测式TTT的延迟目标和闭环耦合挑战，实现选择性、可逆的VLA策略适配 在SimplerEnv的WidowX和Google Robot基准上的实验表明，VANE在WidowX上平均成功率比对应TTT基线高3.2个百分点，验证了其证据驱动的适配方法的有效性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">香港中文大学（深圳）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.09448/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有视觉-语言-动作（VLA）策略的测试时训练（TTT）方法存在共享适配空间的跨任务干扰、无验证在线更新可能降低闭环控制性能的问题，难以在机器人操作中可靠部署</p>
+  <ul class="reading-intro-points"><li>现有视觉-语言-动作（VLA）策略的测试时训练（TTT）方法存在共享适配空间的跨任务干扰、无验证在线更新可能降低闭环控制性能的问题，难以在机器人操作中可靠部署</li><li>本文提出可靠TTT框架VANE，通过上下文路由的潜在提示混合、未来视觉表示预测的世界预测接口、注意力门控与验证驱动的TTT三个核心模块，解决预测式TTT的延迟目标和闭环耦合挑战，实现选择性、可逆的VLA策略适配</li><li>在SimplerEnv的WidowX和Google Robot基准上的实验表明，VANE在WidowX上平均成功率比对应TTT基线高3.2个百分点，验证了其证据驱动的适配方法的有效性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>香港中文大学（深圳）</li><li>北京邮电大学</li><li>中国科学院自动化研究所</li><li>中国科学院大学</li><li>理想汽车（Li Auto Inc.）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有视觉-语言-动作（VLA）策略的测试时训练（TTT）方法存在共享适配空间的跨任务干扰、无验证在线更新可能降低闭环控制性能的问题，难以在机器人操作中可靠部署</li><li>本文提出可靠TTT框架<strong>VANE</strong>，通过上下文路由的潜在提示混合、未来视觉表示预测的世界预测接口、注意力门控与验证驱动的TTT三个核心模块，解决预测式TTT的延迟目标和闭环耦合挑战，实现选择性、可逆的VLA策略适配</li><li>在SimplerEnv的WidowX和Google Robot基准上的实验表明，VANE在WidowX上平均成功率比对应TTT基线高3.2个百分点，验证了其证据驱动的适配方法的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>系统诊断了潜在提示TTT的任务依赖干扰问题，提出上下文路由的潜在提示混合（MoLP）方法，在紧凑适配空间内平衡跨任务共享与任务特化，无需外部任务标识</li><li>提出部署时自监督代理的两项要求（目标可观测性、策略相关性），实现未来视觉表示预测的世界预测接口（WPI），替换原有状态 grounding 分支得到<strong>QwenWPI</strong>，提供无标签、时序预测性的适配信号</li><li>针对预测式TTT的延迟目标和闭环耦合两大挑战，提出注意力门控与验证驱动TTT（AGV-TTT），通过影子提案、注意力聚焦的验证、原子提交/回滚机制，确保候选更新在闭环控制中可靠部署</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>VANE</strong>整体由三个顺序协作的模块组成：MoLP决定适配内容，WPI提供适配信号，AGV-TTT决定适配时机和是否部署更新</li><li>上下文路由潜在提示混合（MoLP）：维护全局大小为8的共享潜在提示库，通过线性路由器根据当前视觉-语言上下文的表征选择Top-2提示加权组合为有效提示，训练时联合优化路由器、提示库与动作策略，测试时仅优化提示库，在不依赖任务标识的前提下实现任务相关的适配，同时通过负载均衡损失避免提示使用偏差</li><li>世界预测接口（WPI）：冻结<strong>V-JEPA 2</strong>编码器提取当前观察和延迟未来观察的视觉token，结合路由提示、加噪动作token通过Latent-Action DiT预测未来视觉表示，以未来的观察作为无标签监督目标，替代原有仅依赖当前状态的 grounding 代理，提供与交互结果相关的预测性监督信号</li><li>注意力门控与验证驱动TTT（AGV-TTT）：通过计算跨层注意力分布的时间变化检测交互转换事件，事件触发时在影子副本上仅优化提示库得到候选提示，利用预测延迟注意力选择高相关视觉token计算聚焦损失；后续通过Hv个未来验证对评估候选与旧提示的性能，仅当聚焦损失提升、全局损失未退化、超过半数验证对的聚焦损失提升时，才原子提交候选提示及优化器状态，否则回滚，从机制上避免无效更新影响实时控制</li><li>训练时总损失由流匹配动作损失、WPI未来视觉表示损失、提示路由负载均衡损失加权组成，测试时除潜在提示库外所有模块冻结，确保适配过程的可控、可验证和可逆</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>训练数据集：<strong>BridgeData V2</strong>、<strong>RT-1</strong>机器人操作数据集，训练时等概率混合采样</li><li>评估数据集：<strong>SimplerEnv</strong>仿真基准，包含<strong>WidowX</strong>（堆叠绿色积木、胡萝卜放餐盘、勺子放桌布、茄子放篮子4项操作任务）和<strong>Google Robot</strong>（拿可乐罐、靠近、开/关抽屉3项任务家族，分视觉匹配VM和变体聚合VA两种评估设置）</li><li>模型规模：基于<strong>QwenPi</strong>（Qwen-based流匹配VLA，遵循StarVLA-α框架构建）作为动作策略骨干，潜在提示库大小为8，路由器为单线性层，冻结V-JEPA 2作为视觉表征编码器</li><li>训练资源：提供的截断论文内容未明确提及具体GPU/TPU等训练硬件配置</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：SimplerEnv闭环仿真环境，采用基准自带的自适应时间集成策略合并重叠动作块，每个控制步仅执行合并后的首个动作</li><li>主要评估指标：任务成功率（%），WidowX Overall为4项任务的未加权平均成功率，Google Overall为6项VM/VA设置的未加权平均成功率</li><li>关键实验结果：</li></ul>
+<p> - WidowX基准上，完整VANE配置<strong>QwenWPI + MoLP + AGV-TTT</strong>达到71.2%的整体成功率，超过TTT-VLA基线（67.4%）3.8个百分点，也高于同骨干的QwenPi + SG-LP + TTT（63.9%）7.3个百分点</p>
+<p> - Google Robot基准上，<strong>QwenPi + MoLP + AGV-TTT</strong>达到76.7%的整体成功率，超过TTT-VLA基线（66.3%）10.4个百分点；但未来预测式提示的QwenWPI在该基准上未优于状态 grounding 提示，说明部署收益存在任务和本体依赖性</p>
+<p> - 消融实验验证了MoLP、未来验证机制、影子更新协议等组件的有效性，AGV-TTT的验证机制可有效过滤无效更新，优化效率优于无验证的在线TTT</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.09467/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RecoverFly: A Failure-Aware Reinforcement Learning Post-Training Framework for Aerial Vision-Language Navigation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.09410/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Skills in Weights, Memory in Code: Hybrid Learning for Memory-Dependent Robot Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
