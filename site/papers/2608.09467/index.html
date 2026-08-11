@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RecoverFly: A Failure-Aware Reinforcement Learning Post-Training Framework for Aerial Vision-Language Navigation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文聚焦无人机视觉语言导航（UAV-VLN）领域，针对现有端到端无人机视觉语言动作（UAV-VLA）策略的行为克隆训练无法提供闭环执行纠错信号、直接应用强化学习（RL）存在样本利用效率低、长尾场景分布偏差、策略分布漂移等问题，提出RecoverFly失败感知的RL后训练框架，旨在提升UAV-VLA策略的导航性能与跨场景泛化能力。 研究核心是解决UAV-VLN任务中闭环执行误差累积、稀有场景学习不足、策略更新失稳等耦合挑战，通过整合细粒度动作优化、失败导向学习、长尾场景适应与稳定策略更新机制，实现更可靠的无人机自主导航。 论文以TravelUAV基准为主要测试平台，验证方法在已见场景、未见地图、未见物体三种划分下的性能表现与泛化效果。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.09467">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.09467.webp" alt="RecoverFly: A Failure-Aware Reinforcement Learning Post-Training Framework for Aerial Vision-Language Navigation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文聚焦无人机视觉语言导航（UAV-VLN）领域，针对现有端到端无人机视觉语言动作（UAV-VLA）策略的行为克隆训练无法提供闭环执行纠错信号、直接应用强化学习（RL）存在样本利用效率低、长尾场景分布偏差、策略分布漂移等问题，提出RecoverFly失败感知的RL后训练框架，旨在提升UAV-VLA策略的导航性能与跨场景泛化能力。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">RecoverFly: A Failure-Aware Reinforcement Learning Post-Training Framework for Aerial Vision-Language Navigation</h1>
+            <div class="detail-meta">2026-08-10 · <a href="http://arxiv.org/abs/2608.09467" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.09467" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.09467</span></div>
+            <p class="detail-summary">论文聚焦无人机视觉语言导航（UAV-VLN）领域，针对现有端到端无人机视觉语言动作（UAV-VLA）策略的行为克隆训练无法提供闭环执行纠错信号、直接应用强化学习（RL）存在样本利用效率低、长尾场景分布偏差、策略分布漂移等问题，提出RecoverFly失败感知的RL后训练框架，旨在提升UAV-VLA策略的导航性能与跨场景泛化能力。 研究核心是解决UAV-VLN任务中闭环执行误差累积、稀有场景学习不足、策略更新失稳等耦合挑战，通过整合细粒度动作优化、失败导向学习、长尾场景适应与稳定策略更新机制，实现更可靠的无人机自主导航。 论文以TravelUAV基准为主要测试平台，验证方法在已见场景、未见地图、未见物体三种划分下的性能表现与泛化效果。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者包括Boxiong Wang、Hui Kang、Geng Sun、Jiahui Li、Chao…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.09467/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文聚焦无人机视觉语言导航（UAV-VLN）领域，针对现有端到端无人机视觉语言动作（UAV-VLA）策略的行为克隆训练无法提供闭环执行纠错信号、直接应用强化学习（RL）存在样本利用效率低、长尾场景分布偏差、策略分布漂移等问题，提出RecoverFly失败感知的RL后训练框架，旨在提升UAV-VLA策略的导航性能与跨场景泛化能力。</p>
+  <ul class="reading-intro-points"><li>论文聚焦无人机视觉语言导航（UAV-VLN）领域，针对现有端到端无人机视觉语言动作（UAV-VLA）策略的行为克隆训练无法提供闭环执行纠错信号、直接应用强化学习（RL）存在样本利用效率低、长尾场景分布偏差、策略分布漂移等问题，提出RecoverFly失败感知的RL后训练框架，旨在提升UAV-VLA策略的导航性能与跨场景泛化能力。</li><li>研究核心是解决UAV-VLN任务中闭环执行误差累积、稀有场景学习不足、策略更新失稳等耦合挑战，通过整合细粒度动作优化、失败导向学习、长尾场景适应与稳定策略更新机制，实现更可靠的无人机自主导航。</li><li>论文以TravelUAV基准为主要测试平台，验证方法在已见场景、未见地图、未见物体三种划分下的性能表现与泛化效果。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者包括Boxiong Wang、Hui Kang、Geng Sun、Jiahui Li、Chao Yu、Daxin Tian，通讯作者为Geng Sun和Jiahui Li，具体所属研究机构信息未在提供的截断内容中明确呈现</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文聚焦无人机视觉语言导航（UAV-VLN）领域，针对现有端到端无人机视觉语言动作（UAV-VLA）策略的行为克隆训练无法提供闭环执行纠错信号、直接应用强化学习（RL）存在样本利用效率低、长尾场景分布偏差、策略分布漂移等问题，提出RecoverFly失败感知的RL后训练框架，旨在提升UAV-VLA策略的导航性能与跨场景泛化能力。</li><li>研究核心是解决UAV-VLN任务中闭环执行误差累积、稀有场景学习不足、策略更新失稳等耦合挑战，通过整合细粒度动作优化、失败导向学习、长尾场景适应与稳定策略更新机制，实现更可靠的无人机自主导航。</li><li>论文以TravelUAV基准为主要测试平台，验证方法在已见场景、未见地图、未见物体三种划分下的性能表现与泛化效果。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出面向端到端UAV-VLA的强化学习框架：开发RecoverFly集成闭环RL后训练框架，保留预训练UAV-VLA策略的文本动作接口，将token级RL适配到语法约束的无人机自回归动作空间，实现在线导航反馈下的可执行动作生成优化。</li><li>提出失败感知重放学习机制：设计动态失败重放模块，存储并重访具有高学习价值的未解决导航案例，在不破坏on-policy rollout的前提下提升稀疏失败反馈的利用效率，强化闭环执行中的纠错学习。</li><li>提出带稳定策略更新的长尾适应方案：引入两阶段长尾场景课程学习与阶段式参考策略KL正则化，逐步提升稀有场景的训练频率，同时限制策略分布漂移，平衡场景适应能力与已习得导航能力的保留。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>RecoverFly基于RLinf中的原生token级VLA优化思路构建，针对UAV-VLN场景的特殊需求扩展了失败感知、长尾适应等模块，整体基于标准近端策略优化（PPO）算法设计，核心包含四类技术组件：</li></ul>
+<p> 1. 文本动作表示与token级PPO优化：将无人机的3-DoF控制（前进位移、垂直位移、偏航角）离散为符合语法约束的token序列，针对每个有效动作token单独计算PPO裁剪目标，共享动作级广义优势估计（GAE），避免序列级裁剪决策的过度约束，实现细粒度动作空间的稳定优化。</p>
+<p> 2. 动态失败重放：维护包含任务ID、场景、失败类型、状态、重试次数的动态失败池，按设定重放比例采样失败任务与全新任务，每次rollout后更新失败池中任务的激活/已解决/丢弃状态，确保高价值失败案例被反复学习，同时保持rollout的on-policy特性。</p>
+<p> 3. 两阶段长尾场景课程：阶段I按场景的经验频率采样，阶段II切换为场景等配额采样，逐步提升稀有场景的训练占比，缓解数据集场景分布不平衡问题。</p>
+<p> 4. 参考策略KL正则化：阶段I锚定初始预训练VLA策略，阶段II锚定阶段I训练后的策略，通过token级KL散度约束限制策略更新幅度，避免遗忘已习得的导航能力。</p>
+<ul><li>创新点：首次实现token级PPO对语法约束UAV-VLA自回归动作的稳定优化，提出动态失败重放机制解决高价值失败案例快速稀释的痛点，协同设计两阶段课程与KL正则化，同时解决长尾场景适应与策略漂移的耦合挑战。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用数据集：<strong>TravelUAV</strong>基准数据集，包含Full、Easy、Hard三种难度划分，以及Seen、Unseen Map、Unseen Object三种泛化能力评估划分。</li><li>模型规模：以<strong>AerialVLA</strong>作为预训练初始化backbone，具体模型参数量未在提供的截断内容中明确标注。</li><li>训练资源：提供的内容中未明确提及训练所使用的GPU、TPU等硬件资源信息。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：在TravelUAV基准的Test Seen、Test Unseen Map、Test Unseen Object三个测试划分下开展实验，对比基线包括人工表现（Human）、随机动作（Random Action）、固定动作（Fixed Action）、CMA、TravelUAV-DA、NavFoM、LongFly、AerialVLA。</li><li>主要评估指标：导航误差（NE，单位米，越低越好）、成功率（SR，百分比，越高越好）、在线成功率（OSR，百分比，越高越好）、成功率加权路径长度（SPL，百分比，越高越好）。</li><li>关键实验结果：</li></ul>
+<p> 1. 在Test Seen划分下，RecoverFly的成功率达56.33%，优于所有对比基线，相比AerialVLA初始化提升8.37个百分点；导航误差降至54.96米，显著优于多数基线。</p>
+<p> 2. 在Test Unseen Map划分下，RecoverFly成功率达42.97%，优于AerialVLA的37.58%，相比初始化提升5.39个百分点；导航误差为58.88米，泛化能力优于多数基线。</p>
+<p> 3. 在Test Unseen Object划分下，RecoverFly成功率达59.72%，在线成功率达68.31%，成功率加权路径长度达51.34%，全面优于AerialVLA等基线，相比初始化成功率提升3.12个百分点。</p>
+<p> 4. 消融实验验证了各组件有效性：引入RL后训练与失败重放机制后，Seen划分成功率较AerialVLA基线提升8.25个百分点；参考策略KL正则化可有效限制策略漂移，两阶段长尾课程可进一步提升模型在稀有场景的导航性能。</p>
+<p> 5. 在总rollout预算仅为训练集规模约30%的约束下，RecoverFly相比AerialVLA初始化的成功率提升3.12至8.37个百分点，验证了方法的高效性与实用性。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.09492/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Rethink Before You Execute: Adaptive Execution for World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.09448/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">VANE: Reliable Test-Time Training for Vision-Language-Action Models via Future Visual Representation Prediction</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

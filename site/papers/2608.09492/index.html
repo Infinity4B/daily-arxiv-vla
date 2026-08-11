@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rethink Before You Execute: Adaptive Execution for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对世界动作模型（WAMs）固定执行窗口与任务阶段依赖的块可靠性不匹配问题：简单任务阶段动作块可长期保持准确，困难阶段误差快速累积，固定步数重规划无法适配动态执行状态 提出轻量即插即用的自适应执行方案TempoWAM，通过循环进度监视器（RPM）估计任务进度，结合自适应执行协议（AEP）动态决策是否继续执行当前动作块或重新规划，无需修改骨干WAM 在仿真基准和真实机器人上验证TempoWAM可提升WAM执行的效率-成功率权衡，同时保持极低的部署开销" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.09492">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.09492.webp" alt="Rethink Before You Execute: Adaptive Execution for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对世界动作模型（WAMs）固定执行窗口与任务阶段依赖的块可靠性不匹配问题：简单任务阶段动作块可长期保持准确，困难阶段误差快速累积，固定步数重规划无法适配动态执行状态</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Rethink Before You Execute: Adaptive Execution for World Action Models</h1>
+            <div class="detail-meta">2026-08-10 · <a href="http://arxiv.org/abs/2608.09492" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.09492" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.09492</span></div>
+            <p class="detail-summary">针对世界动作模型（WAMs）固定执行窗口与任务阶段依赖的块可靠性不匹配问题：简单任务阶段动作块可长期保持准确，困难阶段误差快速累积，固定步数重规划无法适配动态执行状态 提出轻量即插即用的自适应执行方案TempoWAM，通过循环进度监视器（RPM）估计任务进度，结合自适应执行协议（AEP）动态决策是否继续执行当前动作块或重新规划，无需修改骨干WAM 在仿真基准和真实机器人上验证TempoWAM可提升WAM执行的效率-成功率权衡，同时保持极低的部署开销</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">提供的论文HTML片段未包含作者所属研究机构的明确信息</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.09492/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对世界动作模型（WAMs）固定执行窗口与任务阶段依赖的块可靠性不匹配问题：简单任务阶段动作块可长期保持准确，困难阶段误差快速累积，固定步数重规划无法适配动态执行状态</p>
+  <ul class="reading-intro-points"><li>针对世界动作模型（WAMs）固定执行窗口与任务阶段依赖的块可靠性不匹配问题：简单任务阶段动作块可长期保持准确，困难阶段误差快速累积，固定步数重规划无法适配动态执行状态</li><li>提出轻量即插即用的自适应执行方案TempoWAM，通过循环进度监视器（RPM）估计任务进度，结合自适应执行协议（AEP）动态决策是否继续执行当前动作块或重新规划，无需修改骨干WAM</li><li>在仿真基准和真实机器人上验证TempoWAM可提升WAM执行的效率-成功率权衡，同时保持极低的部署开销</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>提供的论文HTML片段未包含作者所属研究机构的明确信息</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对世界动作模型（WAMs）固定执行窗口与任务阶段依赖的块可靠性不匹配问题：简单任务阶段动作块可长期保持准确，困难阶段误差快速累积，固定步数重规划无法适配动态执行状态</li><li>提出轻量即插即用的自适应执行方案<strong>TempoWAM</strong>，通过循环进度监视器（RPM）估计任务进度，结合自适应执行协议（AEP）动态决策是否继续执行当前动作块或重新规划，无需修改骨干WAM</li><li>在仿真基准和真实机器人上验证TempoWAM可提升WAM执行的效率-成功率权衡，同时保持极低的部署开销</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>论证仅评估动作合理性不足以支撑自适应执行决策，提出<strong>任务进度</strong>是判断动作块是否推进任务的自然标准</li><li>提出<strong>TempoWAM</strong>，一种即插即用的WAM自适应执行框架，包含循环进度监视器（RPM）和自适应执行协议（AEP），可基于实时任务进度动态调整执行窗口</li><li>设计离线校准+在线两时间尺度适应的校准机制，弥合进度估计的训练-部署差距，无需重新训练骨干WAM</li><li>在<strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong>基准和真实双臂机器人任务上验证有效性：简单任务减少26.9%的WAM推理调用同时保持成功率，困难任务提升13.3个百分点的成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>RPM模块</strong>：轻量循环进度监视器，输入为当前观测、剩余动作候选、候选前缀长度、上一步进度估计、任务指令；冻结骨干WAM的视觉编码器提取观测特征，经MLP投影；动作前缀经循环编码器编码并加入长度嵌入；历史进度估计通过可学习投影注入；融合多源特征后经GRU更新隐状态，最终由小预测头输出[0,1]区间内的任务进度估计值</li><li><strong>AEP模块</strong>：自适应执行协议，通过比较当前进度率与所需进度率的大小决策是否重规划；引入校准因子κ，离线阶段对每个演示episode拟合校准因子取中位数得到任务级初始值；在线阶段单episode内用EMA更新κ适配当前执行状态，跨episode根据成功率EMA与目标成功率的差距调整缩放因子δ'，最终κ_final=κ·δ'，决策规则为r_t=原始进度率/κ_final，≥1则继续执行，否则丢弃剩余动作块并重新调用WAM</li><li><strong>训练目标</strong>：使用演示轨迹的步数/总episode长度作为进度监督标签，采用二元交叉熵损失，附加平滑正则化（约束进度预测随时间平滑）和历史一致性正则化（随机掩码部分观测，鼓励模型依赖执行历史而非瞬时视觉噪声）</li><li>核心创新点为基于任务进度的执行决策逻辑、无需修改骨干WAM的即插即用特性、以及离线+在线结合的校准机制，解决了传统自适应执行依赖不确定性代理指标、计算成本高的问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：仿真基准为<strong>RoboTwin 2.0</strong>（50个操作任务，覆盖清洁/随机化两种场景，单任务100次试验）、<strong>LIBERO</strong>（4个任务套件：LIBERO-Long、LIBERO-Spatial、LIBERO-Object、LIBERO-Goal，单任务50次试验）；真实机器人实验为3个双臂操作任务：take drinks、pick and place、pack hand cream，单任务30次试验</li><li>模型规模：RPM总参数量仅2.27M，仅为骨干<strong>FastWAM</strong>参数的0.038%</li><li>训练资源：仿真实验在<strong>NVIDIA H20</strong> GPU上运行；真实机器人部署采用优化后的推理栈（TensorRT、CUDA Graph等），WAM单次推理调用优化后RTX 4090平台耗时为20.36ms，Thor平台为42.31ms；RPM单次决策开销仅为单次WAM调用的0.34%（复用WAM预计算视觉特征）或3.54%（独立编码视觉特征），部署开销可忽略</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：仿真环境为RoboTwin 2.0、LIBERO，真实环境为自建双臂机器人平台；骨干模型选用<strong>FastWAM</strong>，额外验证跨骨架泛化性（即插即用到<strong>Motus</strong>无需重新训练）；基线包括固定执行窗口基线（RoboTwin每24/12步重规划，LIBERO每10步重规划）、自适应执行基线<strong>Auto-Horizon</strong>（基于动作自注意力）、<strong>AAC</strong>（基于动作熵）</li><li>主要评估指标：<strong>成功率（SR，%）</strong>、<strong>WAM推理调用次数（Calls，衡量计算成本）</strong>、<strong>成功episode的执行步数（Steps，衡量轨迹效率）</strong></li><li>关键实验结果：</li></ul>
+<p> - RoboTwin基准：短时程任务在保持成功率的同时减少WAM调用；长时程任务成功率从86.93%（清洁）/84.47%（随机化）提升至88.47%/85.33%，同时减少执行步数；简单缩短执行窗口到12步无法复现该效果</p>
+<p> - LIBERO基准：平均WAM调用从14.88次降至12.46次，成功率保持稳定；长时程的LIBERO-Long套件调用从24.82次降至20.73次，成功率微升；Auto-Horizon和AAC均比固定基线调用更多且无成功率提升</p>
+<p> - 跨骨架泛化：即插即用到Motus时，move_can_pot任务成功率最多提升59个百分点，证明方案是执行层通用特性，不依赖特定WAM架构</p>
+<p> - 真实机器人：简单任务take drinks成功率不变，调用减少26.9%；困难任务pack hand cream成功率从50.0%提升至63.3%</p>
+<p> - 消融实验验证了在线校准机制的有效性：单episode内κ随任务难度上升而升高，跨episode的δ'会根据成功率自动调整，成功率高时放松协议提升效率，成功率低时收紧协议提升成功率</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.09516/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">HarnessWAM: Bridging Prediction and Deliberation in World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.09467/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RecoverFly: A Failure-Aware Reinforcement Learning Post-Training Framework for Aerial Vision-Language Navigation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

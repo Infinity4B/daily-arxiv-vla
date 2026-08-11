@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trajectory Divergence Horizon Decision for Reliable Dual-Arm Surgical Subtask Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对手术机器人双臂重复性子任务自主执行需求，解决现有视觉-语言-动作（VLA）模型固定开环执行在动态手术场景下的误差累积、安全风险问题，将手术VLA部署建模为自适应执行horizon决策问题 提出轨迹发散horizon决策（TDHD）机制，通过监测流匹配生成轨迹的稳定性，自适应截断不可靠执行步骤并触发重规划，无需显式建模复杂手术接触动力学 构建覆盖刚体（缝合针）和柔性（软组织）两类典型手术场景的真实世界双臂操作基准，验证所提方法在毫米级精度要求和非线性变形场景下的可靠性提升效果" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.09125">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.09125.webp" alt="Trajectory Divergence Horizon Decision for Reliable Dual-Arm Surgical Subtask Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对手术机器人双臂重复性子任务自主执行需求，解决现有视觉-语言-动作（VLA）模型固定开环执行在动态手术场景下的误差累积、安全风险问题，将手术VLA部署建模为自适应执行horizon决策问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Trajectory Divergence Horizon Decision for Reliable Dual-Arm Surgical Subtask Manipulation</h1>
+            <div class="detail-meta">2026-08-10 · <a href="http://arxiv.org/abs/2608.09125" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.09125" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.09125</span></div>
+            <p class="detail-summary">针对手术机器人双臂重复性子任务自主执行需求，解决现有视觉-语言-动作（VLA）模型固定开环执行在动态手术场景下的误差累积、安全风险问题，将手术VLA部署建模为自适应执行horizon决策问题 提出轨迹发散horizon决策（TDHD）机制，通过监测流匹配生成轨迹的稳定性，自适应截断不可靠执行步骤并触发重规划，无需显式建模复杂手术接触动力学 构建覆盖刚体（缝合针）和柔性（软组织）两类典型手术场景的真实世界双臂操作基准，验证所提方法在毫米级精度要求和非线性变形场景下的可靠性提升效果</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">香港中文大学（The Chinese University of Hong Kong, CUHK）电子…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.09125/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对手术机器人双臂重复性子任务自主执行需求，解决现有视觉-语言-动作（VLA）模型固定开环执行在动态手术场景下的误差累积、安全风险问题，将手术VLA部署建模为自适应执行horizon决策问题</p>
+  <ul class="reading-intro-points"><li>针对手术机器人双臂重复性子任务自主执行需求，解决现有视觉-语言-动作（VLA）模型固定开环执行在动态手术场景下的误差累积、安全风险问题，将手术VLA部署建模为自适应执行horizon决策问题</li><li>提出轨迹发散horizon决策（TDHD）机制，通过监测流匹配生成轨迹的稳定性，自适应截断不可靠执行步骤并触发重规划，无需显式建模复杂手术接触动力学</li><li>构建覆盖刚体（缝合针）和柔性（软组织）两类典型手术场景的真实世界双臂操作基准，验证所提方法在毫米级精度要求和非线性变形场景下的可靠性提升效果</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>香港中文大学（The Chinese University of Hong Kong, CUHK）电子工程系（核心作者单位，负责算法设计与实验验证）</li><li>华为技术有限公司2012实验室理论部（The Theory Lab, Central Research Institute, 2012 Labs, Huawei Technologies Co. Ltd.）（提供理论支持）</li><li>深圳循环经济研究所（Shenzhen Loop Area Institute, Shenzhen, China）（合作研究单位）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对手术机器人双臂重复性子任务自主执行需求，解决现有视觉-语言-动作（VLA）模型固定开环执行在动态手术场景下的误差累积、安全风险问题，将手术VLA部署建模为自适应执行horizon决策问题</li><li>提出轨迹发散horizon决策（TDHD）机制，通过监测流匹配生成轨迹的稳定性，自适应截断不可靠执行步骤并触发重规划，无需显式建模复杂手术接触动力学</li><li>构建覆盖刚体（缝合针）和柔性（软组织）两类典型手术场景的真实世界双臂操作基准，验证所提方法在毫米级精度要求和非线性变形场景下的可靠性提升效果</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>搭建了真实世界的类达芬奇双臂手术操作基准平台，集成多视角感知（外部全局相机+双腕部第一人称相机）与自然语言指令接口，收集了<strong>600次高质量遥操作演示</strong>，覆盖针操作（reach、pick、regrasp）和组织操作（reach、lift、resection）共6个分层子任务，为手术VLA研究提供标准化评估场景</li><li>提出<strong>轨迹发散horizon决策（TDHD）</strong>动态安全门机制，利用流匹配生成的确定性特性，通过引入微小噪声扰动生成双轨迹并计算步长发散度，以双阈值规则自适应确定可靠执行长度，仅需极低额外计算开销即可实现测试时的风险规避，可即插即用适配不同VLA基座</li><li>真实硬件评估表明，TDHD可显著提升主流VLA基线的执行可靠性：针操作端到端成功率从55%提升至60%，组织操作端到端成功率从55%提升至80%，在接触敏感的后期操作阶段增益最为显著</li><li>消融实验验证了自适应horizon选择的必要性，证明TDHD无需人工为不同任务调参，在易失稳阶段（针抓取、组织切除）自动缩短执行长度，稳定阶段保留更长执行步长，实现鲁棒性与执行效率的平衡</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础框架采用带<strong>动作分块（Action Chunking）</strong>的VLA模型：输入多视角视觉观测、机器人本体感知数据与自然语言指令，大规模视觉-语言编码器仅每个控制周期计算一次并缓存为Prefix KV Cache，轻量解码器一次性预测未来H步的动作序列（动作块），保障运动平滑性</li><li>动作生成采用<strong>流匹配（Flow Matching）</strong>范式：将动作生成建模为从纯噪声到有效动作序列的连续确定性ODE路径，ODE求解器的输出完全由初始噪声采样决定，无额外随机性，为后续轨迹稳定性监测提供基础</li><li>TDHD机制的核心逻辑：每次推理采样两个轻微差异的初始噪声z₁和z₂（z₂ = z₁ + εη，η为标准高斯随机方向，ε为小缩放因子），通过相同的学习速度场生成两条动作轨迹A⁽¹⁾和A⁽²⁾，计算每步的L₂轨迹发散度δᵢ = \|\|A⁽¹⁾ᵢ - A⁽²⁾ᵢ\|\|₂，以此作为轨迹不稳定性的代理指标，反映状态分布外的认知不确定性和柔性接触的随机不确定性</li><li>设计双阈值规则确定安全执行长度s*：<strong>绝对阈值（Abs）</strong>检测发散度是否超过预设上限θₐᵦₛ，识别显著的动作偏差；<strong>比例阈值（Jump）</strong>检测发散度的阶跃变化是否超过比例上限rₜₕᵣₑₛₕ，识别突发的稳定性下降；取最早触发阈值的步长，再限制在预设的物理范围[sₘᵢₙ, sₘₐₓ]内，仅执行前s*步后基于新观测重规划，避免误差放大</li><li>关键技术优势：仅需额外运行两次轻量解码器，计算开销极低，无需修改VLA基座模型的权重，可即插即用适配不同VLA架构，适配手术场景的实时性要求</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>自建双臂手术操作数据集</strong>：共600次真实世界遥操作演示，无任何仿真数据，覆盖针操作、组织操作两类任务套件，每个子任务（reach/pick/regrasp、reach/lift/resection）各100次，其中80次用于训练、20次用于测试，所有数据以30Hz频率通过NTP全局时间戳同步，存储为HDF5格式</li><li>数据集观测空间包含：640×480分辨率的外部RGB-D图像、左右腕部RGB图像，双臂6-DoF机械臂关节位置、末端位姿，4个夹爪电机的状态与位置，以及对应的自然语言任务指令</li><li>模型规模：采用<strong>π₀.₅</strong>、<strong>π₀</strong>、<strong>RDT</strong>、<strong>Octo</strong>四类主流VLA基座，均采用「大规模视觉-语言编码器+轻量动作解码器」的异构结构，论文未公开具体模型参数量</li><li>训练资源：论文未明确说明具体使用的GPU/TPU等训练硬件配置</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：真实世界的类达芬奇双臂手术机器人平台，基于<strong>Realman RM65-B双臂机器人</strong>，适配达芬奇研究 kit（dVRK）的末端手术执行器，配备外部全局相机与双腕部第一人称相机，采用Geomagic Touch体感设备进行遥操作数据采集与评估</li><li>评估基准：6个分层手术子任务，每个任务设置开展20次独立试验，共完成600次真实机器人试验，所有基线模型均在自建数据集上完成微调以保证对比公平性</li><li>主要评估指标：<strong>端到端任务成功率</strong>（SRₑ₂ₑ = P(S₁∩S₂∩S₃)，S₁/S₂/S₃分别为reach、pick/lift、最终阶段成功事件），以及分层<strong>条件成功率</strong>（如Pick\|Reach、Regrasp\|Reach&Pick、Lift\|Reach、Resection\|Reach&Lift）</li><li>关键实验结果：</li></ul>
+<p> - 针操作任务中，TDHD将端到端成功率从基线最优的55%提升至60%，条件Pick成功率从85%提升至90%，条件Regrasp成功率从64.7%提升至66.7%；在针抓取的对齐阶段自动截断执行，避免针体倾斜翻转，提升双臂传针的稳定性</p>
+<p> - 组织操作任务中，TDHD将端到端成功率从55%提升至80%，条件Resection成功率从68.8%提升至80%，在软组织切除阶段频繁触发重规划，抵消组织变形导致的切割边界偏移，显著降低切割不完全的风险</p>
+<p> - 消融实验表明，自适应执行horizon在接触不稳定的阶段增益显著，固定步长的最优选择具有任务依赖性，TDHD无需人工为不同任务调参即可实现稳定可靠的执行</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.09381/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">JEPA-WAM: Learning Vision-Language-Action Policies with Joint-Embedding World Modeling</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.08904/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">From Recovery to Drop-off: How Action Post-training Reduces a VLM&#x27;s Late-Layer Depth Decodability</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

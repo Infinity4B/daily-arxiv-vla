@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GWM-VLA: Geometry-Aware Latent World Modeling for Vision-Language-Action Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有Vision-Language-Action（VLA）模型在相机视角、光照、物体布局等视觉与环境扰动下性能大幅下降，核心原因是策略依赖外观相关关联，而非捕捉机器人动作导致的状态变化 现有隐式世界建模方法（如VLA-JEPA）独立编码各相机视角的观测，未显式建模跨视角几何关系，导致状态表示的鲁棒性不足 本文提出GWM-VLA，一种几何感知的隐式世界建模VLA学习框架，通过几何感知多视角状态编码、全局上下文条件的目标视角预测、共享隐式动作表示三大核心设计，提升VLA模型的准确性与环境扰动下的泛化能力" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.07619">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.07619.webp" alt="GWM-VLA: Geometry-Aware Latent World Modeling for Vision-Language-Action Learning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有Vision-Language-Action（VLA）模型在相机视角、光照、物体布局等视觉与环境扰动下性能大幅下降，核心原因是策略依赖外观相关关联，而非捕捉机器人动作导致的状态变化</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GWM-VLA: Geometry-Aware Latent World Modeling for Vision-Language-Action Learning</h1>
+            <div class="detail-meta">2026-08-07 · <a href="http://arxiv.org/abs/2608.07619" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.07619" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.07619</span></div>
+            <p class="detail-summary">现有Vision-Language-Action（VLA）模型在相机视角、光照、物体布局等视觉与环境扰动下性能大幅下降，核心原因是策略依赖外观相关关联，而非捕捉机器人动作导致的状态变化 现有隐式世界建模方法（如VLA-JEPA）独立编码各相机视角的观测，未显式建模跨视角几何关系，导致状态表示的鲁棒性不足 本文提出GWM-VLA，一种几何感知的隐式世界建模VLA学习框架，通过几何感知多视角状态编码、全局上下文条件的目标视角预测、共享隐式动作表示三大核心设计，提升VLA模型的准确性与环境扰动下的泛化能力</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文原文未明确标注作者所属研究机构</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.07619/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有Vision-Language-Action（VLA）模型在相机视角、光照、物体布局等视觉与环境扰动下性能大幅下降，核心原因是策略依赖外观相关关联，而非捕捉机器人动作导致的状态变化</p>
+  <ul class="reading-intro-points"><li>现有Vision-Language-Action（VLA）模型在相机视角、光照、物体布局等视觉与环境扰动下性能大幅下降，核心原因是策略依赖外观相关关联，而非捕捉机器人动作导致的状态变化</li><li>现有隐式世界建模方法（如VLA-JEPA）独立编码各相机视角的观测，未显式建模跨视角几何关系，导致状态表示的鲁棒性不足</li><li>本文提出GWM-VLA，一种几何感知的隐式世界建模VLA学习框架，通过几何感知多视角状态编码、全局上下文条件的目标视角预测、共享隐式动作表示三大核心设计，提升VLA模型的准确性与环境扰动下的泛化能力</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文原文未明确标注作者所属研究机构</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有Vision-Language-Action（VLA）模型在相机视角、光照、物体布局等视觉与环境扰动下性能大幅下降，核心原因是策略依赖外观相关关联，而非捕捉机器人动作导致的状态变化</li><li>现有隐式世界建模方法（如VLA-JEPA）独立编码各相机视角的观测，未显式建模跨视角几何关系，导致状态表示的鲁棒性不足</li><li>本文提出<strong>GWM-VLA</strong>，一种几何感知的隐式世界建模VLA学习框架，通过几何感知多视角状态编码、全局上下文条件的目标视角预测、共享隐式动作表示三大核心设计，提升VLA模型的准确性与环境扰动下的泛化能力</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出几何感知隐式世界建模方法，使用联合聚合的多视角几何表示作为预测状态，显式建模动作条件的状态时间转换过程</li><li>设计<strong>GWM-VLA</strong>框架，将几何感知隐式世界建模与流匹配动作生成模块通过共享隐式动作表示进行整合，实现预测学习与机器人控制的耦合</li><li>在仿真与真实机器人实验中验证GWM-VLA的有效性，在分布内操作任务与分布外鲁棒性任务上均达到领先性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>几何感知多视角状态编码：采用冻结的<strong>VGGT-Ω</strong>编码器，在每个时间步联合处理所有视角的输入观测，输出该时间步的几何感知register token与patch token序列作为状态表示，显式编码跨视角的几何关联</li><li>全局上下文条件的目标视角预测：隐式世界模型不预测完整多视角状态，仅预测选定目标视角的下一时间步patch tokens，实验中选用与末端执行器运动、夹爪-物体交互紧密相关的手腕视角作为目标；同时用对应视角的register tokens作为全局几何上下文条件，采用因果注意力掩码保证时间因果性，训练时采用教师强制策略，以L1损失优化预测目标</li><li>统一隐式动作表示：以<strong>Qwen3-VL-2B</strong>作为视觉语言骨干，输入当前多视角观测与语言指令，输出共享的隐式动作token序列，同时条件化隐式世界模型与流匹配动作头，无需额外引入具身动作查询</li><li>联合学习目标：联合优化隐式世界模型的L1状态预测损失与流匹配动作头的动作生成损失，通过损失权重λ平衡预测与控制目标，让两个任务共同优化共享隐式动作表示，使其同时编码动作相关的交互变化与可执行的机器人控制信息</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>预训练数据集：<strong>DROID</strong>大规模机器人操作数据集，包含约76,000条跨机构、跨操作者的演示轨迹，覆盖多样化的任务、相机视角、工作区布局与视觉背景</li><li>仿真微调数据集：<strong>LIBERO</strong>与<strong>LIBERO-Plus</strong>基准提供的标准演示集</li><li>真实世界数据集：在<strong>SO-101</strong>机器人上收集的100条遥操作演示轨迹，覆盖5个抓取放置类训练任务</li><li>模型规模：视觉语言骨干为<strong>Qwen3-VL-2B</strong>，几何编码器为<strong>VGGT-Ω</strong>，训练过程中VGGT-Ω全程冻结，其余模块（Qwen3-VL、隐式世界模型、动作头）完全可训练</li><li>训练资源：预训练与仿真微调采用8块<strong>NVIDIA A800</strong> GPU，消融实验采用单块<strong>NVIDIA RTX 6000D</strong> GPU</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：仿真场景采用<strong>LIBERO</strong>（包含空间、物体、目标、LIBERO-10四个任务套件，评估空间推理、物体中心操作、目标条件控制、长程执行能力，作为分布内基准）与<strong>LIBERO-Plus</strong>（包含相机视角、机器人初始状态、语言指令、光照、背景、视觉噪声、物体布局7种扰动维度，作为分布外鲁棒性基准）；真实机器人场景采用SO-101平台，设置分布内（ID）、分布外任务（OOD-task）、分布外布局（OOD-layout）三类评估场景</li><li>主要评估指标：任务成功率（%），LIBERO结果按任务套件平均，LIBERO-Plus结果按扰动维度平均</li><li>关键实验结果：</li></ul>
+<p> - LIBERO分布内任务上，<strong>GWM-VLA</strong>平均成功率达97.1%，与OpenVLA-OFT并列最高，优于仅使用机器人数据的VLA-JEPA baseline 1.0个百分点，在所有四个任务套件上均表现稳定</p>
+<p> - LIBERO-Plus分布外鲁棒性任务上，<strong>GWM-VLA</strong>平均成功率达76.9%，达到当前最优水平，优于OpenVLA-OFT 7.3个百分点，优于VLA-JEPA 14.0个百分点，在语言、光照、物体布局扰动下排名第一，在相机视角、机器人初始状态、背景扰动下排名第二，在视觉噪声、背景、相机视角、语言变化下的提升最为显著</p>
+<p> - 真实世界实验中，<strong>GWM-VLA</strong>在有限演示条件下平均成功率最高，在ID与OOD-layout设置下表现最优，OOD-task设置下成功率（53.3%）略低于π0.5（60.0%），但大幅优于π0（13.8%）</p>
+<p> - 定性探测实验显示，预测的下一时间步隐式状态经解码后可保留夹爪与操作物体周围的主要场景布局与几何信息，验证了隐式世界模型对几何信息的保留能力</p>
+<p> - 消融实验验证：手腕视角作为预测目标的效果优于第三人称视角；VGGT-Ω第24层的几何表示最适合隐式世界建模；共享隐式动作表示比额外引入具身动作查询的效果高4.8个百分点</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.07621/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">CMU-Drive and V2V-VLA: Cooperative Multi-agent Unified Driving with Reasoning Benchmark and Vehicle-to-Vehicle Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.07596/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">LIRA: Local Cross-Layer Information Routing for Vision-Language-Action Decoding</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
