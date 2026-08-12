@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Surgical WAM: A World-Action Model for Data-Efficient Surgical Robot Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对手术机器人学习中带动作标签的演示数据采集成本高、稀缺，而无标签内窥镜视频 abundant 的现状，提出核心研究问题：在固定动作标签预算下，无动作视频预训练能否提升闭环手术操作的性能？ 提出Surgical WAM，首个应用于手术机器人学习的世界-动作模型，基于Cosmos Policy架构，可联合预测未来内窥镜观测和可执行手术机器人动作块，直接作为闭环滚动时域控制器驱动手术机器人完成任务。 通过两阶段训练方案验证了无动作视频预训练对手术机器人学习的数据增益，为解决动作标签稀缺的手术机器人学习瓶颈提供了可行路径。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.11204">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.11204.webp" alt="Surgical WAM: A World-Action Model for Data-Efficient Surgical Robot Learning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对手术机器人学习中带动作标签的演示数据采集成本高、稀缺，而无标签内窥镜视频 abundant 的现状，提出核心研究问题：在固定动作标签预算下，无动作视频预训练能否提升闭环手术操作的性能？</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Surgical WAM: A World-Action Model for Data-Efficient Surgical Robot Learning</h1>
+            <div class="detail-meta">2026-08-11 · <a href="http://arxiv.org/abs/2608.11204" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.11204" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.11204</span></div>
+            <p class="detail-summary">针对手术机器人学习中带动作标签的演示数据采集成本高、稀缺，而无标签内窥镜视频 abundant 的现状，提出核心研究问题：在固定动作标签预算下，无动作视频预训练能否提升闭环手术操作的性能？ 提出Surgical WAM，首个应用于手术机器人学习的世界-动作模型，基于Cosmos Policy架构，可联合预测未来内窥镜观测和可执行手术机器人动作块，直接作为闭环滚动时域控制器驱动手术机器人完成任务。 通过两阶段训练方案验证了无动作视频预训练对手术机器人学习的数据增益，为解决动作标签稀缺的手术机器人学习瓶颈提供了可行路径。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者所属机构未在提供的截断原文中明确标注</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.11204/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对手术机器人学习中带动作标签的演示数据采集成本高、稀缺，而无标签内窥镜视频 abundant 的现状，提出核心研究问题：在固定动作标签预算下，无动作视频预训练能否提升闭环手术操作的性能？</p>
+  <ul class="reading-intro-points"><li>针对手术机器人学习中带动作标签的演示数据采集成本高、稀缺，而无标签内窥镜视频 abundant 的现状，提出核心研究问题：在固定动作标签预算下，无动作视频预训练能否提升闭环手术操作的性能？</li><li>提出Surgical WAM，首个应用于手术机器人学习的世界-动作模型，基于Cosmos Policy架构，可联合预测未来内窥镜观测和可执行手术机器人动作块，直接作为闭环滚动时域控制器驱动手术机器人完成任务。</li><li>通过两阶段训练方案验证了无动作视频预训练对手术机器人学习的数据增益，为解决动作标签稀缺的手术机器人学习瓶颈提供了可行路径。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者所属机构未在提供的截断原文中明确标注</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对手术机器人学习中带动作标签的演示数据采集成本高、稀缺，而无标签内窥镜视频 abundant 的现状，提出核心研究问题：在固定动作标签预算下，无动作视频预训练能否提升闭环手术操作的性能？</li><li>提出<strong>Surgical WAM</strong>，首个应用于手术机器人学习的世界-动作模型，基于Cosmos Policy架构，可联合预测未来内窥镜观测和可执行手术机器人动作块，直接作为闭环滚动时域控制器驱动手术机器人完成任务。</li><li>通过两阶段训练方案验证了无动作视频预训练对手术机器人学习的数据增益，为解决动作标签稀缺的手术机器人学习瓶颈提供了可行路径。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>开发<strong>Surgical WAM</strong>，这是首个应用于手术机器人学习的世界-动作模型，在单一架构内联合预测未来内窥镜视频和dVRK机器人动作，可直接驱动闭环手术任务执行，无需额外的策略、逆动力学模型或合成数据管线。</li><li>验证了在固定动作标签演示预算下，无动作视频预训练可有效提升闭环手术操作性能：在SurRoL基准4个任务上的平均成功率从63.5%提升至77.8%，且无需增加动作标签的采集成本。</li><li>明确了视频预训练的收益特性：在接触密集、双手协调的手术任务上提升最显著；预训练模型仅需一半微调步数即可达到更高的峰值成功率，收敛速度大幅提升。</li><li>证明了收益的普适性：在真实dVRK手术视频（<strong>JIGSAWS数据集</strong>）上同样观察到视频预训练的优势，说明该优势并非仿真环境的伪影，可迁移到真实手术场景。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于<strong>World-Action Model（WAM）</strong>范式，将未来观测预测与动作预测统一为联合生成任务，实例化为<strong>Cosmos Policy</strong>架构：基于潜在视频扩散模型的扩散Transformer，通过共享网络处理视频观测、机器人状态、未来预测和动作token，实现视觉动态与动作预测的表征共享。</li><li>采用两阶段训练方案适配手术场景的数据特性：第一阶段仅使用无动作手术视频训练世界模型组件，仅优化视频预测损失，动作和状态槽完全排除在训练外，学习通用的手术场景视觉动态先验；第二阶段在固定动作标签数据集上联合微调全模型，同时优化视频预测和动作预测损失，将动作预测适配到预训练学到的视觉动态表征中，稀缺的动作标签仅用于 grounding 动作预测。</li><li>推理时采用滚动时域闭环控制：每步联合采样未来视频token和动作块，仅执行动作块的前缀后重新观测并重规划，保持视频-动作的耦合关系的同时提升控制反应性。核心创新点在于利用手术视频与动作标签的采集成本不对称，将视觉动态学习的成本转移到 abundant 的无标签视频，避免了传统方案中分离训练世界模型和策略的繁琐流程。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>模拟实验数据集：<strong>SurRoL手术机器人操作基准</strong>，包含4个dVRK仿真手术操作任务（Needle Pick、Peg Transfer、Needle Regrasp、BiPeg Transfer），动作标签训练集包含10k条仿真演示；真实实验数据集：<strong>JIGSAWS数据集</strong>，包含真实dVRK手术操作的内窥镜录制视频，用于验证方案泛化性。</li><li>模型规模：基于<strong>Cosmos Policy</strong>架构，为潜在视频扩散模型之上的扩散Transformer，具体参数量未在提供的原文中明确标注。</li><li>训练资源：原文未明确标注具体使用的GPU/TPU等训练硬件信息。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：模拟环境为<strong>SurRoL dVRK仿真基准</strong>，覆盖单臂操作、双臂协调、接触密集三类典型手术操作场景；额外在<strong>JIGSAWS真实手术视频</strong>上验证方案的泛化能力。</li><li>评估指标：<strong>闭环任务成功率</strong>，每个任务评估100个episode，以任务是否在最大步数内满足任务特定的成功条件为判定标准。</li><li>关键实验结果：</li></ul>
+<p> - 在SurRoL基准4个任务上，带视频预训练的<strong>Surgical WAM</strong>在3个任务上取得最优成功率，平均成功率达77.8%，相比无预训练的63.5%提升14.3个百分点，其中PegTransfer任务提升达20个百分点，接触密集和双手协调任务的提升最为显著。</p>
+<p> - 收敛速度大幅提升：预训练模型仅需80k微调步数即可达到86%的峰值成功率，无预训练模型需要160k步才能达到79%的峰值，收敛步数减半。</p>
+<p> - 执行鲁棒性更强：在执行时域He∈{1,2,4,8}的不同设置下，预训练模型均保持至少70%的成功率，对执行时域变化的敏感度显著低于无预训练模型。</p>
+<p> - 泛化性验证：在真实JIGSAWS手术视频上的实验也观察到了视频预训练的收益，证明该优势并非仿真环境的伪影，可迁移到真实手术场景。</p>
+<p> - 基线对比：通用VLA模型π₀.₅在4个任务上的平均成功率仅22.3%，通用策略迁移到手术域表现极差，<strong>Surgical WAM</strong>显著优于现有通用手术策略基线。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2608.10976/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">XCoT-VLA: Executable Chain-of-Thought for Vision-Language-Action Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
