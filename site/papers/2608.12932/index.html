@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FlashDrive: Flash Vision-Language-Action Inference for Autonomous Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有Vision-Language-Action（VLA）模型在自动驾驶中面临极高的推理延迟，以Alpamayo 1.5-10B为例，单帧推理需717ms，控制频率仅1.4Hz，远低于实时驾驶需求；该瓶颈是结构性的——VLA推理包含编码、预填充、解码、动作生成四个独立瓶颈，单一模块优化无法解决全部问题。 论文提出FlashDrive，首个针对VLA全推理流水线的算法-系统协同设计框架，针对每个阶段的独特冗余设计轻量级优化，而非仅优化单个模块。 研究目标是将百亿级参数的推理VLA延迟降至实时可部署水平，同时保持甚至提升驾驶精度，推动端到端自动驾驶的落地。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.12932">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.12932.webp" alt="FlashDrive: Flash Vision-Language-Action Inference for Autonomous Driving" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有Vision-Language-Action（VLA）模型在自动驾驶中面临极高的推理延迟，以Alpamayo 1.5-10B为例，单帧推理需717ms，控制频率仅1.4Hz，远低于实时驾驶需求；该瓶颈是结构性的——VLA推理包含编码、预填充、解码、动作生成四个独立瓶颈，单一模块优化无法解决全部问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FlashDrive: Flash Vision-Language-Action Inference for Autonomous Driving</h1>
+            <div class="detail-meta">2026-08-13 · <a href="http://arxiv.org/abs/2608.12932" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.12932" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.12932</span></div>
+            <p class="detail-summary">现有Vision-Language-Action（VLA）模型在自动驾驶中面临极高的推理延迟，以Alpamayo 1.5-10B为例，单帧推理需717ms，控制频率仅1.4Hz，远低于实时驾驶需求；该瓶颈是结构性的——VLA推理包含编码、预填充、解码、动作生成四个独立瓶颈，单一模块优化无法解决全部问题。 论文提出FlashDrive，首个针对VLA全推理流水线的算法-系统协同设计框架，针对每个阶段的独特冗余设计轻量级优化，而非仅优化单个模块。 研究目标是将百亿级参数的推理VLA延迟降至实时可部署水平，同时保持甚至提升驾驶精度，推动端到端自动驾驶的落地。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Zekai Li：z-lab.ai（同等贡献）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.12932/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有Vision-Language-Action（VLA）模型在自动驾驶中面临极高的推理延迟，以Alpamayo 1.5-10B为例，单帧推理需717ms，控制频率仅1.4Hz，远低于实时驾驶需求；该瓶颈是结构性的——VLA推理包含编码、预填充、解码、动作生成四个独立瓶颈，单一模块优化无法解决全部问题。</p>
+  <ul class="reading-intro-points"><li>现有Vision-Language-Action（VLA）模型在自动驾驶中面临极高的推理延迟，以Alpamayo 1.5-10B为例，单帧推理需717ms，控制频率仅1.4Hz，远低于实时驾驶需求；该瓶颈是结构性的——VLA推理包含编码、预填充、解码、动作生成四个独立瓶颈，单一模块优化无法解决全部问题。</li><li>论文提出FlashDrive，首个针对VLA全推理流水线的算法-系统协同设计框架，针对每个阶段的独特冗余设计轻量级优化，而非仅优化单个模块。</li><li>研究目标是将百亿级参数的推理VLA延迟降至实时可部署水平，同时保持甚至提升驾驶精度，推动端到端自动驾驶的落地。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Zekai Li</strong>：z-lab.ai（同等贡献）</li><li><strong>Yihao Liang</strong>：Princeton University、z-lab.ai（同等贡献）</li><li><strong>Hongfei Zhang</strong>：Independent Researcher</li><li><strong>Jian Chen、Yesheng Liang、Zhijian Liu</strong>：UC San Diego</li><li>算力支持：<strong>Yotta Labs</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有Vision-Language-Action（VLA）模型在自动驾驶中面临极高的推理延迟，以Alpamayo 1.5-10B为例，单帧推理需717ms，控制频率仅1.4Hz，远低于实时驾驶需求；该瓶颈是结构性的——VLA推理包含编码、预填充、解码、动作生成四个独立瓶颈，单一模块优化无法解决全部问题。</li><li>论文提出<strong>FlashDrive</strong>，首个针对VLA全推理流水线的算法-系统协同设计框架，针对每个阶段的独特冗余设计轻量级优化，而非仅优化单个模块。</li><li>研究目标是将百亿级参数的推理VLA延迟降至实时可部署水平，同时保持甚至提升驾驶精度，推动端到端自动驾驶的落地。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出VLA推理的四阶段瓶颈分析框架，明确每个阶段的冗余特征：编码阶段的帧间重叠冗余、预填充阶段的上下文重复计算冗余、解码阶段的串行生成冗余、动作生成阶段的流匹配过度迭代冗余。</li><li>针对每个阶段设计匹配的轻量级算法优化：流式KV缓存复用降低编码和预填充开销、基于扩散模型的推测解码加速推理阶段、自适应步长流匹配缓存中间速度降低动作生成开销。</li><li>设计系统级优化方案：通过CUDA Graph编译流水线、融合注意力与MLP内核减少内核启动开销；采用W4A8量化平衡解码和预填充阶段的加速需求，同时保留动作专家的BF16精度。</li><li>在Alpamayo 1.5-10B上实现4.7倍端到端加速，延迟从717ms降至151ms，控制频率提升至6.6Hz，开环精度几乎无损，闭环安全指标有所提升。</li><li>框架具有通用性，在Alpamayo 1上也实现了4.5倍加速，且支持跨设备部署，可运行在边缘设备到工作站级GPU上。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>整体采用<strong>算法-系统协同设计</strong>思路，先针对VLA推理四个阶段分别设计针对性优化，再叠加系统级和量化优化，实现加速收益叠加。</li><li>编码与预填充阶段：采用流式推理，仅编码最新帧，复用前序帧的KV缓存；为适配视图优先的token布局，将新帧token插入到每个视图的末尾，采用流式注意力掩码保持跨视图因果性；为避免位置偏移导致KV缓存失效，采用预旋转位置编码存储键，动态应用旋转嵌入；同时配套仅微调动作专家的流式微调策略，适配缓存近似带来的分布偏移，避免精度损失。</li><li>解码阶段：利用驾驶领域推理序列短、结构化、低熵、块内相关性强的特点，采用<strong>DFlash</strong>扩散模型作为并行草稿器，一次性生成8个候选token的块，仅融合目标模型最后8个token的隐藏状态到草稿层KV缓存，实现推测解码，平均接受长度达5.6 tokens。</li><li>动作生成阶段：针对流匹配速度场中间段平稳、端点变化大的U型结构，缓存中间步骤的速度场，复用4/8的扩散步骤，将计算集中在端点等关键区域，减少冗余计算。</li><li>系统优化：将每个流水线阶段编译为CUDA Graph，单次GPU启动执行全阶段内核；融合Q/K/V投影、MLP门控/上投影内核，减少内核启动开销，整体带来1.4倍加速。</li><li>量化：采用<strong>W4A8</strong>量化，VLM backbone采用4位权重+8位激活，降低内存带宽和加速预填充计算，动作专家保留BF16精度保障输出精度，整体内存占用降至约18.3GB。</li><li>创新点：突破单一模块优化的思路，针对VLA全流水线各阶段的独特冗余设计匹配的轻量级优化，算法和系统优化协同实现收益叠加，且方法可迁移到其他同架构VLA模型。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：使用开源的<strong>NVIDIA Autonomous Vehicle Dataset</strong>（PhysicalAI Autonomous Vehicles Dataset），用于流式微调、扩散草稿模型训练和开环评估；闭环评估基于开源仿真平台<strong>AlpaSim</strong>。</li><li>模型规模：主要测试模型为<strong>Alpamayo 1.5-10B</strong>（100亿参数），额外在<strong>Alpamayo 1</strong>上验证框架通用性。</li><li>训练资源：流式微调使用4k视频片段，生成约60万训练样本；扩散草稿模型训练使用6万视频片段；算力支持来自<strong>Yotta Labs</strong>；实验覆盖的设备包括NVIDIA Jetson Thor（边缘设备）、RTX 3090、RTX 4090、RTX 5090（消费级GPU）、RTX PRO 6000（工作站级GPU）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：基准模型为Alpamayo 1.5-10B和Alpamayo 1，评估平台覆盖边缘、消费级、工作站级共5款NVIDIA GPU，闭环评估基于AlpaSim仿真平台。</li><li>主要评估指标：开环指标为<strong>minADE₁@6.4s</strong>（单轨迹6.4秒预测 horizon 的平均位移误差）、<strong>minADE₆@6.4s</strong>（6条轨迹的最小平均位移误差）；闭环指标包括轨迹跟踪误差（D_traj、D_loc、P_rel）、安全指标（碰撞率、驶出道路率、错误车道率）、规划一致性（计划偏差）、单步rollout延迟。</li><li>关键实验结果：</li></ul>
+<p> 1. 端到端加速：Alpamayo 1.5-10B的端到端延迟从717ms降至151.4ms，实现4.7倍加速，控制频率从1.4Hz提升至6.6Hz，达到城市驾驶的replanning速率要求。</p>
+<p> 2. 精度表现：minADE₆@6.4s仅上升0.08m（从0.767m到0.844m），损失可忽略；minADE₁@6.4s反而下降0.13m（从1.705m到1.573m），部分优化组件起到了正则化作用。</p>
+<p> 3. 闭环安全表现：碰撞率从0.19降至0.15，驶出道路率从0.41降至0.32，计划偏差从0.24降至0.16，驾驶安全性提升，仅错误车道率有轻微上升（0.45到0.51）。</p>
+<p> 4. 跨设备部署：单轨迹样本下跨设备加速4.0-6.0倍，6个轨迹样本下最高加速达10.6倍；在24GB显存的RTX 3090/4090上，baseline模型OOM，FlashDrive仍可正常运行（延迟分别为694.8ms和404.1ms），支持边缘设备部署。</p>
+<p> 5. 通用性验证：在Alpamayo 1上也实现4.5倍加速，minADE₁提升0.21m，minADE₆仅上升0.11m，验证框架对同架构不同代模型的适用性。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.13026/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Temporal GRPO: Beyond Trajectory-Level Credit in Vision-Language-Action Reinforcement Learning</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.12854/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">BrainWAM: Action-Space Coordination of Semantic Priors and Predictive Dynamics for Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

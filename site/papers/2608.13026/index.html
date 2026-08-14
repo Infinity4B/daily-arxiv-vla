@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Temporal GRPO: Beyond Trajectory-Level Credit in Vision-Language-Action Reinforcement Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对当前基于GRPO的视觉-语言-动作（VLA）模型后训练中存在轨迹级信用别名问题：不同阶段进展的失败轨迹会被赋予相同的轨迹级优势，导致前置阶段成功的动作也被错误惩罚，降低长程机器人操作的任务成功率和样本效率 提出Temporal GRPO方法，通过构建可检测的有序任务阶段、将轨迹对齐到阶段对应的动作区间、仅在进入同一阶段的轨迹组内计算阶段相对优势，实现阶段级的时域信用分配 在多个机器人操作基准上验证该方法可提升任务成功率、样本效率，且策略更新精准作用于导致轨迹结果差异的关键阶段" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.13026">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.13026.webp" alt="Temporal GRPO: Beyond Trajectory-Level Credit in Vision-Language-Action Reinforcement Learning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对当前基于GRPO的视觉-语言-动作（VLA）模型后训练中存在轨迹级信用别名问题：不同阶段进展的失败轨迹会被赋予相同的轨迹级优势，导致前置阶段成功的动作也被错误惩罚，降低长程机器人操作的任务成功率和样本效率</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Temporal GRPO: Beyond Trajectory-Level Credit in Vision-Language-Action Reinforcement Learning</h1>
+            <div class="detail-meta">2026-08-13 · <a href="http://arxiv.org/abs/2608.13026" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.13026" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.13026</span></div>
+            <p class="detail-summary">针对当前基于GRPO的视觉-语言-动作（VLA）模型后训练中存在轨迹级信用别名问题：不同阶段进展的失败轨迹会被赋予相同的轨迹级优势，导致前置阶段成功的动作也被错误惩罚，降低长程机器人操作的任务成功率和样本效率 提出Temporal GRPO方法，通过构建可检测的有序任务阶段、将轨迹对齐到阶段对应的动作区间、仅在进入同一阶段的轨迹组内计算阶段相对优势，实现阶段级的时域信用分配 在多个机器人操作基准上验证该方法可提升任务成功率、样本效率，且策略更新精准作用于导致轨迹结果差异的关键阶段</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文未在提供的原文内容中明确标注作者所属研究机构</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.13026/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对当前基于GRPO的视觉-语言-动作（VLA）模型后训练中存在轨迹级信用别名问题：不同阶段进展的失败轨迹会被赋予相同的轨迹级优势，导致前置阶段成功的动作也被错误惩罚，降低长程机器人操作的任务成功率和样本效率</p>
+  <ul class="reading-intro-points"><li>针对当前基于GRPO的视觉-语言-动作（VLA）模型后训练中存在轨迹级信用别名问题：不同阶段进展的失败轨迹会被赋予相同的轨迹级优势，导致前置阶段成功的动作也被错误惩罚，降低长程机器人操作的任务成功率和样本效率</li><li>提出Temporal GRPO方法，通过构建可检测的有序任务阶段、将轨迹对齐到阶段对应的动作区间、仅在进入同一阶段的轨迹组内计算阶段相对优势，实现阶段级的时域信用分配</li><li>在多个机器人操作基准上验证该方法可提升任务成功率、样本效率，且策略更新精准作用于导致轨迹结果差异的关键阶段</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文未在提供的原文内容中明确标注作者所属研究机构</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对当前基于GRPO的视觉-语言-动作（VLA）模型后训练中存在<strong>轨迹级信用别名</strong>问题：不同阶段进展的失败轨迹会被赋予相同的轨迹级优势，导致前置阶段成功的动作也被错误惩罚，降低长程机器人操作的任务成功率和样本效率</li><li>提出<strong>Temporal GRPO</strong>方法，通过构建可检测的有序任务阶段、将轨迹对齐到阶段对应的动作区间、仅在进入同一阶段的轨迹组内计算阶段相对优势，实现阶段级的时域信用分配</li><li>在多个机器人操作基准上验证该方法可提升任务成功率、样本效率，且策略更新精准作用于导致轨迹结果差异的关键阶段</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次形式化和定义了VLA强化学习后训练中的<strong>轨迹级信用别名</strong>问题，揭示了轨迹级优势广播会错误惩罚前置阶段成功动作的机制</li><li>提出<strong>Temporal GRPO</strong>框架，通过任务条件阶段生成、轨迹-阶段对齐、阶段条件优势重建三个模块，将轨迹级信用重构为阶段级时域信用，仅需单个VLA策略即可完成优化</li><li>在<strong>RoboTwin 2.0</strong>基准上取得75.8%的宏平均任务成功率，较最强对照基线提升7.0个百分点，在所有任务 horizon 上均保持6.2-8.3个百分点的稳定增益</li><li>通过<strong>LIBERO-Long</strong>的对照信用分配实验证明，方法的增益来自保留已习得的前置行为，同时将策略更新集中于造成轨迹结果差异的首个差异阶段</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>核心方法分为三个模块：</li></ul>
+<p> 1. <strong>任务条件阶段生成</strong>：使用冻结的<strong>RynnBrain-4B</strong>模型根据任务指令和初始场景生成候选语义阶段，再由Stage Compiler编译为带线性先决依赖、可检测完成条件的有序信用阶段，最终阶段匹配原始任务成功条件</p>
+<p> 2. <strong>轨迹-阶段对齐</strong>：通过关系检测器识别每个阶段首次稳定完成的时间戳，将每条轨迹的动作序列对齐到对应的阶段动作区间，稳定约束避免瞬态接触被误判为阶段完成</p>
+<p> 3. <strong>阶段条件优势重建与策略优化</strong>：仅允许完成前置阶段的轨迹进入当前阶段的比较组，计算阶段级的组相对优势，仅将优势分配给对应阶段的动作区间，最终用统一的GRPO目标优化单个VLA策略，保留完整轨迹采样和裁剪优化机制</p></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：<strong>RoboTwin 2.0</strong>（用于整体性能和样本效率评估，覆盖短、中、长/超长三种任务 horizon）、<strong>LIBERO-Long</strong>（用于对照信用分配分析和消融实验，具有明确的阶段依赖关系）</li><li>模型相关：基线VLA包括<strong>π₀</strong>、<strong>RDT-1B</strong>、<strong>OpenVLA-OFT</strong>、<strong>SimpleVLA-RL</strong>、<strong>TGRPO</strong>，阶段生成使用<strong>RynnBrain-4B</strong>模型，所有RL方法统一基于公开的任务级OpenVLA-OFT SFT checkpoint做 warm-start</li><li>训练资源：论文未在提供的内容中明确标注具体GPU/TPU等硬件型号，所有对照方法的训练场景、rollout预算、环境交互预算、策略更新预算完全一致</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：主评估基准为<strong>RoboTwin 2.0</strong>（跨不同任务 horizon），对照分析基准为<strong>LIBERO-Long</strong>，所有RL方法使用相同初始checkpoint和训练预算</li><li>主要评估指标：<strong>任务成功率</strong>（核心指标）、<strong>样本效率</strong>（固定环境交互预算下的任务成功率）、<strong>阶段完成概率变化</strong>（用于分析信用分配位置）</li><li>关键实验结果：</li></ul>
+<p> 1. 在RoboTwin 2.0上，Temporal GRPO的宏平均成功率达到<strong>75.8±0.7%</strong>，较最强基线<strong>SimpleVLA-RL</strong>的68.8±0.9%提升7.0个百分点，在短、中、长&超长 horizon 任务上分别达到73.2±0.9%、79.0±0.8%、75.2±1.1%，全面优于所有对照方法</p>
+<p> 2. 样本效率曲线显示Temporal GRPO在所有训练步骤下均优于Trajectory-GRPO，长&超长任务上的效率优势更显著，说明阶段级信用分配能更高效利用rollout数据</p>
+<p> 3. LIBERO-Long对照实验显示，Trajectory-GRPO会降低前置已成功阶段的完成概率，而Temporal GRPO保持前置阶段完成概率基本不变，最大提升集中在首个差异阶段，证明其信用分配精准作用于需要改进的阶段</p>
+<p> 4. 消融实验显示，移除进入阶段门控、同阶段分组、Stage Compiler组件均会导致性能下降，其中移除同阶段分组性能降幅最大，证明各组件的有效性</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.13395/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">FIRE-VLA: Failure-Informed Self-Evolution for Vision-Language-Action Models in Autonomous Driving</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.12932/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">FlashDrive: Flash Vision-Language-Action Inference for Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
