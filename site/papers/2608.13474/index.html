@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Decoding Task Progress from VLA Representations - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本研究聚焦视觉语言动作模型（VLA）的可解释性与运行时监控问题，核心目标是探究VLA内部表征中是否包含任务进度（task progress，即轨迹剩余时间的归一化值）这一与行为直接相关的语义信号 研究针对现有VLA部署缺乏基础内部状态理解工具的痛点，尝试从预训练VLA的激活中线性提取任务进度信号，为VLA的轻量级监控提供新思路 研究同时验证该信号在未见任务、语言扰动场景下的泛化性，以及其作为免监督分布外（OOD）检测器的可行性，解决VLA silent failure的监控难题" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.13474">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.13474.webp" alt="Decoding Task Progress from VLA Representations" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本研究聚焦视觉语言动作模型（VLA）的可解释性与运行时监控问题，核心目标是探究VLA内部表征中是否包含任务进度（task progress，即轨迹剩余时间的归一化值）这一与行为直接相关的语义信号</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Decoding Task Progress from VLA Representations</h1>
+            <div class="detail-meta">2026-08-13 · <a href="http://arxiv.org/abs/2608.13474" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.13474" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.13474</span></div>
+            <p class="detail-summary">本研究聚焦视觉语言动作模型（VLA）的可解释性与运行时监控问题，核心目标是探究VLA内部表征中是否包含任务进度（task progress，即轨迹剩余时间的归一化值）这一与行为直接相关的语义信号 研究针对现有VLA部署缺乏基础内部状态理解工具的痛点，尝试从预训练VLA的激活中线性提取任务进度信号，为VLA的轻量级监控提供新思路 研究同时验证该信号在未见任务、语言扰动场景下的泛化性，以及其作为免监督分布外（OOD）检测器的可行性，解决VLA silent failure的监控难题</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Cornell University（论文所有作者所属研究机构）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.13474/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">本研究聚焦视觉语言动作模型（VLA）的可解释性与运行时监控问题，核心目标是探究VLA内部表征中是否包含任务进度（task progress，即轨迹剩余时间的归一化值）这一与行为直接相关的语义信号</p>
+  <ul class="reading-intro-points"><li>本研究聚焦视觉语言动作模型（VLA）的可解释性与运行时监控问题，核心目标是探究VLA内部表征中是否包含任务进度（task progress，即轨迹剩余时间的归一化值）这一与行为直接相关的语义信号</li><li>研究针对现有VLA部署缺乏基础内部状态理解工具的痛点，尝试从预训练VLA的激活中线性提取任务进度信号，为VLA的轻量级监控提供新思路</li><li>研究同时验证该信号在未见任务、语言扰动场景下的泛化性，以及其作为免监督分布外（OOD）检测器的可行性，解决VLA silent failure的监控难题</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Cornell University</strong>（论文所有作者所属研究机构）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本研究聚焦<strong>视觉语言动作模型（VLA）</strong>的可解释性与运行时监控问题，核心目标是探究VLA内部表征中是否包含<strong>任务进度（task progress，即轨迹剩余时间的归一化值）</strong>这一与行为直接相关的语义信号</li><li>研究针对现有VLA部署缺乏基础内部状态理解工具的痛点，尝试从预训练VLA的激活中线性提取任务进度信号，为VLA的轻量级监控提供新思路</li><li>研究同时验证该信号在未见任务、语言扰动场景下的泛化性，以及其作为免监督分布外（OOD）检测器的可行性，解决VLA silent failure的监控难题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出了针对生成模型的<strong>弱可解码性（weak decodability）</strong>、<strong>强可解码性（strong decodability）</strong>和<strong>可操纵性（steerability）</strong>三类特征表征强度的形式化定义，区分了信号提取、依赖正确输入、因果影响输出三个层次</li><li>证实<strong>任务进度</strong>在π₀.₅模型的残差流中同时具备弱可解码性和强可解码性：单线性探针即可恢复进度信号，且在语言反事实扰动下能正确变化，但无法通过注入实现模型操纵</li><li>发现任务进度信号在微调前就存在于PaliGemma主干网络中，由大规模机器人预训练阶段形成，而非后续任务微调产生</li><li>验证了基于进度探针的免监督OOD检测器在跨任务、跨扰动场景下的性能，其表现与有监督基线方法相当，且在未见OOD类型泛化时优于多数有监督方法</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>核心技术为<strong>线性探针（linear probe）</strong>：提取π₀.₅模型各层残差流激活（经token均值池化），训练单线性层拟合任务进度标签，用于解码表征中的进度信号</li><li>创新性形式化了生成模型特征表征的三类强度定义：弱可解码性（分布内线性信号可提取）、强可解码性（反事实扰动下无需重训练仍可提取）、可操纵性（注入信号可因果影响模型输出）</li><li>针对朴素探针不响应语言扰动的问题，采用<strong>对比式探针训练</strong>：加入语言名词替换的反事实前向传播激活，将交换后的指令标注为进度τ=1.0，训练得到对语言敏感的强可解码探针</li><li>设计了基于进度特征的免监督OOD检测器：通过计算预测进度与预期进度的残差，当残差超过阈值时判定为OOD状态，无需任何OOD标注</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：<strong>VLABench</strong>，包含10种语言条件化的桌面操作任务，每任务提供500条专家演示轨迹，用于π₀.₅的微调和探针训练；OOD检测额外使用4种图像扰动（高斯噪声、颜色偏移、模糊、遮挡）生成的分布外轨迹</li><li>模型规模：目标模型<strong>π₀.₅</strong>基于<strong>3B参数的PaliGemma视觉语言模型主干</strong>，另涉及同系列的π₀架构VLA用于对比实验</li><li>训练资源：原文未明确提及具体GPU/TPU等硬件配置</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：VLABench仿真桌面操作环境，实验覆盖弱可解码性、强可解码性、可操纵性、OOD检测四个维度</li><li>主要评估指标：弱/强可解码性用R²和探针损失，可操纵性用注入动作与真实动作的L2距离、动作分布散度，OOD检测用per-replan（单次重规划粒度）和per-episode（单回合粒度）的AUROC</li><li>OOD检测基线：Mahalanobis距离检测器、变分自编码器（VAE）、SAFE-MLP、SAFE-LSTM</li><li>关键实验结果：</li></ul>
+<p> - 弱可解码性：任务进度在π₀.₅各层残差流中均具有弱可解码性，最优解码层为PaliGemma主干早期层和Gemma前几层；进度信号在大规模机器人预训练阶段即已存在，微调不会显著改变其可解码性</p>
+<p> - 强可解码性：仅用原始指令训练的朴素探针不响应语言名词替换扰动（R²=0.95但输出无变化）；经对比训练后的探针可正确响应语言变化，实现强可解码性</p>
+<p> - 可操纵性：向层0注入进度信号后，后续层的进度预测和最终输出动作与无注入 baseline 无显著差异，证明任务进度特征不具备线性可操纵性</p>
+<p> - OOD检测：基于进度特征的免监督检测器V_τ在跨任务泛化场景下per-episode AUROC达0.910，与有监督的SAFE-MLP（0.917）性能相当；在跨OOD扰动类型泛化场景下，V_τ在未见扰动模式上的per-episode AUROC达0.960，显著优于所有需要OOD监督的基线方法</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2608.13453/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">UniTexture: Cross-Task Universal Adversarial Textures for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
