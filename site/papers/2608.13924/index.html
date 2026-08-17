@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BICPO-VLA: Behavior-Identified Continuation Preference Optimization for Smooth Asynchronous Vision-Language-Action Control - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文提出BICPO-VLA模型，解决异步视觉-语言-动作（VLA）控制中的请求到动作交接（request-to-handoff）间隙问题，该问题由三个耦合因素导致：请求时目标行为的模糊性、动作生成过程中累积的物理状态漂移、新动作接管时的残留状态不兼容性，现有方法无法同时满足行为有效性和交接有效性要求。 核心解决方案分为三个阶段：首先通过指令感知的因果历史编码器识别指令支持的有效行为及动作先验；其次采用序贯哈尔小波子空间生成将动作块分解为互补的成对运动支架和残差系数，缩短机器人等待新动作块的时间；最后通过滚动交接状态的参考相对Flow-DPO在行为匹配的候选动作中选择最优实现，平滑异步控制的切换。 工作目标是在不改变任务语义的前提下，减少异步动作分块执行时的边界跳跃和运动趋势中断，提升长程复杂任务的成功率和控制平滑性。" />
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.13924">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.13924.webp" alt="BICPO-VLA: Behavior-Identified Continuation Preference Optimization for Smooth Asynchronous Vision-Language-Action Control" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文提出BICPO-VLA模型，解决异步视觉-语言-动作（VLA）控制中的请求到动作交接（request-to-handoff）间隙问题，该问题由三个耦合因素导致：请求时目标行为的模糊性、动作生成过程中累积的物理状态漂移、新动作接管时的残留状态不兼容性，现有方法无法同时满足行为有效性和交接有效性要求。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">BICPO-VLA: Behavior-Identified Continuation Preference Optimization for Smooth Asynchronous Vision-Language-Action Control</h1>
+            <div class="detail-meta">2026-08-14 · <a href="http://arxiv.org/abs/2608.13924" target="_blank" rel="noopener noreferrer">原文</a> · <a href="https://hjfy.top/arxiv/2608.13924" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.13924</span></div>
+            <p class="detail-summary">本文提出BICPO-VLA模型，解决异步视觉-语言-动作（VLA）控制中的请求到动作交接（request-to-handoff）间隙问题，该问题由三个耦合因素导致：请求时目标行为的模糊性、动作生成过程中累积的物理状态漂移、新动作接管时的残留状态不兼容性，现有方法无法同时满足行为有效性和交接有效性要求。 核心解决方案分为三个阶段：首先通过指令感知的因果历史编码器识别指令支持的有效行为及动作先验；其次采用序贯哈尔小波子空间生成将动作块分解为互补的成对运动支架和残差系数，缩短机器人等待新动作块的时间；最后通过滚动交接状态的参考相对Flow-DPO在行为匹配的候选动作中选择最优实现，平滑异步控制的切换。 工作目标是在不改变任务语义的前提下，减少异步动作分块执行时的边界跳跃和运动趋势中断，提升长程复杂任务的成功率和控制平滑性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者包括Ming Shang、Yuchen Huang、Jiaoyang Chen、Haoyuan…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" href="../../covers/2608.13924/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">本文提出BICPO-VLA模型，解决异步视觉-语言-动作（VLA）控制中的请求到动作交接（request-to-handoff）间隙问题，该问题由三个耦合因素导致：请求时目标行为的模糊性、动作生成过程中累积的物理状态漂移、新动作接管时的残留状态不兼容性，现有方法无法同时满足行为有效性和交接有效性要求。</p>
+  <ul class="reading-intro-points"><li>本文提出BICPO-VLA模型，解决异步视觉-语言-动作（VLA）控制中的请求到动作交接（request-to-handoff）间隙问题，该问题由三个耦合因素导致：请求时目标行为的模糊性、动作生成过程中累积的物理状态漂移、新动作接管时的残留状态不兼容性，现有方法无法同时满足行为有效性和交接有效性要求。</li><li>核心解决方案分为三个阶段：首先通过指令感知的因果历史编码器识别指令支持的有效行为及动作先验；其次采用序贯哈尔小波子空间生成将动作块分解为互补的成对运动支架和残差系数，缩短机器人等待新动作块的时间；最后通过滚动交接状态的参考相对Flow-DPO在行为匹配的候选动作中选择最优实现，平滑异步控制的切换。</li><li>工作目标是在不改变任务语义的前提下，减少异步动作分块执行时的边界跳跃和运动趋势中断，提升长程复杂任务的成功率和控制平滑性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者包括<strong>Ming Shang</strong>、<strong>Yuchen Huang</strong>、<strong>Jiaoyang Chen</strong>、<strong>Haoyuan Hu</strong>、<strong>Xinzhou Wang</strong>、<strong>Fuchun Sun</strong>，其中Yuchen Huang的所属关联人员为Han Yu、Liping Song、Luyun Feng、Shuo Bao、Wei Dong（原文未明确披露所属机构全称）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文提出<strong>BICPO-VLA</strong>模型，解决异步视觉-语言-动作（VLA）控制中的<strong>请求到动作交接（request-to-handoff）间隙</strong>问题，该问题由三个耦合因素导致：请求时目标行为的模糊性、动作生成过程中累积的物理状态漂移、新动作接管时的残留状态不兼容性，现有方法无法同时满足行为有效性和交接有效性要求。</li><li>核心解决方案分为三个阶段：首先通过指令感知的因果历史编码器识别指令支持的有效行为及动作先验；其次采用序贯哈尔小波子空间生成将动作块分解为互补的成对运动支架和残差系数，缩短机器人等待新动作块的时间；最后通过滚动交接状态的参考相对Flow-DPO在行为匹配的候选动作中选择最优实现，平滑异步控制的切换。</li><li>工作目标是在不改变任务语义的前提下，减少异步动作分块执行时的边界跳跃和运动趋势中断，提升长程复杂任务的成功率和控制平滑性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出异步行为到动作实现的<strong>纤维化公式</strong>，将行为身份与其具体轨迹解耦，将延迟分块执行重构为在语义有效的动作族内的交接条件选择，明确行为识别、实现生成、交接适配三个阶段的独立约束。</li><li>开发<strong>指令感知、哈尔结构化的生成器</strong>，通过指令相关的任务进度推理识别行为条件，将行为实现参数化为互补的成对运动支架和局部残差坐标，支持动作的精确重建，同时为两阶段生成和交接条件适配提供结构支撑。</li><li>提出<strong>行为识别的延续偏好优化（BICPO）</strong>，将已知的 outgoing 动作滚动到实际交接状态，在语义匹配的实现中学习延续偏好，无需在线候选搜索即可大幅平滑分块过渡；其参考相对的延续DPO目标可移植到<strong>π₀.₅流匹配</strong>、<strong>Legato</strong>、<strong>RTC</strong>等主机策略，且不影响其原生条件和执行机制。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>核心方法分为三个模块：①指令 grounding 的行为识别模块：先通过语言特征路由视觉token过滤指令无关信息，再用基于<strong>因果Mamba块</strong>的编码器聚合历史观察和执行动作，结合长程记忆解码得到行为状态、记忆和动作先验，共同定义行为条件的动作纤维，固定任务语义；②交接条件的哈尔小波实现模块：用正交哈尔变换将动作块分解为成对运动支架和互补残差系数，先独立生成支架系数，再基于生成的支架生成残差系数，两阶段通过<strong>流匹配</strong>的线性路径进行生成，支持无误差的精确重建；③延续偏好优化模块：离线对相同行为纤维、相同交接条件下的候选动作对进行成对微调，通过边界跳跃和运动趋势不匹配两个指标衡量延续兼容性，采用<strong>参考相对Flow-DPO</strong>目标优化，仅更新部分投影和专家参数，避免平滑优化改变原有行为语义。</li><li>关键创新点：①纤维化的行为-动作解耦框架，避免了语义决策和连续性优化的耦合，解决了不同阶段约束冲突的问题；②正交哈尔变换的结构化生成，既保留完整动作信息无重建误差，又通过成对支架-残差的分解降低生成难度，为交接条件适配提供天然接口；③参考相对的延续DPO目标，仅优化动作接管的连续性，不改变主机策略的原有任务能力，且可跨不同主机策略迁移。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：仿真环境包括<strong>CALVIN ABC→D</strong>长程任务数据集、<strong>RoboTwin 2.0 Hard</strong>双手操作数据集、<strong>LIBERO</strong>操作数据集；真实世界评估包含6个有限数据的真实机器人操作任务。</li><li>模型规模：原文未明确披露模型总参数量，核心组件包括基于因果Mamba块的行为编码器、基于流匹配专家的两阶段哈尔系数生成器、交接状态投影模块。</li><li>训练资源：原文未明确说明使用的GPU/TPU等训练硬件资源。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：仿真环境覆盖CALVIN、RoboTwin 2.0、LIBERO三个主流机器人操作基准，真实环境为6个真实机器人任务；对比基线包括11个主流VLA模型（<strong>RoboVLM</strong>、<strong>ReconVLA</strong>、<strong>OpenVLA</strong>、<strong>UniVLA</strong>、<strong>UP-VLA</strong>、<strong>RoboDual</strong>、<strong>Seer</strong>、<strong>VPP</strong>、<strong>π₀</strong>、<strong>π₀.₅</strong>、<strong>B-VLA</strong>），以及用于迁移实验的π₀.₅流匹配、Legato、RTC三个主机策略。</li><li>主要评估指标：任务成功率（SR）、CALVIN链平均长度（Avg. Len）、子任务完成率、交接跳跃成本（J_jump，衡量边界跳跃程度）、运动趋势不匹配成本（J_trend，衡量运动趋势中断程度）。</li><li>关键实验结果：</li></ul>
+<p> - CALVIN长程任务上，<strong>BICPO-VLA</strong>平均链长达4.52，5子任务完成率为80.7%，优于最强基线B-VLA（4.36链长、77.3%完成率），在所有链深度（1/5至5/5）上均保持稳定提升。</p>
+<p> - RoboTwin双手操作任务上，BICPO-VLA在所有10个任务上提升4-8个百分点，整体成功率从B-VLA的60.4%提升至65.8%，覆盖抓取、放置、方向敏感操作等多类任务类别。</p>
+<p> - LIBERO任务上，BICPO-VLA的DPO优化将跳跃和趋势成本分别降低21.3%和20.7%，成功率仅提升0.3个百分点；其延续DPO目标可迁移到π₀.₅流匹配、Legato、RTC，对这三个主机策略的跳跃成本降低15.8%-40.3%，趋势成本降低11.5%-21.2%，成功率仅变化0.1-0.2点，而直接SFT会降低所有主机策略的成功率。</p>
+<p> - 真实世界6个任务上，BICPO-VLA平均成功率为69.3%，显著高于B-VLA（60.2%）、π₀.₅（47.3%）和OpenVLA-OFT（33.3%）。</p>
+<p> - 消融实验验证了指令在感知层接入、哈尔结构化生成、延续DPO等组件的独立有效性，证明各模块对最终性能的贡献。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.14024/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SSP: An Event-Matched Syn2Sim2Phy Cross-Domain Evaluation Framework for Autonomous Driving VLA Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.13474/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Decoding Task Progress from VLA Representations</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
