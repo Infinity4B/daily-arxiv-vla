@@ -122,7 +122,7 @@ npx serve site
 在仓库设置中添加以下Secret：
 - `MODELSCOPE_ACCESS_TOKEN`: 你的ModelScope API密钥（必需）
 
-如需启用 Google Analytics 4，在 `Settings → Secrets and variables → Actions → Variables` 中新增仓库变量 `GA_MEASUREMENT_ID`，值填写类似 `G-XXXXXXXXXX` 的 Measurement ID。当前工作流会自动把它注入网站构建；不设置该变量则不会加载 GA。Measurement ID 会出现在客户端 HTML 中，因此使用 **Variables** 即可，不必当作 Secret 保存。
+如需启用 Google Analytics 4，在 `Settings → Secrets and variables → Actions → Variables` 中新增仓库变量 `GA_MEASUREMENT_ID`，值填写类似 `G-XXXXXXXXXX` 的 Measurement ID。当前工作流会自动把它注入网站构建；也兼容在 **Secrets** 中配置同名变量。不设置或格式不正确时不会加载 GA。Measurement ID 会出现在客户端 HTML 中，因此优先使用 **Variables** 即可。
 
 **可选配置：** 如果需要修改默认配置（如搜索关键词、模型等），可以在 `.github/workflows/deploy.yml` 中添加环境变量：
 
