@@ -77,12 +77,22 @@ jobs:
         run: |
           python scripts/register_paper_image_fallbacks.py
           
+      - name: 检查 Google Analytics 配置
+        run: |
+          if [ -n "$GA_MEASUREMENT_ID" ]; then
+            echo "已读取 GA_MEASUREMENT_ID（值不会打印）"
+          else
+            echo "未读取 GA_MEASUREMENT_ID，网站将不加载 GA4"
+          fi
+        env:
+          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID || secrets.GA_MEASUREMENT_ID }}
+
       - name: 构建网站
         run: |
           python scripts/build_site.py
         env:
           ARXIV_QUERY_KEYWORD: 'all:"VLA" OR all:"Vision-Language-Action" OR all:"World Action Model" OR all:"World-Action Model" OR all:"action world model"'
-          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID || secrets.GA_MEASUREMENT_ID }}
 
       - name: 提交更改
         run: |
