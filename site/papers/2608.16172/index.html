@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SparkVLA: Stop-Aware Hierarchical VLA with Adaptive Action Chunking for Long-Horizon Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有分层Vision-Language-Action (VLA)系统孤立地决定子任务终止（何时Stop）和执行长度（执行多远），但二者相互依赖，造成结构性信息不对称 提出SparkVLA，将Stop与所有action-prefix长度统一为单一候选集排序问题，仅需离线序数偏好训练，无需阈值调优或在线奖励 在长程操纵基准RoboCerebra和真实机器人上验证，解决高层规划与低层执行的接口机制设计问题" />
+    
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.16172">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.16172.webp" alt="SparkVLA: Stop-Aware Hierarchical VLA with Adaptive Action Chunking for Long-Horizon Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有分层Vision-Language-Action (VLA)系统孤立地决定子任务终止（何时Stop）和执行长度（执行多远），但二者相互依赖，造成结构性信息不对称</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">SparkVLA: Stop-Aware Hierarchical VLA with Adaptive Action Chunking for Long-Horizon Manipulation</h1>
+            <div class="detail-meta">2026-08-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.16172" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.16172" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.16172</span></div>
+            <p class="detail-summary">现有分层Vision-Language-Action (VLA)系统孤立地决定子任务终止（何时Stop）和执行长度（执行多远），但二者相互依赖，造成结构性信息不对称 提出SparkVLA，将Stop与所有action-prefix长度统一为单一候选集排序问题，仅需离线序数偏好训练，无需阈值调优或在线奖励 在长程操纵基准RoboCerebra和真实机器人上验证，解决高层规划与低层执行的接口机制设计问题</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">机构信息未在提供的HTML原文中明确显示</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.16172/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有分层Vision-Language-Action (VLA)系统孤立地决定子任务终止（何时Stop）和执行长度（执行多远），但二者相互依赖，造成结构性信息不对称</p>
+  <ul class="reading-intro-points"><li>现有分层Vision-Language-Action (VLA)系统孤立地决定子任务终止（何时Stop）和执行长度（执行多远），但二者相互依赖，造成结构性信息不对称</li><li>提出SparkVLA，将Stop与所有action-prefix长度统一为单一候选集排序问题，仅需离线序数偏好训练，无需阈值调优或在线奖励</li><li>在长程操纵基准RoboCerebra和真实机器人上验证，解决高层规划与低层执行的接口机制设计问题</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>机构信息未在提供的HTML原文中明确显示</li><li>作者：<strong>Xunyao Lei</strong>, <strong>Renjun Wu</strong>, <strong>Tianlin Huo</strong>, <strong>Xuesong Li</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有分层Vision-Language-Action (VLA)系统孤立地决定子任务终止（<strong>何时Stop</strong>）和执行长度（<strong>执行多远</strong>），但二者相互依赖，造成结构性信息不对称</li><li>提出<strong>SparkVLA</strong>，将Stop与所有action-prefix长度统一为单一候选集排序问题，仅需离线序数偏好训练，无需阈值调优或在线奖励</li><li>在长程操纵基准<strong>RoboCerebra</strong>和真实机器人上验证，解决高层规划与低层执行的接口机制设计问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>将子任务终止和执行长度选择统一为单一排序问题，解决相互依赖，消除独立检测器、阈值调优和在线信号需求</li><li>提出<strong>Anchor-Conditioned Context Encoding</strong>模块，通过历史感知锚点编码初始状态记忆与目标语义，引导视觉标记剪枝至任务相关区域</li><li>设计<strong>Stop-Aware Action-Prefix Selection</strong>头，通过完整自注意力对Stop与所有action-prefix进行统一评分，仅在chunk边界运行以提高效率</li><li>证明高层系统可跨不同低层执行器（<strong>OpenVLA-OFT</strong>, <strong>SmolVLA</strong>）迁移，并在仿真与真实平台间保持一致增益</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>架构</strong>：基于预训练<strong>π₀.₅</strong> VLA的双分支分层架构，高层分支保留VLM骨干用于子任务生成与选择器，低层分支使用完整VLA生成action chunk</li><li><strong>历史感知子任务锚点</strong>：从深层Transformer层提取原始锚点，通过自注意力与锚点历史池融合，编码初始状态记忆与目标语义</li><li><strong>锚点引导视觉剪枝</strong>：使用<strong>Grid-Sampler</strong>根据子任务锚点预测K个归一化2D坐标，通过双线性插值将每个相机的视觉标记从N剪枝至K个任务相关标记</li><li><strong>高层隐藏特征编码</strong>：将剪枝后的视觉标记投影并拼接proprioceptive state与子任务命令嵌入，通过高层VLM骨干前ℓₘ层计算隐藏特征</li><li><strong>统一候选评分</strong>：Stop候选与H个action-prefix候选通过完整自注意力相互评分，上下文标记（锚点与隐藏特征）提供条件信息</li><li><strong>Stop感知排序目标</strong>：使用pairwise ranking loss（BCE）与stop-aware auxiliary loss（对比Stop分数与continuation分数的log-sum-exp）联合训练</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>主要数据集</strong>：<strong>RoboCerebra</strong>（100个任务变体，平均9.1个子任务，2,972步，1,000条标注轨迹）</li><li><strong>辅助数据集</strong>：<strong>LIBERO</strong>（Spatial, Object, Goal, Long四个套件，共40个任务）</li><li><strong>真实世界平台</strong>：<strong>AirbotPlay</strong>双臂平台，配备2个手腕RGB相机与1个头部RGB相机</li><li><strong>模型基础</strong>：基于预训练<strong>π₀.₅</strong> VLA，高层与低层分支独立微调；选择器为轻量级Transformer头</li><li><strong>训练资源</strong>：GPU/TPU具体型号与数量未在提供的HTML原文中明确显示</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：</li></ul>
+<p> - 仿真：<strong>RoboCerebra</strong>（6种条件：Dynamic Random, Dynamic Observed, Memory Exp, Memory Exe, Mix, Ideal），<strong>LIBERO</strong></p>
+<p> - 真实世界：3个多步任务（<strong>Shelf Arrangement</strong> 6子任务, <strong>Drawer Restocking</strong> 6子任务, <strong>Tea Preparation</strong> 12子任务）</p>
+<ul><li><strong>评估指标</strong>：</li></ul>
+<p> - <strong>Success Rate (SR)</strong>：完成任务的比例</p>
+<p> - <strong>Stop Accuracy</strong>：选择器Stop决策与标注子任务边界的一致性</p>
+<ul><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>RoboCerebra</strong>：<strong>SparkVLA</strong>达到<strong>47.12%</strong>平均SR，超过官方分层基准(<strong>HPE</strong>) <strong>30.57%</strong>，超过可复现最优方法(<strong>Mem-0</strong>) <strong>26.83%</strong></p>
+<p> - 在<strong>Dynamic Obs</strong>与<strong>Memory Exp</strong>条件下提升最大（+34.78%与+47.69%）</p>
+<p> - 执行器通用性：替换<strong>OpenVLA-OFT</strong>与<strong>SmolVLA</strong>作为低层执行器分别提升<strong>+22.47%</strong>与<strong>+22.52%</strong></p>
+<p> - <strong>LIBERO</strong>：达到<strong>98.5%</strong>平均成功率，在<strong>LIBERO-Long</strong>上提升<strong>5.6%</strong></p>
+<p> - 真实世界：达到<strong>69.3%</strong>平均成功率，超过<strong>π₀.₅</strong> <strong>21.3%</strong>，在<strong>Tea Preparation</strong>上提升<strong>30.0%</strong></p>
+<p> - 推理效率：通过缓存子任务命令与仅在chunk边界运行选择器，达到<strong>4.14 Hz</strong>，保留standalone <strong>π₀.₅</strong> <strong>88%</strong>吞吐量</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.16476/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Exposing the Long-tail in Embodied Urban Navigation via Scalable Learning from In-the-Wild Videos</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.16074/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">US-VLA: An Ultrasound Vision-Language-Action Model for Embodied Abdomina</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

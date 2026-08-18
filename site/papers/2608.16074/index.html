@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>US-VLA: An Ultrasound Vision-Language-Action Model for Embodied Abdomina - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究单位 中国海洋大学计算机科学与技术学院（Cheng Zhang, Xingzheng Wu, Guihao Yan） 山东大学信息科学与工程学院（Xifeng Hu, Zhi Liu） 山东大学齐鲁第二医院超声科（Mei Wu） 合肥工业大学人工智能学院（Qing Cai） 论文概述 针对现有AI辅助超声扫描方法依赖手工设计奖励函数、泛化性与稳定性差的问题，提出首个专为腹部超声扫描设计的视觉-语言-动作（VLA）框架US-VLA，显式编码临床语义目标，在实时超声反馈下生成序列化探头操作动作 构建真实世界超声VLA数据集US-VLA-Data，覆盖肝脏、肾脏检查的5个临床定义标准平面，包含320条专家扫描轨迹约8万同步时间步 研究目标是实现自动化、标准化的腹部超声扫描，减少操作者依赖，提升超声诊断的可靠性与效率 核心贡献 首个专为超声扫描设计的视觉-语言-动作（VLA）框架，将临床语义目标、实时感知与探头操作统一到单一模型中 构建US-VLA-Data真实世界数据集，覆盖肝脏和肾脏器官的5个临床标准平面，包含320条专家演示轨迹约8万同步时间步，支持语言条件与动作驱动的学习 大量实验证明US-VLA持续优于强基线方法，在不同器官、扫描目标与多样临床条件下展现出稳健的泛化能力 方法描述 视觉-语言编码：采用SigLIP视觉编码器处理腕部、侧视RGB图像，PaliGemma编码临床扫描指令，采用通用超声基础模型（USFM）编码超声图像，避免自然图像编码器的领域不匹配问题 超声感知专家融合（UAEF）模块：以视觉-语言特征为查询、超声特征为键和值，通过交叉模态注意力机制注入实时超声语义，经残差连接与前馈网络精炼，实现多模态特征的深度融合 动作专家与策略头：提取融合特征的动作相关token，经全连接动作专家网络处理，通过残差聚合后线性投影生成连续的探头控制命令 创新点：显式建模临床语义目标，引入超声感知融合机制，避免直接拼接超声特征的浅层利用问题，实现语义引导的闭环探头控制 数据集与资源 使用数据集为US-VLA-Data，覆盖腹主动脉矢状面、剑突下横切面、右肋下斜切面、左肾长轴面、左肾横切面5个临床标准平面，包含320条专家扫描轨迹约8万同步时间步，来自8名参与者，每人执行5类任务、每类任务8个不同起始位置 模型基于π0 VLA架构构建，视觉语言编码采用PaliGemma，超声编码采用USFM，动作专家维度Da=1024，动作token数量Hact=50 训练资源为8块NVIDIA RTX 3090 GPU，训练3万步，批次大小8，采用AdamW优化器，最大学习率5e-5，数据采集与闭环推理频率均为15Hz 评估与结果 评估环境与基准：在3名BMI分别为18.1、22.9、26.0的留出受试者上进行10次独立试验，对比基线包括π0、π0.5的带/不带超声输入的版本，同时与1年、3年临床经验的专家对比 主要评估指标：任务成功率（越高越好）、到达目标标准平面的扫描时间步（越低越好） 关键实验结果：US-VLA平均任务成功率达84.0%，比最优基线π0.5 w/ US的70.0%高14个百分点；平均扫描时间步682，比π0.5 w/ US的1195低42.9%；消融实验证明超声输入、USFM编码器、UAEF融合模块均对性能有显著提升，全组件时性能最优；临床对比中US-VLA的时间-成功率权衡优于所有基线方法，接近低年资专家水平，缩小了自主扫描与手动操作的性能差距" />
+    
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.16074">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.16074.webp" alt="US-VLA: An Ultrasound Vision-Language-Action Model for Embodied Abdomina" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">中国海洋大学计算机科学与技术学院（Cheng Zhang, Xingzheng Wu, Guihao Yan）</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">US-VLA: An Ultrasound Vision-Language-Action Model for Embodied Abdomina</h1>
+            <div class="detail-meta">2026-08-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.16074" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.16074" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.16074</span></div>
+            <p class="detail-summary">研究单位 中国海洋大学计算机科学与技术学院（Cheng Zhang, Xingzheng Wu, Guihao Yan） 山东大学信息科学与工程学院（Xifeng Hu, Zhi Liu） 山东大学齐鲁第二医院超声科（Mei Wu） 合肥工业大学人工智能学院（Qing Cai） 论文概述 针对现有AI辅助超声扫描方法依赖手工设计奖励函数、泛化性与稳定性差的问题，提出首个专为腹部超声扫描设计的视觉-语言-动作（VLA）框架US-VLA，显式编码临床语义目标，在实时超声反馈下生成序列化探头操作动作 构建真实世界超声VLA数据集US-VLA-Data，覆盖肝脏、肾脏检查的5个临床定义标准平面，包含320条专家扫描轨迹约8万同步时间步 研究目标是实现自动化、标准化的腹部超声扫描，减少操作者依赖，提升超声诊断的可靠性与效率 核心贡献 首个专为超声扫描设计的视觉-语言-动作（VLA）框架，将临床语义目标、实时感知与探头操作统一到单一模型中 构建US-VLA-Data真实世界数据集，覆盖肝脏和肾脏器官的5个临床标准平面，包含320条专家演示轨迹约8万同步时间步，支持语言条件与动作驱动的学习 大量实验证明US-VLA持续优于强基线方法，在不同器官、扫描目标与多样临床条件下展现出稳健的泛化能力 方法描述 视觉-语言编码：采用SigLIP视觉编码器处理腕部、侧视RGB图像，PaliGemma编码临床扫描指令，采用通用超声基础模型（USFM）编码超声图像，避免自然图像编码器的领域不匹配问题 超声感知专家融合（UAEF）模块：以视觉-语言特征为查询、超声特征为键和值，通过交叉模态注意力机制注入实时超声语义，经残差连接与前馈网络精炼，实现多模态特征的深度融合 动作专家与策略头：提取融合特征的动作相关token，经全连接动作专家网络处理，通过残差聚合后线性投影生成连续的探头控制命令 创新点：显式建模临床语义目标，引入超声感知融合机制，避免直接拼接超声特征的浅层利用问题，实现语义引导的闭环探头控制 数据集与资源 使用数据集为US-VLA-Data，覆盖腹主动脉矢状面、剑突下横切面、右肋下斜切面、左肾长轴面、左肾横切面5个临床标准平面，包含320条专家扫描轨迹约8万同步时间步，来自8名参与者，每人执行5类任务、每类任务8个不同起始位置 模型基于π0 VLA架构构建，视觉语言编码采用PaliGemma，超声编码采用USFM，动作专家维度Da=1024，动作token数量Hact=50 训练资源为8块NVIDIA RTX 3090 GPU，训练3万步，批次大小8，采用AdamW优化器，最大学习率5e-5，数据采集与闭环推理频率均为15Hz 评估与结果 评估环境与基准：在3名BMI分别为18.1、22.9、26.0的留出受试者上进行10次独立试验，对比基线包括π0、π0.5的带/不带超声输入的版本，同时与1年、3年临床经验的专家对比 主要评估指标：任务成功率（越高越好）、到达目标标准平面的扫描时间步（越低越好） 关键实验结果：US-VLA平均任务成功率达84.0%，比最优基线π0.5 w/ US的70.0%高14个百分点；平均扫描时间步682，比π0.5 w/ US的1195低42.9%；消融实验证明超声输入、USFM编码器、UAEF融合模块均对性能有显著提升，全组件时性能最优；临床对比中US-VLA的时间-成功率权衡优于所有基线方法，接近低年资专家水平，缩小了自主扫描与手动操作的性能差距</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">1 张阅读卡</span>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.16074/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">中国海洋大学计算机科学与技术学院（Cheng Zhang, Xingzheng Wu, Guihao Yan）</p>
+  <ul class="reading-intro-points"><li>中国海洋大学计算机科学与技术学院（Cheng Zhang, Xingzheng Wu, Guihao Yan）</li><li>山东大学信息科学与工程学院（Xifeng Hu, Zhi Liu）</li><li>山东大学齐鲁第二医院超声科（Mei Wu）</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><p>##研究单位</p>
+<ul><li><strong>中国海洋大学计算机科学与技术学院</strong>（Cheng Zhang, Xingzheng Wu, Guihao Yan）</li><li><strong>山东大学信息科学与工程学院</strong>（Xifeng Hu, Zhi Liu）</li><li><strong>山东大学齐鲁第二医院超声科</strong>（Mei Wu）</li><li><strong>合肥工业大学人工智能学院</strong>（Qing Cai）</li></ul>
+
+<p>##论文概述</p>
+<ul><li>针对现有AI辅助超声扫描方法依赖手工设计奖励函数、泛化性与稳定性差的问题，提出首个专为腹部超声扫描设计的<strong>视觉-语言-动作（VLA）框架US-VLA</strong>，显式编码临床语义目标，在实时超声反馈下生成序列化探头操作动作</li><li>构建真实世界超声VLA数据集<strong>US-VLA-Data</strong>，覆盖肝脏、肾脏检查的5个临床定义标准平面，包含320条专家扫描轨迹约8万同步时间步</li><li>研究目标是实现自动化、标准化的腹部超声扫描，减少操作者依赖，提升超声诊断的可靠性与效率</li></ul>
+
+<p>##核心贡献</p>
+<ul><li>首个专为超声扫描设计的视觉-语言-动作（VLA）框架，将临床语义目标、实时感知与探头操作统一到单一模型中</li><li>构建<strong>US-VLA-Data</strong>真实世界数据集，覆盖肝脏和肾脏器官的5个临床标准平面，包含320条专家演示轨迹约8万同步时间步，支持语言条件与动作驱动的学习</li><li>大量实验证明US-VLA持续优于强基线方法，在不同器官、扫描目标与多样临床条件下展现出稳健的泛化能力</li></ul>
+
+<p>##方法描述</p>
+<ul><li>视觉-语言编码：采用SigLIP视觉编码器处理腕部、侧视RGB图像，PaliGemma编码临床扫描指令，采用<strong>通用超声基础模型（USFM）</strong>编码超声图像，避免自然图像编码器的领域不匹配问题</li><li><strong>超声感知专家融合（UAEF）</strong>模块：以视觉-语言特征为查询、超声特征为键和值，通过交叉模态注意力机制注入实时超声语义，经残差连接与前馈网络精炼，实现多模态特征的深度融合</li><li>动作专家与策略头：提取融合特征的动作相关token，经全连接动作专家网络处理，通过残差聚合后线性投影生成连续的探头控制命令</li><li>创新点：显式建模临床语义目标，引入超声感知融合机制，避免直接拼接超声特征的浅层利用问题，实现语义引导的闭环探头控制</li></ul>
+
+<p>##数据集与资源</p>
+<ul><li>使用数据集为<strong>US-VLA-Data</strong>，覆盖腹主动脉矢状面、剑突下横切面、右肋下斜切面、左肾长轴面、左肾横切面5个临床标准平面，包含320条专家扫描轨迹约8万同步时间步，来自8名参与者，每人执行5类任务、每类任务8个不同起始位置</li><li>模型基于<strong>π0 VLA</strong>架构构建，视觉语言编码采用PaliGemma，超声编码采用USFM，动作专家维度Da=1024，动作token数量Hact=50</li><li>训练资源为8块<strong>NVIDIA RTX 3090 GPU</strong>，训练3万步，批次大小8，采用AdamW优化器，最大学习率5e-5，数据采集与闭环推理频率均为15Hz</li></ul>
+
+<p>##评估与结果</p>
+<ul><li>评估环境与基准：在3名BMI分别为18.1、22.9、26.0的留出受试者上进行10次独立试验，对比基线包括<strong>π0、π0.5</strong>的带/不带超声输入的版本，同时与1年、3年临床经验的专家对比</li><li>主要评估指标：任务成功率（越高越好）、到达目标标准平面的扫描时间步（越低越好）</li><li>关键实验结果：US-VLA平均任务成功率达<strong>84.0%</strong>，比最优基线π0.5 w/ US的70.0%高14个百分点；平均扫描时间步682，比π0.5 w/ US的1195低42.9%；消融实验证明超声输入、USFM编码器、UAEF融合模块均对性能有显著提升，全组件时性能最优；临床对比中US-VLA的时间-成功率权衡优于所有基线方法，接近低年资专家水平，缩小了自主扫描与手动操作的性能差距</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.16172/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SparkVLA: Stop-Aware Hierarchical VLA with Adaptive Action Chunking for Long-Horizon Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.15875/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">GigaBrain-0.7: Scaling Embodied Foundation Models to Emergent Capabilities with a Three-System Architecture</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
