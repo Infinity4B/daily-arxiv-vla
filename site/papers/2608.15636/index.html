@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Algorithm-Architecture Co-Design for Efficient VLA Inference via Speculative Inference and Verification - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文面向具身机器人实时操控需求，针对视觉语言动作（VLA）模型推理延迟高、单次预测动作长度短的问题，提出算法-架构协同设计的SpecVLA框架，实现高效、高可靠的动作序列预测 现有VLA加速方案（如Dadu-Corki）未利用机器人环境的帧间连续性特征，单次推理仅能预测不足4个动作，无法有效摊销固定推理延迟；同时全精度VLA计算量过大，轻量量化模型在长序列预测时精度骤降，且VLA与验证模型的串行执行导致硬件利用率低、整体延迟高 论文核心目标是自适应平衡动作长度、推理延迟与任务成功率，通过推测推理与动作验证的协同调度，突破实时机器人操控的效率瓶颈" />
+    
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.15636">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.15636.webp" alt="Algorithm-Architecture Co-Design for Efficient VLA Inference via Speculative Inference and Verification" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文面向具身机器人实时操控需求，针对视觉语言动作（VLA）模型推理延迟高、单次预测动作长度短的问题，提出算法-架构协同设计的SpecVLA框架，实现高效、高可靠的动作序列预测</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Algorithm-Architecture Co-Design for Efficient VLA Inference via Speculative Inference and Verification</h1>
+            <div class="detail-meta">2026-08-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.15636" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.15636" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.15636</span></div>
+            <p class="detail-summary">本文面向具身机器人实时操控需求，针对视觉语言动作（VLA）模型推理延迟高、单次预测动作长度短的问题，提出算法-架构协同设计的SpecVLA框架，实现高效、高可靠的动作序列预测 现有VLA加速方案（如Dadu-Corki）未利用机器人环境的帧间连续性特征，单次推理仅能预测不足4个动作，无法有效摊销固定推理延迟；同时全精度VLA计算量过大，轻量量化模型在长序列预测时精度骤降，且VLA与验证模型的串行执行导致硬件利用率低、整体延迟高 论文核心目标是自适应平衡动作长度、推理延迟与任务成功率，通过推测推理与动作验证的协同调度，突破实时机器人操控的效率瓶颈</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">上海交通大学计算机科学与工程学院（第一作者单位）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.15636/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">本文面向具身机器人实时操控需求，针对视觉语言动作（VLA）模型推理延迟高、单次预测动作长度短的问题，提出算法-架构协同设计的SpecVLA框架，实现高效、高可靠的动作序列预测</p>
+  <ul class="reading-intro-points"><li>本文面向具身机器人实时操控需求，针对视觉语言动作（VLA）模型推理延迟高、单次预测动作长度短的问题，提出算法-架构协同设计的SpecVLA框架，实现高效、高可靠的动作序列预测</li><li>现有VLA加速方案（如Dadu-Corki）未利用机器人环境的帧间连续性特征，单次推理仅能预测不足4个动作，无法有效摊销固定推理延迟；同时全精度VLA计算量过大，轻量量化模型在长序列预测时精度骤降，且VLA与验证模型的串行执行导致硬件利用率低、整体延迟高</li><li>论文核心目标是自适应平衡动作长度、推理延迟与任务成功率，通过推测推理与动作验证的协同调度，突破实时机器人操控的效率瓶颈</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>上海交通大学计算机科学与工程学院（第一作者单位）</li><li>阿卜杜拉国王科技大学计算机科学系（作者Jian Weng所属单位）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文面向具身机器人实时操控需求，针对<strong>视觉语言动作（VLA）模型</strong>推理延迟高、单次预测动作长度短的问题，提出算法-架构协同设计的<strong>SpecVLA</strong>框架，实现高效、高可靠的动作序列预测</li><li>现有VLA加速方案（如Dadu-Corki）未利用机器人环境的帧间连续性特征，单次推理仅能预测不足4个动作，无法有效摊销固定推理延迟；同时全精度VLA计算量过大，轻量量化模型在长序列预测时精度骤降，且VLA与验证模型的串行执行导致硬件利用率低、整体延迟高</li><li>论文核心目标是自适应平衡动作长度、推理延迟与任务成功率，通过推测推理与动作验证的协同调度，突破实时机器人操控的效率瓶颈</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出算法-系统协同的SpecVLA框架，利用机器人环境帧的时间连续性，区分主动（精细操作）与非主动（空载移动）环境状态，自适应调整动作预测长度与验证策略</li><li>设计状态感知的VLA推理范式，提出硬件友好的<strong>sVLA（小型验证VLA）</strong>构建方法，基于差分残差与块级混合精度量化，在低计算量下实现高精度短序列动作预测</li><li>设计GPU+机器人专用硬件的异构架构，提出<strong>推测数据流</strong>，解耦全精度VLA与sVLA的数据依赖，支持两者的并行执行，同时引入回滚机制保障动作执行的安全性</li><li>提出可重构状态预测器，统一环境状态预测与动作验证的距离计算通路，降低硬件开销；配套预处理模块集成残差生成、块量化等功能，消除冗余数据移动</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>算法层面</strong>：首先通过机器人夹爪与周围物体的距离、夹爪状态预测当前环境属于主动/非主动状态；非主动状态下直接调用全精度VLA推测预测长动作序列（如8个动作）并执行，无需验证；主动状态下对每个待执行动作调用sVLA生成预期动作，通过加权L1距离比对预测动作与预期动作的相似度，不通过则回滚并重新调用VLA生成新序列</li><li><strong>sVLA构建</strong>：利用连续输入帧的时间冗余，计算帧间残差特征，采用块级混合精度量化策略：根据残差块的数值和分为零块（置0）、低精度块、高精度块三类，高精度块拆分为高低比特分量统一用低精度计算单元处理，大幅降低计算量</li><li><strong>架构层面</strong>：异构系统由GPU（负责全精度VLA推理）和机器人专用硬件模块（负责sVLA推理、状态预测、动作验证）组成；推测数据流允许VLA在sVLA完成验证前提前启动推测执行，若验证通过则终止剩余VLA计算节省开销，若验证失败则完成剩余VLA计算生成新序列，同时支持与机器人动作执行的并行，隐藏通信与推理延迟</li><li><strong>创新点</strong>：首次将推测执行思想引入VLA推理，利用环境状态的自适应调度平衡效率与精度；块级混合精度差分量化适配硬件实现，避免多精度切换的开销；可重构硬件统一两类距离计算逻辑，减少硬件冗余；推测数据流解耦模型依赖，最大化硬件并行度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集与基准</strong>：基座模型采用<strong>OpenVLA</strong>（基于Llama 2 7B的VLA模型）和<strong>RDT</strong>；测试基准为<strong>LIBERO</strong>（包含Spatial、Object、Goal、10四个任务集，共10项机器人操作任务）和<strong>ManiSkill</strong>（包含PickCube、PushCube、PlugCharger三个任务集，覆盖不同复杂度的机器人操作场景）</li><li><strong>模型规模</strong>：基座VLA为全精度FP16模型，sVLA采用0/4/8位混合精度的轻量化变体，理论计算量仅为基座OpenVLA的10.22%</li><li><strong>评估资源</strong>：GPU平台采用<strong>NVIDIA A100 80GB PCIe</strong>，CPU基线为Intel Xeon Gold 6226R；机器人专用硬件模块采用28nm工艺实现，工作频率500MHz，通过Verilog实现、Synopsys Design Compiler综合，使用Ramulator做DRAM时序仿真、CACTI计算缓存能耗与面积、ScaleTool校准工艺参数</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境与基准</strong>：对比硬件基线包括CPU、A100 GPU、<strong>Dadu-Corki-ADAP</strong>（现有VLA加速框架）；对比算法基线包括MoLe-VLA、VLA-Cache、Spec-VLA、HeiSD、QVLA、QuantVLA、Eventful、MaskVD、SP-VLA等；所有评估在带传感器噪声的真实场景下进行，模拟低光照、雾天等非理想环境</li><li><strong>主要评估指标</strong>：任务成功率、端到端推理延迟、单动作延迟、能效、理论FLOPs、回滚频率、有效动作长度、任务执行路径长度</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 延迟方面：SpecVLA端到端延迟比NVIDIA A100 GPU快<strong>2.9倍</strong>，比Dadu-Corki-ADAP快<strong>1.9倍</strong>，单动作延迟比CPU快<strong>12.1倍</strong>，比A100 GPU快<strong>2.9倍</strong></p>
+<p> - 精度与稳定性方面：带噪声场景下成功率比基线平均高<strong>0.3%</strong>，复杂任务下回滚频率仅为<strong>16.4%</strong>，有效动作长度平均达7.1（推测长度为8），比非推测基线减少3.5倍的VLA调用次数，任务路径长度仅比基线增加2%以内，无明显额外开销</p>
+<p> - 方法对比方面：提出的差分块量化方法比QVLA、QuantVLA的成功率高2.5%和6.25%，FLOPs降低1.23倍和1.58倍，端到端加速比分别为5.97倍和6.62倍；比Eventful、MaskVD、SP-VLA等剪枝方法成功率高3.25%-4.25%，FLOPs仅为基座的10.22%，端到端加速比达3.46-5.84倍</p>
+<p> - 能效方面：专用硬件实现的SpecVLA比GPU部署的基线能效高<strong>2.29倍</strong>，比算法-only加速方法速度快1.61-2.59倍</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.15680/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Robo-Dopamine 2.0: History-Conditioned and OOD-Aware Process Reward Modeling for Robotic Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.15502/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">EcoVLA: Energy-Efficient Device-Edge Co-Inference for Vision-Language-Action Models under Real-Time Constraints</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

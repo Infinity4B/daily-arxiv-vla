@@ -22,6 +22,8 @@
   let modalReturnFocusEl = null;
   let modalCleanupTimerId = null;
   let modalSessionId = 0;
+  let searchAnalyticsTimerId = null;
+  let lastTrackedSearchTerm = '';
 
   function getPaperIdentifier(item){
     return item.arxiv_id || item.detail_path;
@@ -91,6 +93,14 @@
     paperModalOpenLinkEl = paperModalEl.querySelector('.paper-modal-open-link');
     paperModalLoaderEl = paperModalEl.querySelector('.paper-modal-loader');
 
+    paperModalOpenLinkEl.addEventListener('click', () => {
+      window.siteAnalytics?.track('paper_open', {
+        paper_id: paperModalOpenLinkEl.dataset.paperId || '',
+        paper_title: paperModalOpenLinkEl.dataset.paperTitle || '',
+        open_mode: 'new_tab'
+      });
+    });
+
     paperModalEl.querySelector('[data-paper-modal-close]').addEventListener('click', requestClosePaperModal);
     paperModalEl.querySelector('.paper-modal-close').addEventListener('click', requestClosePaperModal);
     paperModalFrameEl.addEventListener('load', () => {
@@ -125,9 +135,16 @@
 
       const openImage = (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         const figureEl = imageEl.closest('.paper-figure-card');
         const captionEl = figureEl ? figureEl.querySelector('.paper-figure-caption') : null;
+        const framePaperId = frameDocument.body?.dataset.paperId || '';
+        const frameTitleEl = frameDocument.querySelector('.detail-page-title');
+        window.siteAnalytics?.track('paper_image_open', {
+          paper_id: framePaperId,
+          paper_title: frameTitleEl ? frameTitleEl.textContent.trim() : '',
+          open_mode: 'modal'
+        });
         window.PaperImageViewer.open({
           src: imageEl.currentSrc || imageEl.src,
           alt: imageEl.alt || '论文图片',
@@ -159,6 +176,8 @@
     modalReturnFocusEl = settings.returnFocus || modalReturnFocusEl || document.activeElement;
     paperModalTitleEl.textContent = item.title || '论文详情';
     paperModalOpenLinkEl.href = getStandalonePaperURL(item.detail_path);
+    paperModalOpenLinkEl.dataset.paperId = getPaperIdentifier(item);
+    paperModalOpenLinkEl.dataset.paperTitle = item.title || '';
     paperModalFrameEl.title = `论文详情：${item.title || ''}`;
     paperModalFrameEl.classList.remove('is-ready');
     paperModalLoaderEl.classList.remove('hidden');
@@ -166,6 +185,11 @@
     paperModalEl.classList.add('is-open');
     paperModalEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('has-paper-modal');
+    window.siteAnalytics?.track('paper_open', {
+      paper_id: getPaperIdentifier(item),
+      paper_title: item.title || '',
+      open_mode: 'modal'
+    });
 
     if(settings.updateHistory){
       const modalURL = new URL(window.location.href);
@@ -261,6 +285,12 @@
     if(!window.PaperImageViewer){
       return;
     }
+
+    window.siteAnalytics?.track('paper_image_open', {
+      paper_id: getPaperIdentifier(item),
+      paper_title: item.title || '',
+      open_mode: 'home'
+    });
 
     window.PaperImageViewer.open({
       src: item.paper_image_full_path || item.paper_image_path,
@@ -636,9 +666,37 @@
     window.history.replaceState(null, '', url);
   }
 
+  function scheduleSearchAnalytics(){
+    if(searchAnalyticsTimerId !== null){
+      window.clearTimeout(searchAnalyticsTimerId);
+      searchAnalyticsTimerId = null;
+    }
+
+    const searchTerm = (searchEl.value || '').trim();
+    if(!searchTerm){
+      lastTrackedSearchTerm = '';
+      return;
+    }
+
+    searchAnalyticsTimerId = window.setTimeout(() => {
+      searchAnalyticsTimerId = null;
+      const currentTerm = (searchEl.value || '').trim();
+      if(!currentTerm || currentTerm === lastTrackedSearchTerm){
+        return;
+      }
+
+      window.siteAnalytics?.track('paper_search', {
+        search_term: currentTerm,
+        result_count: filterItems(DATA, currentTerm).length
+      });
+      lastTrackedSearchTerm = currentTerm;
+    }, 700);
+  }
+
   searchEl.addEventListener('input', () => {
     syncSearchURL();
     sync();
+    scheduleSearchAnalytics();
   });
 
   function restoreScroll(){
@@ -711,6 +769,10 @@
     if(message.type === 'paper-modal-ready'){
       if(message.title){
         paperModalTitleEl.textContent = message.title;
+        paperModalOpenLinkEl.dataset.paperTitle = message.title;
+      }
+      if(message.paperId){
+        paperModalOpenLinkEl.dataset.paperId = message.paperId;
       }
       if(message.url){
         const standaloneURL = new URL(message.url, window.location.href);

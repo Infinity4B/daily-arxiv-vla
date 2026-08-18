@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>$τ_0$-VLA: a Hierarchical Robot Foundation Model with World-Model-Guided Test-Time Computation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对长时序机器人操作任务的核心痛点：现有分层视觉-语言-动作（VLA）模型的高层子任务决策采用固定推理预算的单次前向传播，既无法为关键/困难决策分配额外计算，也无法在执行前评估不同子任务的物理后果，一旦执行错误子任务将造成不可逆的环境损失，难以通过后续精确控制修复 研究目标是提出τ₀-VLA分层机器人基础模型，将高层子任务生成建模为可扩展测试时计算的问题，通过世界模型引导的推理机制按需分配计算资源，同时搭配通用低层控制策略，支撑多本体跨场景的长时序真实机器人操作，评估任务 episode 最长可达12分钟" />
+    
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.16885">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.16885.webp" alt="$τ_0$-VLA: a Hierarchical Robot Foundation Model with World-Model-Guided Test-Time Computation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对长时序机器人操作任务的核心痛点：现有分层视觉-语言-动作（VLA）模型的高层子任务决策采用固定推理预算的单次前向传播，既无法为关键/困难决策分配额外计算，也无法在执行前评估不同子任务的物理后果，一旦执行错误子任务将造成不可逆的环境损失，难以通过后续精确控制修复</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">$τ_0$-VLA: a Hierarchical Robot Foundation Model with World-Model-Guided Test-Time Computation</h1>
+            <div class="detail-meta">2026-08-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.16885" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.16885" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.16885</span></div>
+            <p class="detail-summary">论文针对长时序机器人操作任务的核心痛点：现有分层视觉-语言-动作（VLA）模型的高层子任务决策采用固定推理预算的单次前向传播，既无法为关键/困难决策分配额外计算，也无法在执行前评估不同子任务的物理后果，一旦执行错误子任务将造成不可逆的环境损失，难以通过后续精确控制修复 研究目标是提出τ₀-VLA分层机器人基础模型，将高层子任务生成建模为可扩展测试时计算的问题，通过世界模型引导的推理机制按需分配计算资源，同时搭配通用低层控制策略，支撑多本体跨场景的长时序真实机器人操作，评估任务 episode 最长可达12分钟</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">上海创新研究院 (Shanghai Innovation Institute)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.16885/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文针对长时序机器人操作任务的核心痛点：现有分层视觉-语言-动作（VLA）模型的高层子任务决策采用固定推理预算的单次前向传播，既无法为关键/困难决策分配额外计算，也无法在执行前评估不同子任务的物理后果，一旦执行错误子任务将造成不可逆的环境损失，难以通过后续精确控制修复</p>
+  <ul class="reading-intro-points"><li>论文针对长时序机器人操作任务的核心痛点：现有分层视觉-语言-动作（VLA）模型的高层子任务决策采用固定推理预算的单次前向传播，既无法为关键/困难决策分配额外计算，也无法在执行前评估不同子任务的物理后果，一旦执行错误子任务将造成不可逆的环境损失，难以通过后续精确控制修复</li><li>研究目标是提出τ₀-VLA分层机器人基础模型，将高层子任务生成建模为可扩展测试时计算的问题，通过世界模型引导的推理机制按需分配计算资源，同时搭配通用低层控制策略，支撑多本体跨场景的长时序真实机器人操作，评估任务 episode 最长可达12分钟</li><li>首次提出将高层子任务生成建模为可扩展测试时计算问题的分层机器人基础模型τ₀-VLA，突破了传统分层策略固定推理预算的限制</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>上海创新研究院 (Shanghai Innovation Institute)</strong></li><li><strong>Agibot Finch</strong></li><li><strong>香港中文大学 (The Chinese University of Hong Kong)</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对长时序机器人操作任务的核心痛点：现有分层视觉-语言-动作（VLA）模型的高层子任务决策采用固定推理预算的单次前向传播，既无法为关键/困难决策分配额外计算，也无法在执行前评估不同子任务的物理后果，一旦执行错误子任务将造成不可逆的环境损失，难以通过后续精确控制修复</li><li>研究目标是提出<strong>τ₀-VLA</strong>分层机器人基础模型，将高层子任务生成建模为可扩展测试时计算的问题，通过世界模型引导的推理机制按需分配计算资源，同时搭配通用低层控制策略，支撑多本体跨场景的长时序真实机器人操作，评估任务 episode 最长可达12分钟</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次提出将高层子任务生成建模为可扩展测试时计算问题的分层机器人基础模型<strong>τ₀-VLA</strong>，突破了传统分层策略固定推理预算的限制</li><li>设计了世界模型引导的束搜索测试时计算框架，整合提案模型、世界模型、价值模型与反思模型，支持通过分支因子、束宽、搜索深度灵活扩展推理预算，在决策前评估候选子任务的物理后果</li><li>提出可自动纠正的执行记忆机制，无需额外人工标注即可修复滞后、超前或与实际进展冲突的执行记忆，支撑长时序任务的进展跟踪</li><li>训练了通用的低层控制策略，采用统一40维状态-动作空间与掩码条件流匹配训练，可适配固定基座、移动、双臂等多种机器人本体，无需本体专属控制头</li><li>在覆盖移动操作、双臂操作、长时间跨度的真实机器人任务上验证了系统有效性，证明测试时计算分配可显著提升长时序任务成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>系统分为高低层两个模块：高层策略负责执行记忆维护、测试时计算路由、子任务生成；低层策略负责将子任务映射为可执行的机器人动作序列</li><li>高层策略核心包含四个组件：① 提案模型：基于当前上下文更新执行记忆并生成直接子任务提案，通过生成token的置信度统计判断是否触发额外测试时计算；② 世界模型：预测候选子任务执行完成后的终端头部相机图像；③ 价值模型：基于任务指令、候选子任务与预测的终端图像，输出候选子任务的质量得分；④ 反思模型：基于保留的搜索分支与真实观察上下文，生成最终执行的子任务，输出不局限于候选集合</li><li>测试时计算采用束搜索流程：对每个保留分支递归生成N个候选子任务，用世界模型预测后果、价值模型打分，按累积得分保留top-B分支，可扩展至深度D的搜索，推理预算随分支因子、束宽、深度灵活调整</li><li>低层策略采用预训练视觉语言骨干+混合Transformer（MoT）动作专家的架构，通过条件流匹配训练生成动作块；针对多本体差异，设计统一40维状态-动作空间与对角动作掩码，适配不同本体的有效控制通道</li><li>部署时高低层策略采用异步流水线运行，提升系统运行效率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>低层策略训练数据：共<strong>40,115小时异构真实世界机器人数据</strong>，覆盖固定基座、移动、双臂本体，包含人类演示、自主策略rollout、UMI风格录制，同时混合多模态视觉语言数据（指令跟随、视觉定位、空间深度推理等）做协同训练，避免预训练骨干的语义能力退化</li><li>高层策略训练数据：自动来源于现有任务、阶段、可执行子任务标注，以及分割的多视角演示；额外自动构造记忆扰动样本（模拟记忆滞后、超前、冲突场景），无需额外人工标注即可训练记忆纠正能力；世界模型训练使用子任务对齐的起止帧图像对，价值与反思模型训练使用提案模型与世界模型递归生成的离线模拟rollout数据</li><li>模型规模：低层视觉语言骨干为<strong>Qwen3.5-2B</strong>，高层提案、价值、反思模型均基于<strong>Qwen3.5-9B</strong>微调，世界模型初始化为<strong>Step1X-Edit</strong></li><li>训练资源：原文未明确提及GPU/TPU等具体训练硬件，仅说明采用多阶段协同训练与微调流程</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：真实机器人平台包括<strong>AGIBOT G1</strong>（4项主要长时序任务）、<strong>ARX AC One</strong>（书籍整理、收 laundry 任务）、双臂<strong>Franka Research 3</strong>（梳妆台整理任务）</li><li>评估任务：共7个任务，涵盖最长12分钟的长时序移动操作、双臂精细操作，包括Clean Room（25步，约8分钟）、Prepare Ingredients（14步，约4分钟）、Tomato and Egg Stir Fry（22步，约10分钟）、Make Milk Tea（13步，约3分钟）、Collect Laundry（5步，约1分钟）、Tidy Makeup Table（3组指令跟随任务，约30秒）、Book Organization（3步，约1分钟，含域外初始状态泛化设置）</li><li>评估指标：高层决策采用<strong>下一子任务预测准确率</strong>、推理时间；物理机器人执行采用<strong>成功率（SR，10次试验的成功比例）</strong>、<strong>进度（归一化里程碑完成得分，按完成质量给予满分/半价/0分）</strong></li><li>关键实验结果：① 分层系统相比直接执行（低层策略直接 conditioned 完整任务指令）在4项长时序任务上的平均成功率与进度均显著更高；② 测试时计算束搜索随推理预算（束宽、搜索深度、分支因子）提升，下一子任务预测准确率与闭环任务成功率持续上升；③ 系统在域外初始状态的书籍整理任务上仍保持良好性能，验证了高层策略的泛化能力；④ 在书籍整理任务上的测试时计算实验进一步验证了计算可扩展设计的有效性</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.16889/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Don&#x27;t Drop the BATON: Long-Horizon Robot Manipulation via Agentic Subtask Exploration and Transition-aware Memory</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.16837/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HAF: Adapting Generalist VLAs to Humanoid Whole-Body Loco-manipulation via Hierarchical Action Flow and Spectral Latent RL</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

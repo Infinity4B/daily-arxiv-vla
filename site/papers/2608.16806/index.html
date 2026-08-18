@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>When State Becomes an Attack Surface: State-Semantic Injection in LLM-Driven Embodied Agents - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文聚焦LLM驱动具身智能体的状态语义安全漏洞，研究当单一面向规划器的状态生产者被攻破时，符合原生记录模式的错误状态证据能否被规划器采纳，并在规划-执行闭环中传播产生有针对性的物理层面攻击后果。 现有具身Agent攻击研究主要关注上游对抗信息向LLM控制器的传递路径，或通用提示注入/越狱攻击，未针对“面向规划器的状态语义被污染后，其下游如何在满足实体存在性、空间可达性、执行约束的条件下传播”这一问题展开研究。 本文提出环境状态-文本注入攻击（ESTI）及评估基准ESTI-Bench，在多个异构具身系统上系统评估条件性状态到执行的传播效果，显式区分规划层采纳与执行层实现的差异。" />
+    
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.16806">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.16806.webp" alt="When State Becomes an Attack Surface: State-Semantic Injection in LLM-Driven Embodied Agents" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文聚焦LLM驱动具身智能体的状态语义安全漏洞，研究当单一面向规划器的状态生产者被攻破时，符合原生记录模式的错误状态证据能否被规划器采纳，并在规划-执行闭环中传播产生有针对性的物理层面攻击后果。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">When State Becomes an Attack Surface: State-Semantic Injection in LLM-Driven Embodied Agents</h1>
+            <div class="detail-meta">2026-08-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.16806" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.16806" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.16806</span></div>
+            <p class="detail-summary">本文聚焦LLM驱动具身智能体的状态语义安全漏洞，研究当单一面向规划器的状态生产者被攻破时，符合原生记录模式的错误状态证据能否被规划器采纳，并在规划-执行闭环中传播产生有针对性的物理层面攻击后果。 现有具身Agent攻击研究主要关注上游对抗信息向LLM控制器的传递路径，或通用提示注入/越狱攻击，未针对“面向规划器的状态语义被污染后，其下游如何在满足实体存在性、空间可达性、执行约束的条件下传播”这一问题展开研究。 本文提出环境状态-文本注入攻击（ESTI）及评估基准ESTI-Bench，在多个异构具身系统上系统评估条件性状态到执行的传播效果，显式区分规划层采纳与执行层实现的差异。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">武汉大学：Jiawei Liu、Jiacheng Guo、Tian Zhang、Yiwei Xu、Ju…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.16806/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">本文聚焦LLM驱动具身智能体的状态语义安全漏洞，研究当单一面向规划器的状态生产者被攻破时，符合原生记录模式的错误状态证据能否被规划器采纳，并在规划-执行闭环中传播产生有针对性的物理层面攻击后果。</p>
+  <ul class="reading-intro-points"><li>本文聚焦LLM驱动具身智能体的状态语义安全漏洞，研究当单一面向规划器的状态生产者被攻破时，符合原生记录模式的错误状态证据能否被规划器采纳，并在规划-执行闭环中传播产生有针对性的物理层面攻击后果。</li><li>现有具身Agent攻击研究主要关注上游对抗信息向LLM控制器的传递路径，或通用提示注入/越狱攻击，未针对“面向规划器的状态语义被污染后，其下游如何在满足实体存在性、空间可达性、执行约束的条件下传播”这一问题展开研究。</li><li>本文提出环境状态-文本注入攻击（ESTI）及评估基准ESTI-Bench，在多个异构具身系统上系统评估条件性状态到执行的传播效果，显式区分规划层采纳与执行层实现的差异。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>武汉大学</strong>：Jiawei Liu、Jiacheng Guo、Tian Zhang、Yiwei Xu、Juan Wang、Jinlin Fan、Bowen Xiao、Chi Guo</li><li><strong>布法罗大学（University at Buffalo）</strong>：Hongxin Hu、Keyan Guo</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文聚焦LLM驱动具身智能体的状态语义安全漏洞，研究当单一面向规划器的状态生产者被攻破时，符合原生记录模式的错误状态证据能否被规划器采纳，并在规划-执行闭环中传播产生有针对性的物理层面攻击后果。</li><li>现有具身Agent攻击研究主要关注上游对抗信息向LLM控制器的传递路径，或通用提示注入/越狱攻击，未针对“面向规划器的状态语义被污染后，其下游如何在满足实体存在性、空间可达性、执行约束的条件下传播”这一问题展开研究。</li><li>本文提出环境状态-文本注入攻击（ESTI）及评估基准<strong>ESTI-Bench</strong>，在多个异构具身系统上系统评估条件性状态到执行的传播效果，显式区分规划层采纳与执行层实现的差异。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ol><li>隔离了LLM驱动具身智能体中面向规划器的语义状态边界的下游完整性问题，首次系统研究污染的任务级状态证据在满足接地性、执行约束的前提下，能否传播并产生有针对性的最终状态后果。</li><li>形式化了ESTI的组件范围、谓词本地、模式保留的威胁模型：预定义固定对抗目标，攻击者仅能改写单一被攻破状态生产者授权的任务相关记录，无法修改用户指令、规划器、执行器等核心组件，也不能自适应调整攻击payload。</li><li>提出匹配可接地性的状态语义构建方法，区分预过滤的数据集级可接地性（样本准入条件）和可选运行时重接地（构造时的实体绑定刷新），通过对象属性、空间关系、可供性、任务阶段规则、执行反馈等原生载体编码错误证据，保留原有系统组件不变。</li><li>构建<strong>ESTI-Bench</strong>规划-执行闭环评估框架，显式分离规划层攻击成功率（P-ASR）和执行层攻击成功率（E-ASR），首次量化规划偏差到物理攻击成功的转移差距。</li><li>在3类异构具身系统和3个主流LLM上完成系统性评估，真实机器人概念验证证明污染的状态语义可传播至物理执行偏差，消融实验揭示载体兼容性和表示级一致性是规划采纳的核心驱动因素。</li></ol></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>ESTI的核心是将预选的对抗目标编码为符合单一被攻破状态生产者原生记录模式的错误证据，而非插入竞争性指令，不修改用户指令、规划器参数、执行器代码。</li><li>方法分为三个核心阶段：① 目标归一化与运行时重接地：将对抗目标映射为可验证谓词，解析当前状态中预验证的实体和交互，确保目标用当前实例中实际存在的实体实例化；② 状态语义构建：根据载体的语义角色，通过对象属性、空间关系、可供性、任务阶段规则、执行反馈等原生字段表达错误证据，保持字段名、记录数、语法、上下文不变；③ 闭环注入：仅改写授权集合内的记录，事件依赖的payload在预定义的原生事件触发时激活，保持目标与绑定的一致性。</li><li>创新点包括：① 提出面向具身Agent状态语义的下游攻击范式，填补上游对抗信息传递与物理攻击执行之间的研究空白；② 严格限定的组件范围、谓词本地、模式保留的改写规则，避免显式指令冲突；③ 分离数据集级可接地性（预过滤的样本准入条件）与运行时重接地（构造时的可选刷新步骤），明确二者作用边界；④ 提出P-ASR与E-ASR的双层评估指标，量化规划到执行的转移损失。</li><li>关键技术包括：约束式状态记录重写、跨记录一致性校验、运行时实体绑定解析、Schema兼容的payload构造。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评估用的具身环境/数据集：<strong>ProgPrompt/VirtualHome</strong>（程序化规划场景）、<strong>VoxPoser/RLBench</strong>（连续空间操作场景）、<strong>AI2-THOR/iTHOR</strong>（交互式室内执行场景），其中AI2-THOR选取满足所需物体和交互属性的iTHOR FloorPlans，固定初始状态，从仿真器元数据验证执行结果。</li><li>构建的评估基准：<strong>ESTI-Bench</strong>，是规划-执行闭环评估框架，用于评估状态语义操纵在异构具身系统中的传播效果。</li><li>评估用的LLM模型：<strong>DeepSeek-V4-Pro</strong>、<strong>GPT-5.6-luna</strong>、<strong>Qwen-3.6-Plus</strong>。</li><li>训练/评估硬件资源：原文未明确提及具体GPU、TPU等硬件资源信息，仅说明每个实验条件独立重复3次，结果取平均值以降低LLM生成随机性的影响。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：在3类异构具身系统上评估，基线方法包括<strong>Vanilla IPI</strong>（将相同对抗目标表达为竞争性命令，无运行时重接地、原生载体构造和跨记录校验）、<strong>EIRAD</strong>（在用户提示后附加对抗后缀）、<strong>BADROBOT</strong>的三个变体（上下文越狱、安全错位、概念欺骗）。每个样本在清洁、控制、攻击三种条件下评估，控制条件添加与攻击payload长度、风格匹配的良性状态文本，排除额外上下文的影响。</li><li>主要评估指标：<strong>Clean-ACC</strong>（清洁条件下原始任务准确率）、<strong>Control-ACC</strong>（控制条件下原始任务准确率）、<strong>P-ASR</strong>（规划层攻击成功率，衡量生成计划是否满足对抗目标）、<strong>E-ASR</strong>（执行层攻击成功率，衡量执行后是否实现对抗目标的最终状态谓词）、<strong>ASD</strong>（清洁到攻击的动作序列偏差，衡量行为偏离程度）。</li><li>关键实验结果：</li></ul>
+<p> 1. 在状态成功投递的前提下，<strong>ESTI</strong>在三个环境中的P-ASR分别达到100.00%、97.37%、100.00%，平均P-ASR 99.12%，E-ASR分别为47.06%、42.11%、48.08%，平均E-ASR 45.75%；相比最强基线Vanilla IPI的P-ASR（80.49%）和E-ASR（34.62%）分别提升18.63和11.13个百分点。</p>
+<p> 2. 通用提示级/越狱类攻击（EIRAD、BADROBOT）性能波动大，在AI2-THOR中EIRAD的P-ASR仅17.31%，BADROBOT-上下文越狱仅8.65%，说明这类攻击无法稳定迁移到需要推理结构化环境状态的具身规划场景。</p>
+<p> 3. Vanilla IPI的规划层成功率较高（最高88.46%）但执行层成功率低（最高37.50%），说明仅改变规划器输出不足以产生有效具身攻击，生成计划可能违反实体存在性、可达性、顺序约束等执行限制。</p>
+<p> 4. 不同LLM对状态语义操纵的敏感性存在差异：DeepSeek-V4-Pro平均P-ASR 99.12%，GPT-5.6-luna平均79.06%，但三者的平均E-ASR差异较小（45.75%、46.44%、47.77%），说明规划层易被欺骗不必然带来更高的执行成功率。</p>
+<p> 5. 真实机器人概念验证中，ESTI成功诱导人形机器人偏离预设路线朝向电脑移动，证明污染的状态语义可传播至物理执行的可见偏差；该实验测试的是下游状态到执行的传播，而非端到感知攻击（环境状态由人工从真实场景实例化后输入规划器）。</p>
+<p> 6. 消融实验显示，在匹配数据集级可接地性的条件下，载体兼容性和表示级一致性是规划采纳的核心驱动因素，移除运行时重接地仅使P-ASR和E-ASR分别下降1.92和3.85个百分点，说明运行时重接地的增量作用有限。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.16837/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">HAF: Adapting Generalist VLAs to Humanoid Whole-Body Loco-manipulation via Hierarchical Action Flow and Spectral Latent RL</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.16697/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">FabriMAE I Trust Myself? Self-Evaluating VLA Action Generation with Markov Attention Entropy</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

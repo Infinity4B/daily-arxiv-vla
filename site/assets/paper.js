@@ -8,7 +8,17 @@
   const detailToc = $('#detail-toc');
   const detailTocNav = $('#detail-toc-nav');
   const paperId = document.body.dataset.paperId || '';
+  const paperTitleEl = $('.detail-page-title');
+  const paperTitle = paperTitleEl ? paperTitleEl.textContent.trim() : document.title;
   const isEmbedded = window.parent !== window && new URL(window.location.href).searchParams.get('embed') === '1';
+
+  function trackPaperEvent(name, params){
+    window.siteAnalytics?.track(name, {
+      paper_id: paperId,
+      paper_title: paperTitle,
+      ...(params || {})
+    });
+  }
 
   function getImagePayload(imageEl){
     const figureEl = imageEl.closest('.paper-figure-card');
@@ -22,6 +32,9 @@
 
   function openPaperImage(imageEl){
     const payload = getImagePayload(imageEl);
+    trackPaperEvent('paper_image_open', {
+      open_mode: isEmbedded ? 'modal' : 'page'
+    });
     if(isEmbedded){
       try {
         if(window.parent.PaperImageViewer){
@@ -57,6 +70,17 @@
     });
   }
 
+  function initializeLinkAnalytics(){
+    document.querySelectorAll('[data-analytics-event]').forEach((linkEl) => {
+      linkEl.addEventListener('click', () => {
+        const eventName = linkEl.dataset.analyticsEvent;
+        if(eventName){
+          trackPaperEvent(eventName);
+        }
+      });
+    });
+  }
+
   function initializeEmbeddedMode(){
     if(!isEmbedded){
       return;
@@ -84,6 +108,7 @@
     standaloneURL.searchParams.delete('embed');
     window.parent.postMessage({
       type: 'paper-modal-ready',
+      paperId,
       title: document.querySelector('.detail-page-title')?.textContent || document.title,
       url: standaloneURL.href
     }, window.location.origin);
@@ -217,6 +242,7 @@
 
   initializeEmbeddedMode();
   initializeImageZoom();
+  initializeLinkAnalytics();
   buildDetailToc();
   restoreScroll();
 })();
