@@ -565,7 +565,7 @@ def render_detail_intro(record: Dict[str, object]) -> str:
 <section class="reading-card reading-card-intro">
   <div class="reading-card-topline">
     <span class="reading-badge">一眼看懂</span>
-    <a class="cover-preview-link" href="{escape(cover_link, quote=True)}">封面预览</a>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="{escape(cover_link, quote=True)}">封面预览</a>
   </div>
   <p class="reading-intro-hook">{escape(str(record["hook_text"]))}</p>
   <ul class="reading-intro-points">{point_items}</ul>
@@ -662,14 +662,69 @@ def build_list_data(records: List[Dict[str, object]], thumb_map: Dict[str, str] 
 
 def render_detail_meta(record: Dict[str, object]) -> str:
     parts = [escape(str(record["date"]))]
-    parts.append(f'<a href="{escape(str(record["link"]), quote=True)}" target="_blank" rel="noopener noreferrer">原文</a>')
+    parts.append(
+        f'<a data-analytics-event="paper_source_click" href="{escape(str(record["link"]), quote=True)}" target="_blank" rel="noopener noreferrer">原文</a>'
+    )
     if record["translation_link"]:
         parts.append(
-            f'<a href="{escape(str(record["translation_link"]), quote=True)}" target="_blank" rel="noopener noreferrer">翻译</a>'
+            f'<a data-analytics-event="paper_translation_click" href="{escape(str(record["translation_link"]), quote=True)}" target="_blank" rel="noopener noreferrer">翻译</a>'
         )
     if record["arxiv_id"]:
         parts.append(f'<span class="meta-pill">{escape(str(record["arxiv_id"]))}</span>')
     return " · ".join(parts)
+
+
+def get_ga_measurement_id() -> str:
+    value = os.getenv("GA_MEASUREMENT_ID", "").strip()
+    if not re.fullmatch(r"G-[A-Z0-9]+", value, flags=re.IGNORECASE):
+        return ""
+    return value
+
+
+def generate_google_analytics() -> str:
+    measurement_id = get_ga_measurement_id()
+    if not measurement_id:
+        return ""
+
+    escaped_id = escape(measurement_id, quote=True)
+    return f"""
+<script async src="https://www.googletagmanager.com/gtag/js?id={escaped_id}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {{ dataLayer.push(arguments); }}
+  gtag('js', new Date());
+  gtag('config', '{escaped_id}');
+</script>
+""".strip()
+
+
+def generate_analytics_js() -> str:
+    return """
+/**
+ * @file analytics.js
+ * @description Google Analytics 自定义事件桥接。未配置 GA4 时自动静默。
+ */
+(function(){
+  function normalizeParams(params){
+    return Object.entries(params || {}).reduce((result, [key, value]) => {
+      if(value === null || value === undefined){
+        return result;
+      }
+      result[key] = typeof value === 'string' ? value.slice(0, 100) : value;
+      return result;
+    }, {});
+  }
+
+  function track(name, params){
+    if(typeof window.gtag !== 'function' || !name){
+      return;
+    }
+    window.gtag('event', name, normalizeParams(params));
+  }
+
+  window.siteAnalytics = { track };
+})();
+""".strip()
 
 
 def generate_head(title: str, description: str, stylesheet_prefix: str = "") -> str:
@@ -687,6 +742,7 @@ def generate_head(title: str, description: str, stylesheet_prefix: str = "") -> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{escape(title)}</title>
     <meta name="description" content="{escape(description, quote=True)}" />
+    {generate_google_analytics()}
     <script>
       (function() {{
         try {{
@@ -805,6 +861,7 @@ def generate_index_html() -> str:
 
     <script src="assets/theme.js"></script>
     <script src="assets/media.js"></script>
+    <script src="assets/analytics.js"></script>
     <script src="assets/app.js"></script>
   </body>
 </html>
@@ -896,6 +953,7 @@ def generate_paper_html(record: Dict[str, object], prev_record: Dict[str, object
 
     <script src="../../assets/theme.js"></script>
     <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
     <script src="../../assets/paper.js"></script>
   </body>
 </html>
@@ -929,6 +987,7 @@ def generate_cover_html(record: Dict[str, object]) -> str:
       </div>
     </main>
     <script src="../../assets/theme.js"></script>
+    <script src="../../assets/analytics.js"></script>
   </body>
 </html>
 """.strip()
@@ -2427,6 +2486,8 @@ def generate_app_js() -> str:
   let modalReturnFocusEl = null;
   let modalCleanupTimerId = null;
   let modalSessionId = 0;
+  let searchAnalyticsTimerId = null;
+  let lastTrackedSearchTerm = '';
 
   function getPaperIdentifier(item){
     return item.arxiv_id || item.detail_path;
@@ -2496,6 +2557,14 @@ def generate_app_js() -> str:
     paperModalOpenLinkEl = paperModalEl.querySelector('.paper-modal-open-link');
     paperModalLoaderEl = paperModalEl.querySelector('.paper-modal-loader');
 
+    paperModalOpenLinkEl.addEventListener('click', () => {
+      window.siteAnalytics?.track('paper_open', {
+        paper_id: paperModalOpenLinkEl.dataset.paperId || '',
+        paper_title: paperModalOpenLinkEl.dataset.paperTitle || '',
+        open_mode: 'new_tab'
+      });
+    });
+
     paperModalEl.querySelector('[data-paper-modal-close]').addEventListener('click', requestClosePaperModal);
     paperModalEl.querySelector('.paper-modal-close').addEventListener('click', requestClosePaperModal);
     paperModalFrameEl.addEventListener('load', () => {
@@ -2530,9 +2599,16 @@ def generate_app_js() -> str:
 
       const openImage = (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         const figureEl = imageEl.closest('.paper-figure-card');
         const captionEl = figureEl ? figureEl.querySelector('.paper-figure-caption') : null;
+        const framePaperId = frameDocument.body?.dataset.paperId || '';
+        const frameTitleEl = frameDocument.querySelector('.detail-page-title');
+        window.siteAnalytics?.track('paper_image_open', {
+          paper_id: framePaperId,
+          paper_title: frameTitleEl ? frameTitleEl.textContent.trim() : '',
+          open_mode: 'modal'
+        });
         window.PaperImageViewer.open({
           src: imageEl.currentSrc || imageEl.src,
           alt: imageEl.alt || '论文图片',
@@ -2564,6 +2640,8 @@ def generate_app_js() -> str:
     modalReturnFocusEl = settings.returnFocus || modalReturnFocusEl || document.activeElement;
     paperModalTitleEl.textContent = item.title || '论文详情';
     paperModalOpenLinkEl.href = getStandalonePaperURL(item.detail_path);
+    paperModalOpenLinkEl.dataset.paperId = getPaperIdentifier(item);
+    paperModalOpenLinkEl.dataset.paperTitle = item.title || '';
     paperModalFrameEl.title = `论文详情：${item.title || ''}`;
     paperModalFrameEl.classList.remove('is-ready');
     paperModalLoaderEl.classList.remove('hidden');
@@ -2571,6 +2649,11 @@ def generate_app_js() -> str:
     paperModalEl.classList.add('is-open');
     paperModalEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('has-paper-modal');
+    window.siteAnalytics?.track('paper_open', {
+      paper_id: getPaperIdentifier(item),
+      paper_title: item.title || '',
+      open_mode: 'modal'
+    });
 
     if(settings.updateHistory){
       const modalURL = new URL(window.location.href);
@@ -2666,6 +2749,12 @@ def generate_app_js() -> str:
     if(!window.PaperImageViewer){
       return;
     }
+
+    window.siteAnalytics?.track('paper_image_open', {
+      paper_id: getPaperIdentifier(item),
+      paper_title: item.title || '',
+      open_mode: 'home'
+    });
 
     window.PaperImageViewer.open({
       src: item.paper_image_full_path || item.paper_image_path,
@@ -3041,9 +3130,37 @@ def generate_app_js() -> str:
     window.history.replaceState(null, '', url);
   }
 
+  function scheduleSearchAnalytics(){
+    if(searchAnalyticsTimerId !== null){
+      window.clearTimeout(searchAnalyticsTimerId);
+      searchAnalyticsTimerId = null;
+    }
+
+    const searchTerm = (searchEl.value || '').trim();
+    if(!searchTerm){
+      lastTrackedSearchTerm = '';
+      return;
+    }
+
+    searchAnalyticsTimerId = window.setTimeout(() => {
+      searchAnalyticsTimerId = null;
+      const currentTerm = (searchEl.value || '').trim();
+      if(!currentTerm || currentTerm === lastTrackedSearchTerm){
+        return;
+      }
+
+      window.siteAnalytics?.track('paper_search', {
+        search_term: currentTerm,
+        result_count: filterItems(DATA, currentTerm).length
+      });
+      lastTrackedSearchTerm = currentTerm;
+    }, 700);
+  }
+
   searchEl.addEventListener('input', () => {
     syncSearchURL();
     sync();
+    scheduleSearchAnalytics();
   });
 
   function restoreScroll(){
@@ -3116,6 +3233,10 @@ def generate_app_js() -> str:
     if(message.type === 'paper-modal-ready'){
       if(message.title){
         paperModalTitleEl.textContent = message.title;
+        paperModalOpenLinkEl.dataset.paperTitle = message.title;
+      }
+      if(message.paperId){
+        paperModalOpenLinkEl.dataset.paperId = message.paperId;
       }
       if(message.url){
         const standaloneURL = new URL(message.url, window.location.href);
@@ -3190,7 +3311,17 @@ def generate_paper_js() -> str:
   const detailToc = $('#detail-toc');
   const detailTocNav = $('#detail-toc-nav');
   const paperId = document.body.dataset.paperId || '';
+  const paperTitleEl = $('.detail-page-title');
+  const paperTitle = paperTitleEl ? paperTitleEl.textContent.trim() : document.title;
   const isEmbedded = window.parent !== window && new URL(window.location.href).searchParams.get('embed') === '1';
+
+  function trackPaperEvent(name, params){
+    window.siteAnalytics?.track(name, {
+      paper_id: paperId,
+      paper_title: paperTitle,
+      ...(params || {})
+    });
+  }
 
   function getImagePayload(imageEl){
     const figureEl = imageEl.closest('.paper-figure-card');
@@ -3204,6 +3335,9 @@ def generate_paper_js() -> str:
 
   function openPaperImage(imageEl){
     const payload = getImagePayload(imageEl);
+    trackPaperEvent('paper_image_open', {
+      open_mode: isEmbedded ? 'modal' : 'page'
+    });
     if(isEmbedded){
       try {
         if(window.parent.PaperImageViewer){
@@ -3239,6 +3373,17 @@ def generate_paper_js() -> str:
     });
   }
 
+  function initializeLinkAnalytics(){
+    document.querySelectorAll('[data-analytics-event]').forEach((linkEl) => {
+      linkEl.addEventListener('click', () => {
+        const eventName = linkEl.dataset.analyticsEvent;
+        if(eventName){
+          trackPaperEvent(eventName);
+        }
+      });
+    });
+  }
+
   function initializeEmbeddedMode(){
     if(!isEmbedded){
       return;
@@ -3266,6 +3411,7 @@ def generate_paper_js() -> str:
     standaloneURL.searchParams.delete('embed');
     window.parent.postMessage({
       type: 'paper-modal-ready',
+      paperId,
       title: document.querySelector('.detail-page-title')?.textContent || document.title,
       url: standaloneURL.href
     }, window.location.origin);
@@ -3399,6 +3545,7 @@ def generate_paper_js() -> str:
 
   initializeEmbeddedMode();
   initializeImageZoom();
+  initializeLinkAnalytics();
   buildDetailToc();
   restoreScroll();
 })();
@@ -3563,6 +3710,7 @@ def main() -> int:
     write_text(ASSETS_DIR / "style.css", generate_style_css())
     write_text(ASSETS_DIR / "theme.js", generate_theme_js())
     write_text(ASSETS_DIR / "media.js", generate_media_js())
+    write_text(ASSETS_DIR / "analytics.js", generate_analytics_js())
     write_text(ASSETS_DIR / "app.js", generate_app_js())
     write_text(ASSETS_DIR / "paper.js", generate_paper_js())
     write_text(ASSETS_DIR / "data.json", json.dumps(list_data, ensure_ascii=False, indent=2))

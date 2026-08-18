@@ -47,6 +47,7 @@ cp .env.example .env
 - `HTML_MAX_CHARS`: HTML 内容最大字符数（默认：180000）
 - `API_MAX_RETRIES`: API 调用重试次数（默认：3）
 - `BATCH_WRITE_SIZE`: 批量写入大小，每生成 N 篇摘要写入一次文件（默认：5）
+- `GA_MEASUREMENT_ID`: Google Analytics 4 的 Measurement ID（例如 `G-XXXXXXXXXX`，未配置时不加载 GA）
 
 ### 爬取论文数据
 
@@ -80,6 +81,21 @@ python scripts/build_site.py
 
 这将在 `site/` 目录下生成静态网站文件，包括首页、轻量数据文件、论文首图资源，以及每篇论文对应的独立静态详情页。
 
+### Google Analytics 4
+
+如需统计页面浏览、搜索和论文阅读行为，在本地构建前设置 Measurement ID：
+
+```bash
+export GA_MEASUREMENT_ID=G-XXXXXXXXXX
+python scripts/build_site.py
+```
+
+未配置或格式不正确时，生成的页面不会加载 Google Analytics，也不会发送自定义统计事件。
+
+验证时可以打开浏览器开发者工具的 **Network** 面板，搜索 `googletagmanager` 或 `collect`；GA4 后台的实时报告通常会有几分钟延迟。
+
+> Google Analytics 会涉及 Cookie、隐私和数据跨境等合规问题。面向公众提供服务时，请根据所在地法规补充隐私说明，并在必要时增加用户同意机制。
+
 ### 本地预览
 
 可以使用任何静态文件服务器预览网站：
@@ -105,6 +121,8 @@ npx serve site
 
 在仓库设置中添加以下Secret：
 - `MODELSCOPE_ACCESS_TOKEN`: 你的ModelScope API密钥（必需）
+
+如需启用 Google Analytics 4，在 `Settings → Secrets and variables → Actions → Variables` 中新增仓库变量 `GA_MEASUREMENT_ID`，值填写类似 `G-XXXXXXXXXX` 的 Measurement ID。当前工作流会自动把它注入网站构建；不设置该变量则不会加载 GA。Measurement ID 会出现在客户端 HTML 中，因此使用 **Variables** 即可，不必当作 Secret 保存。
 
 **可选配置：** 如果需要修改默认配置（如搜索关键词、模型等），可以在 `.github/workflows/deploy.yml` 中添加环境变量：
 
@@ -182,6 +200,7 @@ arxiv/
 │       ├── paper-images/        # 下载到本地的论文首图
 │       ├── paper-images.json    # 论文首图 manifest
 │       ├── style.css
+│       ├── analytics.js
 │       ├── app.js
 │       ├── paper.js
 │       └── data.json
