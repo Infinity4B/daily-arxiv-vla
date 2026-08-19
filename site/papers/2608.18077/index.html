@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hydra-0: Action Flow for Generalist World Modeling and Control - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Hydra-0，一种以 action flow（动作流） 为条件的通用世界模型，将机器人动作表示为像素运动（pixel motion），作为连接异构训练数据、开环策略评估和机器人控制的共享视觉接口。 核心目标是为通用世界建模和控制建立跨具身（embodiment）、任务和环境的可迁移预测模型，解决现有世界模型依赖 embodiment 原生指令、难以泛化的关键问题。 论文强调：Hydra-0 建模的是机器人运动的后果（consequences），而非复现任务特定行为，同时支持前向动力学预测与逆向运动预测两个模式。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.18077">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.18077.webp" alt="Hydra-0: Action Flow for Generalist World Modeling and Control" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 Hydra-0，一种以 action flow（动作流） 为条件的通用世界模型，将机器人动作表示为像素运动（pixel motion），作为连接异构训练数据、开环策略评估和机器人控制的共享视觉接口。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Hydra-0: Action Flow for Generalist World Modeling and Control</h1>
+            <div class="detail-meta">2026-08-18 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.18077" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.18077" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.18077</span></div>
+            <p class="detail-summary">论文提出 Hydra-0，一种以 action flow（动作流） 为条件的通用世界模型，将机器人动作表示为像素运动（pixel motion），作为连接异构训练数据、开环策略评估和机器人控制的共享视觉接口。 核心目标是为通用世界建模和控制建立跨具身（embodiment）、任务和环境的可迁移预测模型，解决现有世界模型依赖 embodiment 原生指令、难以泛化的关键问题。 论文强调：Hydra-0 建模的是机器人运动的后果（consequences），而非复现任务特定行为，同时支持前向动力学预测与逆向运动预测两个模式。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">NVIDIA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.18077/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文提出 Hydra-0，一种以 action flow（动作流） 为条件的通用世界模型，将机器人动作表示为像素运动（pixel motion），作为连接异构训练数据、开环策略评估和机器人控制的共享视觉接口。</p>
+  <ul class="reading-intro-points"><li>论文提出 Hydra-0，一种以 action flow（动作流） 为条件的通用世界模型，将机器人动作表示为像素运动（pixel motion），作为连接异构训练数据、开环策略评估和机器人控制的共享视觉接口。</li><li>核心目标是为通用世界建模和控制建立跨具身（embodiment）、任务和环境的可迁移预测模型，解决现有世界模型依赖 embodiment 原生指令、难以泛化的关键问题。</li><li>论文强调：Hydra-0 建模的是机器人运动的后果（consequences），而非复现任务特定行为，同时支持前向动力学预测与逆向运动预测两个模式。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>NVIDIA</strong></li><li><strong>Brown University</strong></li><li><strong>Columbia University</strong></li><li><strong>Harvard University</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>Hydra-0</strong>，一种以 <strong>action flow（动作流）</strong> 为条件的通用世界模型，将机器人动作表示为像素运动（pixel motion），作为连接异构训练数据、开环策略评估和机器人控制的共享视觉接口。</li><li>核心目标是为通用世界建模和控制建立跨具身（embodiment）、任务和环境的可迁移预测模型，解决现有世界模型依赖 embodiment 原生指令、难以泛化的关键问题。</li><li>论文强调：<strong>Hydra-0 建模的是机器人运动的后果（consequences），而非复现任务特定行为</strong>，同时支持前向动力学预测与逆向运动预测两个模式。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>提出 kinematically grounded action flow 公式</strong>：在离线训练时可从交互视频中直接恢复动作流；在线部署时通过 Isaac Lab 控制器与物理仿真、机器人几何和相机标定，从可执行命令推导出动作流，作为视觉条件。</li><li><strong>证明 action flow 的通用性</strong>：在多个视频生成骨干（<strong>Cosmos 2.5</strong>、<strong>Wan2.2 I2V-A14B</strong>、<strong>Wan2.2 TI2V-5B</strong>）上实现跨 embodiment 的通用世界建模，最佳配置相比动作条件基线实现 <strong>90.40% 更低的机器人运动误差</strong> 和 <strong>60.16% 更低的物体运动误差</strong>，并支持到机器人-可变形物体交互的零样本组合与数据高效迁移。</li><li><strong>实现开环策略评估</strong>：在 <strong>RoboLab</strong> 基准上对 5 个策略进行重放评估，重放成功率与参考成功率的 Pearson 相关系数达到 <strong>r=0.96</strong>。</li><li><strong>探索逆向控制模式</strong>：构建 <strong>world action model（世界动作模型）</strong> 作为概念验证，从人类演示迁移的目标物体流中推断兼容的机器人运动，并通过训练的动作头将潜在特征映射为真实机器人的可执行动作，无需任务特定的专家演示。</li><li>采用 <strong>多具身中期训练（multi-embodiment mid-training）</strong> 提升数据效率，并通过 <strong>因果自回归转换</strong> 与 <strong>DMD2 少步蒸馏</strong> 实现高效长时程推理。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>动作流构建</strong>：采用两种互补路线——几何感知构建（利用机器人几何、相机标定和 Isaac Lab 仿真将 3D 表面点投影到图像平面，见公式 1）与纯视频构建（使用 AllTracker 流跟踪器恢复稠密轨迹，再通过 SAM 3 等模型进行具身/物体分割）。</li><li><strong>训练时流采样</strong>：从四种条件策略中随机采样——<strong>Embodiment</strong>（主动作条件）、<strong>Object</strong>（任务/期望运动流）、<strong>All</strong>（回退）、<strong>None</strong>（条件 dropout），仅决定哪些轨迹填充共享运动张量。</li><li><strong>运动条件注入</strong>：受 <strong>ATI</strong> 和 <strong>Wan-Move</strong> 启发，将轨迹位置与可见性池化到归一化潜在网格坐标系，通过双线性采样初始帧特征并沿时间维度用高斯权重传播，形成运动条件 C_motion=(M,g)；在三个骨干上分别通过拼接、通道扩展等方式注入 DiT。</li><li><strong>高效因果 Rollout</strong>：采用 LongLive-2.0 的自回归转换（将潜在序列划分为时间块，通过 KV cache 复用已生成上下文），并采用 DMD2 蒸馏实现每块 4 步采样。</li><li><strong>逆向模式</strong>：以目标物体流为条件，训练动作头从干净 DiT token 特征中解码可执行机器人动作，使用掩码 Huber 损失与速度平滑 L1 损失联合训练（公式 7）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>多具身训练语料库由 7 个来源组成：<strong>DROID</strong>（单臂 Franka）、<strong>ABC-130k</strong>（双臂）、<strong>MolmoAct2</strong>（双臂）、<strong>EgoDex</strong>（人类手部）、<strong>Deform360</strong>（手持夹爪）、<strong>XVLA-Soft-Fold</strong>（双臂）、<strong>H1-Fold-Clothes</strong>（仿人双臂），总计 <strong>178,187 个片段</strong>、过滤后 <strong>1,565,634 个窗口</strong>、约 <strong>2,201.7 小时</strong>。</li><li>数据预处理：重采样至 480p、16fps，切分为 81 帧非重叠窗口，使用 AllTracker 在 128×128 查询网格上计算稠密点轨迹，并附带语言描述、VAE 潜在编码和具身/物体标注。</li><li>过滤策略：静态窗口过滤、冻结夹爪过滤、DROID 无内容语言标注过滤。</li><li>模型骨干：<strong>Cosmos 2.5</strong>（2B）、<strong>Wan2.2 I2V-A14B</strong>、<strong>Wan2.2 TI2V-5B</strong>；训练采用冻结预训练权重 + <strong>rank-64 LoRA</strong> 微调（仅更新 DiT patch embedding 和注意力/前馈投影），世界动作模型使用 rank-32 LoRA。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估基准包括 <strong>XVLA-Soft-Fold</strong>、<strong>Deform360</strong>、<strong>DROID</strong> 等留出集，以及 <strong>RoboLab</strong> 基准的 5 个策略；对比基线包括 <strong>Cosmos 2.5</strong>（原生动作条件）、<strong>ATI</strong>、<strong>Wan-Move</strong>（零样本轨迹条件）。</li><li>主要指标：PSNR、SSIM（全参考保真度）、物体/夹爪 EPE（像素级运动误差）、FID/FVD（分布质量）、VLM 评分（1-5 分制）。</li><li>关键结果：最佳配置 <strong>Ours (Wan2.2 A14B 4-step)</strong> 在多数数据集上全面领先——XVLA-Soft-Fold 上 PSNR <strong>19.23</strong>、SSIM <strong>0.781</strong>、物体 EPE <strong>3.47</strong>、夹爪 EPE <strong>3.20</strong>；Deform360 上 PSNR <strong>20.63</strong>、SSIM <strong>0.804</strong>、FVD <strong>166.5</strong>。</li><li>相比动作条件 <strong>Cosmos 2.5</strong> 基线，Hydra-0 实现 <strong>90.40% 更低的机器人运动误差</strong> 和 <strong>60.16% 更低的物体运动误差</strong>；在 RoboLab 上重放成功率与参考成功率的相关系数 <strong>r=0.96</strong>。</li><li>消融验证了多具身中期训练带来的数据效率提升、少步蒸馏（4 步）几乎无损的推理加速，以及真实机器人上的开环策略评估与物体流迁移控制的概念验证。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2608.18035/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Plug-and-Play Traffic Element Awareness for End-to-End Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
