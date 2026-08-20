@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Role-Conditioned Sub-Token Routing for Efficient Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对 Vision-Language-Action（VLA）模型处理长多模态token序列导致推理成本高的问题，现有方法主要通过剪枝视觉token降低开销，但激进剪枝会丢失token的全部表示信息，而直接应用子token压缩到VLA任务效果不佳，原因是VLA多模态表示中感知、语言理解、控制相关的信息分布存在差异 本文提出 Role-Conditioned Sub-Token Routing（RoleSub） 方法，在保留token的前提下压缩其值表示，通过角色条件路由适配VLA控制任务，同时探索视觉与语言模态联合压缩方案，在极小KV预算下保持VLA的闭环控制性能 研究目标是解决VLA激进压缩下的性能保持问题，明确token级保留与值宽度保留在VLA策略中的不同作用" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.18410">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.18410.webp" alt="Role-Conditioned Sub-Token Routing for Efficient Vision-Language-Action Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对 Vision-Language-Action（VLA）模型处理长多模态token序列导致推理成本高的问题，现有方法主要通过剪枝视觉token降低开销，但激进剪枝会丢失token的全部表示信息，而直接应用子token压缩到VLA任务效果不佳，原因是VLA多模态表示中感知、语言理解、控制相关的信息分布存在差异</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Role-Conditioned Sub-Token Routing for Efficient Vision-Language-Action Policies</h1>
+            <div class="detail-meta">2026-08-19 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.18410" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.18410" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.18410</span></div>
+            <p class="detail-summary">针对 Vision-Language-Action（VLA）模型处理长多模态token序列导致推理成本高的问题，现有方法主要通过剪枝视觉token降低开销，但激进剪枝会丢失token的全部表示信息，而直接应用子token压缩到VLA任务效果不佳，原因是VLA多模态表示中感知、语言理解、控制相关的信息分布存在差异 本文提出 Role-Conditioned Sub-Token Routing（RoleSub） 方法，在保留token的前提下压缩其值表示，通过角色条件路由适配VLA控制任务，同时探索视觉与语言模态联合压缩方案，在极小KV预算下保持VLA的闭环控制性能 研究目标是解决VLA激进压缩下的性能保持问题，明确token级保留与值宽度保留在VLA策略中的不同作用</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Futurewei Technologies（美国加州圣何塞，邮编95131）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.18410/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对 Vision-Language-Action（VLA）模型处理长多模态token序列导致推理成本高的问题，现有方法主要通过剪枝视觉token降低开销，但激进剪枝会丢失token的全部表示信息，而直接应用子token压缩到VLA任务效果不佳，原因是VLA多模态表示中感知、语言理解、控制相关的信息分布存在差异</p>
+  <ul class="reading-intro-points"><li>针对 Vision-Language-Action（VLA）模型处理长多模态token序列导致推理成本高的问题，现有方法主要通过剪枝视觉token降低开销，但激进剪枝会丢失token的全部表示信息，而直接应用子token压缩到VLA任务效果不佳，原因是VLA多模态表示中感知、语言理解、控制相关的信息分布存在差异</li><li>本文提出 Role-Conditioned Sub-Token Routing（RoleSub） 方法，在保留token的前提下压缩其值表示，通过角色条件路由适配VLA控制任务，同时探索视觉与语言模态联合压缩方案，在极小KV预算下保持VLA的闭环控制性能</li><li>研究目标是解决VLA激进压缩下的性能保持问题，明确token级保留与值宽度保留在VLA策略中的不同作用</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Futurewei Technologies</strong>（美国加州圣何塞，邮编95131）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对 Vision-Language-Action（VLA）模型处理长多模态token序列导致推理成本高的问题，现有方法主要通过剪枝视觉token降低开销，但激进剪枝会丢失token的全部表示信息，而直接应用子token压缩到VLA任务效果不佳，原因是VLA多模态表示中感知、语言理解、控制相关的信息分布存在差异</li><li>本文提出 <strong>Role-Conditioned Sub-Token Routing（RoleSub）</strong> 方法，在保留token的前提下压缩其值表示，通过角色条件路由适配VLA控制任务，同时探索视觉与语言模态联合压缩方案，在极小KV预算下保持VLA的闭环控制性能</li><li>研究目标是解决VLA激进压缩下的性能保持问题，明确token级保留与值宽度保留在VLA策略中的不同作用</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出RoleSub方法，结合正交值空间分解、学习到的潜角色表示与token类型依赖的预算分配，将子token路由适配到VLA控制任务；潜角色分解与控制目标联合学习，无需预定义语义角色</li><li>在匹配视觉KV预算的设置下，RoleSub在36个LIBERO实验配置中的33个优于训练的纯token剪枝基线，最大增益出现在激进压缩场景与长程任务中</li><li>揭示VLA策略中token保留与值宽度保留的行为差异：语言token对直接移除高度敏感，但其值表示可被压缩16倍而几乎无性能损失；联合视觉与语言路由可将完整多模态前缀KV压缩至原始大小的9.2%-11.3%，同时保持多数任务的控制性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>RoleSub从两个独立维度实现VLA表示的压缩：token级减少控制保留的token数量，子token路由控制每个保留token的值信息保留量，二者可针对不同token类型独立配置</li><li>正交值空间分解：对每个待路由的保留token，用固定的正交矩阵将其值表示无损变换到路由空间，再划分为S个不重叠的组，仅通过组选择丢弃信息，不改变原始表示的基</li><li>学习潜角色表示：通过轻量级角色估计器基于token隐藏状态输出低维软角色向量，该向量无需对应预定义语义角色，与控制目标联合学习，用于辅助路由决策与预算分配</li><li>角色条件值路由：路由分数融合三类信号——当前token隐藏状态、潜角色表示、聚合后的语言上下文，通过Top-K选择保留每组中的部分值组，使用直通估计器实现离散选择的反向传播</li><li>Token类型依赖的值预算：为视觉、语言、本体感知、动作上下文等不同类型的token设置独立的平均保留组数预算，通过潜角色优先级在同类token间分配预算，实现更灵活的值容量分配</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>训练与评估数据集：<strong>LIBERO机器人操控套件</strong>（包含Spatial、Object、Goal、LIBERO-10四个子集，每个子集包含10个任务），训练使用经过no-op过滤的LIBERO RLDS数据集，四个子集的训练 episode 数分别为432、454、428、379</li><li>模型规模：基于<strong>OpenVLA-OFT-7B</strong>构建，总参数量7.65B；其中可训练参数包括LoRA适配器约110.8M、路由头约4.20M、潜角色估计器约0.55M，正交矩阵固定无参数</li><li>训练资源：原文未明确标注具体GPU/TPU硬件型号，采用AdamW优化器训练，学习率为2×10⁻⁴，有效批次大小为8</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：在LIBERO四个子集的10个任务上进行闭环控制评估，固定模拟器配置与评估种子，每个检查点每个任务运行50次试验</li><li>主要评估指标：任务闭环成功率（百分比）</li><li>关键实验结果：</li></ul>
+<p> - 训练免费的纯token剪枝在激进压缩预算下几乎失效，匹配RoleSub的12个K_vis=1配置中，10个任务成功率为0，仅Goal和Spatial的最大视觉预算下有极低非零成功率</p>
+<p> - RoleSub在33/36个匹配视觉KV预算的设置下优于训练的纯token剪枝基线，最大增益出现在LIBERO-10子集与最激进的视觉token保留设置（8个保留token时LIBERO-10成功率提升14.4个百分点）</p>
+<p> - 语言token对直接剪枝高度敏感，保留53%的语言token时成功率降至约40%；但保留全部语言token仅压缩其值表示时，即使压缩至1/16（K_lang=1）也几乎无性能损失</p>
+<p> - 联合视觉与语言压缩可将总多模态前缀KV降至原始的9.2%-11.3%，Object、Spatial、Goal任务性能与仅视觉压缩几乎一致，LIBERO-10长程任务对联合压缩更敏感，仍有小幅性能下降</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.18433/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">The Embodiment Gap in Robot Foundation Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.18077/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Hydra-0: Action Flow for Generalist World Modeling and Control</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
