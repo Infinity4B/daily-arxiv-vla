@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HiTac-WAM: A Hierarchical Tactile World Action Model for Contact-Rich Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对接触丰富机器人操作中，现有视觉世界动作模型仅能预测未来视觉和动作、无法显式建模触觉状态的物理层次依赖的问题，提出分层触觉世界动作模型HiTac-WAM 该模型能够为每个候选动作块预测分层的触觉后果（接触状态、接触条件3D变形、滑移风险），用于候选动作排序和执行时在线验证，提升接触丰富操作的成功率 在芯片抓取、黑板擦除、USB插入三个真实机器人任务上验证模型有效性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.19574">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.19574.webp" alt="HiTac-WAM: A Hierarchical Tactile World Action Model for Contact-Rich Robot Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对接触丰富机器人操作中，现有视觉世界动作模型仅能预测未来视觉和动作、无法显式建模触觉状态的物理层次依赖的问题，提出分层触觉世界动作模型HiTac-WAM</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">HiTac-WAM: A Hierarchical Tactile World Action Model for Contact-Rich Robot Manipulation</h1>
+            <div class="detail-meta">2026-08-20 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.19574" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.19574" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.19574</span></div>
+            <p class="detail-summary">针对接触丰富机器人操作中，现有视觉世界动作模型仅能预测未来视觉和动作、无法显式建模触觉状态的物理层次依赖的问题，提出分层触觉世界动作模型HiTac-WAM 该模型能够为每个候选动作块预测分层的触觉后果（接触状态、接触条件3D变形、滑移风险），用于候选动作排序和执行时在线验证，提升接触丰富操作的成功率 在芯片抓取、黑板擦除、USB插入三个真实机器人任务上验证模型有效性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">中国科学院自动化研究所</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.19574/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">针对接触丰富机器人操作中，现有视觉世界动作模型仅能预测未来视觉和动作、无法显式建模触觉状态的物理层次依赖的问题，提出分层触觉世界动作模型HiTac-WAM</p>
+  <ul class="reading-intro-points"><li>针对接触丰富机器人操作中，现有视觉世界动作模型仅能预测未来视觉和动作、无法显式建模触觉状态的物理层次依赖的问题，提出分层触觉世界动作模型HiTac-WAM</li><li>该模型能够为每个候选动作块预测分层的触觉后果（接触状态、接触条件3D变形、滑移风险），用于候选动作排序和执行时在线验证，提升接触丰富操作的成功率</li><li>在芯片抓取、黑板擦除、USB插入三个真实机器人任务上验证模型有效性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>中国科学院自动化研究所</strong></li><li><strong>ImprintX Robotics</strong></li><li><strong>北京智源人工智能研究院</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对接触丰富机器人操作中，现有视觉世界动作模型仅能预测未来视觉和动作、无法显式建模触觉状态的物理层次依赖的问题，提出分层触觉世界动作模型<strong>HiTac-WAM</strong></li><li>该模型能够为每个候选动作块预测分层的触觉后果（接触状态、接触条件3D变形、滑移风险），用于候选动作排序和执行时在线验证，提升接触丰富操作的成功率</li><li>在<strong>芯片抓取、黑板擦除、USB插入</strong>三个真实机器人任务上验证模型有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出HiTac-WAM分层触觉世界动作模型，将每个候选动作块的触觉预测分解为接触状态、接触条件3D变形、滑移风险三个层次，匹配训练预算下，3D位移L2误差比仅变形预测器降低17.6%，滑移AUPRC比仅滑移预测器提升60.4%</li><li>提出预测引导的候选动作选择机制，结合触觉预测结果和任务进展估计对候选动作块排序，三个任务的真实机器人平均成功率从单候选执行的31.1%提升至61.1%</li><li>开发在线预测验证机制，保留选中动作对应的触觉预测作为执行时参考，检测到预测与观测的持续偏差时触发安全退回和重规划，完整系统平均真实机器人成功率可达72.2%</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于预训练世界动作模型扩展触觉分支，采用<strong>定向注意力掩码</strong>，使用预训练<strong>FG-CLTP触觉编码器</strong>编码双侧触觉历史特征并投射为触觉标记，允许触觉查询访问视频-动作上下文，同时阻止视觉和动作查询访问触觉历史标记，确保模态间信息流的定向性</li><li>设计显式分层触觉预测头，按照“接触→变形→滑移”的物理依赖顺序构建预测流程，通过<strong>stop-gradient（停止梯度）操作</strong>实现上游信号对下游预测的无梯度条件传递，接触状态作为门控信号同时作用于变形和滑移预测</li><li>候选动作选择阶段，将每个候选的触觉预测结果转化为接触不一致、变形异常、滑移风险三类归一化损失，结合视觉 rollout 得到的任务进展得分加权排序，选择得分最优的候选动作执行</li><li>执行阶段保留选中候选的触觉预测作为时序对齐的参考，采用核密度估计（KDE）检测观测触觉与预测触觉的持续偏差，触发纠正性重规划</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用自采的真实机器人接触丰富操作数据集，包含<strong>芯片抓取、黑板擦除、USB插入</strong>三个任务，每个任务共200个完整episode，按160训练/20验证/20测试划分，无时间窗口跨数据划分，标注双传感器接触、滑移标签及3D变形标记</li><li>硬件平台为<strong>IMETA-Y1机器人</strong>，搭载双侧<strong>DM-Tac W2触觉传感器</strong>、三路同步RGB相机（2个Intel RealSense D435i+1个USB相机），数据流30Hz同步</li><li>训练资源：每个任务的触觉预测模块单独训练，采用8块<strong>NVIDIA H100 GPU</strong>，训练10000步，全局batch size为64，优化器为AdamW，学习率为1e-4，接触 onset/release 损失权重分别为2和1，正滑移事件权重为30，滑移损失系数前3000步为0，后续为0.01</li><li>模型基于预训练世界动作模型与预训练FG-CLTP触觉编码器扩展，未单独披露总参数量</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：真实IMETA-Y1机器人平台，每个方法-任务组合进行30次独立试验，主对比共360次试验；固定预算K=4的排序对比额外增加90次试验</li><li>主要评估指标：触觉预测维度包括接触F1、接触 onset/release MAE、3D位移L2、Top-20 Z MAE、变形范数比、滑移AUPRC；操作性能维度为真实机器人任务成功率，同时辅以视频LPIPS、动作轨迹MAE评估视觉和动作预测的保真度</li><li>关键实验结果：</li></ul>
+<p> - 触觉预测任务上，三个任务的接触F1分别为0.924、0.908、0.931，平均达0.921，平均3D位移L2为0.058mm，平均滑移AUPRC为0.247，接触 onset/release 平均误差分别为2.1和2.3帧（30Hz，约60-87ms）</p>
+<p> - 分层结构消融实验中，定向分层结构的接触F1、3D L2、Top-20 Z MAE、变形范数比均优于仅接触预测、仅变形预测、独立多头预测的基线，验证了分层条件传递的有效性</p>
+<p> - 动作选择任务上，触觉引导排序的固定预算下成功率达61.1%，显著高于仅任务进展排序的35.6%和单候选执行（DreamZero基线）的31.1%</p>
+<p> - 带在线验证的完整系统平均成功率达72.2%，其中18次触发重规划的案例中16次对应实际执行异常，12次后续完成目标任务，验证了在线验证机制的有效性</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.19589/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">OrthoSkillVLA: Continual Skill Learning via Gradient-Informed Skill Subspace Adaptation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.19490/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Fine-Tuning VLAs with Self-Demonstrated Generative Control for Multi-Task Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
