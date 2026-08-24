@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PhysCaP: Grounding Code-as-Policy Agent with Physics-Informed Exploration - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出PhysCaP（Physics-Informed Code-as-Policy Agent），一种面向机器人操作主动感知的智能体框架，核心解决现有被动感知的Code-as-Policy框架与视觉-语言-动作（VLA）模型无法推断物体隐式物理属性（如质量、刚度）、也无法主动探索获取缺失物理信息的问题 该框架旨在让机器人在部分可观测的操作场景中，通过有目的的物理交互获取任务相关的隐式物理信息，在不依赖额外传感硬件的前提下完成物理属性推断，最终高效完成操作任务 研究覆盖3个真实桌面操作任务与1个仿真任务，验证框架在需要隐式物理感知的场景下的有效性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.21031">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.21031.webp" alt="PhysCaP: Grounding Code-as-Policy Agent with Physics-Informed Exploration" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出PhysCaP（Physics-Informed Code-as-Policy Agent），一种面向机器人操作主动感知的智能体框架，核心解决现有被动感知的Code-as-Policy框架与视觉-语言-动作（VLA）模型无法推断物体隐式物理属性（如质量、刚度）、也无法主动探索获取缺失物理信息的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">PhysCaP: Grounding Code-as-Policy Agent with Physics-Informed Exploration</h1>
+            <div class="detail-meta">2026-08-21 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.21031" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.21031" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.21031</span></div>
+            <p class="detail-summary">论文提出PhysCaP（Physics-Informed Code-as-Policy Agent），一种面向机器人操作主动感知的智能体框架，核心解决现有被动感知的Code-as-Policy框架与视觉-语言-动作（VLA）模型无法推断物体隐式物理属性（如质量、刚度）、也无法主动探索获取缺失物理信息的问题 该框架旨在让机器人在部分可观测的操作场景中，通过有目的的物理交互获取任务相关的隐式物理信息，在不依赖额外传感硬件的前提下完成物理属性推断，最终高效完成操作任务 研究覆盖3个真实桌面操作任务与1个仿真任务，验证框架在需要隐式物理感知的场景下的有效性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">National Taiwan University</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.21031/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文提出PhysCaP（Physics-Informed Code-as-Policy Agent），一种面向机器人操作主动感知的智能体框架，核心解决现有被动感知的Code-as-Policy框架与视觉-语言-动作（VLA）模型无法推断物体隐式物理属性（如质量、刚度）、也无法主动探索获取缺失物理信息的问题</p>
+  <ul class="reading-intro-points"><li>论文提出PhysCaP（Physics-Informed Code-as-Policy Agent），一种面向机器人操作主动感知的智能体框架，核心解决现有被动感知的Code-as-Policy框架与视觉-语言-动作（VLA）模型无法推断物体隐式物理属性（如质量、刚度）、也无法主动探索获取缺失物理信息的问题</li><li>该框架旨在让机器人在部分可观测的操作场景中，通过有目的的物理交互获取任务相关的隐式物理信息，在不依赖额外传感硬件的前提下完成物理属性推断，最终高效完成操作任务</li><li>研究覆盖3个真实桌面操作任务与1个仿真任务，验证框架在需要隐式物理感知的场景下的有效性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>National Taiwan University</strong></li><li><strong>NVIDIA Research</strong></li><li><strong>National Yang Ming Chiao Tung University</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出<strong>PhysCaP</strong>（Physics-Informed Code-as-Policy Agent），一种面向机器人操作主动感知的智能体框架，核心解决现有被动感知的<strong>Code-as-Policy</strong>框架与<strong>视觉-语言-动作（VLA）</strong>模型无法推断物体隐式物理属性（如质量、刚度）、也无法主动探索获取缺失物理信息的问题</li><li>该框架旨在让机器人在部分可观测的操作场景中，通过有目的的物理交互获取任务相关的隐式物理信息，在不依赖额外传感硬件的前提下完成物理属性推断，最终高效完成操作任务</li><li>研究覆盖3个真实桌面操作任务与1个仿真任务，验证框架在需要隐式物理感知的场景下的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出无需额外传感硬件的训练免费物理属性提取模块（<strong>PhysX</strong>），仅通过机器人本体感知（关节扭矩、夹具位移/力矩）即可推断物体质量与刚度，无需针对任务微调模型</li><li>设计双智能体探索架构：<strong>Planner</strong>负责判断是否需要探索、何时终止探索，<strong>Prioritizer</strong>负责过滤不合理交互候选、按优先级排序，有效平衡探索成本与信息获取效率，避免过度探索</li><li>构建模块化物理信息增强代码即策略框架<strong>PhysCaP</strong>，将物理感知、规划、代码生成与低阶控制解耦，基于大模型生成可执行代码策略，支持可解释的闭环决策与跨平台迁移</li><li>在3个真实桌面操作任务（寻找隐藏方块、识别空罐、挑选成熟牛油果）和<strong>LIBERO</strong>仿真任务上验证框架有效性，证明其相比被动/ naive 交互基线能以更少的交互次数和更短执行时间完成任务</li><li>通过消融实验验证了物理属性提取模块的可靠性，以及双智能体设计相比合并 Planner-Prioritizer 架构的性能优势</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>整体框架分为三层：底层为物理属性提取与低阶控制模块，中间层为双智能体探索决策层，顶层为代码生成智能体，由大模型生成可执行策略调用底层API完成任务</li><li>物理属性提取模块创新：质量测量通过固定抬升轨迹下的空载/负载关节扭矩差，结合末端执行器垂直方向雅可比矩阵计算物体质量，鲁棒性不受放置位置影响；刚度测量通过夹具位移与归一化电机力矩的对应关系，结合回退测试排除内部摩擦干扰，映射到5级刚度等级，多次测量取多数投票提升鲁棒性</li><li>双智能体决策创新：Planner基于视觉场景与任务目标输出探索候选列表并设定停止条件，避免无意义的过度探索；Prioritizer基于视觉启发式过滤不合理的交互候选，分配优先级分数并重排候选顺序，优先探索高相关信息潜力的对象，提升探索效率</li><li>关键技术：基于本体感知的免训练物理属性估计、分层双智能体探索决策、大模型驱动的模块化代码策略生成，所有模块可插拔扩展</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>任务场景：真实任务使用标准化商业物品（蓝色方块、带吸管苏打罐、牛油果、木制托盘等），仿真任务使用<strong>LIBERO</strong>仿真环境</li><li>基础模型：核心推理 backbone 为<strong>Gemini 3.1 Pro</strong>，目标定位模块采用<strong>Molmo2</strong>，框架本身为训练免费（training-free），无需针对任务微调模型</li><li>硬件资源：真实实验采用7-DoF <strong>AgileX PiPER</strong>机械臂，搭配<strong>ZED 2i</strong>深度相机，计算端为配备<strong>RTX 3090 GPU（24GB显存）</strong>的工作站；仿真实验使用公开的VLA模型LIBERO检查点</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：真实环境为桌面操作场景，包含寻找隐藏蓝色方块、识别空苏打罐、挑选成熟牛油果3个任务；仿真环境为<strong>LIBERO</strong>平台的识别空杯任务</li><li>评估指标：任务成功率（<strong>SR</strong>，越高越好）、物体交互次数（<strong>OI</strong>，越低越好，仅统计成功轮次）、执行时间（<strong>Time</strong>，越低越好，仅统计成功轮次）</li><li>关键实验结果：</li></ul>
+<p> - 真实任务中，相比纯被动感知的<strong>CaP</strong>基线，PhysCaP的3个任务成功率从最高20%提升至80%-90%；相比无推理的<strong>CaP+PhysX</strong>基线，物体交互次数减少50%以上（如寻找蓝方块的OI从2.7降至1.33），执行时间缩短60%以上（如寻找蓝方块的Time从76.91s降至40.48s）；相比仅加Planner的<strong>CaP+PhysX+Planner</strong>基线，PhysCaP进一步降低交互成本与执行时间</p>
+<p> - 仿真任务中，相比<strong>OpenVLA</strong>、<strong>π₀.₅</strong>、<strong>MolmoAct2</strong>等VLA基线（最高成功率仅23%），PhysCaP达到78%的成功率，同时交互次数仅1.44次，显著优于其他主动探索基线</p>
+<p> - 消融实验验证：质量测量在13g-963g的校准质量上稳定准确，刚度测量可准确区分不同成熟度的牛油果；双智能体设计相比合并的<strong>PhysCaP-joint</strong>架构性能更优，证明分层决策的必要性</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.21247/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Just Noticeable Difference Modeling for Token Compression in Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.20974/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">WA-JEPA: Rethinking the Video JEPA Paradigm for World-Action Modeling in Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
