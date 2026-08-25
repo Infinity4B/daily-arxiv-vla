@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Act with Intent: Distilling Behavior Intent for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Intention Distillation (Indi) 方法，将行为级意图（behavior-level intent）蒸馏到 Vision-Language-Action (VLA) 模型的解码器中，以显式建模动作序列所服务的局部目标（local objective） 解决传统 behavior cloning 仅模仿动作而不明确行为目的的问题，以及 future-based supervision 仅监督特定未来状态而非共享语义目标的局限 通过冻结的教师 VLM 解释已执行行为片段，提取多模态意图表示作为监督信号，从而改进动作解码性能和分布外泛化能力" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.23478">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.23478.webp" alt="Act with Intent: Distilling Behavior Intent for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 Intention Distillation (Indi) 方法，将行为级意图（behavior-level intent）蒸馏到 Vision-Language-Action (VLA) 模型的解码器中，以显式建模动作序列所服务的局部目标（local objective）</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Act with Intent: Distilling Behavior Intent for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-08-24 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.23478" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.23478" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.23478</span></div>
+            <p class="detail-summary">提出 Intention Distillation (Indi) 方法，将行为级意图（behavior-level intent）蒸馏到 Vision-Language-Action (VLA) 模型的解码器中，以显式建模动作序列所服务的局部目标（local objective） 解决传统 behavior cloning 仅模仿动作而不明确行为目的的问题，以及 future-based supervision 仅监督特定未来状态而非共享语义目标的局限 通过冻结的教师 VLM 解释已执行行为片段，提取多模态意图表示作为监督信号，从而改进动作解码性能和分布外泛化能力</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">POSTECH（浦项科技大学）的 GSAI（Global Science Academy for AI…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.23478/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出 Intention Distillation (Indi) 方法，将行为级意图（behavior-level intent）蒸馏到 Vision-Language-Action (VLA) 模型的解码器中，以显式建模动作序列所服务的局部目标（local objective）</p>
+  <ul class="reading-intro-points"><li>提出 Intention Distillation (Indi) 方法，将行为级意图（behavior-level intent）蒸馏到 Vision-Language-Action (VLA) 模型的解码器中，以显式建模动作序列所服务的局部目标（local objective）</li><li>解决传统 behavior cloning 仅模仿动作而不明确行为目的的问题，以及 future-based supervision 仅监督特定未来状态而非共享语义目标的局限</li><li>通过冻结的教师 VLM 解释已执行行为片段，提取多模态意图表示作为监督信号，从而改进动作解码性能和分布外泛化能力</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>POSTECH</strong>（浦项科技大学）的 <strong>GSAI</strong>（Global Science Academy for AI）和 <strong>IME</strong>（Intelligent Manufacturing Engineering）实验室</li><li>作者 Sangoh Lee、Sangwoo Mo 和 Wook-Shin Han 均隶属于该机构</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Intention Distillation (Indi)</strong> 方法，将行为级意图（behavior-level intent）蒸馏到 Vision-Language-Action (VLA) 模型的解码器中，以显式建模动作序列所服务的局部目标（local objective）</li><li>解决传统 behavior cloning 仅模仿动作而不明确行为目的的问题，以及 future-based supervision 仅监督特定未来状态而非共享语义目标的局限</li><li>通过冻结的教师 VLM 解释已执行行为片段，提取多模态意图表示作为监督信号，从而改进动作解码性能和分布外泛化能力</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别出 <strong>behavior-level intent</strong> 是 VLA 动作解码器缺失的监督目标，主张解码器应建模动作序列在指令下所服务的局部目标，而非仅模仿动作或预测特定未来状态</li><li>提出 <strong>Indi</strong> 框架，利用冻结教师 VLM 从执行的行为片段中提取多模态意图表示（包括中间层表示、文本目的陈述和端点视觉特征），并将其蒸馏到解码器的中间层作为功能性中间状态</li><li>设计 <strong>意图感知解码机制</strong>，包括不对称注意力机制和二进制门控（binary gate），确保恢复的意图组织下游的动作预测和视觉-文本 grounding 预测，且在部署时无需教师模块</li><li>在 <strong>SimplerEnv-Bridge</strong>、<strong>RoboCasa Kitchen</strong> 和真实世界机器人操作任务上验证有效性，在多个 backbone（GR00T-N1.7、$\pi_{0.5}$）上实现一致性能提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>教师意图提取</strong>：使用冻结的 <strong>Cosmos-Reason2-8B</strong> VLM 处理当前观察 $o_t$、语言指令 $\ell$、动作摘要 $c_A(\mathcal{W}_t)$ 和执行视频 $\text{vid}_{t:t+H}$，在中间层提取多模态意图表示 $I_t^*$，同时生成目的陈述 $R_t^*$ 和编码端点视觉特征 $V_t^*$</li><li><strong>意图恢复</strong>：在动作解码器中间层（50%深度）引入可学习的 <strong>intent queries</strong>，通过余弦损失（cosine loss）和投影头 $P_I$ 对齐教师意图表示，使解码器从标准输入（观察、指令、本体感觉）中恢复意图状态 $H_{I,t}^{L_{\text{tap}}}$</li><li><strong>意图感知解码</strong>：采用 <strong>flow-matching</strong> 进行动作预测，同时引入视觉和文本 grounding 流；通过不对称注意力机制（intent queries 隔离于噪声动作和 grounding 行）和二进制门控 $\alpha \sim \text{Bernoulli}(0.5)$ 控制信息流</li><li><strong>意图-依赖损失</strong>：引入 margin-based loss $\mathcal{L}_{\text{mis}}$，确保匹配的意图状态产生更低的 downstream loss，强制预测依赖意图内容</li><li><strong>训练目标</strong>：联合优化 $\mathcal{L} = \mathcal{L}_A + \lambda_I \mathcal{L}_I + \lambda_V \mathcal{L}_V + \lambda_R \mathcal{L}_R + \lambda_{\text{mis}} \mathcal{L}_{\text{mis}}$，部署时移除教师和所有目标生成模块</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>SimplerEnv-Bridge</strong>：包含4个桌面操作任务（Spoon、Carrot、Stack、EP-Basket）</li><li><strong>RoboCasa Kitchen</strong>：包含24个家庭操作任务，涵盖 pick-and-place、articulated-object manipulation 和 appliance interaction，使用 $G_{100}$（每任务100个演示）和 $G_{3000}$ 数据规模</li><li><strong>真实世界任务</strong>：包含4个桌面任务，评估标准场景、<strong>held-out objects</strong>（未见过的功能相同物体）和 <strong>distractors</strong>（干扰物）条件</li><li><strong>模型规模</strong>：基于 <strong>GR00T-N1.7</strong> 和 <strong>$\pi_{0.5}$</strong> backbone；教师模型为 <strong>Cosmos-Reason2-8B</strong>；默认 $K_I=8, K_R=8, K_V=16$，意图对齐层位于解码器深度50%处</li><li><strong>训练资源</strong>：保留各 backbone 原有优化器、学习率和视觉-语言冻结配置，具体计算资源细节见附录</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：SimplerEnv-Bridge、RoboCasa Kitchen 仿真环境及真实世界机器人操作平台</li><li><strong>评估指标</strong>：任务成功率（%），包括平均成功率和各任务类别表现</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 在 <strong>SimplerEnv-Bridge</strong> 上，GR00T-N1.7 平均成功率从 <strong>64.3%</strong> 提升至 <strong>84.7%</strong>（+20.4 pp），其中 EP-Basket 任务提升最为显著（从 36.0% 到 96.0%，+60.0 pp）</p>
+<p> - 在 <strong>RoboCasa Kitchen</strong> 上，GR00T-N1.7 ($G_{100}$) 从 <strong>64.1%</strong> 提升至 <strong>70.3%</strong>（+6.2 pp），在仅使用 100 个演示时即可接近使用 3000 个演示的基线性能（70.8%）</p>
+<p> - 在 <strong>$\pi_{0.5}$</strong> 上，平均成功率从 <strong>52.3%</strong> 提升至 <strong>58.8%</strong>（+6.5 pp）</p>
+<p> - 真实世界任务中，平均成功率从 <strong>62.0%</strong> 提升至 <strong>68.7%</strong>，长时程任务最高提升 <strong>12.0 pp</strong></p>
+<p> - 在 <strong>held-out objects</strong> 和 <strong>distractors</strong> 条件下均展现出 improved generalization，验证了意图蒸馏的鲁棒性</p>
+<p> - 消融实验表明，恢复的隐表示确实编码了行为目标和执行进度，并以目标依赖的方式组织下游预测</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.23486/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">GeoWAM: Visual Geometry World Action Models for Autonomous Driving</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.23320/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ROS2SmolVLA: Enabling Small Vision-Language-Action Models for Integration into Industrial-Grade Lightweight Robots</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

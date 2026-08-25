@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GeoWAM: Visual Geometry World Action Models for Autonomous Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有世界动作模型（WAMs）普遍以像素/视频作为状态表示建模驾驶场景动态，但像素会混淆几何、运动与外观纹理，无法显式恢复底层3D变换，与驾驶动作定义的三维空间对齐度不足，难以支撑高质量的驾驶策略学习。 本文提出GeoWAM，以视觉几何（点云）作为自动驾驶世界动作模型的原生状态空间，通过预训练预测未来场景几何学习时空动态，再基于几何条件化的动作头预测自车未来轨迹，解决像素表示不适配驾驶动态建模的核心问题。 研究目标是通过未来几何预测、开环与闭环规划实验，验证视觉几何世界建模对自动驾驶任务的有效性，证明其优于基于图像的替代方案。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.23486">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.23486.webp" alt="GeoWAM: Visual Geometry World Action Models for Autonomous Driving" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有世界动作模型（WAMs）普遍以像素/视频作为状态表示建模驾驶场景动态，但像素会混淆几何、运动与外观纹理，无法显式恢复底层3D变换，与驾驶动作定义的三维空间对齐度不足，难以支撑高质量的驾驶策略学习。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GeoWAM: Visual Geometry World Action Models for Autonomous Driving</h1>
+            <div class="detail-meta">2026-08-24 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.23486" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.23486" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.23486</span></div>
+            <p class="detail-summary">现有世界动作模型（WAMs）普遍以像素/视频作为状态表示建模驾驶场景动态，但像素会混淆几何、运动与外观纹理，无法显式恢复底层3D变换，与驾驶动作定义的三维空间对齐度不足，难以支撑高质量的驾驶策略学习。 本文提出GeoWAM，以视觉几何（点云）作为自动驾驶世界动作模型的原生状态空间，通过预训练预测未来场景几何学习时空动态，再基于几何条件化的动作头预测自车未来轨迹，解决像素表示不适配驾驶动态建模的核心问题。 研究目标是通过未来几何预测、开环与闭环规划实验，验证视觉几何世界建模对自动驾驶任务的有效性，证明其优于基于图像的替代方案。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Uber AV Labs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.23486/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有世界动作模型（WAMs）普遍以像素/视频作为状态表示建模驾驶场景动态，但像素会混淆几何、运动与外观纹理，无法显式恢复底层3D变换，与驾驶动作定义的三维空间对齐度不足，难以支撑高质量的驾驶策略学习。</p>
+  <ul class="reading-intro-points"><li>现有世界动作模型（WAMs）普遍以像素/视频作为状态表示建模驾驶场景动态，但像素会混淆几何、运动与外观纹理，无法显式恢复底层3D变换，与驾驶动作定义的三维空间对齐度不足，难以支撑高质量的驾驶策略学习。</li><li>本文提出GeoWAM，以视觉几何（点云）作为自动驾驶世界动作模型的原生状态空间，通过预训练预测未来场景几何学习时空动态，再基于几何条件化的动作头预测自车未来轨迹，解决像素表示不适配驾驶动态建模的核心问题。</li><li>研究目标是通过未来几何预测、开环与闭环规划实验，验证视觉几何世界建模对自动驾驶任务的有效性，证明其优于基于图像的替代方案。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Uber AV Labs</strong></li><li><strong>Case Western Reserve University</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有世界动作模型（WAMs）普遍以像素/视频作为状态表示建模驾驶场景动态，但像素会混淆几何、运动与外观纹理，无法显式恢复底层3D变换，与驾驶动作定义的三维空间对齐度不足，难以支撑高质量的驾驶策略学习。</li><li>本文提出<strong>GeoWAM</strong>，以视觉几何（点云）作为自动驾驶世界动作模型的原生状态空间，通过预训练预测未来场景几何学习时空动态，再基于几何条件化的动作头预测自车未来轨迹，解决像素表示不适配驾驶动态建模的核心问题。</li><li>研究目标是通过未来几何预测、开环与闭环规划实验，验证视觉几何世界建模对自动驾驶任务的有效性，证明其优于基于图像的替代方案。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>论证了几何是世界动作模型的原生状态表示，可将场景动态与驾驶动作所在的三维空间直接对齐，更适合驾驶任务建模。</li><li>预训练视觉几何世界模型，从历史多视角观测中预测未来场景几何，学习得到同时编码空间结构与时间演化的表示。</li><li>提出<strong>GeoWAM</strong>，通过类逆动力学公式将预训练几何世界模型扩展为世界动作模型，从预测的场景演化中推断未来自车运动，并映射为自车轨迹。</li><li>通过未来几何预测、开环与闭环规划多维度实验，验证了视觉几何世界建模在自动驾驶领域的有效性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>模型采用两阶段训练范式：第一阶段预训练视觉几何世界模型，第二阶段微调为完整的世界动作模型。</li><li>视觉几何世界模型部分：以<strong>DVGT-2</strong>作为几何编码器，将历史多视角图像编码为多层级的历史几何token与自车位标记忆；未来几何解码器通过因果时间自注意力建模时空演化，再交叉注意力检索历史上下文，输出未来几何token后经Point DPT解码为稠密未来点云；监督信号包含特征对齐损失、当前/未来点云回归损失（含欧氏回归、置信度感知回归、多尺度法向一致性）。</li><li>GeoWAM动作模型部分：引入未来自车位标解码器，通过stop-gradient连接接收预测的未来几何token，结合历史自车位标输出与场景演化一致的自车运动表示；轨迹头直接回归未来自车的平面位置与航向角轨迹，无需轨迹锚点、模式分类或迭代采样。</li><li>关键技术创新：将世界建模与动作预测置于共享几何空间，让几何动态直接指导驾驶动作；stop-gradient连接避免轨迹损失破坏预训练的几何预测能力，类逆动力学设计保证自车运动推断与场景演化的逻辑一致性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>预训练数据集：<strong>OpenScene</strong>、<strong>nuScenes</strong>、<strong>Bench2Drive</strong>、<strong>Waymo Open Dataset</strong>、<strong>KITTI</strong>、<strong>Argoverse 2</strong>、<strong>DDAD</strong></li><li>评估数据集：未来几何预测使用<strong>nuScenes</strong>验证集，规划任务使用<strong>NAVSIM v2</strong>的navtrain、navtest、navhard划分</li><li>模型规模：未来几何解码器为6层Transformer，隐藏维度1024，16个注意力头；输入为3帧历史多视角图像，动态采样2-8个相机视角，预测未来8步（2Hz）的场景几何与自车轨迹；几何编码器与点云头初始化为DVGT-2。</li><li>训练资源：原文未明确披露具体GPU/TPU硬件配置，采用AdamW优化器、bfloat16精度进行训练，规划微调阶段设置轨迹损失与姿态损失权重均为5，未来解码器与动作头学习率为1e-4，预训练参数学习率为2e-5。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：未来几何预测在nuScenes验证集上评估1-4秒（共8步）的预测精度；规划任务在NAVSIM v2的navtest开环基准、navhard闭环两阶段基准上评估。</li><li>评估指标：几何预测采用绝对相对误差（Abs Rel，越低越好）与阈值精度δ<1.25（越高越好）；规划采用<strong>EPDMS</strong>（扩展预测驾驶员模型分数），包含无责碰撞、可行驶区域合规、行驶方向合规等9项子指标，越高越好。</li><li>关键实验结果：</li></ul>
+<p> - 未来几何预测任务中，GeoWAM在所有评估时间horizon的Abs Rel均为最低，平均Abs Rel从最强基线Epona+DVGT的0.274降至0.257，平均δ<1.25从0.655提升至0.754，2-4秒预测精度提升尤为显著，优于直接预测几何的VGGT-World与从视频重建几何的基线。</p>
+<p> - navtest开环规划任务中，GeoWAM的EPDMS达到90.2，为所有对比方法中的最高分，匹配最佳行驶方向合规（DDC）与红绿灯合规（TLC）得分，其余安全与进度指标均具备竞争力。</p>
+<p> - navhard闭环两阶段评估中，GeoWAM在原始场景与合成反应场景两项子任务中各项指标均表现良好，综合性能优于多数对比基线。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2608.23478/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Act with Intent: Distilling Behavior Intent for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
