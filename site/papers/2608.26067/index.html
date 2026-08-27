@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 StreamPI，一个流式多模态时序建模框架，旨在为单帧范式的 Vision-Language-Action（VLA）模型赋予时间推理能力，解决现有模型（如 π0.5）无法利用历史观测、空间感知精度不足的问题 核心思路是将每个（视觉观测，语言指令）对视为原子时间单元，通过指令锚定建模保持任务目标的持续感知，同时利用 LLM 的长度外推能力实现零新增参数的时序扩展 针对训练与真实部署之间的同步/异步失配问题，引入随机间隔流式训练策略，提升模型对帧率波动的鲁棒性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.26067">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.26067.webp" alt="StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 StreamPI，一个流式多模态时序建模框架，旨在为单帧范式的 Vision-Language-Action（VLA）模型赋予时间推理能力，解决现有模型（如 π0.5）无法利用历史观测、空间感知精度不足的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-08-26 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.26067" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.26067" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.26067</span></div>
+            <p class="detail-summary">提出 StreamPI，一个流式多模态时序建模框架，旨在为单帧范式的 Vision-Language-Action（VLA）模型赋予时间推理能力，解决现有模型（如 π0.5）无法利用历史观测、空间感知精度不足的问题 核心思路是将每个（视觉观测，语言指令）对视为原子时间单元，通过指令锚定建模保持任务目标的持续感知，同时利用 LLM 的长度外推能力实现零新增参数的时序扩展 针对训练与真实部署之间的同步/异步失配问题，引入随机间隔流式训练策略，提升模型对帧率波动的鲁棒性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者主要来自香港大学（The University of Hong Kong）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.26067/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出 StreamPI，一个流式多模态时序建模框架，旨在为单帧范式的 Vision-Language-Action（VLA）模型赋予时间推理能力，解决现有模型（如 π0.5）无法利用历史观测、空间感知精度不足的问题</p>
+  <ul class="reading-intro-points"><li>提出 StreamPI，一个流式多模态时序建模框架，旨在为单帧范式的 Vision-Language-Action（VLA）模型赋予时间推理能力，解决现有模型（如 π0.5）无法利用历史观测、空间感知精度不足的问题</li><li>核心思路是将每个（视觉观测，语言指令）对视为原子时间单元，通过指令锚定建模保持任务目标的持续感知，同时利用 LLM 的长度外推能力实现零新增参数的时序扩展</li><li>针对训练与真实部署之间的同步/异步失配问题，引入随机间隔流式训练策略，提升模型对帧率波动的鲁棒性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者主要来自香港大学（The University of Hong Kong）</li><li>合作机构为 ACE Robotics</li><li>论文项目主页：https://happinesslz.github.io/projects/StreamPI</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>StreamPI</strong>，一个流式多模态时序建模框架，旨在为单帧范式的 Vision-Language-Action（VLA）模型赋予时间推理能力，解决现有模型（如 <strong>π0.5</strong>）无法利用历史观测、空间感知精度不足的问题</li><li>核心思路是将每个（视觉观测，语言指令）对视为原子时间单元，通过指令锚定建模保持任务目标的持续感知，同时利用 LLM 的长度外推能力实现零新增参数的时序扩展</li><li>针对训练与真实部署之间的同步/异步失配问题，引入随机间隔流式训练策略，提升模型对帧率波动的鲁棒性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>StreamPI</strong> 流式多模态时序建模框架，将（图像，文本）对作为原子时间单元，结合指令锚定建模实现任务执行期间持续的语义锚定</li><li>提出 <strong>随机间隔流式训练策略</strong>（Random-Interval Streaming Training），通过帧间间隔随机化弥合同步训练与异步真实机器人部署之间的差距</li><li>利用 LLM 长度外推能力，<strong>无缝继承 π0.5 全部预训练权重</strong>，不引入任何额外参数，同时支持灵活的单帧与多帧推理</li><li>引入 <strong>KV-Cache 流式推理</strong>机制，通过缓存历史帧的 Key&Value 表示，使推理计算开销与时间尺度无关</li><li>在真实机器人任务（记忆依赖与精确感知场景）及 <strong>LIBERO</strong>、<strong>CALVIN</strong> 仿真基准上全面超越 π0.5 基线</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>指令锚定时序建模</strong>：将每个时间步的输入构造为原子时间单元 u_t = (V_t, l_t)，单元内部采用双向注意力实现图像与文本的跨模态融合，单元之间采用因果注意力建模时序依赖，防止长时程中的指令遗忘</li><li><strong>参数无关时序扩展</strong>：通过重构注意力掩码实现层次化注意力模式，仅扩展输入序列并分配扩展位置嵌入，完全保留预训练模型的视觉-语言表征</li><li><strong>随机间隔采样</strong>：训练时在基础帧间隔 δ̄ 上添加均匀随机扰动 ε~U(-Δ,+Δ)，暴露模型于多样化的时间间隔分布</li><li><strong>时间掩码策略</strong>：随机掩码最早 k 帧（k∈{0,...,T-1}），模拟流式推理的增量观测模式</li><li><strong>流式推理</strong>：仅编码新到达的帧，通过跨注意力查询缓存的历史表示，避免对过去帧的重复计算，支持长时程操作</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评估基准：<strong>LIBERO</strong>（含 Spatial、Object、Goal、Long 四个任务套件，每套 10 个任务、每任务 50 次试验）及 <strong>CALVIN</strong> 基准（最多连续 5 个任务的长序列操作）</li><li>自建真实机器人评测任务：记忆依赖任务（Shell Game、Rolling Object Grasping）与精确感知任务（Pen Insertion into Narrow Bottle、Cup Insertion into Cup Sleeve）</li><li>基础模型：<strong>π0.5</strong> 预训练 VLA 模型，完全微调且不引入新参数</li><li>训练资源：<strong>8 张 NVIDIA H100 GPU</strong>；LIBERO 基准 batch size 256、30k 迭代；真实机器人任务 batch size 128、50k 迭代</li><li>流式帧数：训练时 T=3/5，帧间隔 δ~U[3,7]；推理时仿真 δ=5，真实部署 δ~U[3,7]</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>真实机器人操作</strong>：StreamPI 在记忆依赖任务上大幅提升——Rolling Object Grasping 成功率提升 <strong>+36.6%</strong>、Cup Hiding and Retrieval 提升 <strong>+33.3%</strong>；在精确感知任务上 Pen Insertion into Narrow Bottle 提升 <strong>+26.7%</strong>、Cup Insertion into Cup Sleeve 提升 <strong>+32.0%</strong></li><li><strong>LIBERO 仿真基准</strong>：StreamPI（T=5）在四个套件上平均成功率 <strong>98.3%</strong>，较 π0.5（96.9%）平均提升 <strong>1.4%</strong>；其中 LIBERO-Long 提升最显著（+2.6%），LIBERO-Goal 提升 2.8%，充分验证长时程记忆与多帧感知的有效性</li><li><strong>CALVIN 长序列基准</strong>：StreamPI（T=5）平均序列长度 <strong>4.547</strong>，显著优于 π0.5（4.313）和 MemoryVLA（4.090），在第 5 个子任务上仍保持 85.0% 的成功率（π0.5 为 79.5%，MemoryVLA 为 69.4%），展示了出色的长时程抗误差累积能力</li><li><strong>消融研究</strong>：双向帧内注意力与因果帧间注意力均贡献显著（T=5 时因果帧内注意力在 LIBERO-Long 上降 5.6%）；随机间隔训练较固定间隔在 T=3 和 T=5 下分别提升 1.1% 和 1.3%；T=5 训练的模型在 T=3 推理时仅轻微退化，在 T=1 时仍优于 π0.5 基线，体现良好的跨流形泛化能力</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.26103/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.26058/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">One Policy, Many Embodiments: Unified Camera-Centric Action Geometry Pre-training for Heterogeneous Embodied Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

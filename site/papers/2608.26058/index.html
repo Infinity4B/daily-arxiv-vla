@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>One Policy, Many Embodiments: Unified Camera-Centric Action Geometry Pre-training for Heterogeneous Embodied Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 UCAG-P，一种相机中心的统一动作公式，旨在将异构具身数据集结构性地对齐到共享的几何动作空间，解决 VLA（视觉-语言-动作）策略在跨具身学习中的数据异构瓶颈。 现有方法（如显式动作重定向、人-机器人视频合成、数据集特定适配分支）从根本上阻碍了统一策略的联合学习，UCAG-P 将机械臂、人形机器人和人类手部视为同一动作模式的不同具身，训练一个单一策略同时支持多种具身。 单一检查点无需基准特定微调，即可在 LIBERO（98.3%）、RoboTwin（Easy 88.7% / Hard 89.2%）、LIBERO-Plus（零样本 82.0%）和 RoboCasa GR-1（62.0%）上取得领先结果。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.26058">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.26058.webp" alt="One Policy, Many Embodiments: Unified Camera-Centric Action Geometry Pre-training for Heterogeneous Embodied Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 UCAG-P，一种相机中心的统一动作公式，旨在将异构具身数据集结构性地对齐到共享的几何动作空间，解决 VLA（视觉-语言-动作）策略在跨具身学习中的数据异构瓶颈。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">One Policy, Many Embodiments: Unified Camera-Centric Action Geometry Pre-training for Heterogeneous Embodied Manipulation</h1>
+            <div class="detail-meta">2026-08-26 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.26058" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.26058" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.26058</span></div>
+            <p class="detail-summary">论文提出 UCAG-P，一种相机中心的统一动作公式，旨在将异构具身数据集结构性地对齐到共享的几何动作空间，解决 VLA（视觉-语言-动作）策略在跨具身学习中的数据异构瓶颈。 现有方法（如显式动作重定向、人-机器人视频合成、数据集特定适配分支）从根本上阻碍了统一策略的联合学习，UCAG-P 将机械臂、人形机器人和人类手部视为同一动作模式的不同具身，训练一个单一策略同时支持多种具身。 单一检查点无需基准特定微调，即可在 LIBERO（98.3%）、RoboTwin（Easy 88.7% / Hard 89.2%）、LIBERO-Plus（零样本 82.0%）和 RoboCasa GR-1（62.0%）上取得领先结果。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">小米具身智能团队（Xiaomi Embodied Intelligence Team）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.26058/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">论文提出 UCAG-P，一种相机中心的统一动作公式，旨在将异构具身数据集结构性地对齐到共享的几何动作空间，解决 VLA（视觉-语言-动作）策略在跨具身学习中的数据异构瓶颈。</p>
+  <ul class="reading-intro-points"><li>论文提出 UCAG-P，一种相机中心的统一动作公式，旨在将异构具身数据集结构性地对齐到共享的几何动作空间，解决 VLA（视觉-语言-动作）策略在跨具身学习中的数据异构瓶颈。</li><li>现有方法（如显式动作重定向、人-机器人视频合成、数据集特定适配分支）从根本上阻碍了统一策略的联合学习，UCAG-P 将机械臂、人形机器人和人类手部视为同一动作模式的不同具身，训练一个单一策略同时支持多种具身。</li><li>单一检查点无需基准特定微调，即可在 LIBERO（98.3%）、RoboTwin（Easy 88.7% / Hard 89.2%）、LIBERO-Plus（零样本 82.0%）和 RoboCasa GR-1（62.0%）上取得领先结果。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>小米具身智能团队（Xiaomi Embodied Intelligence Team）</strong></li><li><strong>澳门大学（University of Macau）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>UCAG-P</strong>，一种相机中心的统一动作公式，旨在将异构具身数据集结构性地对齐到共享的几何动作空间，解决 VLA（视觉-语言-动作）策略在跨具身学习中的数据异构瓶颈。</li><li>现有方法（如显式动作重定向、人-机器人视频合成、数据集特定适配分支）从根本上阻碍了统一策略的联合学习，UCAG-P 将机械臂、人形机器人和人类手部视为同一动作模式的不同具身，训练一个单一策略同时支持多种具身。</li><li>单一检查点无需基准特定微调，即可在 <strong>LIBERO</strong>（98.3%）、<strong>RoboTwin</strong>（Easy 88.7% / Hard 89.2%）、<strong>LIBERO-Plus</strong>（零样本 82.0%）和 <strong>RoboCasa GR-1</strong>（62.0%）上取得领先结果。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>通用操作策略 UCAG-P</strong>，通过新颖的相机中心统一公式在异构具身数据上进行联合预训练，无缝整合机器人轨迹、仿真数据与人手演示。</li><li>建立人类演示直接作为共享动作空间中独立具身的训练框架，使人类手部运动可直接监督策略学习，无需显式的人-机器人视频合成或重定向。</li><li>引入<strong>解耦的、具身特定的动作翻译模块</strong>，将共享的几何动作映射为可执行的机器人控制命令，同时保持基础策略的跨域泛化能力。</li><li>在模拟单臂、双臂、人形机器人、分布外（OOD）、跨具身迁移及真实机器人场景中全面验证 UCAG-P，所有结果均不使用数据集特定微调。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>UCAG-P 使用 <strong>Qwen3-VL-4B-Instruct</strong> 作为视觉-语言骨干，通过语义锚点对 $(p_0, p_1)$ 表示相机坐标系中的腕部/末端执行器与抓取中心，构成共享的相机中心动作空间。</li><li>采用 <strong>30 维相机中心运动表示</strong>（含左右操作器各 10 维的位移、旋转、夹爪状态及相机运动项），并通过 80 维稀疏可执行命令布局输出具身特定的控制指令，非活动维度被掩码。</li><li><strong>几何条件翻译器</strong> 结合相机到基座的变换、局部雅可比矩阵和几何令牌，将共享动作预测转换为目标具身的本机命令，实现运动预测与具身执行力的解耦。</li><li>采用<strong>三阶段训练策略</strong>：第 1 阶段训练共享相机中心运动预测，第 2 阶段使用真值轨迹训练几何条件动作翻译，第 3 阶段联合优化机器人与人类数据，使用掩码 L1 损失函数分别监督几何动作和命令输出。</li><li>无需机器人视频修复、视频编辑或显式动作重定向作为前置条件，人类视频可直接以独立具身形式纳入训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>真实机器人数据</strong>：<strong>RoboChallenge-HDF5</strong>、<strong>RoboCoin-Piper-LeRobot</strong>、<strong>DROID-HDF5</strong>，共 53,769 个片段、266.348 小时。</li><li><strong>仿真数据</strong>：<strong>RoboCasa GR-1</strong>、<strong>LIBERO-HDF5</strong>、<strong>RoboTwin2-ALOHA-All</strong>、<strong>InternData-MultiRobot</strong>、<strong>InternData-Franka</strong>，共 625,771 个片段、3,767.511 小时。</li><li><strong>人类手部数据</strong>：<strong>VITRA-Human</strong>、<strong>EgoDex-Human</strong>、<strong>EgoVerse-Human</strong>，共 341,132 个片段、2,339.727 小时（伪动作监督）。</li><li>全部具身语料合计 <strong>1,020,672 个片段、6,373.586 小时</strong>，覆盖单臂、双臂、人形机器人及人类手部四种具身，另配有视觉-语言混合数据（如 ShareRobot、RefSpatial-v2、RoboVQA、RoboAfford）提供第 1 阶段的指令跟随与空间/能力接地监督。</li><li>模型主干为 <strong>Qwen3-VL-4B-Instruct</strong>，使用多视图 RGB 观测与可学习动作查询令牌。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估覆盖 <strong>LIBERO</strong>、<strong>RoboTwin Easy/Hard</strong>、<strong>RoboCasa GR-1</strong> 四个模拟基准，以及 <strong>LIBERO-Plus</strong> 的 7 类分布偏移（相机、机器人、语言、光照、背景、噪声、布局）下的零样本测试。</li><li><strong>LIBERO</strong> 成功率达到 <strong>98.3%</strong>（Spatial 98.8%、Object 98.6%、Goal 99.2%、Long 96.4%）；<strong>RoboTwin</strong> Easy 88.7%、Hard 89.2%；<strong>RoboCasa GR-1</strong> 62.0%；<strong>LIBERO-Plus</strong> 平均零样本性能 <strong>82.0%</strong>。</li><li>与通用基线 <strong>Qwen-VLA-Instruct</strong> 相比，UCAG-P 在全部数据集上胜出（如 LIBERO +0.4、RoboTwin Easy +2.6、Hard +2.0、RoboCasa +5.3）；在与经过基准特定微调的 <strong>ABot-M0</strong>、<strong>Being-H0.5/H0.7</strong>、<strong>ZR-0</strong> 等专业模型的对比中，UCAG-P 作为通用模型仍保持强竞争力。</li><li>所有结果均由<strong>单一统一检查点</strong>完成，无需任何基准特定的微调或后训练。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.26067/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.25956/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">4DGS-WAM: Bridging Past and Future with an Object-Centric World Action Model based on 4D Gaussian Splatting</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
