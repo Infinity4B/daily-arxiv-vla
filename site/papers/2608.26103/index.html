@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Zero-WAM，一个因果视频-动作模型，通过上下文人类视频指令实现零样本跨任务操作泛化，无需任何参数更新即可执行未见任务。 针对任务丰富的人类-机器人配对数据稀缺，以及模型在已见任务上学习捷径而忽略视频提示这两大挑战，设计了自动数据生成流水线和新型训练目标。 在 RoboTwin 2.0 模拟和真实双机械臂 Franka 上验证了模型对未见任务配置的泛化能力。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.26103">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.26103.webp" alt="Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 Zero-WAM，一个因果视频-动作模型，通过上下文人类视频指令实现零样本跨任务操作泛化，无需任何参数更新即可执行未见任务。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization</h1>
+            <div class="detail-meta">2026-08-26 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.26103" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.26103" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.26103</span></div>
+            <p class="detail-summary">提出 Zero-WAM，一个因果视频-动作模型，通过上下文人类视频指令实现零样本跨任务操作泛化，无需任何参数更新即可执行未见任务。 针对任务丰富的人类-机器人配对数据稀缺，以及模型在已见任务上学习捷径而忽略视频提示这两大挑战，设计了自动数据生成流水线和新型训练目标。 在 RoboTwin 2.0 模拟和真实双机械臂 Franka 上验证了模型对未见任务配置的泛化能力。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者所属机构未在提供的 HTML 原文中明确列出</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.26103/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出 Zero-WAM，一个因果视频-动作模型，通过上下文人类视频指令实现零样本跨任务操作泛化，无需任何参数更新即可执行未见任务。</p>
+  <ul class="reading-intro-points"><li>提出 Zero-WAM，一个因果视频-动作模型，通过上下文人类视频指令实现零样本跨任务操作泛化，无需任何参数更新即可执行未见任务。</li><li>针对任务丰富的人类-机器人配对数据稀缺，以及模型在已见任务上学习捷径而忽略视频提示这两大挑战，设计了自动数据生成流水线和新型训练目标。</li><li>在 RoboTwin 2.0 模拟和真实双机械臂 Franka 上验证了模型对未见任务配置的泛化能力。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者所属机构未在提供的 HTML 原文中明确列出</li><li>项目主页显示为 <strong>Robbyant Research</strong>（https://robbyant-research.github.io/Zero-WAM/）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Zero-WAM</strong>，一个因果视频-动作模型，通过上下文人类视频指令实现零样本跨任务操作泛化，无需任何参数更新即可执行未见任务。</li><li>针对任务丰富的人类-机器人配对数据稀缺，以及模型在已见任务上学习捷径而忽略视频提示这两大挑战，设计了自动数据生成流水线和新型训练目标。</li><li>在 <strong>RoboTwin 2.0</strong> 模拟和真实双机械臂 <strong>Franka</strong> 上验证了模型对未见任务配置的泛化能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>将零样本机器人任务泛化建模为<strong>上下文世界动作建模</strong>，使单个因果策略同时支持语言指令和人类视频指令两种任务规范形式。</li><li>提出<strong>上下文人类视频生成流水线</strong>，自动将任务采样的机器人轨迹转换为语义匹配的人类操作视频，构建 <strong>HumanGen</strong> 数据集，包含 74.2K 个人类-机器人 ICL 对、覆盖 8.6K 个任务。</li><li>构建 <strong>Task-diverse VA</strong> 数据，通过任务级重划分和平衡采样，在五个公开数据集中获得超过 6,000 个任务、约 400K 条机器人轨迹/训练轮次，防止重复遥操作数据主导预训练。</li><li>提出<strong>上下文未来块预测（IFP）</strong>训练目标，监督多个带时间步长的未来机器人视频块，抑制从已见任务轨迹中学习的捷径，强制模型从人类视频提示中提取任务演化信息。</li><li>在 RoboTwin 2.0 七个未见任务上平均成功率达 <strong>46.95%</strong>，较最强视频-动作基线 <strong>LingBot-VA</strong> 提升 <strong>29.5 个百分点</strong>；真实世界中成功泛化到多物体场景、长时程操作和精细插入等未见配置。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于 <strong>Wan-2.2-TI2V-5B</strong> 文本/图像到视频生成模型，转换为因果视频-动作模型，采用 <strong>Mixture-of-Transformers（MoT）</strong> 架构：视频 Transformer 与动作 Transformer 共享注意力层，但各模态保留独立参数。</li><li>人类视频作为上下文任务说明，通过 RoPE 高度轴偏移（ΔH=32）区分人类视频与机器人视频的潜在表示，防止同一序列中的表征混淆。</li><li>动作解码采用逆动力学分解：动作 Transformer 不直接注意人类视频，而是基于预测出的下一机器人视频块和语言指令解码动作，减少对视频提示的直接依赖。</li><li>IFP 模块从主视频分支的多个中间层收集表征，融合后并行预测 K=4 个、步长 s=2 的未来视频块；IFP 模块仅通过该融合表征间接获取任务信息，推理时被移除。</li><li>训练数据混合 <strong>Task-diverse VA</strong> 与 <strong>HumanGen</strong>，采样比例为 1:5；预训练耗时 15,360 GPU 小时，后训练在 64 个 GPU 上运行 4,000 步。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>公开数据源：<strong>AgiBot</strong>、<strong>InternData-A1</strong>、<strong>Open-X-Embodiment</strong>、<strong>RoboCOIN</strong>、<strong>RoboMIND</strong> 五个机器人视频-动作数据集，覆盖超过 45 种机器人本体。</li><li><strong>HumanGen</strong> 数据集分为四部分：Pre-train ICL (External)、Pre-train ICL (In-house)、Simulation ICL、Real-world ICL，共 74.2K 人类-机器人 ICL 对。</li><li><strong>Task-diverse VA</strong>：重新划分出超过 6,000 个操作任务，每训练轮次采样约 400K 条机器人轨迹。</li><li>模型规模：视频 Transformer 隐藏维度 3072、30 层；动作 Transformer 隐藏维度 3072；语言指令由 <strong>T5</strong> 编码；视频和动作均使用 <strong>Wan-2.2 VAE</strong> 编码。</li><li>训练资源：预训练 15,360 GPU 小时；RoboTwin 后训练使用 64 个 GPU；真实世界数据包含 120 + 96 + 36 条人类-机器人 ICL 对。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>模拟评估在 <strong>RoboTwin 2.0</strong> 上进行：43 个任务用于后训练，7 个任务留作未见任务；每个种子执行 100 次闭环 rollout，共 3 个随机种子。</li><li>关键模拟结果：<strong>Zero-WAM</strong> 平均成功率 <strong>46.95%</strong>，显著高于 <strong>LingBot-VA</strong>（17.45%）和 <strong>WAN-Action</strong>（10.98%）；在所有 7 个未见任务上均超越基线，例如 open microwave 达 59.00%、stamp seal 达 47.00%、place empty cup 达 84.87%。</li><li>真实世界评估：<strong>object-to-container placement</strong> 成功率 53.3%（基线 43.3%），<strong>three-object sequential manipulation</strong> 成功率 33.3%（基线 10.0%），<strong>two-table-leg insertion</strong> 成功率 16.7%（基线 0.0%）。</li><li>消融实验显示：仅加入人类视频指令（无大规模预训练）使平均成功率从 10.98% 提升到 36.36%；加入 IFP 后平均成功率从 28.55% 提升到 46.95%；任务平衡机器人数据使纯文本 Zero-WAM 变体达到 39.44%，超过 LingBot-VA 21.99 个百分点。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2608.26067/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

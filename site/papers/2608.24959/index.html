@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GaussVLA: Geometry-Aware Spatial Reasoning for Vision-Language-Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 GaussVLA，一种几何感知的视觉-语言-动作（VLA）模型，旨在解决现有 VLA 模型将视觉观测编码为缺乏内在几何结构的扁平 2D 标记，且注入的稠密单目深度仅为标量值，无法编码表面方向和几何置信度的问题 通过引入 高斯空间标记化（Gaussian Spatial Tokenizer, GST） 和 深度感知思维链（Depth-Aware Chain-of-Thought, DA-CoT） 模块，为机器人操作提供结构化的空间推理能力 在多个仿真和真实世界基准上验证了模型在空间操作任务中的高效性和鲁棒性，仅用 200M 参数即达到领先性能" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.24959">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.24959.webp" alt="GaussVLA: Geometry-Aware Spatial Reasoning for Vision-Language-Action Model" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 GaussVLA，一种几何感知的视觉-语言-动作（VLA）模型，旨在解决现有 VLA 模型将视觉观测编码为缺乏内在几何结构的扁平 2D 标记，且注入的稠密单目深度仅为标量值，无法编码表面方向和几何置信度的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GaussVLA: Geometry-Aware Spatial Reasoning for Vision-Language-Action Model</h1>
+            <div class="detail-meta">2026-08-25 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.24959" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.24959" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.24959</span></div>
+            <p class="detail-summary">提出 GaussVLA，一种几何感知的视觉-语言-动作（VLA）模型，旨在解决现有 VLA 模型将视觉观测编码为缺乏内在几何结构的扁平 2D 标记，且注入的稠密单目深度仅为标量值，无法编码表面方向和几何置信度的问题 通过引入 高斯空间标记化（Gaussian Spatial Tokenizer, GST） 和 深度感知思维链（Depth-Aware Chain-of-Thought, DA-CoT） 模块，为机器人操作提供结构化的空间推理能力 在多个仿真和真实世界基准上验证了模型在空间操作任务中的高效性和鲁棒性，仅用 200M 参数即达到领先性能</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者所属机构包括 Yeungnam University 和 Kyungpook National U…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.24959/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">提出 GaussVLA，一种几何感知的视觉-语言-动作（VLA）模型，旨在解决现有 VLA 模型将视觉观测编码为缺乏内在几何结构的扁平 2D 标记，且注入的稠密单目深度仅为标量值，无法编码表面方向和几何置信度的问题</p>
+  <ul class="reading-intro-points"><li>提出 GaussVLA，一种几何感知的视觉-语言-动作（VLA）模型，旨在解决现有 VLA 模型将视觉观测编码为缺乏内在几何结构的扁平 2D 标记，且注入的稠密单目深度仅为标量值，无法编码表面方向和几何置信度的问题</li><li>通过引入 高斯空间标记化（Gaussian Spatial Tokenizer, GST） 和 深度感知思维链（Depth-Aware Chain-of-Thought, DA-CoT） 模块，为机器人操作提供结构化的空间推理能力</li><li>在多个仿真和真实世界基准上验证了模型在空间操作任务中的高效性和鲁棒性，仅用 200M 参数即达到领先性能</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者所属机构包括 <strong>Yeungnam University</strong> 和 <strong>Kyungpook National University</strong>（韩国）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>GaussVLA</strong>，一种几何感知的视觉-语言-动作（VLA）模型，旨在解决现有 VLA 模型将视觉观测编码为缺乏内在几何结构的扁平 2D 标记，且注入的稠密单目深度仅为标量值，无法编码表面方向和几何置信度的问题</li><li>通过引入 <strong>高斯空间标记化（Gaussian Spatial Tokenizer, GST）</strong> 和 <strong>深度感知思维链（Depth-Aware Chain-of-Thought, DA-CoT）</strong> 模块，为机器人操作提供结构化的空间推理能力</li><li>在多个仿真和真实世界基准上验证了模型在空间操作任务中的高效性和鲁棒性，仅用 200M 参数即达到领先性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>高斯空间标记化（GST）</strong>：将冻结的语义和深度特征提升为紧凑的 3D 高斯原语，每个原语由 3D 均值、协方差和表示深度感知置信度的不透明度参数化，并通过空间注意力池化聚合几何显著区域</li><li><strong>深度感知思维链（DA-CoT）</strong>：引入结构化的非自回归推理条件模块，使用少量可学习查询在联合语言和流时间条件下交叉关注 GST 标记，将推理表示锚定于动作预测目标</li><li><strong>高效统一框架</strong>：将 GST 和 DA-CoT 集成到基于 Mamba 的序列建模主干中，在保持实时推理的同时实现较低的计算开销，并在一系列基准上取得与当前最先进方法相当的性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用<strong>双流视觉编码</strong>：冻结的 <strong>SigLIP</strong> 提取语义特征，冻结的 <strong>Depth Anything V2</strong> 提取逐块深度，形成语义-深度对齐的 2D 表示</li><li><strong>GST</strong> 通过可学习的仿射校正和背投影将深度转换为 3D 坐标，并预测每个块的残差均值偏移、对数尺度和置信度，然后通过 3D 傅里叶位置编码和空间注意力池化生成紧凑的几何感知标记</li><li><strong>DA-CoT</strong> 使用可学习的推理查询，通过自注意力和与 GST 标记的交叉注意力进行多步精炼，输出结构化的推理标记，并引入辅助损失使推理标记与目标流速度对齐</li><li>整体采用 <strong>Mamba</strong> 主干进行线性时间序列建模，结合 <strong>流匹配（flow matching）</strong> 动作预测头生成连续动作轨迹</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>LIBERO</strong>（含 Spatial、Object、Goal、Long 四个子集）、<strong>LIBERO-PRO</strong>（鲁棒性测试）、<strong>Meta-World</strong>（难度分层）、<strong>CALVIN</strong>（长序列泛化）</li><li>真实世界：<strong>SO-101</strong> 机器人平台，使用 RealSense 相机，包含多任务和 Pick-Place 的分布内/分布外测试</li><li>模型总参数量约 <strong>200M</strong>（可训练参数约 <strong>179M</strong>），核心视觉编码器（SigLIP、Depth Anything V2、CLIP 文本编码器）保持冻结</li><li>训练使用 <strong>AdamW</strong> 优化器，学习率 2.5×10⁻⁵，批量大小 256，BF16 精度；推理在 <strong>NVIDIA RTX Pro 6000 Blackwell</strong> 上达到 12.97 ms/步</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>在 <strong>LIBERO</strong> 上平均成功率 <strong>93.5%</strong>，其中 Spatial 子集达到 <strong>100.0%</strong>，相比 SpatialVLA 相对提升 19.7%，且参数效率显著更高</li><li>在 <strong>LIBERO-PRO</strong> 上展现了较强的鲁棒性，在扰动条件下保持高成功率</li><li>在 <strong>Meta-World</strong> 的 Easy、Mid、Hard、Very Hard 分档上均取得有竞争力的表现，并在 <strong>CALVIN</strong> 长序列任务中验证了时序泛化能力</li><li>真实世界 <strong>SO-101</strong> 实验中，多任务和 Pick-Place 任务的成功率优于对比基线，展示了良好的 sim-to-real 迁移能力</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.25308/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">V-Link: Recovering Lost Visual Representations in Action DiT for Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.24882/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Latent Action as Intention Enables Efficient Future Imagination for World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

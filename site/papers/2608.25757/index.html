@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LM-X: Explainable Action Modeling with Progress, Event, and Uncertainty Prediction for Generalist Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有通用视觉-语言-动作（VLA）策略将行为压缩为短时动作预测，仅输出动作指令，同时存在单目标监督瓶颈（任务进展、中间意图、动作可靠性无独立监督目标）和控制可观测性瓶颈（执行时无法暴露策略的判断），难以满足长时操作的解释和诊断需求 论文提出LM-X，受生物感觉运动层级组织启发，设计三个跨时间尺度的显式预测信号，将可解释性内化为控制的组成部分，而非事后附加的归因 研究目标是证明多时间尺度预测状态是提升控制性能与提供策略内在可解释性的实用接口，同时验证三个信号的时间行为对应性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.25757">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.25757.webp" alt="LM-X: Explainable Action Modeling with Progress, Event, and Uncertainty Prediction for Generalist Robot Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有通用视觉-语言-动作（VLA）策略将行为压缩为短时动作预测，仅输出动作指令，同时存在单目标监督瓶颈（任务进展、中间意图、动作可靠性无独立监督目标）和控制可观测性瓶颈（执行时无法暴露策略的判断），难以满足长时操作的解释和诊断需求</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">LM-X: Explainable Action Modeling with Progress, Event, and Uncertainty Prediction for Generalist Robot Manipulation</h1>
+            <div class="detail-meta">2026-08-26 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.25757" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.25757" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.25757</span></div>
+            <p class="detail-summary">现有通用视觉-语言-动作（VLA）策略将行为压缩为短时动作预测，仅输出动作指令，同时存在单目标监督瓶颈（任务进展、中间意图、动作可靠性无独立监督目标）和控制可观测性瓶颈（执行时无法暴露策略的判断），难以满足长时操作的解释和诊断需求 论文提出LM-X，受生物感觉运动层级组织启发，设计三个跨时间尺度的显式预测信号，将可解释性内化为控制的组成部分，而非事后附加的归因 研究目标是证明多时间尺度预测状态是提升控制性能与提供策略内在可解释性的实用接口，同时验证三个信号的时间行为对应性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Humanoid Robot (Shanghai) Co., Ltd.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="../../covers/2608.25757/">封面预览</a>
+  </div>
+  <p class="reading-intro-hook">现有通用视觉-语言-动作（VLA）策略将行为压缩为短时动作预测，仅输出动作指令，同时存在单目标监督瓶颈（任务进展、中间意图、动作可靠性无独立监督目标）和控制可观测性瓶颈（执行时无法暴露策略的判断），难以满足长时操作的解释和诊断需求</p>
+  <ul class="reading-intro-points"><li>现有通用视觉-语言-动作（VLA）策略将行为压缩为短时动作预测，仅输出动作指令，同时存在单目标监督瓶颈（任务进展、中间意图、动作可靠性无独立监督目标）和控制可观测性瓶颈（执行时无法暴露策略的判断），难以满足长时操作的解释和诊断需求</li><li>论文提出LM-X，受生物感觉运动层级组织启发，设计三个跨时间尺度的显式预测信号，将可解释性内化为控制的组成部分，而非事后附加的归因</li><li>研究目标是证明多时间尺度预测状态是提升控制性能与提供策略内在可解释性的实用接口，同时验证三个信号的时间行为对应性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>Humanoid Robot (Shanghai) Co., Ltd.</li><li>E-surfing Digital Life Technology Co., Ltd., China Telecom</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有通用视觉-语言-动作（VLA）策略将行为压缩为短时动作预测，仅输出动作指令，同时存在<strong>单目标监督瓶颈</strong>（任务进展、中间意图、动作可靠性无独立监督目标）和<strong>控制可观测性瓶颈</strong>（执行时无法暴露策略的判断），难以满足长时操作的解释和诊断需求</li><li>论文提出<strong>LM-X</strong>，受生物感觉运动层级组织启发，设计三个跨时间尺度的显式预测信号，将可解释性内化为控制的组成部分，而非事后附加的归因</li><li>研究目标是证明多时间尺度预测状态是提升控制性能与提供策略内在可解释性的实用接口，同时验证三个信号的时间行为对应性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出VLA策略的双瓶颈问题框架，明确区分了单目标监督不足与控制状态不可观测两个独立的局限性</li><li>设计<strong>LM-X</strong>，一个脑启发的可解释VLA，包含三个显式且可直接监督的预测信号：返回剩余（RTG，任务尺度进度）、事件剩余（ETG，事件尺度中间意图）、异方差动作流方差（动作尺度可靠性），三个信号均在线输出并参与动作生成路径</li><li>提出<strong>成本感知预训练门控</strong>方法，在启动20天的大规模预训练前，通过5个任务的受控消融验证三个模块的互补增益，避免昂贵的无效预训练</li><li>构建了包含20000+小时实体机器人轨迹（含1000+小时失败策略 rollout）的数据集，提出可扩展的结果与事件标注流程，支持跨多种机器人实体的预训练</li><li>在RoboTwin2.0仿真基准与4种实体、7个真实任务上验证，LM-X控制性能显著优于GR00T N1.7，且三个预测信号表现出对应的时间行为特征</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>LM-X基于<strong>Cosmos-Reason2-2B</strong>视觉-语言 backbone 构建，总参数量约60亿，与GR00T N1.7使用同系列 backbone</li><li>采用分层信息流架构：RTG专家为2层Transformer，仅接收视觉-语言表征，输出128分箱的有序进度分布，优化平滑L1损失；事件专家与动作专家均为32层Diffusion Transformer，使用flow matching训练，事件专家额外接收本体感受与RTG，输出60步长的事件动作块（填充至固定长度），动作专家接收视觉-语言表征、本体感受、RTG与事件专家隐表征，预测动作均值与对数方差，优化高斯负对数似然损失</li><li>提出异方差动作流方差传播方法，通过前向欧拉数值积分与Hutchinson估计器近似对角协方差，将局部速度方差传播至最终动作空间，得到可解释的动作可靠性指标</li><li>预训练阶段联合优化三个加权损失，后训练阶段保持三个预测头全程激活，适配任务特定的下游演示</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>训练数据集包含超过20000小时的实体机器人轨迹，其中超过1000小时为失败策略 rollout（由ACT、Diffusion Policy、π系列、GR00T-based agent生成），同时融合公开实体机器人数据集，覆盖单臂、双臂、人形共15种以上机器人实体，任务涵盖分拣、插入、可变形物体操作、擦拭等类型</li><li>标注流程为：每个 episode 标注终端成功/失败结果，反向计算返回剩余（RTG）作为密集进度监督；事件标注采用任务特定信号（夹爪过渡、插入对齐标记、可变形操作速度极小值、擦拭接触+运动反转）提出候选时间步，经人工验证后得到统一的事件动作块监督目标</li><li>模型总参数量约60亿，基于Cosmos-Reason2-2B视觉-语言 backbone 扩展三个预测头</li><li>训练资源：大规模预训练使用64块NVIDIA B200 GPU，总训练时长约20天；后训练与真实世界评估在对应机器人实体上完成</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真环境为RoboTwin2.0基准，包含50个随机困难任务，使用Aloha-AgileX实体；真实世界环境包含4种实体（Astribot S1、Tianji-Marvin、Loong S1、AgileX-Aloha）的7个任务，涵盖精密插入、长时整理、可变形操作、双臂协调等多种类型</li><li>评估基准：与<strong>GR00T N1.7</strong>进行端到端对比，两者使用相同的下游演示预算（仿真每个任务50个演示，每个任务评估100次；真实每个任务20次，每个任务评估20次）</li><li>主要评估指标：平均二元任务成功率（百分比），RTG与方差信号分析其时间行为对应性，不做校准检测评估</li><li>关键实验结果：</li></ul>
+<p> - 预训练门控消融：LM-X在5个held-out任务上平均成功率为79.6%，比纯动作backbone的63.6%高16.0个百分点，比最强的单组件变体高10.8个百分点，验证三个模块的互补增益</p>
+<p> - 仿真RoboTwin2.0基准：LM-X平均成功率为74.1%，GR00T N1.7为55.4%，高18.7个百分点，50个任务中48个任务优于或持平GR00T</p>
+<p> - 真实世界评估：LM-X平均成功率为68.6%，GR00T N1.7为50.7%，高17.9个百分点，7个任务中5个优于、1个持平、1个弱于</p>
+<p> - 信号对应性：RTG可响应语义进展与局部执行回归，动作方差在犹豫与振荡时升高，三个信号表现出明确的时间行为对应关系</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.25798/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">TacForcing: Streaming Action Generation with Execution-Time Tactile Feedback</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.25659/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">GaussianDream++: Efficient 3D Gaussian World Modeling for Robotic Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
