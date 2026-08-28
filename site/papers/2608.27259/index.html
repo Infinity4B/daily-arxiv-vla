@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文聚焦世界动作模型（World Action Models, WAMs）的架构设计，首次将过渡实现（transition realization）定义为与预测表示、预测-策略耦合并列的独立架构选择维度，明确其是影响WAM性能的关键变量 现有潜在WAM普遍采用基于Transformer的过渡预测器，其归纳结构围绕token交互而非时间演化过程设计，无法显式建模状态在语义与动作条件下的动态变化规律 论文目标是提出基于显式演化机制的过渡实现方案，验证其在不同WAM框架下的有效性，提升机器人策略的闭环性能与分布偏移鲁棒性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.27259">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.27259.webp" alt="Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文聚焦世界动作模型（World Action Models, WAMs）的架构设计，首次将过渡实现（transition realization）定义为与预测表示、预测-策略耦合并列的独立架构选择维度，明确其是影响WAM性能的关键变量</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models</h1>
+            <div class="detail-meta">2026-08-27 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.27259" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.27259" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.27259</span></div>
+            <p class="detail-summary">本文聚焦世界动作模型（World Action Models, WAMs）的架构设计，首次将过渡实现（transition realization）定义为与预测表示、预测-策略耦合并列的独立架构选择维度，明确其是影响WAM性能的关键变量 现有潜在WAM普遍采用基于Transformer的过渡预测器，其归纳结构围绕token交互而非时间演化过程设计，无法显式建模状态在语义与动作条件下的动态变化规律 论文目标是提出基于显式演化机制的过渡实现方案，验证其在不同WAM框架下的有效性，提升机器人策略的闭环性能与分布偏移鲁棒性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">华中科技大学人工智能与自动化学院（School of Artificial Intelligence…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文聚焦世界动作模型（World Action Models, WAMs）的架构设计，首次将过渡实现（transition realization）定义为与预测表示、预测-策略耦合并列的独立架构选择维度，明确其是影响WAM性能的关键变量</p>
+  <ul class="reading-intro-points"><li>本文聚焦世界动作模型（World Action Models, WAMs）的架构设计，首次将过渡实现（transition realization）定义为与预测表示、预测-策略耦合并列的独立架构选择维度，明确其是影响WAM性能的关键变量</li><li>现有潜在WAM普遍采用基于Transformer的过渡预测器，其归纳结构围绕token交互而非时间演化过程设计，无法显式建模状态在语义与动作条件下的动态变化规律</li><li>论文目标是提出基于显式演化机制的过渡实现方案，验证其在不同WAM框架下的有效性，提升机器人策略的闭环性能与分布偏移鲁棒性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>华中科技大学人工智能与自动化学院（School of Artificial Intelligence and Automation, Huazhong University of Science and Technology）</li><li>Principia AI</li><li>通讯作者：Ye Yuan，联系邮箱yye@hust.edu.cn</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文聚焦<strong>世界动作模型（World Action Models, WAMs）</strong>的架构设计，首次将<strong>过渡实现（transition realization）</strong>定义为与预测表示、预测-策略耦合并列的独立架构选择维度，明确其是影响WAM性能的关键变量</li><li>现有潜在WAM普遍采用基于Transformer的过渡预测器，其归纳结构围绕token交互而非时间演化过程设计，无法显式建模状态在语义与动作条件下的动态变化规律</li><li>论文目标是提出基于显式演化机制的过渡实现方案，验证其在不同WAM框架下的有效性，提升机器人策略的闭环性能与分布偏移鲁棒性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别出<strong>潜在过渡实现</strong>是WAM的一类首要架构选择，明确其与预测表示、预测-策略耦合的区别，提出将过渡建模为显式演化机制而非通用条件变换的新视角</li><li>提出<strong>潜在演化算子网络（Latent Evolution Operator Network, LEON）</strong>，在学习的可观测空间中通过上下文调制的基于算子的传播与加法强制项实现过渡，理论基于受控Koopman生成器观点，用共享低秩算子子空间组织上下文相关的演化变化</li><li>通过受控动力系统实验与WAM层面的机器人操作任务验证，证明LEON的演化特定归纳偏置的有效性，以及算子传播与加法强制项的互补作用，在两个不同预测-策略耦合的WAM上均取得性能提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>LEON的核心流程为：首先将当前视觉潜态$X$通过可观测映射$\phi$得到学习的可观测坐标$H=\phi(X)$；再结合条件表示$Z$构造过渡上下文$\xi=C(H,Z)$，整合语义与动作相关的条件信息</li><li>过渡更新采用结构化算子形式：单观测的更新为$\Delta h_i = A(\xi_i)h_i + b(\xi_i)$，其中$A(\xi_i)$是上下文调制的演化算子，采用低秩分解形式$A(\xi_i)=D + \sum_{k=1}^r \alpha_k(\xi_i)B_k$，$D$为上下文无关的基线算子，$\{B_k\}$为共享的秩1基算子，$\alpha_k(\xi_i)$为上下文相关的系数，在共享算子子空间内调整演化算子的组成；$b(\xi_i)$为加法强制项，提供算子传播之外的额外上下文相关变化</li><li>最终通过学习的读出头$\psi$将更新后的可观测态映射回WAM的预测空间，得到未来潜态预测结果</li><li>创新点：受控Koopman生成器理论指导，显式将演化结构建模为共享算子子空间内的上下文调制，区分乘法演化传播与加法强制变化的互补路径，可适配不同WAM的条件接口，仅替换过渡模块即可接入现有WAM框架</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>受控实验数据集：阻尼弹簧轨迹、非线性摆轨迹、驱动振荡器轨迹</li><li>机器人操作任务数据集：<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin</strong></li><li>模型规模：LEON为轻量模块，仅替换现有WAM的过渡实现部分，算子基数量$r$为可配置超参数，未对原有WAM的骨干网络做大规模修改</li><li>训练资源：原文未明确说明具体GPU/TPU硬件配置，基于现有VLA-JEPA与LaWAM框架进行模块级训练与微调</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：①受控动力系统环境（阻尼弹簧、非线性摆、驱动振荡器，用于直接评估过渡架构的归纳偏置）；②机器人操作闭环环境（LIBERO、LIBERO-Plus、RoboTwin，用于评估WAM层面的策略性能）</li><li>主要评估指标：受控实验为预测精度与训练范围外外推性能；机器人任务为闭环任务成功率、分布偏移下的鲁棒性</li><li>关键实验结果：</li></ul>
+<p> - 受控实验中，LEON在阻尼弹簧、非线性摆的训练范围外预测任务上均显著优于Transformer基线，验证了其演化特定归纳偏置的外推优势；驱动振荡器的干预实验证明算子传播承载核心预测结构，加法强制项提供互补贡献</p>
+<p> - 在表示介导耦合的<strong>VLA-JEPA</strong>上，LEON在LIBERO上达到99.05%平均成功率，较原Transformer过渡实现提升1.85个百分点；在LIBERO-Plus上达到80.6%聚合成功率，优于原基线的79.5%，在视觉与环境扰动场景下提升明显</p>
+<p> - 在策略面向耦合的<strong>LaWAM</strong>上，替换为LEON后在RoboTwin四任务子集上达到84.13%聚合成功率，接近原基线的84.50%，证明该方法在不同预测-策略耦合框架下均有效</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.27384/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">FlashVLA: Streaming Action Decoding for Fast and Asynchronous VLA Inference</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.27079/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">GRAFT: Grounded and Efficient Online Reinforcement Adaptation for Fine-Grained Robot Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

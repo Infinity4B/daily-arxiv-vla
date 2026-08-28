@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TemporalFlow-VLA: Learning Physically Grounded Execution History for Long-Horizon Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有VLA模型在长时序机器人操作中，仅简单添加历史帧无法可靠捕捉近期的物理变化，视觉相似但执行历史不同的状态易导致动作混淆，多阶段操作中该问题尤为突出 论文提出TemporalFlow-VLA，通过学习物理 grounding 的紧凑执行历史表示，解决长时序机器人操作的状态歧义问题 研究目标是在不增加部署时计算开销的前提下，提升模型在长时序、多阶段操作任务上的成功率" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.26821">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.26821.webp" alt="TemporalFlow-VLA: Learning Physically Grounded Execution History for Long-Horizon Robot Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有VLA模型在长时序机器人操作中，仅简单添加历史帧无法可靠捕捉近期的物理变化，视觉相似但执行历史不同的状态易导致动作混淆，多阶段操作中该问题尤为突出</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TemporalFlow-VLA: Learning Physically Grounded Execution History for Long-Horizon Robot Manipulation</h1>
+            <div class="detail-meta">2026-08-27 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.26821" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.26821" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.26821</span></div>
+            <p class="detail-summary">现有VLA模型在长时序机器人操作中，仅简单添加历史帧无法可靠捕捉近期的物理变化，视觉相似但执行历史不同的状态易导致动作混淆，多阶段操作中该问题尤为突出 论文提出TemporalFlow-VLA，通过学习物理 grounding 的紧凑执行历史表示，解决长时序机器人操作的状态歧义问题 研究目标是在不增加部署时计算开销的前提下，提升模型在长时序、多阶段操作任务上的成功率</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者所属机构包括：The Hong Kong University of Science and Te…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有VLA模型在长时序机器人操作中，仅简单添加历史帧无法可靠捕捉近期的物理变化，视觉相似但执行历史不同的状态易导致动作混淆，多阶段操作中该问题尤为突出</p>
+  <ul class="reading-intro-points"><li>现有VLA模型在长时序机器人操作中，仅简单添加历史帧无法可靠捕捉近期的物理变化，视觉相似但执行历史不同的状态易导致动作混淆，多阶段操作中该问题尤为突出</li><li>论文提出TemporalFlow-VLA，通过学习物理 grounding 的紧凑执行历史表示，解决长时序机器人操作的状态歧义问题</li><li>研究目标是在不增加部署时计算开销的前提下，提升模型在长时序、多阶段操作任务上的成功率</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者所属机构包括：<strong>The Hong Kong University of Science and Technology (Guangzhou)</strong>（中国广州）、<strong>Zhejiang University</strong>（中国杭州）、<strong>Simon Fraser University</strong>（加拿大本拿比）、<strong>AgiBot</strong>（中国上海）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有<strong>VLA模型</strong>在长时序机器人操作中，仅简单添加历史帧无法可靠捕捉近期的物理变化，视觉相似但执行历史不同的状态易导致动作混淆，多阶段操作中该问题尤为突出</li><li>论文提出<strong>TemporalFlow-VLA</strong>，通过学习物理 grounding 的紧凑执行历史表示，解决长时序机器人操作的状态歧义问题</li><li>研究目标是在不增加部署时计算开销的前提下，提升模型在长时序、多阶段操作任务上的成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>运动学 grounding 的机器人表面时间流</strong>：利用机器人关节状态、URDF几何模型与标定相机参数，将机器人表面运动投影到策略RGB图像平面，生成可解释的训练监督信号，无需人工标注或部署时额外传感器</li><li>设计<strong>分层时间查询与联合掩码注意力机制</strong>：提出两个块对齐的可学习时间查询$Q_8$（对应t-8到t的近期运动）与$Q_{15}$（对应t-15到t的全时段运动），采用有向注意力掩码形成层级结构，动作专家仅能通过这两个查询获取历史信息，无法直接访问历史图像块</li><li>提出<strong>异步历史特征缓存机制</strong>：将历史视觉特征编码与当前动作块执行重叠进行，存储在时间戳环形缓冲区中，重规划时直接调用缓存特征，消除时序条件带来的额外推理开销</li><li>通过仿真与真实机器人实验验证方法的有效性与实用性，在多个基准上取得优异性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础架构：在预训练<strong>π0.5 VLA</strong>的原有动作生成路径上，新增并行时间通路，保留当前RGB观察、语言指令、机器人状态输入的动作预测能力；对于16步的动作块，t-15与t-8分别对应上一个动作块的起始与中点位置，覆盖完整上一块与近期半块的历史信息</li><li>时间流监督生成：仅训练时使用机器人运动学信息生成机器人表面时间流标签，通过3D表面点运动学变换、相机投影、最近邻匹配等步骤将运动投影到2D图像平面，作为时间查询的监督目标，部署时不使用该几何监督路径</li><li>分层时间查询设计：$Q_8$仅能访问语言token、t-8帧特征、当前帧特征与自身，专注于编码近期运动；$Q_{15}$额外可访问t-15帧特征与$Q_8$，在$Q_8$的近期运动摘要基础上整合长期历史，两个查询通过独立的FiLM调制解码器重建对应时间间隔的时间流</li><li>异步缓存优化：历史观察的特征编码在机器人执行当前动作块的后台进程中完成并存入缓存，重规划时仅需同步编码当前帧特征，大幅降低推理延迟</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用仿真数据集：<strong>LIBERO</strong>（包含Spatial、Object、Goal、Long四个子任务集）、<strong>RoboTwin 2.0</strong>（包含12个不同操作难度的任务，按执行步数分为H1/H2/H3三组）</li><li>模型基础为<strong>π0.5 VLA</strong>，时间查询维度为2048维，历史视觉特征维度为$16 \times 16 \times 2048$</li><li>训练硬件：8块<strong>NVIDIA H100 GPU</strong>，单GPU批大小为32；LIBERO训练30k步，RoboTwin 2.0训练60k步，每个任务使用50条干净演示与500条随机化演示</li><li>添加时序模块与辅助流解码器后，训练耗时为基线的约1.2倍，部署时无额外计算开销</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真基准（LIBERO、RoboTwin 2.0）、真实机器人操作场景；对比基线包括π0、π0.5、GR00T N1.7、CronusVLA、HAMLET、MotionVLA、X-VLA、GigaWorld等主流VLA方法</li><li>主要评估指标：任务成功率（%）、推理延迟</li><li>关键实验结果：</li></ul>
+<p> - 在<strong>LIBERO</strong>上平均成功率达到$\boldsymbol{97.63 \pm 0.26\%}$，其中<strong>LIBERO Long</strong>子集成功率为$\boldsymbol{96.60 \pm 0.87\%}$，优于所有对比VLA方法</p>
+<p> - 在<strong>RoboTwin 2.0</strong>上整体平均成功率为<strong>85.5%（Clean）/84.2%（Randomized）</strong>，在长时序、多阶段任务（H3组）上的性能提升最为显著，如Stack Blocks Three任务成功率比基线最高提升21个百分点</p>
+<p> - 异步缓存机制保证时序条件的推理延迟与单帧采样的服务器端延迟一致，无额外历史编码开销</p>
+<p> - 消融实验验证了时间查询、分层注意力、异步缓存各组件的有效性，历史干预实验证明动作预测同时依赖历史内容与时间顺序</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.27033/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Riemann-1.0: An Embodied World Action Model for Physical AI</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.26788/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Decoupling Planning and Control for Instructable Agents</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
