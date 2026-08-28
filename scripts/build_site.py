@@ -559,13 +559,11 @@ def render_paper_figure(record: Dict[str, object], image_src: str, context: str)
 
 def render_detail_intro(record: Dict[str, object]) -> str:
     point_items = "".join(f"<li>{escape(point)}</li>" for point in record["key_points"])  # type: ignore[index]
-    cover_link = f"../../covers/{record['page_dir']}/"
 
     return f"""
 <section class="reading-card reading-card-intro">
   <div class="reading-card-topline">
     <span class="reading-badge">一眼看懂</span>
-    <a class="cover-preview-link" data-analytics-event="paper_cover_open" href="{escape(cover_link, quote=True)}">封面预览</a>
   </div>
   <p class="reading-intro-hook">{escape(str(record["hook_text"]))}</p>
   <ul class="reading-intro-points">{point_items}</ul>
