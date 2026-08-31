@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PHR-VLA: Planning Horizon Reasoning for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 PHR-VLA 框架，通过特权隐式动力学（privileged latent dynamics）为视觉-语言-动作模型（VLA）赋予规划时域推理能力，解决现有 VLA 主要依赖当前观测、缺乏对未来任务动态显式建模的问题。 核心思路：在训练阶段，用一个轻量级辅助未来头将 VLA 内部表示与未来观测的隐式动力学对齐；推理时丢弃未来头和辅助编码器，不增加任何推断延迟或计算开销。 在标准模拟基准（LIBERO、Meta-World）和真实世界接触丰富的拆解任务上验证了有效性。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.27609">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.27609.webp" alt="PHR-VLA: Planning Horizon Reasoning for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 PHR-VLA 框架，通过特权隐式动力学（privileged latent dynamics）为视觉-语言-动作模型（VLA）赋予规划时域推理能力，解决现有 VLA 主要依赖当前观测、缺乏对未来任务动态显式建模的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">PHR-VLA: Planning Horizon Reasoning for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-08-27 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.27609" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.27609" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.27609</span></div>
+            <p class="detail-summary">提出 PHR-VLA 框架，通过特权隐式动力学（privileged latent dynamics）为视觉-语言-动作模型（VLA）赋予规划时域推理能力，解决现有 VLA 主要依赖当前观测、缺乏对未来任务动态显式建模的问题。 核心思路：在训练阶段，用一个轻量级辅助未来头将 VLA 内部表示与未来观测的隐式动力学对齐；推理时丢弃未来头和辅助编码器，不增加任何推断延迟或计算开销。 在标准模拟基准（LIBERO、Meta-World）和真实世界接触丰富的拆解任务上验证了有效性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Texas A&amp;M University（德克萨斯A&amp;M大学）J. Mike Walker &#x27;66 机…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 PHR-VLA 框架，通过特权隐式动力学（privileged latent dynamics）为视觉-语言-动作模型（VLA）赋予规划时域推理能力，解决现有 VLA 主要依赖当前观测、缺乏对未来任务动态显式建模的问题。</p>
+  <ul class="reading-intro-points"><li>提出 PHR-VLA 框架，通过特权隐式动力学（privileged latent dynamics）为视觉-语言-动作模型（VLA）赋予规划时域推理能力，解决现有 VLA 主要依赖当前观测、缺乏对未来任务动态显式建模的问题。</li><li>核心思路：在训练阶段，用一个轻量级辅助未来头将 VLA 内部表示与未来观测的隐式动力学对齐；推理时丢弃未来头和辅助编码器，不增加任何推断延迟或计算开销。</li><li>在标准模拟基准（LIBERO、Meta-World）和真实世界接触丰富的拆解任务上验证了有效性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Texas A&M University</strong>（德克萨斯A&M大学）J. Mike Walker '66 机械工程系</li><li><strong>Purdue University</strong>（普渡大学）工业工程系</li><li><strong>Texas A&M University</strong> Zachry 土木与环境工程系</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>PHR-VLA</strong> 框架，通过<strong>特权隐式动力学</strong>（privileged latent dynamics）为视觉-语言-动作模型（VLA）赋予<strong>规划时域推理</strong>能力，解决现有 VLA 主要依赖当前观测、缺乏对未来任务动态显式建模的问题。</li><li>核心思路：在训练阶段，用一个轻量级辅助未来头将 VLA 内部表示与未来观测的隐式动力学对齐；推理时丢弃未来头和辅助编码器，<strong>不增加任何推断延迟或计算开销</strong>。</li><li>在标准模拟基准（LIBERO、Meta-World）和真实世界接触丰富的拆解任务上验证了有效性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>PHR-VLA</strong> 框架，利用特权未来潜在表示作为训练信号，使策略在不进行显式未来 rollout 或世界模型推理的情况下编码未来任务演化信息。</li><li>系统性研究了<strong>相机视角</strong>（手腕、第三人称、多相机）、<strong>目标粒度</strong>（patch级 vs. 均值）、<strong>目标形式</strong>（绝对隐状态 vs. 隐动力学）、<strong>编码器选择</strong>（SigLIP vs. JEPA）以及<strong>损失权重</strong> λ 对规划时域推理的影响。</li><li>实验发现：<strong>短时域、局部、接触中心</strong>的信号最有效；手腕相机的 patch 级监督将 <strong>LIBERO</strong> 成功率从 84.1% 提升至 88.4%，真实世界拆解任务从 63.3% 提升至 82.5%；第三人称相机 patch 级监督将 <strong>Meta-World</strong> 成功率从 56.7% 提升至 57.8%。</li><li>推理时保留原始 SmolVLA 动作生成流程，<strong>零额外延迟和内存开销</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用 <strong>SmolVLA (0.45B)</strong> 作为基线 VLA，其包含紧凑的 SmolVLM-2 骨干和流匹配动作头，预测连续动作块。</li><li>训练时，将规划时域内的未来观测帧通过<strong>冻结的视觉编码器</strong>（如 SigLIP 或 V-JEPA 2）编码，计算<strong>规划时域潜在动力学</strong>：<code>y = s_{t+1:t+H} - s_{t:t+H-1}</code>，强调场景表示的变化而非静态内容。</li><li>从 VLM 骨干输出的<strong>动作 token 表示</strong> z_t 出发，附加轻量级未来头 g_φ 预测上述动力学目标，并与标准 VLA 损失联合优化：<code>L_PHR-VLA = L_VLA + λ * L_Align</code>，其中 L_Align 为预测与特权目标之间的均方误差（MSE）。</li><li>推理时直接丢弃未来头和冻结编码器，仅保留标准动作头，因此<strong>不改变部署计算图</strong>。</li><li>创新点：无需显式未来预测或额外推理模块，通过“特权蒸馏”方式将预测性信息压缩进策略表征。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>模拟基准：<strong>LIBERO</strong>（语言条件桌面操作，4个任务套件，每套300次试验）、<strong>Meta-World</strong>（多任务模拟操作，覆盖 Easy/Medium/Hard/Very Hard 难度）。</li><li>真实世界数据集：<strong>4 类接触丰富拆解任务</strong>（如按压卡扣取出、从松动轴取出、滑动取出、扭转90°取出等），每任务 100 条人类遥操作演示，RGB 图像来自固定第三人称相机和手腕相机，10 Hz 同步采集。</li><li>模型规模：<strong>SmolVLA (0.45B)</strong>；评测在<strong>单张 A100 GPU</strong> 上微调，同一设置下进行公平对比。</li><li>计算资源：部分研究使用 <strong>Texas A&M 高性能计算资源</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO</strong>：PHR-VLA（手腕相机、patch 级、动力学监督、λ=0.02）平均成功率 <strong>88.4%</strong>（vs. SmolVLA 84.1%），其中 LIBERO-Long 提升最大达 +8 个百分点（74.4% vs. 66.0%）。</li><li><strong>Meta-World</strong>：PHR-VLA（第三人称相机、patch 级、动力学监督）平均成功率 <strong>57.8%</strong>（vs. SmolVLA 56.7%）；使用 JEPA 编码器 + 均值监督时可达 59.8%，进一步提升。</li><li><strong>真实世界拆解</strong>：PHR-VLA（SigLIP 编码器、patch 级、动力学监督）平均成功率 <strong>82.5%</strong>（vs. SmolVLA 63.3%、Diffusion Policy 51.7%、ACT 35.8%）；JEPA 版本为 77.5%。</li><li><strong>消融研究</strong>：</li></ul>
+<p> - 相机视角：手腕相机最优（88.4%）> 多相机（88.1%）> 第三人称（86.8%），印证接触中心局部信号更有效。</p>
+<p> - 目标粒度：patch 级优于均值池化（88.4% vs. 86.3%，手腕相机下），保留空间变化信息。</p>
+<p> - 目标形式：动力学监督优于绝对隐状态监督（88.4% vs. 86.7%），避免重建静态背景。</p>
+<p> - 编码器：SigLIP 在 LIBERO 和真实世界更强，JEPA 在 Meta-World 更强（59.8% vs. 57.8%）。</p>
+<p> - 损失权重：λ 从 0.005 增至 0.02 时成功率从 85.8% 增至 88.4%，默认取 0.02。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.28108/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">DeicticVLA: Unifying Instruction Modes Based on Language and Deictic Gestures in a Single VLA</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.27550/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Beyond Data Scaling: Representation-Centric Continued Pre-training for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
