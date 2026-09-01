@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Temporal Forcing: 4D Representation Alignment for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有视觉-语言-动作（VLA）模型通过3D场景几何对齐提升操作性能，但仅能捕捉当前帧状态，缺乏时序信息，无法应对长程操作中的观察混淆、物体状态变化追踪和任务进度判断问题 论文提出Temporal Forcing方法，通过引入历史感知路径和对齐预训练4D基础模型的时序一致几何表征，为VLA模型补充时序建模能力 该方法在仿真和真实机器人任务上验证有效性，旨在提升VLA在长程复杂操作任务中的成功率" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.30643">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.30643.webp" alt="Temporal Forcing: 4D Representation Alignment for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有视觉-语言-动作（VLA）模型通过3D场景几何对齐提升操作性能，但仅能捕捉当前帧状态，缺乏时序信息，无法应对长程操作中的观察混淆、物体状态变化追踪和任务进度判断问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Temporal Forcing: 4D Representation Alignment for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-08-31 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.30643" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.30643" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.30643</span></div>
+            <p class="detail-summary">现有视觉-语言-动作（VLA）模型通过3D场景几何对齐提升操作性能，但仅能捕捉当前帧状态，缺乏时序信息，无法应对长程操作中的观察混淆、物体状态变化追踪和任务进度判断问题 论文提出Temporal Forcing方法，通过引入历史感知路径和对齐预训练4D基础模型的时序一致几何表征，为VLA模型补充时序建模能力 该方法在仿真和真实机器人任务上验证有效性，旨在提升VLA在长程复杂操作任务中的成功率</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">南京大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有视觉-语言-动作（VLA）模型通过3D场景几何对齐提升操作性能，但仅能捕捉当前帧状态，缺乏时序信息，无法应对长程操作中的观察混淆、物体状态变化追踪和任务进度判断问题</p>
+  <ul class="reading-intro-points"><li>现有视觉-语言-动作（VLA）模型通过3D场景几何对齐提升操作性能，但仅能捕捉当前帧状态，缺乏时序信息，无法应对长程操作中的观察混淆、物体状态变化追踪和任务进度判断问题</li><li>论文提出Temporal Forcing方法，通过引入历史感知路径和对齐预训练4D基础模型的时序一致几何表征，为VLA模型补充时序建模能力</li><li>该方法在仿真和真实机器人任务上验证有效性，旨在提升VLA在长程复杂操作任务中的成功率</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>南京大学</li><li>中国科学院自动化研究所</li><li>中国科学院大学</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有视觉-语言-动作（VLA）模型通过3D场景几何对齐提升操作性能，但仅能捕捉当前帧状态，缺乏时序信息，无法应对长程操作中的观察混淆、物体状态变化追踪和任务进度判断问题</li><li>论文提出<strong>Temporal Forcing</strong>方法，通过引入历史感知路径和对齐预训练4D基础模型的时序一致几何表征，为VLA模型补充时序建模能力</li><li>该方法在仿真和真实机器人任务上验证有效性，旨在提升VLA在长程复杂操作任务中的成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>指出现有帧级3D几何对齐方法在长程操作中的两项核心局限：无法表征物体状态的时序演变，无法在当前观察不足时消解任务进度的歧义</li><li>提出<strong>Temporal Forcing</strong>框架，为普通VLA模型增加轻量历史路径，并将其时序感知的隐层表征与预训练4D基础模型提取的时序一致几何特征进行对齐</li><li>通过受控实验验证，仅提供历史输入不足以提升性能，只有4D表征对齐能让历史信息被模型有效利用</li><li>在<strong>LIBERO</strong>、<strong>RoboTwin 2.0</strong>和真实多阶段操作任务上取得性能提升，证明方法的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础模型采用基于<strong>Qwen3-VL-4B</strong>的<strong>StarVLA-OFT</strong>，通过L1动作损失回归未来动作块</li><li>引入<strong>History Pathway</strong>：对每路相机的7帧历史帧，使用冻结的DINOv2编码器和Q-Former压缩为gist token，再通过带因果掩码的Transformer和16个学习查询输出固定数量的历史token，最终通过零初始化的门控交叉注意力注入VLA backbone，初始状态下该路径为恒等映射，不影响基础模型输出</li><li>4D表征获取：使用预训练的<strong>StreamVGGT</strong>模型离线提取轨迹的4D几何表征，包括跨因果上下文的<strong>Causal Geometric Features</strong>和当前帧的<strong>Dense Geometric Features</strong></li><li>设计双重对齐损失：时序对齐损失通过state、change、read三项子损失监督历史隐层表征的时序一致性；当前帧对齐损失匹配当前帧图像token与密集几何特征；训练完成后仅保留历史路径和基础VLA模型，移除4D模型和对齐头，推理无额外开销</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：<strong>LIBERO</strong>仿真基准（含Spatial、Object、Goal、Long四个套件）、<strong>RoboTwin 2.0</strong>双臂操作基准（12个选定的多阶段任务）、真实UR3机械臂隐藏放置多阶段任务</li><li>模型规模：基础VLA模型为<strong>Qwen3-VL-4B</strong> backbone的StarVLA-OFT（4B参数）；4D基础模型为预训练的StreamVGGT</li><li>训练资源：主实验使用8块NVIDIA A100 GPU，受控实验使用4块NVIDIA A800 GPU；真实机器人推理使用单块NVIDIA GeForce RTX 5090 GPU，动作推理延迟58ms，满足10Hz控制频率要求</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真环境为LIBERO和RoboTwin 2.0，真实环境为UR3机械臂平台</li><li>评估指标：任务成功率（平均成功率、单任务成功率、全任务累计完成率）</li><li>关键实验结果：<strong>LIBERO</strong>上平均成功率达98.8%，较基础模型提升2.2个百分点，Long套件（最依赖历史信息的多阶段任务）提升最大（93.8%→97.2%）；<strong>RoboTwin 2.0</strong>上平均成功率从53.5%提升至62.8%，12个任务中9个取得提升，双臂交接任务提升最显著（handover block从0%提升至44%，handover mic从39%提升至79%）；真实多阶段任务上，全任务成功率从20.0%提升至43.3%，单阶段任务表现与基础模型持平，证明模型确实利用历史信息而非仅提升单阶段操作技能</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.30880/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Zeva: In-Context Causal Learning for Generalizable Embodied Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.30536/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Behavior-Skill: A Fine-Grained Benchmark for Evaluating Vision-Language-Action Policies in Long-Horizon Tasks</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

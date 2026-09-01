@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zeva: In-Context Causal Learning for Generalizable Embodied Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出Zeva框架，核心解决预训练具身基础模型（VLA、WAM）在真实世界部署时，因遭遇训练阶段未见过的物理条件（如新物体几何、接触动力学、视觉变异、执行误差等）导致性能脆弱、泛化性不足的问题 Zeva 实现上下文因果学习（In-Context Causal Learning, ICCL）新范式：部署阶段完全保持策略模型权重冻结，无需测试时梯度更新，让机器人从自身的物理交互经验中实时学习动作与状态变化的因果关系，实现无梯度的能力自进化 框架不仅支持机器人在同一任务的多次尝试中通过积累交互经验持续提升成功率，获得的因果交互经验还可跨不同任务泛化，适配多样化操作场景" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2608.30880">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2608.30880.webp" alt="Zeva: In-Context Causal Learning for Generalizable Embodied Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出Zeva框架，核心解决预训练具身基础模型（VLA、WAM）在真实世界部署时，因遭遇训练阶段未见过的物理条件（如新物体几何、接触动力学、视觉变异、执行误差等）导致性能脆弱、泛化性不足的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Zeva: In-Context Causal Learning for Generalizable Embodied Manipulation</h1>
+            <div class="detail-meta">2026-08-31 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.30880" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.30880" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.30880</span></div>
+            <p class="detail-summary">论文提出Zeva框架，核心解决预训练具身基础模型（VLA、WAM）在真实世界部署时，因遭遇训练阶段未见过的物理条件（如新物体几何、接触动力学、视觉变异、执行误差等）导致性能脆弱、泛化性不足的问题 Zeva 实现上下文因果学习（In-Context Causal Learning, ICCL）新范式：部署阶段完全保持策略模型权重冻结，无需测试时梯度更新，让机器人从自身的物理交互经验中实时学习动作与状态变化的因果关系，实现无梯度的能力自进化 框架不仅支持机器人在同一任务的多次尝试中通过积累交互经验持续提升成功率，获得的因果交互经验还可跨不同任务泛化，适配多样化操作场景</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">清华大学智能产业研究院（AIR, Institute for AI Industry Research…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出Zeva框架，核心解决预训练具身基础模型（VLA、WAM）在真实世界部署时，因遭遇训练阶段未见过的物理条件（如新物体几何、接触动力学、视觉变异、执行误差等）导致性能脆弱、泛化性不足的问题</p>
+  <ul class="reading-intro-points"><li>论文提出Zeva框架，核心解决预训练具身基础模型（VLA、WAM）在真实世界部署时，因遭遇训练阶段未见过的物理条件（如新物体几何、接触动力学、视觉变异、执行误差等）导致性能脆弱、泛化性不足的问题</li><li>Zeva 实现上下文因果学习（In-Context Causal Learning, ICCL）新范式：部署阶段完全保持策略模型权重冻结，无需测试时梯度更新，让机器人从自身的物理交互经验中实时学习动作与状态变化的因果关系，实现无梯度的能力自进化</li><li>框架不仅支持机器人在同一任务的多次尝试中通过积累交互经验持续提升成功率，获得的因果交互经验还可跨不同任务泛化，适配多样化操作场景</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>清华大学智能产业研究院（AIR, Institute for AI Industry Research, Tsinghua University）</li><li>Z-Trans AI</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出<strong>Zeva</strong>框架，核心解决预训练具身基础模型（VLA、WAM）在真实世界部署时，因遭遇训练阶段未见过的物理条件（如新物体几何、接触动力学、视觉变异、执行误差等）导致性能脆弱、泛化性不足的问题</li><li>Zeva 实现<strong>上下文因果学习（In-Context Causal Learning, ICCL）</strong>新范式：部署阶段完全保持策略模型权重冻结，无需测试时梯度更新，让机器人从自身的物理交互经验中实时学习动作与状态变化的因果关系，实现无梯度的能力自进化</li><li>框架不仅支持机器人在同一任务的多次尝试中通过积累交互经验持续提升成功率，获得的因果交互经验还可跨不同任务泛化，适配多样化操作场景</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次将真实世界具身操作的泛化问题形式化为<strong>上下文因果学习（ICCL）</strong>，明确优化目标为在单幕任务内无需更新策略权重（∇_θπ=0），仅通过历史交互信号推断环境的动作-状态变化因果结构，从而适配训练时未见过的物理配置</li><li>提出Zeva框架，整合<strong>因果交互提取</strong>、<strong>双时间尺度因果记忆管理</strong>、<strong>阶段匹配的上下文策略注入</strong>三个核心模块，实现了无梯度更新的部署时自进化能力，机器人可在同一任务的多次尝试中自主提升操作成功率，无需人工干预或模型重训练</li><li>在仿真基准 RoboCasa365-Atomic5 和真实世界自建基准 ChemLab-Evo 上的实验表明，Zeva 在任务成功率上优于当前所有对比的前沿VLA和WAM模型，且展现出随交互尝试次数增加性能持续提升的扩展性，同时支持从人类遥操作示教中做一次性上下文学习，进一步提升性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>Zeva 整体采用<strong>冻结基础策略+外部因果记忆更新</strong>的架构，部署阶段所有神经网络参数保持冻结，仅通过更新交互记忆实现能力进化，无需任何梯度计算，避免了测试时训练带来的高延迟和能力崩溃风险</li><li><strong>因果交互提取模块</strong>：使用基于GRU的<strong>因果转移编码器（CTE）</strong>，输入视觉隐状态、动作编码、状态变化观测，通过门控循环整合为<strong>因果交互状态</strong>，再投影为表征任务进度的<strong>阶段令牌（Phase Token）</strong>和表征物理动力学的<strong>因果交互信号（Causal Interaction Signal）</strong>；训练时采用三目标损失：因果效应预测损失（解码信号预测状态变化以grounding物理因果）、任务身份聚类损失（同任务 episode 的交互信号聚类以学习任务一致的交互空间）、阶段 progression 损失（保证阶段令牌单调反映任务执行进度）</li><li><strong>双时间尺度因果记忆模块</strong>：分为两个互补的记忆流：① <strong>短期交互痕迹（Brief Interaction Trace, BIT）</strong>：滑动窗口存储最近K步的因果交互信号，每次尝试结束重置，提供当前尝试内的即时局部上下文；② <strong>持久交互记忆（Persistent Interaction Memory, PIM）</strong>：跨同一幕的多次尝试积累因果单元，采用基于阶段和信号相似度的合并机制，仅当新交互单元与现有记录的相似度超过阈值时才合并，避免冗余，新幕开始时清空</li><li><strong>上下文策略注入模块</strong>：用当前阶段令牌从PIM中检索Top-K阶段匹配的历史交互信号，将任务令牌、当前阶段令牌、BIT、检索到的信号共同输入<strong>记忆上下文编码器</strong>，融合构造<strong>因果提示（Causal Prompt）</strong>，注入到冻结的基础策略的注意力层，驱动策略在不更新权重的情况下根据历史交互经验调整动作策略，实现隐式因果推理</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：</li></ul>
+<p> - 仿真数据集：<strong>RoboCasa365-Atomic5</strong>，选自RoboCasa365基准的5个代表性具身操作任务，涵盖厨房场景的铰接物体交互、物体放置、家电操作等多样化技能，每个任务评估50个独立随机化 episode</p>
+<p> - 真实世界数据集：<strong>ChemLab-Evo</strong>，论文自建的真实化学实验室操作基准，采用<strong>ARX manipulator</strong>在80cm×60cm工作区执行，包含3个难度等级共7个任务，覆盖从原子级操作原语到长程复杂操作的全范围难度，每个任务评估20个独立随机化 episode</p>
+<ul><li>模型规模：基础策略采用<strong>Cosmos3-Nano</strong>的 rectify-flow 动作生成头作为预训练 backbone，因果转移编码器（CTE）基于轻量GRU实现，记忆上下文编码器为小型投影网络，整体额外参数规模极小，不增加基础策略的推理负担</li><li>训练资源：论文未明确披露具体训练硬件（GPU/TPU）及算力配置</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基线：在仿真基准 RoboCasa365-Atomic5 和真实世界基准 ChemLab-Evo 上评估，对比基线包括 LingBot-VA、Xiaomi-Robotics-1、τ₀-WM、Fast-WAM、Cosmos3-Nano、π₀.5 等当前前沿VLA和WAM模型，所有基线均在相同任务训练集、观测动作接口和评估协议下本地复现</li><li>主要评估指标：① 任务级<strong>成功率（Success Rate, SR）</strong>及宏平均成功率；② 长程任务额外采用<strong>过程得分（Process Score）</strong>，按完成的有序阶段比例计算，区分部分完成的 episode 的贡献；③ 部署扩展性指标<strong>累计成功率（CSR@K）</strong>，统计K次尝试内完成的固定 episode 占比，衡量交互经验积累带来的性能提升</li><li>关键实验结果：</li></ul>
+<p> - 基准性能：在 RoboCasa365-Atomic5 上，Zeva 的宏平均成功率达到<strong>76.8%</strong>，优于所有对比基线；在 ChemLab-Evo 的所有三个难度等级上均取得最高成功率，Level 1（原子级）平均成功率83.3%、Level 2（短序列）70.0%、Level 3（复杂长程）7.5%，整体平均过程得分57.32%，优于所有基线</p>
+<p> - 部署时自进化扩展性：在 RoboCasa365-Atomic5 上，Zeva 的累计成功率从第1次尝试的26%提升到第4次尝试的73%；ChemLab-Evo 上也呈现随尝试次数增加成功率持续提升的趋势，证明其可通过积累自身交互经验实现无梯度自进化</p>
+<p> - 额外能力：Zeva 支持从人类遥操作示教中做一次性上下文学习，相比仅从自身交互学习，性能最多可额外提升15%；获得的因果交互信号还支持跨任务检索和迁移，进一步提升少样本场景下的性能</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2608.30643/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Temporal Forcing: 4D Representation Alignment for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
