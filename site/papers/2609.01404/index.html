@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluating Multimodal LLMs as Generalist Vision-Language-Action Agents for Drone Control: Commanding, Approaching, Tracking and Searching - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究多模态大语言模型（MLLM）作为通用视觉-语言-动作（VLA）智能体直接控制无人机的闭环能力，涵盖指挥（Commanding）、接近（Approaching）、跟踪（Tracking）和搜索（Searching）四类任务。 现有系统（如 TypeFly、PIVOT、SPF、Fly0、OnFly）通过外部检测器、候选点选择、LiDAR 规划器或验证器等手段不断削减模型在控制回路中的决策职责，导致模型能力差异被掩盖；本文反其道而行，将模型作为唯一自变量，在固定智能体架构下评估其真实表现。 核心发现呈现&quot;声明悖论&quot;：小模型（2B-4B）往往比前沿模型更可靠地导航进入成功半径，却因过早声明到达或从未声明到达而失败——瓶颈不在飞行导航，而在对 prompt 中声明协议（特别是终止动作）的遵守能力。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.01404">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.01404.webp" alt="Evaluating Multimodal LLMs as Generalist Vision-Language-Action Agents for Drone Control: Commanding, Approaching, Tracking and Searching" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文研究多模态大语言模型（MLLM）作为通用视觉-语言-动作（VLA）智能体直接控制无人机的闭环能力，涵盖指挥（Commanding）、接近（Approaching）、跟踪（Tracking）和搜索（Searching）四类任务。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Evaluating Multimodal LLMs as Generalist Vision-Language-Action Agents for Drone Control: Commanding, Approaching, Tracking and Searching</h1>
+            <div class="detail-meta">2026-09-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.01404" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.01404" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.01404</span></div>
+            <p class="detail-summary">论文研究多模态大语言模型（MLLM）作为通用视觉-语言-动作（VLA）智能体直接控制无人机的闭环能力，涵盖指挥（Commanding）、接近（Approaching）、跟踪（Tracking）和搜索（Searching）四类任务。 现有系统（如 TypeFly、PIVOT、SPF、Fly0、OnFly）通过外部检测器、候选点选择、LiDAR 规划器或验证器等手段不断削减模型在控制回路中的决策职责，导致模型能力差异被掩盖；本文反其道而行，将模型作为唯一自变量，在固定智能体架构下评估其真实表现。 核心发现呈现&quot;声明悖论&quot;：小模型（2B-4B）往往比前沿模型更可靠地导航进入成功半径，却因过早声明到达或从未声明到达而失败——瓶颈不在飞行导航，而在对 prompt 中声明协议（特别是终止动作）的遵守能力。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Drone AI Team, NAVER Cloud（NAVER Cloud 无人机 AI 团队）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文研究多模态大语言模型（MLLM）作为通用视觉-语言-动作（VLA）智能体直接控制无人机的闭环能力，涵盖指挥（Commanding）、接近（Approaching）、跟踪（Tracking）和搜索（Searching）四类任务。</p>
+  <ul class="reading-intro-points"><li>论文研究多模态大语言模型（MLLM）作为通用视觉-语言-动作（VLA）智能体直接控制无人机的闭环能力，涵盖指挥（Commanding）、接近（Approaching）、跟踪（Tracking）和搜索（Searching）四类任务。</li><li>现有系统（如 TypeFly、PIVOT、SPF、Fly0、OnFly）通过外部检测器、候选点选择、LiDAR 规划器或验证器等手段不断削减模型在控制回路中的决策职责，导致模型能力差异被掩盖；本文反其道而行，将模型作为唯一自变量，在固定智能体架构下评估其真实表现。</li><li>核心发现呈现&quot;声明悖论&quot;：小模型（2B-4B）往往比前沿模型更可靠地导航进入成功半径，却因过早声明到达或从未声明到达而失败——瓶颈不在飞行导航，而在对 prompt 中声明协议（特别是终止动作）的遵守能力。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Drone AI Team, NAVER Cloud</strong>（NAVER Cloud 无人机 AI 团队）</li><li>联系方式：jw0611.park, min.young.lee, sukmin.seo, gw.kim@navercorp.com</li><li>开源代码：github.com/naver-ai/DroneCATS</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文研究多模态大语言模型（MLLM）作为<strong>通用视觉-语言-动作（VLA）智能体</strong>直接控制无人机的闭环能力，涵盖<strong>指挥（Commanding）、接近（Approaching）、跟踪（Tracking）和搜索（Searching）</strong>四类任务。</li><li>现有系统（如 TypeFly、PIVOT、SPF、Fly0、OnFly）通过外部检测器、候选点选择、LiDAR 规划器或验证器等手段不断<strong>削减模型在控制回路中的决策职责</strong>，导致模型能力差异被掩盖；本文反其道而行，将模型作为唯一自变量，在固定智能体架构下评估其真实表现。</li><li>核心发现呈现"<strong>声明悖论</strong>"：小模型（2B-4B）往往比前沿模型更可靠地导航进入成功半径，却因<strong>过早声明到达或从未声明到达</strong>而失败——瓶颈不在飞行导航，而在对 prompt 中声明协议（特别是终止动作）的遵守能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>DroneCATS-Agent</strong>：一个模型无关的无人机智能体架构，定义了仅包含四种动作的指向式接口——<code>go</code>（点+深度）、<code>rotate</code>（偏航）、<code>think</code>（悬停思考）、<code>finished</code>（自声明到达），全部动作仅通过 prompt 声明，无需微调或函数调用 schema，任何 MLLM 均可直接插入。</li><li><strong>统一闭环协议与单一成功标准</strong>：整个 2×2 任务矩阵（目标是否移动 × 首帧是否可见）共用一条成功判据——以模型自身的到达声明为准，要求声明时处于目标 3D 距离 δ=5m 内且目标可见；不因单纯穿越目标区域而给分，使各任务列可比。</li><li><strong>覆盖 9 个模型的多维评测</strong>：4 个前沿 API 模型（GPT-5、Claude Opus 5、Gemini 3.7 Flash、Gemini Robotics-ER 2）、Qwen3.5 家族 4 个规模（2B/4B/9B/27B）以及具身特化模型 Cosmos3-Edge-2B，在 80 个单机情节和 20 个四机指挥情节上系统评测。</li><li><strong>"声明失败"发现（Declaration Finding）</strong>：将小模型与前沿模型的差距定位为<strong>协议遵守能力</strong>而非导航能力——例如 Qwen3.5-2B 在 130% 起始距离处宣告到达，Cosmos3-Edge-2B 从不声明，而 Qwen3.5-9B 有 90% 情节进入成功半径却仅转化 35%。</li><li><strong>多无人机指挥评估首创</strong>：首次实现单一 MLLM 从多视角观测闭环控制多架无人机（N=4），并揭示单机表现排序不能迁移到指挥场景（GPT-5 指挥成功率 20%，Gemini 3.7 Flash 达 80%）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>DroneCATS-Agent 闭环循环</strong>：每步输入仅包括自我中心单目 RGB 帧、指令和最近 5 个动作，模型输出一个 JSON 动作对象；<code>go</code> 动作返回归一化图像坐标（0-1000）与以米为单位的深度估计，由规则几何控制器将像素反投影为机体坐标系 3D 位移。</li><li><strong>动作设计</strong>：<code>go</code> 耦合视觉定位与前进；<code>rotate</code>（±90°/步）使视野外搜索可表达；<code>think</code> 将测试时推理计算化为悬停动作；<code>finished</code> 将终止权交给模型，由事后验证器判定声明是否成立，使智能体可被委派（composable）。</li><li><strong>执行层解耦</strong>：几何控制器负责坐标换算，飞行栈（速度-姿态-旋翼级联）负责连续跟踪设定点；模型责任止于 JSON 对象，所有模型共享同一套 prompt、解析器、控制器与情节运行器。</li><li><strong>多机指挥设置</strong>：当前帧槽位同时容纳全部 N 个视角（固定顺序），模型在单次响应中为每架无人机各输出一条命令，需自行区分视图对应的平台。</li><li><strong>成功判据算法</strong>：遍历按时间排序的到达声明，首个满足距离 ≤δ 且目标可见的声明即判定成功；附带的诊断指标包括 NE（导航误差）、最小距离、接近率、Oracle 成功率、声明的距离/起始距离比等。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真环境</strong>：基于 <strong>AirSim</strong>（Unreal Engine）构建；单机套件使用<strong>住宅区（residential）与校园（campus）</strong>两张地图，指挥套件使用住宅区地图与 <strong>Blocks</strong>（AirSim 自带几何环境）。</li><li><strong>情节规模</strong>：单机 4 类任务 × 每图 10 情节 × 2 图 = 80 个情节；N=4 指挥套件 20 个情节；共 <strong>100 个情节</strong>，每情节上限 300 秒。</li><li><strong>评估模型规模</strong>：Qwen3.5 家族（2B/4B/9B/27B）、Cosmos3-Edge-2B、GPT-5、Claude Opus 5、Gemini 3.7 Flash、Gemini Robotics-ER 2。</li><li><strong>推理资源</strong>：2B/4B 模型本地部署（vLLM，bfloat16，单张 H100）；Cosmos3-Edge-2B 配 32k 上下文占用 10.5 GiB，30-token 解码耗时 0.44s（约 2Hz）；更大模型经 API 访问。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估基准与指标</strong>：以 δ=5m 的<strong>声明成功率（SR）</strong>为主指标，辅以 Oracle 成功率（OSR）、NE、声明率、接近率、声明距离/起始距离比；20 情节/单元，报告百分比；含三次飞行方差审计与逐模型失败分类。</li><li><strong>核心结果（单机，20 情节）</strong>：最佳模型<strong>接近任务成功率仅 65%</strong>（Gemini 3.7 Flash）；首帧不可见使最佳模型降至 40%，且无模型超过 40%；追击任务中 Gemini 3.7 Flash 达 80% 而 GPT-5 仅 15%，模型排序跨任务不稳定；Qwen3.5 系列成功率随规模单调（27B 33.8% → 2B 0%）。</li><li><strong>声明 vs 导航解耦</strong>：Qwen3.5-9B 有 <strong>90% 情节进入 δ 半径</strong>（高于所有前沿模型），但仅转化 35%，平均在起始距离的 63% 处声明；Qwen3.5-2B 在 128% 起始距离处声明、从不动身；Cosmos3-Edge-2B 进入半径 25% 且从不声明。</li><li><strong>多机指挥结果</strong>：GPT-5 指挥成功率仅 <strong>20%</strong>，Gemini 3.7 Flash 达 <strong>80%</strong>，单机排序不迁移；小模型常见失败模式为<strong>在不同视图间盲目复制同一坐标</strong>。</li><li><strong>具身特化无优势</strong>：Gemini Robotics-ER 2 四格平均 47.5%，低于通用 Gemini 3.7 Flash 的 57.5%，差距与随机波动相当；Cosmos3-Edge-2B 全任务零成功。</li><li><strong>失败归因结论</strong>：61/337 个未声明失败情节曾进入 δ 半径，若按轨迹邻近计分会将 182 个成功虚增三分之一；小模型的空间感知（grounding）尚可，但无法在长情节中维持声明协议并正确发出终止动作——"可部署边缘模型与前沿模型的差距不在导航，而在协议纪律"。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.01281/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">EmbodiedSkills: A Unified Framework for Orchestrating, Training, and Deploying VLA Agents</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
