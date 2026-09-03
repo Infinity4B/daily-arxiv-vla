@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Latent Cluster Analysis for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出LAVLA框架，用于分析视觉-语言-动作（VLA）模型的隐空间表征，解决当前VLA内部推理机制不清晰、可解释性不足的核心问题 以NVIDIA GR00T N1.5模型为研究对象，对其动作解码器（Diffusion Transformer, DiT）开展分层隐空间研究，弥补现有工作多聚焦VLM backbone、不深入探究动作解码过程的空白 通过提升VLA隐空间的可解释性，推动可信赖的语言驱动机器人系统发展" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.02634">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.02634.webp" alt="Latent Cluster Analysis for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出LAVLA框架，用于分析视觉-语言-动作（VLA）模型的隐空间表征，解决当前VLA内部推理机制不清晰、可解释性不足的核心问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Latent Cluster Analysis for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-09-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.02634" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.02634" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.02634</span></div>
+            <p class="detail-summary">提出LAVLA框架，用于分析视觉-语言-动作（VLA）模型的隐空间表征，解决当前VLA内部推理机制不清晰、可解释性不足的核心问题 以NVIDIA GR00T N1.5模型为研究对象，对其动作解码器（Diffusion Transformer, DiT）开展分层隐空间研究，弥补现有工作多聚焦VLM backbone、不深入探究动作解码过程的空白 通过提升VLA隐空间的可解释性，推动可信赖的语言驱动机器人系统发展</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">The University of Manchester</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出LAVLA框架，用于分析视觉-语言-动作（VLA）模型的隐空间表征，解决当前VLA内部推理机制不清晰、可解释性不足的核心问题</p>
+  <ul class="reading-intro-points"><li>提出LAVLA框架，用于分析视觉-语言-动作（VLA）模型的隐空间表征，解决当前VLA内部推理机制不清晰、可解释性不足的核心问题</li><li>以NVIDIA GR00T N1.5模型为研究对象，对其动作解码器（Diffusion Transformer, DiT）开展分层隐空间研究，弥补现有工作多聚焦VLM backbone、不深入探究动作解码过程的空白</li><li>通过提升VLA隐空间的可解释性，推动可信赖的语言驱动机器人系统发展</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>The University of Manchester</strong></li><li><strong>Universität Hamburg</strong></li><li><strong>Comenius University Bratislava</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>LAVLA</strong>框架，用于分析视觉-语言-动作（VLA）模型的隐空间表征，解决当前VLA内部推理机制不清晰、可解释性不足的核心问题</li><li>以<strong>NVIDIA GR00T N1.5</strong>模型为研究对象，对其动作解码器（Diffusion Transformer, DiT）开展分层隐空间研究，弥补现有工作多聚焦VLM backbone、不深入探究动作解码过程的空白</li><li>通过提升VLA隐空间的可解释性，推动可信赖的语言驱动机器人系统发展</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出LAVLA基于聚类的VLA隐空间分析框架，验证了其在分析NVIDIA GR00T N1.5模型隐空间上的有效性</li><li>设计基于交叉注意力的嵌入加权模块，放大动作解码器关注的visuolinguistic token的影响，抑制低信息量token，聚类性能得到一致提升：无PCA时轮廓分数提升62.1%，Davies-Bouldin（DB）指数改善约8%</li><li>构建概念提取流程，为每个聚类生成人类可解释的概念标签，结合CLIP相似度（CLIPSIM）完成概念质量评估</li><li>分析发现交叉注意力层在扩散不同时间步均聚焦VLM backbone的特定token，聚类结果可清晰解耦时空特征与运动学特征，证明交叉注意力机制有效将视觉语言上下文融入动作扩散过程</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用<strong>Agglomerative Hierarchical Clustering（凝聚层次聚类）</strong>，对VLA的VLM backbone最后一层、以及动作解码器所有交叉注意力层的嵌入进行分层聚类，聚类过程执行到无法继续合并簇为止</li><li>创新提出交叉注意力基础的嵌入加权方法：从交叉注意力层提取注意力权重矩阵，计算每个源visuolinguistic token的影响分数，经softmax归一化后与原token做哈达玛积，放大重要token、抑制噪声，降低早期去噪阶段 noisy 嵌入对聚类的干扰</li><li>可选PCA降维步骤，将嵌入维度降至100，降低高维嵌入的维度以改善聚类效果</li><li>概念生成阶段采用<strong>LLaVA 72B</strong>作为外部VLM生成器，由于计算资源限制，仅分析每个层/配置下规模最大的10个聚类，选取每个聚类中距离centroid最近的top-5样本，生成统一的聚类概念标签，通过CLIPSIM评估概念与聚类样本的匹配度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：<strong>Open-X-Embodiment数据集</strong>的子集，为GR1人形机器人的桌面操作任务数据，共包含24个操作任务，最终采样得到24k条观测-动作对（每个任务采样1000条，每10帧采样一次）</li><li>模型：<strong>NVIDIA GR00T N1.5</strong>，30亿（3B）参数的VLA模型，包含Eagle VLM backbone与Diffusion Transformer（DiT）结构的动作解码器，动作解码器包含4步迭代去噪过程</li><li>训练资源：嵌入收集阶段使用1块<strong>NVIDIA A100 GPU</strong>，概念生成阶段使用2块NVIDIA A100 GPU</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标：聚类质量采用轮廓分数、Davies-Bouldin指数、Caliński-Harabasz指数；聚类一致性采用重叠系数（Overlap Coefficient）、Jaccard指数；概念质量采用CLIPSIM</li><li>关键实验结果：</li></ul>
+<p> - 嵌入加权模块显著提升聚类性能：无PCA时轮廓分数提升62.1%，DB指数下降约8%；加权+PCA组合取得最优聚类指标（轮廓分数0.1642，CH指数1651.0）</p>
+<p> - 隐空间结构随扩散进程推进和网络层加深逐渐清晰：聚类数量随扩散时间步增加而减少，嵌入加权机制可改善早期 noisy 嵌入的空间结构，使其更早呈现规整的聚类分布</p>
+<p> - 聚类稳定性良好：相同层不同扩散时间步的聚类分配保持高度一致，且聚类可清晰分离不同身体部位的运动特征（如手臂关节的组内Wasserstein距离提升约20%）、区分不同的时空状态</p>
+<p> - 概念生成验证框架可行性：PCA和加权配置的CLIPSIM略高于baseline，但受限于数据集视觉多样性低、输入片段短，概念质量仍存在提升空间</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.02653/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">HINT: Human-Intent Inception for Long-Horizon Robot Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.02546/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ZETA: A Controlled Study of Zero-Shot Cross-Embodiment VLA Transfer for Tabletop Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

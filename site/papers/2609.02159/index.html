@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对世界动作模型（WAM）在随机生成视觉未来时样本质量不一致的问题，提出一种无需奖励或外部验证器的测试时规划框架。 核心思想是将 WAM 的逐次想象视为可证伪的假设，通过内部生成信号和延迟的自我验证来选择更可靠的未来-动作候选，从而提升机器人控制性能。 在有限随机化监督和视觉分布偏移等场景下，该方法能显著提高任务成功率，证明了选择可靠想象比单纯增加采样数量更重要。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.02159">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.02159.webp" alt="World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对世界动作模型（WAM）在随机生成视觉未来时样本质量不一致的问题，提出一种无需奖励或外部验证器的测试时规划框架。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models</h1>
+            <div class="detail-meta">2026-09-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.02159" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.02159" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.02159</span></div>
+            <p class="detail-summary">论文针对世界动作模型（WAM）在随机生成视觉未来时样本质量不一致的问题，提出一种无需奖励或外部验证器的测试时规划框架。 核心思想是将 WAM 的逐次想象视为可证伪的假设，通过内部生成信号和延迟的自我验证来选择更可靠的未来-动作候选，从而提升机器人控制性能。 在有限随机化监督和视觉分布偏移等场景下，该方法能显著提高任务成功率，证明了选择可靠想象比单纯增加采样数量更重要。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Institute of Science Tokyo（Department of Computer S…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对世界动作模型（WAM）在随机生成视觉未来时样本质量不一致的问题，提出一种无需奖励或外部验证器的测试时规划框架。</p>
+  <ul class="reading-intro-points"><li>论文针对世界动作模型（WAM）在随机生成视觉未来时样本质量不一致的问题，提出一种无需奖励或外部验证器的测试时规划框架。</li><li>核心思想是将 WAM 的逐次想象视为可证伪的假设，通过内部生成信号和延迟的自我验证来选择更可靠的未来-动作候选，从而提升机器人控制性能。</li><li>在有限随机化监督和视觉分布偏移等场景下，该方法能显著提高任务成功率，证明了选择可靠想象比单纯增加采样数量更重要。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Institute of Science Tokyo</strong>（Department of Computer Science）</li><li><strong>DENSO IT Lab, Japan</strong></li><li><strong>National Institute of Informatics, Japan</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对<strong>世界动作模型（WAM）</strong>在随机生成视觉未来时样本质量不一致的问题，提出一种<strong>无需奖励或外部验证器的测试时规划框架</strong>。</li><li>核心思想是将 WAM 的逐次想象视为<strong>可证伪的假设</strong>，通过内部生成信号和延迟的自我验证来<strong>选择更可靠的未来-动作候选</strong>，从而提升机器人控制性能。</li><li>在<strong>有限随机化监督</strong>和<strong>视觉分布偏移</strong>等场景下，该方法能显著提高任务成功率，证明了<strong>选择可靠想象比单纯增加采样数量更重要</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>将 WAM 测试时控制形式化为<strong>可靠性感知的候选选择</strong>，揭示因果 WAM 中想象可证伪性的结构优势，并证明同一前缀下采样想象存在可选择的可靠性差异。</li><li>提出 <strong>World-Coherent Decoding (WCD)</strong> 框架，利用<strong>流惊奇度（flow-based video surprisal）</strong>和<strong>动作路径努力（action path effort）</strong>两种内部生成信号对候选进行排序，无需外部奖励或验证器。</li><li>设计<strong>延迟自验证机制</strong>：执行后利用实际观测与所选想象的偏差训练轻量级在线预测器，将<strong>事后反馈摊销为事前可靠性估计</strong>，并保持骨干 WAM 冻结。</li><li>在 <strong>RoboTwin 2.0</strong> 和<strong>真实 Franka 机器人</strong>上验证，在有限随机化 Hard 评估中实现 <strong>+5.10 点</strong>平均成功率提升，Horizon-3 任务提升 <strong>+16.43 点</strong>，并展示了对视觉偏移的鲁棒性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于<strong>分块因果世界模型</strong>，在每步决策时从同一历史缓存中采样 <strong>N 个未来-动作候选</strong>（视频潜在序列 + 动作块）。</li><li>通过<strong>视频侧流惊奇度</strong>评估视觉合理性：沿流匹配去噪轨迹累积速度场散度，选择低惊奇度（高密度）的未来。</li><li>通过<strong>动作侧路径努力</strong>评估动作稳定性：计算去噪更新量经调度步长归一化后的总和，选择平滑动作路径。</li><li>融合两个标准化得分，并在线调整权重；执行后，计算<strong>想象-现实逐帧 MSE</strong> 作为向后误差，用于更新融合权重并训练一个<strong>轻量在线预测器</strong>，使其从生成特征直接预测未来误差，在预热阶段后替代昂贵的流惊奇度计算。</li><li>创新点：<strong>完全自监督、无奖励、无验证器</strong>；利用 WAM 自身生成过程的内部信号和延迟观察进行测试时校准。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>RoboTwin 2.0</strong>（50 项双手操作任务），包含 Easy/Hard 配置，采用标准全量随机化协议和<strong>有限随机化协议</strong>（70% 干净 + 30% 随机化数据）。</li><li>真实机器人：<strong>Franka 桌面敲击任务</strong>，仅用干净演示训练，测试时引入<strong>彩色光照、相机模糊、杂乱布局</strong>等视觉偏移。</li><li>骨干模型：<strong>LingBot-VA</strong>，一个因果视频-动作世界模型，基于流匹配，保持冻结。模型参数量未明确给出，但属于预训练大模型。</li><li>训练资源：未明确说明 GPU 类型，推理时使用候选采样，计算开销主要来自并行生成和预热阶段流惊奇度的去噪轨迹重放。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：RoboTwin 2.0 仿真（50 任务）和真实 Franka 机器人；对比方法包括 <strong>X-VLA、π0、π0.5、Motus、LingBot-VA</strong> 等。</li><li><strong>主要指标</strong>：任务成功率，按 Horizon 难度（H1/H2/H3）和 Easy/Hard 划分。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 标准全量随机化下，WCD 在 Hard 上从 <strong>91.55% 提升至 92.28%</strong>（因饱和提升有限）。</p>
+<p> - 有限随机化下，WCD 将 Hard 平均成功率从 <strong>55.80% 提升至 60.90%</strong>，Horizon-3 任务从 <strong>30.00% 提升至 46.43%</strong>（<strong>+16.43 点</strong>）。</p>
+<p> - 消融证明结构化选择优于随机采样，且<strong>视频惊奇度、动作路径努力和在线预测器三者互补</strong>，混合使用取得最佳效果。</p>
+<p> - 真实机器人测试中，WCD 在彩色光照、模糊等视觉偏移下<strong>恢复了可执行动作</strong>，而基线方法失败。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.02341/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Towards Zero-Shot Transfer Across Embodiments For Driving VLAs</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.01961/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">MACAW: Reliable And Efficient Surgical Debridement Using Monocular Adaptive Compact Attention Windows</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

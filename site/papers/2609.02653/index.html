@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HINT: Human-Intent Inception for Long-Horizon Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 HINT（Human-INTent INcepTion），一个面向长程机器人操作的智能体框架，旨在将稀疏的高层语言指令转化为连续、目标专属的视觉引导，解决现有视觉-语言-动作（VLA）模型在密集变化视觉输入和稀疏语言指导下容易产生“视觉捷径”和意图漂移的问题。 核心思想受人类操作原理启发：语义意图仅在操作模式（manipulation pattern）转换时稀疏变化，而连续控制主要依赖手-物关系的演化。HINT 据此在模式转换时触发语义推理，在模式内部通过多视角 grounding 和视觉跟踪维持语义承诺，并将意图注入动作策略。 实验覆盖三个长程任务及其分布外（OOD）变体，在两类基础策略上显著提升意图理解、子任务完成率和端到端成功率，同时保持低延迟控制。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.02653">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.02653.webp" alt="HINT: Human-Intent Inception for Long-Horizon Robot Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 HINT（Human-INTent INcepTion），一个面向长程机器人操作的智能体框架，旨在将稀疏的高层语言指令转化为连续、目标专属的视觉引导，解决现有视觉-语言-动作（VLA）模型在密集变化视觉输入和稀疏语言指导下容易产生“视觉捷径”和意图漂移的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">HINT: Human-Intent Inception for Long-Horizon Robot Manipulation</h1>
+            <div class="detail-meta">2026-09-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.02653" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.02653" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.02653</span></div>
+            <p class="detail-summary">论文提出 HINT（Human-INTent INcepTion），一个面向长程机器人操作的智能体框架，旨在将稀疏的高层语言指令转化为连续、目标专属的视觉引导，解决现有视觉-语言-动作（VLA）模型在密集变化视觉输入和稀疏语言指导下容易产生“视觉捷径”和意图漂移的问题。 核心思想受人类操作原理启发：语义意图仅在操作模式（manipulation pattern）转换时稀疏变化，而连续控制主要依赖手-物关系的演化。HINT 据此在模式转换时触发语义推理，在模式内部通过多视角 grounding 和视觉跟踪维持语义承诺，并将意图注入动作策略。 实验覆盖三个长程任务及其分布外（OOD）变体，在两类基础策略上显著提升意图理解、子任务完成率和端到端成功率，同时保持低延迟控制。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">12 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">浙江大学（Zhejiang University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 HINT（Human-INTent INcepTion），一个面向长程机器人操作的智能体框架，旨在将稀疏的高层语言指令转化为连续、目标专属的视觉引导，解决现有视觉-语言-动作（VLA）模型在密集变化视觉输入和稀疏语言指导下容易产生“视觉捷径”和意图漂移的问题。</p>
+  <ul class="reading-intro-points"><li>论文提出 HINT（Human-INTent INcepTion），一个面向长程机器人操作的智能体框架，旨在将稀疏的高层语言指令转化为连续、目标专属的视觉引导，解决现有视觉-语言-动作（VLA）模型在密集变化视觉输入和稀疏语言指导下容易产生“视觉捷径”和意图漂移的问题。</li><li>核心思想受人类操作原理启发：语义意图仅在操作模式（manipulation pattern）转换时稀疏变化，而连续控制主要依赖手-物关系的演化。HINT 据此在模式转换时触发语义推理，在模式内部通过多视角 grounding 和视觉跟踪维持语义承诺，并将意图注入动作策略。</li><li>实验覆盖三个长程任务及其分布外（OOD）变体，在两类基础策略上显著提升意图理解、子任务完成率和端到端成功率，同时保持低延迟控制。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>浙江大学</strong>（Zhejiang University）</li><li><strong>上海交通大学</strong>（Shanghai Jiao Tong University）</li><li><strong>Noematrix</strong></li><li><strong>EndlessAI</strong></li><li>通讯作者：Zaixing He（浙江大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>HINT（Human-INTent INcepTion）</strong>，一个面向长程机器人操作的智能体框架，旨在将稀疏的高层语言指令转化为连续、目标专属的视觉引导，解决现有视觉-语言-动作（VLA）模型在密集变化视觉输入和稀疏语言指导下容易产生“视觉捷径”和意图漂移的问题。</li><li>核心思想受人类操作原理启发：语义意图仅在操作模式（manipulation pattern）转换时稀疏变化，而连续控制主要依赖手-物关系的演化。HINT 据此在模式转换时触发语义推理，在模式内部通过多视角 grounding 和视觉跟踪维持语义承诺，并将意图注入动作策略。</li><li>实验覆盖三个长程任务及其分布外（OOD）变体，在两类基础策略上显著提升意图理解、子任务完成率和端到端成功率，同时保持低延迟控制。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>HINT 框架</strong>，将高层意图翻译为长程机器人操作，通过将稀疏语言指令转换为跨多视角的密集连续语义视觉线索实现。</li><li>引入 <strong>模式感知的语义感知调度</strong>（Pattern-Aware Perception Scheduling），利用操作模式转换触发语义推理和多视角路由，在任务相关转换时刻才调用语义感知，降低延迟并保持响应式执行。</li><li>提出 <strong>无参数语义接口</strong>（Parameter-Free Semantic Interface），通过图像级高亮和注意力级引导两种互补方式，持续向基础动作策略传递语义意图，且不向动作骨干网络添加任何可训练参数。</li><li>揭示并缓解了 VLA 策略中的“视觉捷径”问题：当视觉与语言冲突时，视觉对应关系会主导动作生成；HINT 在不改变动作模型训练范式的前提下，通过在视觉通道注入意图恢复意图-动作对齐。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Pattern Router（模式路由器）</strong>：轻量级多模态网络，基于多视角图像（共享 ResNet-18 + 视角适配器）、本体感觉、关节力矩（GRU 分支），通过门控融合预测当前操作模式（free move、pre-contact、transport contact、dexterous contact）和模式内进度，决定优先视图和语义更新时机。</li><li><strong>Pattern-Triggered Semantic Reasoning（模式触发语义推理）</strong>：使用 VLM（Qwen3-VL）作为 Task Manager，在模式转换时结合整体指令、当前模式和执行上下文解析当前子任务与目标实体；Semantic Grounder（结合视觉语言推理与开放词汇检测）在路由视图中定位目标边界框与置信度。</li><li><strong>Goal-Consistent Visual Tracking（目标一致视觉跟踪）</strong>：以 SAM2 为跟踪器，在模式内传播目标位置；跟踪置信度低于阈值时触发再 grounding，保持目标语义身份不变。</li><li><strong>View-Routed Semantic Intent Injection（视角路由语义意图注入）</strong>：</li></ul>
+<p> - 像素级视觉语义高亮：将跟踪掩码以 λ=0.32 透明度叠加在路由视图上，增强目标显著性但不遮挡外观。</p>
+<p> - Token 级注意力先验：将目标掩码下采样为与策略视觉 token 对齐的 patch 级先验，以 head-shared 偏置注入视觉编码器自注意力和动作解码器的 action-to-vision 注意力，采用“中间层集中、外部稀疏”的注入层选择策略。</p>
+<ul><li>完整策略公式：$\mathbf{a}_t = \pi_\theta(\tilde{\mathcal{I}}_t, \mathbf{s}_t^p, \ell_k; \{B_r^{vis,v}\}, \{B_m\})$，在推理时动态注入注意力偏置。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>任务数据集</strong>（自行采集，通过 arm-to-arm 遥操作，30 Hz）：</li></ul>
+<p> - 水果蔬菜分类（Fruit-Vegetable Sorting）：50 条演示</p>
+<p> - 单词拼写（Word Spelling）：80 条演示</p>
+<p> - 销孔插入（Peg-in-Hole Insertion）：150 条演示</p>
+<ul><li><strong>机器人平台</strong>：两台 AgileX PiPER 机械臂构成双臂系统，三个 Intel RealSense D435 RGB-D 相机（一个全局视角 + 两个腕部视角）。</li><li><strong>基础动作策略</strong>：<strong>π₀.₅</strong>（pi0.5）和 <strong>Wall-OSS-0.5</strong>，HINT 不向这些基础模型添加可训练参数。</li><li><strong>辅助模型</strong>：Pattern Router（ResNet-18 + GRU）、SAM2 跟踪器、Grounding DINO（对象级 grounding）、Qwen3-VL（细粒度语义 reasoning）。</li><li><strong>计算资源</strong>：工作站配备两张 NVIDIA RTX 3090 GPU。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：Intention Score（IS，语义决策正确率）、Subtask Success Rate（Sub. SR）、Full-Task Success Rate（Full SR）。</li><li><strong>分布内（ID）结果</strong>（表 I）：以 π₀.₅ 为例，HINT 将水果蔬菜分类的 IS/Sub. SR/Full SR 从 52.2%/52.2%/10.0% 提升至 91.2%/91.2%/60.0%；单词拼写从 44.7%/42.6%/13.3% 提升至 97.9%/95.7%/86.7%；销孔插入从 35.0%/27.5%/5.0% 提升至 100.0%/67.5%/40.0%。Wall-OSS-0.5 同样获得大幅提升。</li><li><strong>语义组合 OOD 结果</strong>（表 II）：六组任务-设置对平均提升 IS/Sub. SR/Full SR：Wall-OSS-0.5 提升 32.9/29.0/18.6 个百分点，π₀.₅ 提升 50.2/41.1/41.4 个百分点；π₀.₅ 的 OOD Full SR 从 0.0% 提升至每任务 30.0%。</li><li><strong>易-混合对比实验</strong>：π₀.₅ 在固定映射的“Easy”设置下 Sub. SR 达 89.5%，在指令改变映射的“Mixed”设置下降至 52.2%（接近随机猜测）；HINT 在 Mixed 设置下恢复性能，Sub. SR 提升 38.5 个百分点，证明其克服视觉捷径的能力。</li><li><strong>模式路由可靠性</strong>：模式预测成功率从 ID 的 94.7% 微降至 OOD 的 91.1%；子任务切换成功率（Switch SR）为 95–100%，260 次转换中 251 次正确激活下一语义目标。</li><li><strong>效率</strong>：基础策略推理 185 ms/帧，Pattern Router 仅 14 ms，SAM2 跟踪 43 ms；推理帧（DINO/Qwen）为 426/630 ms，而跟踪帧仅 242 ms，辅助开销从 445 ms 降至 57 ms（减少 61.6%）。</li><li><strong>消融研究</strong>（OOD 单词拼写）：去除高亮后 IS/Sub. SR/Full SR 为 59.1%/58.0%/10.0%；去除注意力先验后为 88.6%/73.9%/10.0%；完整 HINT 达 95.5%/87.5%/30.0%，证明双路径注入互补。持续跟踪使子任务/全任务完成时间分别降低 25.3%/21.5%；腕部视角将子任务成功率从 80.7% 提至 87.5%，全任务成功率从 10.0% 提至 30.0%。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.02634/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Latent Cluster Analysis for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
