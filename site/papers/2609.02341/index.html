@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Towards Zero-Shot Transfer Across Embodiments For Driving VLAs - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究驾驶视觉-语言-动作模型（VLAs）在不同具身平台（不同相机设置的数据集）间的零样本迁移能力。 解决当前VLAs缺乏几何迁移能力的问题，即模型在训练于特定相机设备后，无法有效泛化到其他数据集的不同相机配置。 探究多数据集训练和一种名为BEV-Forcing的辅助空间感知任务对跨具身零样本迁移的影响。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.02341">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.02341.webp" alt="Towards Zero-Shot Transfer Across Embodiments For Driving VLAs" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">研究驾驶视觉-语言-动作模型（VLAs）在不同具身平台（不同相机设置的数据集）间的零样本迁移能力。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Towards Zero-Shot Transfer Across Embodiments For Driving VLAs</h1>
+            <div class="detail-meta">2026-09-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.02341" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.02341" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.02341</span></div>
+            <p class="detail-summary">研究驾驶视觉-语言-动作模型（VLAs）在不同具身平台（不同相机设置的数据集）间的零样本迁移能力。 解决当前VLAs缺乏几何迁移能力的问题，即模型在训练于特定相机设备后，无法有效泛化到其他数据集的不同相机配置。 探究多数据集训练和一种名为BEV-Forcing的辅助空间感知任务对跨具身零样本迁移的影响。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">École des Mines de Paris, France</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">研究驾驶视觉-语言-动作模型（VLAs）在不同具身平台（不同相机设置的数据集）间的零样本迁移能力。</p>
+  <ul class="reading-intro-points"><li>研究驾驶视觉-语言-动作模型（VLAs）在不同具身平台（不同相机设置的数据集）间的零样本迁移能力。</li><li>解决当前VLAs缺乏几何迁移能力的问题，即模型在训练于特定相机设备后，无法有效泛化到其他数据集的不同相机配置。</li><li>探究多数据集训练和一种名为BEV-Forcing的辅助空间感知任务对跨具身零样本迁移的影响。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>École des Mines de Paris, France</strong></li><li><strong>Stellantis, France</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>研究驾驶视觉-语言-动作模型（VLAs）在不同具身平台（不同相机设置的数据集）间的零样本迁移能力。</li><li>解决当前VLAs缺乏几何迁移能力的问题，即模型在训练于特定相机设备后，无法有效泛化到其他数据集的不同相机配置。</li><li>探究多数据集训练和一种名为BEV-Forcing的辅助空间感知任务对跨具身零样本迁移的影响。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>BEV-Forcing</strong>，一种辅助训练任务，通过从专门的鸟瞰图（BEV）模型向VLA骨干网络传递物体位置信息，提升模型在有限相机设备数据上训练时的分布内和分布外性能。</li><li>通过在多数据集上训练驾驶VLA，系统评估了规划与视觉问答任务的性能，并展示了BEV-Forcing在训练具身数量较少时能带来与增加训练数据多样性相当的收益。</li><li>进行了一系列消融实验，分析了BEV-Forcing与其他鲁棒性技术（如图像增强、输入相机标定参数）的交互作用，以及BEV头容量和与Spatial Forcing方法的对比。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>基座模型与动作表示</strong>：使用预训练的视觉-语言模型 <strong>Qwen 3.5 2B</strong> 作为骨干网络，并采用文本格式输出未来轨迹路径点，以贴近骨干网络的预训练任务。使用 <strong>LoRA</strong> 进行高效微调。</li><li><strong>BEV-Forcing</strong>：在骨干网络特定层提取图像特征，通过一个低容量的BEV头（主要由交叉注意力层构成）生成BEV占用网格预测。该预测由专门的BEV模型（如 <strong>SimpleBEV</strong>）生成的教师占用图进行监督，迫使图像特征学习空间感知信息。该BEV头在推理时可移除，不增加额外计算成本。</li><li><strong>训练</strong>：将BEV预测损失与标准的下一个token预测损失结合进行联合训练，并在部分训练中引入视觉问答数据以保持模型的语义和语言能力。</li><li><strong>数据集标准化</strong>：将不同数据集统一为相同的数据加载格式，包括规划样本和VQA样本，并配合自然语言提示。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>规划数据集</strong>：<strong>WOD-E2E</strong>、<strong>NAVSIM</strong>、<strong>nuScenes</strong>、<strong>Physical AI</strong>（6千个片段子集）</li><li><strong>视觉问答数据集</strong>：<strong>nuScenes-QA</strong></li><li><strong>零样本评估数据集</strong>：<strong>Physical AI</strong> 验证集、<strong>KITScenes LongTail Dataset</strong></li><li><strong>模型规模</strong>：基于 <strong>Qwen 3.5 2B</strong>（20亿参数）的VLA模型</li><li><strong>训练资源</strong>：4块 <strong>NVIDIA A100 GPU</strong>，全局批次大小为64</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：平均位移误差（ADE）、最终位移误差（FDE）、评分反馈分数（RFS）、多机动分数（MMS）</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 在少量具身数据上训练时（如仅用WOD-E2E），BEV-Forcing能显著提升零样本迁移性能，在Physical AI验证集上ADE降低10.1%。</p>
+<p> - 随着训练数据集中具身多样性的增加，BEV-Forcing带来的收益逐渐减小，表明数据多样性与空间辅助监督的作用存在部分重叠。</p>
+<p> - 在KITScenes LongTail测试集上，模型（WOD-E2E+NAVSIM训练，配合BEV任务）取得了5.15的MMS，优于基线（4.62）和Gemini 3 Pro等前沿模型。</p>
+<p> - 在WOD-E2E测试集上，BEV-Forcing在单数据集训练时能提升性能，但在多数据集训练时效果减弱，强调了评估技术在不同训练数据规模下有效性的重要性。</p>
+<p> - 消融实验表明，低容量的BEV头优于高容量设计，且BEV-Forcing相比Spatial Forcing方法在分布内和零样本迁移上均取得更优指标。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.02531/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Spatially Aware World Action Model via Geometric Latent Diffusion</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.02159/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
