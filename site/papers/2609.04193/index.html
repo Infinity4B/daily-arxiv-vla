@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GIFT: Guided Intermediate Feature Training via Action-Oriented Structural Supervision for Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文指出视觉语言预训练和预测性世界建模为机器人策略提供了丰富的语义与动态视觉特征，但其原生动作监督和视觉预测目标可能丢失关键的物理与任务结构，同时保留与控制无关的视觉冗余，导致次优表现 作者将这种&quot;视觉丰富性与控制效用之间的不匹配&quot;称为动作充分性差距（action-sufficiency gap），并探究能否通过引导中间特征保留三类反复出现的控制相关结构来弥合这一差距 为此提出 GIFT（Guided Intermediate Feature Training），一个架构灵活的框架，将几何（geometry）、可供性（affordance）和目标（goal）结构转化为训练时约束，作用于策略的中间视觉特征" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.04193">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.04193.webp" alt="GIFT: Guided Intermediate Feature Training via Action-Oriented Structural Supervision for Robotic Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文指出视觉语言预训练和预测性世界建模为机器人策略提供了丰富的语义与动态视觉特征，但其原生动作监督和视觉预测目标可能丢失关键的物理与任务结构，同时保留与控制无关的视觉冗余，导致次优表现</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GIFT: Guided Intermediate Feature Training via Action-Oriented Structural Supervision for Robotic Manipulation</h1>
+            <div class="detail-meta">2026-09-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.04193" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.04193" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.04193</span></div>
+            <p class="detail-summary">论文指出视觉语言预训练和预测性世界建模为机器人策略提供了丰富的语义与动态视觉特征，但其原生动作监督和视觉预测目标可能丢失关键的物理与任务结构，同时保留与控制无关的视觉冗余，导致次优表现 作者将这种&quot;视觉丰富性与控制效用之间的不匹配&quot;称为动作充分性差距（action-sufficiency gap），并探究能否通过引导中间特征保留三类反复出现的控制相关结构来弥合这一差距 为此提出 GIFT（Guided Intermediate Feature Training），一个架构灵活的框架，将几何（geometry）、可供性（affordance）和目标（goal）结构转化为训练时约束，作用于策略的中间视觉特征</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">第一作者 Yupeng Zheng 等隶属于中国科学院自动化研究所（Institute of Auto…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文指出视觉语言预训练和预测性世界建模为机器人策略提供了丰富的语义与动态视觉特征，但其原生动作监督和视觉预测目标可能丢失关键的物理与任务结构，同时保留与控制无关的视觉冗余，导致次优表现</p>
+  <ul class="reading-intro-points"><li>论文指出视觉语言预训练和预测性世界建模为机器人策略提供了丰富的语义与动态视觉特征，但其原生动作监督和视觉预测目标可能丢失关键的物理与任务结构，同时保留与控制无关的视觉冗余，导致次优表现</li><li>作者将这种&quot;视觉丰富性与控制效用之间的不匹配&quot;称为动作充分性差距（action-sufficiency gap），并探究能否通过引导中间特征保留三类反复出现的控制相关结构来弥合这一差距</li><li>为此提出 GIFT（Guided Intermediate Feature Training），一个架构灵活的框架，将几何（geometry）、可供性（affordance）和目标（goal）结构转化为训练时约束，作用于策略的中间视觉特征</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>第一作者 Yupeng Zheng 等隶属于<strong>中国科学院自动化研究所（Institute of Automation, Chinese Academy of Sciences）</strong></li><li>Shuai Tian、Linbo Wang、Chaoyue Li、Qichao Zhang、Haoran Li、Zhongpu Xia 等同时隶属于<strong>中国科学院大学（University of Chinese Academy of Sciences）</strong></li><li>Weize Li、Shuicheng Yan 隶属于<strong>新加坡国立大学（National University of Singapore）</strong></li><li>Ya-Qin Zhang 隶属于<strong>清华大学（Tsinghua University）</strong></li><li>Dongbin Zhao 同时隶属于<strong>复旦大学（Fudan University）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文指出视觉语言预训练和预测性世界建模为机器人策略提供了丰富的语义与动态视觉特征，但其原生动作监督和视觉预测目标可能丢失关键的物理与任务结构，同时保留与控制无关的视觉冗余，导致次优表现</li><li>作者将这种"视觉丰富性与控制效用之间的不匹配"称为<strong>动作充分性差距（action-sufficiency gap）</strong>，并探究能否通过引导中间特征保留三类反复出现的控制相关结构来弥合这一差距</li><li>为此提出 <strong>GIFT（Guided Intermediate Feature Training）</strong>，一个架构灵活的框架，将几何（geometry）、可供性（affordance）和目标（goal）结构转化为训练时约束，作用于策略的中间视觉特征</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别出 VLA 和 WAM 共同存在的动作充分性差距，并通过互补的几何、可供性与目标监督来结构化中间特征，从而解决该问题</li><li>将同一套结构化监督目标实例化为三种策略配置：<strong>GIFT-VLA</strong>（语义中心直接动作策略）、<strong>GIFT-WAM-Fast</strong>（从世界模型特征直接动作扩散）、<strong>GIFT-WAM-IDM</strong>（未来条件化逆动力学），同时保持各模型的专用动作生成方式不变</li><li>系统性比较注入（injection）与不注入（no-injection）两种设计，证明仅依靠结构化中间特征训练（不向动作头提供额外辅助预测）即可获得性能提升</li><li>大量仿真与真实机器人实验验证了相对匹配基线的稳定提升，在零样本迁移、铰接物体操作和高精度真实操控上优势尤为明显</li><li>与相关工作（GuidedVLA、DreamVLA、World Guidance、Flex-π 等）相比，GIFT 不是为特定架构设计辅助接口，而是提出跨策略动作公式的可复用表示学习原则</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>问题设定：机器人操作样本含多视角观测 $O_t$、语言指令 $l$、本体感知状态 $s_t$ 和未来动作块 $A_t$，策略从中间特征 $Z_t=\mathcal{E}_\theta(O_t,l,s_t)$ 预测动作 $\hat{A}_t=\mathcal{A}_\phi(Z_t,C_t)$</li><li><strong>几何引导（Geometry Guidance）</strong>：使用冻结的 <strong>VGGT 几何基础模型</strong>作为训练时教师，将学生浅层特征对齐到教师特征空间，采用角度对齐损失（余弦方向）与尺度对齐损失（log 尺度回归）的加权组合 $L_{geo}=\lambda_{ang}L_{ang}+\lambda_{scale}L_{scale}$</li><li><strong>可供性引导（Affordance Guidance）</strong>：定义指令条件化的 20 维结构化交互目标 $u_{t,k}=[c_{t,k}, \xi^{k\|a}_{t,k}, \xi^{e(k)\|k}_{t,k}, f_{t,k}]$，包含实体角色 ID、锚定物体坐标系下的相对姿态、物体坐标系中的末端执行器姿态及夹持器开合状态，使用 Smooth L1 损失监督</li><li><strong>目标引导（Goal Guidance）</strong>：为每个视角构造指令相关操作物体或区域的二值目标掩码，使用 BCE 与 soft Dice 损失的组合进行稠密图像空间定位</li><li>三种辅助目标施加于不同层级的视觉 token：浅层（r=6）用于几何对齐，最终层（r=-1）用于可供性和目标分割；默认 no-injection 设计中辅助预测不进入动作通路，仅通过反向传播梯度塑造共享中间特征</li><li>可选注入变体将可供性和目标解码器隐藏特征经投影后拼接到动作条件 $C_t$，用于消融分析；几何引导仅作为对齐目标，不额外注入</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO</strong> 基准：包含 Spatial、Object、Goal、Long 四个套件，每套 10 个语言条件操作任务，使用 Franka Emika Panda 机械臂</li><li><strong>LIBERO-Plus</strong> 基准：在 LIBERO 基础上扩展 7 种分布偏移（视角、机器人初始化、语言指令、光照、背景纹理、传感器噪声、物体布局），模型仅在原始训练数据上训练，零样本评估</li><li><strong>RoboCasa</strong>（GR1 桌面基准）：使用 Fourier GR1 人形机器人，含双臂、双灵巧手与腰部自由度，24 个任务（18 个抓放 + 6 个铰接物体任务），每任务 1000 条示范</li><li><strong>真实机器人平台</strong>：单臂 xArm7（任务 1-2）与双臂 ARX X5（任务 3-4，含试管插拔双手任务）</li><li>GIFT-VLA 使用 <strong>Qwen3-VL-4B-Instruct</strong> 骨干，大约 4B 参数；训练需 <strong>32 张 GPU</strong>，per-GPU batch size 8（全局 batch 256），60,000 优化步</li><li>分辨率统一缩放到 224×224，动作块长度 32 步（VLA）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO 基准</strong>（in-distribution）：GIFT-VLA 与 StarVLA-OFT 等基线相比保持有竞争力或更优的性能；同头部无引导对照只造成 0.7 个百分点的架构效应，而结构化监督带来 3.9 个百分点的增益</li><li><strong>LIBERO-Plus 零样本迁移</strong>：GIFT-VLA 达到 79.6%（较 StarVLA-OFT 提升 4.6 个百分点）、GIFT-WAM-Fast 达到 72.6%（较 Fast-WAM 提升 12.6 个百分点）、GIFT-WAM-IDM 达到 87.8%（较 Fast-WAM-IDM 提升 5.2 个百分点）</li><li><strong>RoboCasa 基准</strong>：GIFT-VLA、GIFT-WAM-Fast、GIFT-WAM-IDM 分别达到 61.4%、83.6%、82.3%，较各自基线提升 12.6、9.0、8.4 个百分点，尤其 WAM 变体在铰接物体任务上增益显著</li><li><strong>消融研究</strong>：单引导消融证实几何、可供性、目标三者互补；注入消融显示 no-injection 变体性能更优，说明 GIFT 将任务相关结构内化到中间特征中，而非依赖辅助条件</li><li><strong>注意力可视化分析</strong>：GIFT 训练后模型对任务相关物体和交互区域的关注更加一致</li><li>真实世界实验在未见过的视觉与空间扰动下展现了鲁棒性，尤其在铰接物体交互和高精度操控任务上优势突出</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.04070/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Continuous Actions from Discrete Minds: Latent-Aligned Planning for End-to-End Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

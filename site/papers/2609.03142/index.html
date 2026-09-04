@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sensing Which Modality Matters: Evidence-Gated Regularization for Robust VLA Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究了 Vision-Language-Action (VLA) 策略在多模态传感器输入下的模态纠缠（modality entanglement）问题，即策略错误地依赖任务无关的传感器或无法仅依靠单个有用传感器完成任务 提出了 Evidence-Gated Regularization (EGR) 训练框架，通过引入基于任务结构的证据评分来门控正则化目标，无需修改基础架构且推理时零开销 在基于 BEHAVIOR-1K 的模拟基准和两个真实机器人平台（双臂视觉平台、视觉-触觉平台）上验证了方法的有效性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.03142">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.03142.webp" alt="Sensing Which Modality Matters: Evidence-Gated Regularization for Robust VLA Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文研究了 Vision-Language-Action (VLA) 策略在多模态传感器输入下的模态纠缠（modality entanglement）问题，即策略错误地依赖任务无关的传感器或无法仅依靠单个有用传感器完成任务</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Sensing Which Modality Matters: Evidence-Gated Regularization for Robust VLA Policies</h1>
+            <div class="detail-meta">2026-09-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.03142" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.03142" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.03142</span></div>
+            <p class="detail-summary">论文研究了 Vision-Language-Action (VLA) 策略在多模态传感器输入下的模态纠缠（modality entanglement）问题，即策略错误地依赖任务无关的传感器或无法仅依靠单个有用传感器完成任务 提出了 Evidence-Gated Regularization (EGR) 训练框架，通过引入基于任务结构的证据评分来门控正则化目标，无需修改基础架构且推理时零开销 在基于 BEHAVIOR-1K 的模拟基准和两个真实机器人平台（双臂视觉平台、视觉-触觉平台）上验证了方法的有效性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Department of Computer Science, University of North…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文研究了 Vision-Language-Action (VLA) 策略在多模态传感器输入下的模态纠缠（modality entanglement）问题，即策略错误地依赖任务无关的传感器或无法仅依靠单个有用传感器完成任务</p>
+  <ul class="reading-intro-points"><li>论文研究了 Vision-Language-Action (VLA) 策略在多模态传感器输入下的模态纠缠（modality entanglement）问题，即策略错误地依赖任务无关的传感器或无法仅依靠单个有用传感器完成任务</li><li>提出了 Evidence-Gated Regularization (EGR) 训练框架，通过引入基于任务结构的证据评分来门控正则化目标，无需修改基础架构且推理时零开销</li><li>在基于 BEHAVIOR-1K 的模拟基准和两个真实机器人平台（双臂视觉平台、视觉-触觉平台）上验证了方法的有效性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>Department of Computer Science, University of North Carolina at Chapel Hill</li><li>Mitsubishi Electric Research Laboratories (MERL)</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文研究了 Vision-Language-Action (VLA) 策略在多模态传感器输入下的<strong>模态纠缠（modality entanglement）</strong>问题，即策略错误地依赖任务无关的传感器或无法仅依靠单个有用传感器完成任务</li><li>提出了 <strong>Evidence-Gated Regularization (EGR)</strong> 训练框架，通过引入基于任务结构的证据评分来门控正则化目标，无需修改基础架构且推理时零开销</li><li>在基于 <strong>BEHAVIOR-1K</strong> 的模拟基准和两个真实机器人平台（双臂视觉平台、视觉-触觉平台）上验证了方法的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>形式化了 VLA 策略中的模态纠缠问题，并characterize了两种状态依赖的失败模式：<strong> nuisance sensitivity</strong>（对任务无关传感器的扰动敏感）和 <strong>single-modality insufficiency</strong>（无法仅依靠单个有用传感器完成任务）</li><li>提出了 <strong>Evidence-Gated Regularization (EGR)</strong>，一种模态无关的训练目标，利用每帧、每传感器的任务相关性证据来门控两种状态条件一致性目标（不变性和充分性），推理时无额外开销</li><li>构建了基于 <strong>BEHAVIOR-1K</strong> 的模态纠缠基准，包含 47 个技能片段（11 个导航 + 36 个操作）和两套评估套件（推理诊断和 rollout 执行）</li><li>在模拟和真实机器人实验中验证了 EGR 的有效性，在传感器损坏和物理干扰物条件下显著提升了任务成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>证据评分（Evidence Score）</strong>：为每个传感器在每个时间步计算 [0,1] 范围内的任务相关性分数。视觉证据基于实例分割计算焦点物体和交互物体的可见面积比；触觉证据基于接触检测或任务特征相似度</li><li><strong>证据门控正则化</strong>：使用两个阈值（τ_low, τ_high）将证据分数映射为门控权重：</li></ul>
+<p> - <strong>不变性损失 L_inv</strong>：当证据较低时，惩罚对低证据传感器扰动引起的动作变化，缓解 nuisance sensitivity</p>
+<p> - <strong>充分性损失 L_suff</strong>：当证据较高时，惩罚仅保留该传感器与完整传感器输入之间的动作差异，缓解 single-modality insufficiency</p>
+<ul><li><strong>高效训练</strong>：通过<strong>重要性采样（importance sampling）</strong>将每步额外前向传播次数从 2\|M\|降低到 2，保持估计的无偏性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>模拟基准</strong>：基于 <strong>BEHAVIOR-1K</strong> 构建，包含 47 个 curated 技能片段（11 个导航任务 NAV + 36 个操作任务 MAN），覆盖 12 个任务</li><li><strong>真实机器人平台</strong>：</li></ul>
+<p> - 双臂视觉平台：两台 <strong>Kinova</strong> 机械臂 + 三个 RGB 摄像头</p>
+<p> - 视觉-触觉平台：<strong>MELFA ASSISTA</strong> 单臂 + 一个 RGB 摄像头 + 两个 <strong>GelSight</strong> 触觉传感器</p>
+<ul><li><strong>基础模型</strong>：<strong>π₀.₅</strong>（Vision-Language-Action 模型）</li><li><strong>训练资源</strong>：使用 importance sampling 将训练 overhead 降低到每步仅 2 次额外前向传播</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：</li></ul>
+<p> - Suite 1：推理-only 诊断，测量每帧动作偏差（Δ），无需执行 rollout</p>
+<p> - Suite 2：基于 rollout 的执行评估，测量任务成功率（SR）、末端执行器接触率（EC）和最小距离（Dist）</p>
+<p> - 四种 corruption regime：Clean、NoUseless（仅损坏无用传感器）、UsefulOnly（仅保留有用传感器）、SingleUseful（仅保留单个有用传感器）、RealDistractor（物理干扰物）</p>
+<ul><li><strong>模拟结果（Suite 2）</strong>：</li></ul>
+<p> - MAN 任务：Full modalities 成功率从 12.5% → 16.4%（+31%）；NoUseless 从 9.4% → 16.5%（+75%）；UsefulOnly 从 2.8% → 6.1%（+120%）</p>
+<p> - NAV 任务：SingleUseful 成功率从 15.5% → 37.3%（+141%）</p>
+<p> - 动作偏差（Δ）在 EGR 下显著降低（NAV SingleUseful：31.4% → 15.8%；MAN UsefulOnly：158.5% → 121.8%）</p>
+<ul><li><strong>真实机器人结果</strong>：</li></ul>
+<p> - 双臂平台：RealDistractor 条件下成功率从 30% → 85%（+183%）；NoUseless 从 52.5% → 90%（+71%）</p>
+<p> - 触觉平台：RealDistractor 从 55% → 70%（+27%）；SingleUseful 从 40% → 90%（+125%）</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.03276/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">R2S-Eval: Robot Evaluation with Real-to-Sim Calibration via Vision-Language Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.02653/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HINT: Human-Intent Inception for Long-Horizon Robot Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
