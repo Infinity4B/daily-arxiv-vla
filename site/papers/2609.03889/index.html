@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FWBC-VLA: Force-Aware Whole-Body Compensation for Contact-Rich Loco-Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对接触丰富的轮腿机器人移动操作（loco-manipulation）场景，解决现有Vision-Language-Action（VLA）模型无法感知物理交互、现有力感知方法依赖专用力/力矩（F/T）传感器的问题 提出FWBC-VLA无传感器力感知框架，搭建任务级VLA动作生成与低层全身补偿控制的闭环反馈通道，实现接触丰富场景下的稳定移动操作 研究目标是为无F/T传感器的轮腿四足机器人提供接触感知能力，同时协调任务动作与机身稳定性控制" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.03889">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.03889.webp" alt="FWBC-VLA: Force-Aware Whole-Body Compensation for Contact-Rich Loco-Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对接触丰富的轮腿机器人移动操作（loco-manipulation）场景，解决现有Vision-Language-Action（VLA）模型无法感知物理交互、现有力感知方法依赖专用力/力矩（F/T）传感器的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FWBC-VLA: Force-Aware Whole-Body Compensation for Contact-Rich Loco-Manipulation</h1>
+            <div class="detail-meta">2026-09-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.03889" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.03889" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.03889</span></div>
+            <p class="detail-summary">针对接触丰富的轮腿机器人移动操作（loco-manipulation）场景，解决现有Vision-Language-Action（VLA）模型无法感知物理交互、现有力感知方法依赖专用力/力矩（F/T）传感器的问题 提出FWBC-VLA无传感器力感知框架，搭建任务级VLA动作生成与低层全身补偿控制的闭环反馈通道，实现接触丰富场景下的稳定移动操作 研究目标是为无F/T传感器的轮腿四足机器人提供接触感知能力，同时协调任务动作与机身稳定性控制</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Zhejiang University</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对接触丰富的轮腿机器人移动操作（loco-manipulation）场景，解决现有Vision-Language-Action（VLA）模型无法感知物理交互、现有力感知方法依赖专用力/力矩（F/T）传感器的问题</p>
+  <ul class="reading-intro-points"><li>针对接触丰富的轮腿机器人移动操作（loco-manipulation）场景，解决现有Vision-Language-Action（VLA）模型无法感知物理交互、现有力感知方法依赖专用力/力矩（F/T）传感器的问题</li><li>提出FWBC-VLA无传感器力感知框架，搭建任务级VLA动作生成与低层全身补偿控制的闭环反馈通道，实现接触丰富场景下的稳定移动操作</li><li>研究目标是为无F/T传感器的轮腿四足机器人提供接触感知能力，同时协调任务动作与机身稳定性控制</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Zhejiang University</strong></li><li><strong>Shanghai Artificial Intelligence Laboratory</strong></li><li><strong>Tsinghua University</strong></li><li><strong>Zhongguancun Academy</strong></li><li><strong>Deep Robotics</strong></li><li><strong>Zhejiang University of Science and Technology</strong></li><li>标注：** Equal contribution, * Corresponding authors</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对接触丰富的轮腿机器人移动操作（loco-manipulation）场景，解决现有Vision-Language-Action（VLA）模型无法感知物理交互、现有力感知方法依赖专用力/力矩（F/T）传感器的问题</li><li>提出<strong>FWBC-VLA</strong>无传感器力感知框架，搭建任务级VLA动作生成与低层全身补偿控制的闭环反馈通道，实现接触丰富场景下的稳定移动操作</li><li>研究目标是为无F/T传感器的轮腿四足机器人提供接触感知能力，同时协调任务动作与机身稳定性控制</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>FWBC-VLA</strong>框架，将机器人本体感觉信号转化为任务动作生成与全身补偿的共享物理交互反馈，实现VLA策略与全身控制（WBC）的协同</li><li>设计<strong>HSR-Force</strong>无传感器残差力矩估计器，通过双LSTM专家与固定门控融合，无需专用物理传感器即可建立因果物理反馈通道，实现接触检测与力估计</li><li>构建<strong>WL&Arm</strong>公开数据集，包含5000+轮腿机器人移动操作遥操作episodes，覆盖抓取放置、白板擦拭、开门等任务，附带标准载荷校准数据</li><li>开发分层执行策略，交互表征同时用于条件化VLA动作生成与机身扰动补偿，兼顾任务执行与机身稳定</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>无传感器交互估计模块</strong>：HSR-Force包含历史专家与状态专家两个紧凑LSTM网络，分别基于时序力矩运动历史与当前机身/机械臂状态预测自由运动力矩，通过固定门控融合两个专家的输出，基于测量力矩与预测自由力矩的残差得到外部交互力矩，进一步总结为包含交互强度与变化率的二维接触描述符，同时通过阻尼最小二乘雅可比投影得到末端与机身的力旋量估计</li><li><strong>交互条件化动作生成</strong>：将最近200Hz采样下的13个接触描述符（60ms时序窗口）通过归一化层与GRU时序编码器编码为force token，通过交叉注意力机制注入预训练<strong>π0.5 VLA</strong>的动作专家隐状态，在不改变视觉语言骨干的前提下实现接触感知的动作生成，严格保证因果性（仅使用当前策略时间戳之前的交互数据）</li><li><strong>全身补偿生成</strong>：补偿生成器接收机身负载估计、IMU姿态角速度与名义基底动作作为输入，通过MLP预测无约束的基底速度残差提案，经tanh有界化、死区、低通滤波等处理后与名义基底动作叠加，最终输入WBC执行，补偿接触带来的机身扰动</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用自建<strong>WL&Arm数据集</strong>，包含超过5000个遥操作episodes，任务构成为：瓶子抓取放置（41%）、白板擦拭（25%）、开门（21%），附带0.36kg（3.53N）与0.72kg（7.06N）的标准载荷校准数据；数据集提供200Hz高采样率关节数据用于接触估计，15Hz的移动操作演示序列</li><li>模型基于预训练的<strong>π0.5 VLA backbone</strong>进行全参数微调，HSR-Force为双LSTM结构的轻量估计器，补偿生成器为紧凑MLP，整体模型规模与参数量未在原文中明确说明</li><li>训练硬件未在原文中明确披露，使用公开预训练π0.5 backbone并在WL&Arm数据集上完成微调</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：真实世界的<strong>DeepRobotics M20S</strong>轮腿四足机器人，配备<strong>CM1 6-DoF机械臂</strong>、1-DoF夹爪，三个<strong>RealSense D435i</strong>相机提供基座、手部、第三人称视角的视觉观测</li><li><strong>评估任务与指标</strong>：评估白板擦拭、带闭门器（50N关闭力）开门、不带闭门器开门三类接触丰富移动操作任务，主要指标为分阶段成功率（%），每个任务分为Approach、Pick/Grasp、Manipulate、Place/Push、Leave/Cross五个阶段评估</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 力估计任务中，HSR-Force在零载荷力MAE（0.15N）、接触判别AUC（Touch AUC 0.97，Door-phase AUC 0.85）、动态载荷估计误差等指标上均优于NEXT、GMO-SI、DF-MLP等基线，双头门控融合的消融实验验证了历史专家与状态专家的互补性</p>
+<p> - 移动操作任务中，FWBC-VLA在所有任务的所有阶段均取得最高成功率：白板擦拭最终成功率达64%，开门最终成功率达52%，分别超出最强基线ForceVLA 40个百分点，且接近使用真实F/T传感器ground truth的<strong>FWBC-GT</strong>基线性能</p>
+<p> - 组件消融实验显示，仅加入力感知接口（FI）可将平均成功率从12%提升至35%，进一步加入全身补偿（BC）后平均成功率提升至59.5%，验证了两个模块的协同增益，其中BC对高载荷持续接触场景的增益尤为显著</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.03927/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Toward Unified Robot Learning: Bridging Representation, Vision-Language-Action, and World Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.03715/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">MINERVA: How Small Can a Manipulation Policy Be and Still Solve LIBERO?</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
