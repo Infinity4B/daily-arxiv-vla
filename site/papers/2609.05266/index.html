@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TacPAC: Tactile Prediction and Real-Time Action Correction in World-Action Models for Contact-Rich Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 TacPAC：一种面向接触丰富操作（contact-rich manipulation）的触觉世界动作模型，将触觉预测转化为执行过程中的实时动作修正。 核心问题：触觉预测在规划动作块时即被固定，而触觉反馈在执行过程中才到达，导致预测无法修正已规划但尚未执行的动作；单纯将触觉作为额外预测视角仅能获得约三分之一的潜在性能提升。 在五个真实机器人任务（精密插入、易碎物处理、物体重新定向、长时序操作）上验证，平均成功率从纯视觉基线的 22% 提升至 64%。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.05266">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.05266.webp" alt="TacPAC: Tactile Prediction and Real-Time Action Correction in World-Action Models for Contact-Rich Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 TacPAC：一种面向接触丰富操作（contact-rich manipulation）的触觉世界动作模型，将触觉预测转化为执行过程中的实时动作修正。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TacPAC: Tactile Prediction and Real-Time Action Correction in World-Action Models for Contact-Rich Manipulation</h1>
+            <div class="detail-meta">2026-09-04 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.05266" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.05266" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.05266</span></div>
+            <p class="detail-summary">提出 TacPAC：一种面向接触丰富操作（contact-rich manipulation）的触觉世界动作模型，将触觉预测转化为执行过程中的实时动作修正。 核心问题：触觉预测在规划动作块时即被固定，而触觉反馈在执行过程中才到达，导致预测无法修正已规划但尚未执行的动作；单纯将触觉作为额外预测视角仅能获得约三分之一的潜在性能提升。 在五个真实机器人任务（精密插入、易碎物处理、物体重新定向、长时序操作）上验证，平均成功率从纯视觉基线的 22% 提升至 64%。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">School of Data Science, Fudan University（复旦大学数据科学学院）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 TacPAC：一种面向接触丰富操作（contact-rich manipulation）的触觉世界动作模型，将触觉预测转化为执行过程中的实时动作修正。</p>
+  <ul class="reading-intro-points"><li>提出 TacPAC：一种面向接触丰富操作（contact-rich manipulation）的触觉世界动作模型，将触觉预测转化为执行过程中的实时动作修正。</li><li>核心问题：触觉预测在规划动作块时即被固定，而触觉反馈在执行过程中才到达，导致预测无法修正已规划但尚未执行的动作；单纯将触觉作为额外预测视角仅能获得约三分之一的潜在性能提升。</li><li>在五个真实机器人任务（精密插入、易碎物处理、物体重新定向、长时序操作）上验证，平均成功率从纯视觉基线的 22% 提升至 64%。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>School of Data Science, Fudan University</strong>（复旦大学数据科学学院）</li><li><strong>Shanghai Innovation Institute</strong>（上海创新研究院）</li><li><strong>NeoteAI</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>TacPAC</strong>：一种面向接触丰富操作（contact-rich manipulation）的触觉世界动作模型，将触觉预测转化为执行过程中的实时动作修正。</li><li>核心问题：触觉预测在规划动作块时即被固定，而触觉反馈在执行过程中才到达，导致预测无法修正已规划但尚未执行的动作；单纯将触觉作为额外预测视角仅能获得约三分之一的潜在性能提升。</li><li>在五个真实机器人任务（精密插入、易碎物处理、物体重新定向、长时序操作）上验证，平均成功率从纯视觉基线的 <strong>22%</strong> 提升至 <strong>64%</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>指出现有触觉预测型世界动作模型（WAM）的局限性：预测未来触觉观测能提升任务成功率，但由于预测在动作块规划后固定，大部分触觉增益未能实现。</li><li>提出 <strong>TacPAC</strong> 架构：缓存计划所依赖的预测触觉表示与计划本身，使每个新到的触觉图像与计划预期接触进行对照，而非孤立解读。</li><li>设计单遍触觉修正器：基于基础模型自身计划在高密度执行偏移处训练，每个修正仅对缓存执行一次前向传递，比重新生成动作块便宜 <strong>20.7 倍</strong>。</li><li>在五个真实机器人任务中全面评估，TacPAC 在每项任务上均取得最高成功率，平均成功率超过最强基线 <strong>16 个百分点</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础模型采用 <strong>Mixture-of-Transformers (MoT)</strong> 架构：视频专家预测未来视觉和触觉观测，动作专家通过层间注意力关注这些预测，生成计划动作块。</li><li>动作块规划完成后，执行一次干净预填充（clean prefill）计算逐层注意力键值（KV），缓存触觉 token 与动作 token，丢弃视觉键，形成固定缓存 <strong>C</strong>。</li><li>触觉专家（tactile expert）接收当前触觉图像、更新后的计划块、执行偏移 <strong>m</strong> 及缓存 <strong>C</strong>，输出未执行步骤的逐步 delta 动作，叠加到计划块上。</li><li>推理采用异步方案：机器人执行最新提交的动作块，每个触觉帧到达时触发一次修正，修正仅写入未执行后缀，避免重复修正误差传播。</li><li>两阶段训练：阶段 1 训练视频与动作专家；阶段 2 冻结基础模型，仅训练触觉专家，损失为修正后动作与真实动作在未执行后缀上的均方误差。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>五个真实机器人操作任务：<strong>charger-plug insertion</strong>、<strong>multi-object fruit transfer</strong>、<strong>fragile potato-chip transfer</strong>、<strong>empty-bottle uprighting</strong>、<strong>expansion-card insertion</strong>。</li><li>机器人平台：<strong>Flexiv Rizon 4</strong> 单臂，夹爪集成两个 <strong>InTac S1</strong> 触觉传感器，腕部 <strong>Intel RealSense D405</strong> 相机，第三人称 <strong>Intel RealSense D435i</strong> 相机。</li><li>评估规模：每个方法每个任务进行 <strong>20 次真实世界试验</strong>，预设二元成功准则，损坏视为失败。</li><li>模型参数量与训练 GPU 等具体配置未在正文中给出，详见附录 B、C。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>基线方法：<strong>π₀.₅</strong>（通用 VLA）、<strong>ACT</strong>（动作分块模仿）、<strong>VITaL</strong>（视触觉策略）、<strong>LingBot-VA</strong>（纯视觉 WAM）、<strong>Dream-Tac</strong>（触觉预测 WAM）、<strong>T-Rex</strong>（触觉反应式修正 WAM）。</li><li>主结果：TacPAC 在所有五项任务上均取得最高成功率，平均 <strong>64%</strong>；最强基线 T-Rex 为 <strong>48%</strong>（+16 点）；纯视觉基线仅 <strong>22%</strong>。</li><li>消融研究：仅触觉预测（无修正）平均 <strong>37%</strong>；无触觉预测（反应式修正）平均 <strong>33%</strong>；无触觉缓存（保留预测与修正但阻断缓存访问）平均 <strong>47%</strong>；全系统为 <strong>64%</strong>，缓存访问贡献 <strong>17 点</strong>提升。</li><li>效率指标：单次触觉修正 <strong>30.4 ms</strong>（32.90 Hz），块生成 <strong>628.6 ms</strong>，缓存预填充 <strong>62.6 ms</strong>；修正比重新生成动作块快 <strong>20.7 倍</strong>。</li><li>诊断性分析：接触转换阶段仅占 <strong>4.9%</strong> 的帧数，却贡献 <strong>18.6%</strong> 的触觉变化总量，说明触觉预测目标主要被近乎不变的帧主导，需要执行期修正来利用稀疏却关键的触觉信号。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.05282/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Temporal Tactile Encoding and Compliance for Intent-Aware Robot-to-Human Bimanual Handover</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.05178/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">LIBERO-RECOVER: Beyond Task Success Towards Failure Recovery in Robotic Manipulation Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
