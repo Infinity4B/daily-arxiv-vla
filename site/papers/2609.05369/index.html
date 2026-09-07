@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Towards Neuro-Symbolic Procedural Reasoning for Long-Horizon Vision-Language-Action Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文针对 视觉-语言-动作（VLA）模型 在长时程操作任务中表现脆弱的问题，提出一种 神经-符号（Neuro-Symbolic） 过程推理框架，结合显式任务图与多模态过程记忆，提升长时程操作的可靠性与可解释性。 任务图编码动作依赖、合法状态转移与分支条件，记忆模块维护活动步骤、已完成动作、文本上下文和任务相关视觉证据，指导对象选择、目标定位、子目标调度与状态转移验证。 论文通过在机器人视角遥操作视频中直接标注 伪注视（pseudo-gaze） 作为稀疏过程显著性线索，在 VLA 微调与推理阶段提供视觉引导，并初步验证其在两类长时程操作域中的有效性。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.05369">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.05369.webp" alt="Towards Neuro-Symbolic Procedural Reasoning for Long-Horizon Vision-Language-Action Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文针对 视觉-语言-动作（VLA）模型 在长时程操作任务中表现脆弱的问题，提出一种 神经-符号（Neuro-Symbolic） 过程推理框架，结合显式任务图与多模态过程记忆，提升长时程操作的可靠性与可解释性。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Towards Neuro-Symbolic Procedural Reasoning for Long-Horizon Vision-Language-Action Manipulation</h1>
+            <div class="detail-meta">2026-09-04 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.05369" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.05369" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.05369</span></div>
+            <p class="detail-summary">本文针对 视觉-语言-动作（VLA）模型 在长时程操作任务中表现脆弱的问题，提出一种 神经-符号（Neuro-Symbolic） 过程推理框架，结合显式任务图与多模态过程记忆，提升长时程操作的可靠性与可解释性。 任务图编码动作依赖、合法状态转移与分支条件，记忆模块维护活动步骤、已完成动作、文本上下文和任务相关视觉证据，指导对象选择、目标定位、子目标调度与状态转移验证。 论文通过在机器人视角遥操作视频中直接标注 伪注视（pseudo-gaze） 作为稀疏过程显著性线索，在 VLA 微调与推理阶段提供视觉引导，并初步验证其在两类长时程操作域中的有效性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Fraunhofer IPK（德国柏林）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文针对 视觉-语言-动作（VLA）模型 在长时程操作任务中表现脆弱的问题，提出一种 神经-符号（Neuro-Symbolic） 过程推理框架，结合显式任务图与多模态过程记忆，提升长时程操作的可靠性与可解释性。</p>
+  <ul class="reading-intro-points"><li>本文针对 视觉-语言-动作（VLA）模型 在长时程操作任务中表现脆弱的问题，提出一种 神经-符号（Neuro-Symbolic） 过程推理框架，结合显式任务图与多模态过程记忆，提升长时程操作的可靠性与可解释性。</li><li>任务图编码动作依赖、合法状态转移与分支条件，记忆模块维护活动步骤、已完成动作、文本上下文和任务相关视觉证据，指导对象选择、目标定位、子目标调度与状态转移验证。</li><li>论文通过在机器人视角遥操作视频中直接标注 伪注视（pseudo-gaze） 作为稀疏过程显著性线索，在 VLA 微调与推理阶段提供视觉引导，并初步验证其在两类长时程操作域中的有效性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Fraunhofer IPK</strong>（德国柏林）</li><li><strong>Technische Universität Berlin</strong>（德国柏林工业大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文针对 <strong>视觉-语言-动作（VLA）模型</strong> 在长时程操作任务中表现脆弱的问题，提出一种 <strong>神经-符号（Neuro-Symbolic）</strong> 过程推理框架，结合显式任务图与多模态过程记忆，提升长时程操作的可靠性与可解释性。</li><li>任务图编码动作依赖、合法状态转移与分支条件，记忆模块维护活动步骤、已完成动作、文本上下文和任务相关视觉证据，指导对象选择、目标定位、子目标调度与状态转移验证。</li><li>论文通过在机器人视角遥操作视频中直接标注 <strong>伪注视（pseudo-gaze）</strong> 作为稀疏过程显著性线索，在 VLA 微调与推理阶段提供视觉引导，并初步验证其在两类长时程操作域中的有效性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>图与记忆结合的神经-符号操作架构</strong>，支持多执行者角色（机器人、人类、其他智能体）协同完成条件分支型长时程任务。</li><li>设计 <strong>稀疏过程显著性（Sparse Procedural Saliency）</strong> 机制，利用 DINOv2 特征与光流稳定化将伪注视迁移至重复演示，提供两种策略接口：<strong>Prompt-as-input</strong>（RGB 提示环输入）与 <strong>Prompt-as-supervision</strong>（注意力正则化）。</li><li>构建 <strong>observe–ground–remember–choose–execute–verify</strong> 闭环流程，利用固定基座与腕部相机持续感知验证状态转移，实现人对任务进展的协作感知。</li><li>通过真实机器人初步实验证明：视觉提示与注意力正则化均能显著改善空间歧义子目标的 <strong>错选目的地</strong> 问题，且无需增添推理期额外传感器。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>有向任务图</strong> $\mathcal{G}=(\mathcal{V},\mathcal{E})$，节点包含指令、执行者角色、前件/成功/失败条件及状态，边编码依赖与条件分支；内存记录决策、观察到的转移与视觉证据，许可机器人-人-智能体协同推进。</li><li>低层策略采用 <strong>π₀.₅ VLA 模型</strong> 微调，以固定基座图像、腕部图像、语言指令与当前子目标为输入，生成动作。</li><li><strong>伪注视标注</strong>：每个引导子目标标注一个随时间变化的参考点 $g_t$，通过 DINOv2 特征建立时间描述符与空间对应，配合金字塔 Lucas-Kanade 光流实现跨演示稳定迁移。</li><li>两种策略接口：<strong>视觉提示</strong> 在 RGB 图像上叠加空心洋红色环；<strong>注意力正则化</strong> 将 $g_t$ 转为 token 目标分布，通过 KL 散度对齐动作条件注意力图，推理时无需额外遮罩。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>实验数据：<strong>231 个遥操作演示片段</strong>，涵盖 <strong>七步器械处理流程</strong>，由固定基座相机与腕部相机同步采集。</li><li>评估条件：<strong>三种策略变体</strong>（prompt-finetuned、+ visual-prompting、regularization），在 <strong>5 个机器人子目标</strong> 上进行评测。</li><li>训练以 <strong>π₀.₅ VLA</strong> 为底座，数据规模为小样本微调；未公开具体 GPU/TPU 类型与参数量细节。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>实验场景：<strong>真实机器人手术器械处理任务</strong>，共 5 个子目标 × 3 条件 × 5 次试验 = <strong>75 次试验</strong>。</li><li>关键指标：<strong>正确对象/目的地选择</strong>、<strong>子任务完成率</strong>、<strong>容器路由（空间歧义子目标）成功率</strong>、<strong>步骤顺序一致性</strong>、<strong>完整任务成功</strong> 与 <strong>程序/执行错误</strong>。</li><li>实验结果：</li></ul>
+<p> - <strong>+ Visual-prompting</strong>：25/25 次全部成功（容器 10/10），完全合格；</p>
+<p> - <strong>Regularization</strong>：25/25 次全部成功（容器 10/10），并以干净图像完成推理，注意力热图集中于任务相关区域；</p>
+<p> - <strong>Prompt-finetuned（无提示）</strong>：总体 20/25，容器路由仅 5/10，所有失败均为 <strong>错误目的地放置</strong>。</p>
+<p> - 结论：两种引导机制在目标表现上相当，但机制不同——提示在 RGB 中提供显式空间线索，正则化则在干净输入下将显著性内化于注意力分布。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.05376/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">What Matters, When? Diagnosing and Improving Conditional Visual Grounding in Visuomotor Imitation Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.05324/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RoboSPA: Can VLA Models Go Beyond Simple Scenes and Short-Horizon Tasks?</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
