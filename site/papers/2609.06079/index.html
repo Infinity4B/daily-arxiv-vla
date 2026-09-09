@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LayerRoute: Action-Conditioned Mixture-of-Layers Routing for Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出LayerRoute，一种面向视觉-语言-动作（VLA）策略的动作条件表示路由接口，解决现有VLA策略中VLM层次化表示访问固定、动作中间状态仅能通过残差流隐式传递的两个核心限制 核心目标是自适应适配不同操作任务对局部视觉几何、抽象语义等不同层次VLM表示的需求，同时显式重用动作计算过程中的早期中间状态，提升不同embodiment、不同复杂度任务下的操作性能 论文在两类代表性VLA骨干上验证方法，覆盖桌面操作、人形家庭操作、真实物理交互等多类场景" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.06079">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.06079.webp" alt="LayerRoute: Action-Conditioned Mixture-of-Layers Routing for Vision-Language-Action Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出LayerRoute，一种面向视觉-语言-动作（VLA）策略的动作条件表示路由接口，解决现有VLA策略中VLM层次化表示访问固定、动作中间状态仅能通过残差流隐式传递的两个核心限制</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">LayerRoute: Action-Conditioned Mixture-of-Layers Routing for Vision-Language-Action Policies</h1>
+            <div class="detail-meta">2026-09-05 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.06079" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.06079" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.06079</span></div>
+            <p class="detail-summary">提出LayerRoute，一种面向视觉-语言-动作（VLA）策略的动作条件表示路由接口，解决现有VLA策略中VLM层次化表示访问固定、动作中间状态仅能通过残差流隐式传递的两个核心限制 核心目标是自适应适配不同操作任务对局部视觉几何、抽象语义等不同层次VLM表示的需求，同时显式重用动作计算过程中的早期中间状态，提升不同embodiment、不同复杂度任务下的操作性能 论文在两类代表性VLA骨干上验证方法，覆盖桌面操作、人形家庭操作、真实物理交互等多类场景</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Tsinghua University</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出LayerRoute，一种面向视觉-语言-动作（VLA）策略的动作条件表示路由接口，解决现有VLA策略中VLM层次化表示访问固定、动作中间状态仅能通过残差流隐式传递的两个核心限制</p>
+  <ul class="reading-intro-points"><li>提出LayerRoute，一种面向视觉-语言-动作（VLA）策略的动作条件表示路由接口，解决现有VLA策略中VLM层次化表示访问固定、动作中间状态仅能通过残差流隐式传递的两个核心限制</li><li>核心目标是自适应适配不同操作任务对局部视觉几何、抽象语义等不同层次VLM表示的需求，同时显式重用动作计算过程中的早期中间状态，提升不同embodiment、不同复杂度任务下的操作性能</li><li>论文在两类代表性VLA骨干上验证方法，覆盖桌面操作、人形家庭操作、真实物理交互等多类场景</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Tsinghua University</strong></li><li><strong>MBZUAI</strong> (Mohamed bin Zayed University of Artificial Intelligence)</li><li><strong>Nanyang Technological University</strong></li><li><strong>Zhejiang University</strong></li><li><strong>Rutgers University</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>LayerRoute</strong>，一种面向视觉-语言-动作（VLA）策略的动作条件表示路由接口，解决现有VLA策略中VLM层次化表示访问固定、动作中间状态仅能通过残差流隐式传递的两个核心限制</li><li>核心目标是自适应适配不同操作任务对局部视觉几何、抽象语义等不同层次VLM表示的需求，同时显式重用动作计算过程中的早期中间状态，提升不同embodiment、不同复杂度任务下的操作性能</li><li>论文在两类代表性VLA骨干上验证方法，覆盖桌面操作、人形家庭操作、真实物理交互等多类场景</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>动作条件层混合路由器</strong>，根据当前动作状态动态混合不同深度的缓存VLM表示，替代原有固定VLM层访问接口，实现层次化表示的按需获取</li><li>提出<strong>动作状态重读机制</strong>，显式重用动作模块早期计算的中间状态，解决残差流隐式传递导致的早期信息丢失问题，支持长程操作决策</li><li>将LayerRoute集成到<strong>StarVLA-π</strong>和<strong>π₀.₅</strong>两个代表性VLA骨干，仅需额外0.31%/3.87%的参数，即可在多个基准上取得显著性能提升</li><li>跨仿真、真实机器人多类基准验证方法泛化性，最长程操作任务<strong>LIBERO Long</strong>上取得最高7.2个百分点的成功率提升</li><li>通过路由分析揭示训练过程中路由选择性的演化规律，以及不同任务类型对应的 distinct 层分配模式</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>动作条件层混合路由器</strong>：对当前动作状态和候选VLM状态做池化得到紧凑摘要，分别投影到256维共享路由空间计算缩放点积相似度，得到VLM深度的样本级权重，混合同位置VLM token作为后续交叉注意力的上下文</li><li><strong>动作状态重读</strong>：维护动作模块不同阶段的中间状态，用可学习的层级查询计算token级权重，混合早期动作状态的对应位置表示，显式重用早期决策信息</li><li>创新点在于将自适应表示访问的范围从VLM内部扩展到VLM-动作边界，同时支持VLM深度的自适应选择和动作内部状态的显式重用，额外计算开销极小</li><li>具体集成到<strong>StarVLA-π</strong>的36层DiT动作模块：在18个交叉注意力层部署层混合路由器，在所有36个DiT块部署动作状态重读机制</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>LIBERO</strong>（覆盖空间、物体、目标、长程4类桌面操作任务）、<strong>SimplerEnv</strong>（测试不同机器人平台下的视觉与环境鲁棒性）、<strong>RoboCasa-GR1</strong>（人形embodiment的家庭操作任务）</li><li>真实机器人数据集：Franka机械臂的3个物理操作任务（立方体拾取放置、白板擦拭、桌面清理），每个任务收集50条演示轨迹</li><li>模型规模：<strong>StarVLA-π</strong>基于<strong>Qwen3-VL</strong>，动作模块为36层DiT；LayerRoute仅增加0.31%（StarVLA-π）/3.87%（π₀.₅）的额外参数，推理延迟 overhead 分别为10.03%和25.04%</li><li>训练资源：8块<strong>NVIDIA H200</strong> GPU，每设备batch size为32，使用AdamW优化器，采用backbone特定学习率，设置5K步学习率预热，联合微调预训练VLM、动作模块、路由器和重读模块</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真在<strong>LIBERO</strong>、<strong>SimplerEnv</strong>、<strong>RoboCasa-GR1</strong>三个基准，真实机器人在Franka机械臂上测试；对比基线为原始静态接口的<strong>StarVLA-π</strong>和<strong>π₀.₅</strong></li><li>主要评估指标：操作成功率（SR%）、额外参数 overhead、推理延迟 overhead</li><li>关键实验结果：</li></ul>
+<p> - <strong>LIBERO</strong>基准：StarVLA-π+LayerRoute的Avg4（4类任务平均成功率）提升2.3pp，Long（长程任务）提升7.2pp；π₀.₅+LayerRoute的Avg4提升1.3pp，Long提升3.6pp</p>
+<p> - 跨基准泛化：<strong>SimplerEnv</strong> WidowX平台上StarVLA-π提升2.5pp，π₀.₅提升5.6pp；<strong>RoboCasa-GR1</strong>上StarVLA-π提升1.2pp，π₀.₅提升5.5pp</p>
+<p> - 跨VLM骨干泛化：在<strong>Qwen2.5-VL</strong>、<strong>MiMo-Embodied</strong>、<strong>Cosmos-Reason2-2B</strong>上相对原始静态接口均有1.2-3.3pp的提升</p>
+<p> - 真实机器人实验：3个物理任务上成功率分别提升8.0、4.0、6.0pp，验证真实场景的有效性</p>
+<p> - 路由分析显示：训练过程中路由逐渐从均匀分布变为具有选择性的分配，早期动作层偏向浅VLM层，后期偏向深层，空间类任务偏好浅层表示，长程任务偏好多层次的混合表示</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.06114/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Where Success Breaks: Failure-Boundary Learning for Robust Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.05985/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">A Brain-inspired Hierarchical Framework for Zero-Shot Robot Task Reasoning and Execution</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TANGO: Humanoid Navigation in Cluttered Environments with a Whole-Body Vision-Language-Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究人形机器人在杂乱室内环境中的导航问题，与传统的2D路径规划不同，该任务需要连续、几何感知的全身适配，包括协调的手臂放置、躯干调整和步态调节，以在复杂三维空间中实现无碰撞通行。 作者提出了 TANGO，据称是首个用于语言条件下人形机器人在杂乱环境中穿行的全身视觉-语言-动作（VLA）导航框架。给定自然语言指令和以自我为中心的RGB观测，TANGO 直接预测29自由度（29-DoF）关节空间动作。 为解决训练数据获取难题，作者开发了全自动的模拟数据生成管线 Plan–Edit–Track（PET），离线合成多样化、无碰撞的全身穿行行为，为学习语言条件下的全身策略提供动态可行的监督信号。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.09158">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.09158.webp" alt="TANGO: Humanoid Navigation in Cluttered Environments with a Whole-Body Vision-Language-Action Model" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文研究人形机器人在杂乱室内环境中的导航问题，与传统的2D路径规划不同，该任务需要连续、几何感知的全身适配，包括协调的手臂放置、躯干调整和步态调节，以在复杂三维空间中实现无碰撞通行。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TANGO: Humanoid Navigation in Cluttered Environments with a Whole-Body Vision-Language-Action Model</h1>
+            <div class="detail-meta">2026-09-08 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.09158" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.09158" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.09158</span></div>
+            <p class="detail-summary">论文研究人形机器人在杂乱室内环境中的导航问题，与传统的2D路径规划不同，该任务需要连续、几何感知的全身适配，包括协调的手臂放置、躯干调整和步态调节，以在复杂三维空间中实现无碰撞通行。 作者提出了 TANGO，据称是首个用于语言条件下人形机器人在杂乱环境中穿行的全身视觉-语言-动作（VLA）导航框架。给定自然语言指令和以自我为中心的RGB观测，TANGO 直接预测29自由度（29-DoF）关节空间动作。 为解决训练数据获取难题，作者开发了全自动的模拟数据生成管线 Plan–Edit–Track（PET），离线合成多样化、无碰撞的全身穿行行为，为学习语言条件下的全身策略提供动态可行的监督信号。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">加州大学伯克利分校（University of California, Berkeley）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文研究人形机器人在杂乱室内环境中的导航问题，与传统的2D路径规划不同，该任务需要连续、几何感知的全身适配，包括协调的手臂放置、躯干调整和步态调节，以在复杂三维空间中实现无碰撞通行。</p>
+  <ul class="reading-intro-points"><li>论文研究人形机器人在杂乱室内环境中的导航问题，与传统的2D路径规划不同，该任务需要连续、几何感知的全身适配，包括协调的手臂放置、躯干调整和步态调节，以在复杂三维空间中实现无碰撞通行。</li><li>作者提出了 TANGO，据称是首个用于语言条件下人形机器人在杂乱环境中穿行的全身视觉-语言-动作（VLA）导航框架。给定自然语言指令和以自我为中心的RGB观测，TANGO 直接预测29自由度（29-DoF）关节空间动作。</li><li>为解决训练数据获取难题，作者开发了全自动的模拟数据生成管线 Plan–Edit–Track（PET），离线合成多样化、无碰撞的全身穿行行为，为学习语言条件下的全身策略提供动态可行的监督信号。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>加州大学伯克利分校（University of California, Berkeley）</strong></li><li><strong>北京大学（Peking University）</strong></li><li><strong>清华大学（Tsinghua University）</strong></li><li><strong>香港大学（The University of Hong Kong）</strong></li><li><strong>普林斯顿大学（Princeton University）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文研究人形机器人在杂乱室内环境中的导航问题，与传统的2D路径规划不同，该任务需要连续、几何感知的全身适配，包括协调的手臂放置、躯干调整和步态调节，以在复杂三维空间中实现无碰撞通行。</li><li>作者提出了 <strong>TANGO</strong>，据称是首个用于语言条件下人形机器人在杂乱环境中穿行的全身视觉-语言-动作（VLA）导航框架。给定自然语言指令和以自我为中心的RGB观测，<strong>TANGO</strong> 直接预测29自由度（29-DoF）关节空间动作。</li><li>为解决训练数据获取难题，作者开发了全自动的模拟数据生成管线 <strong>Plan–Edit–Track（PET）</strong>，离线合成多样化、无碰撞的全身穿行行为，为学习语言条件下的全身策略提供动态可行的监督信号。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次提出针对杂乱环境导航的全身VLA框架 <strong>TANGO</strong>，直接预测29-DoF的关节空间动作，避免了传统导航中规划与控制模块分离的局限，缩小了物理世界与规划之间的差距。</li><li>提出 <strong>Plan–Edit–Track（PET）</strong> 自动数据生成管线，通过全局路径规划、运动生成、障碍感知运动编辑和RL跟踪的有机结合，低成本地合成无碰撞、动态可行的全身穿行数据集。</li><li>采用 <strong>Qwen2.5VL-7B</strong> 视觉语言模型作为系统-2，结合基于流匹配的多模态扩散Transformer（MM-DiT）动作专家（系统-1）和现成的 <strong>SONIC</strong> 运动跟踪器（系统-0），形成三系统协作架构。</li><li>实现了从仿真到 <strong>Unitree G1</strong> 人形机器人的零样本部署，通过云-边架构分离计算密集的VLA模块与高频率的全身控制器，实现了在真实杂乱场景中的稳健语言引导穿行。</li><li>在 <strong>VLNVerse</strong> 基准和杂乱环境测试中取得的性能均优于强大的模块化基线，同时保持了更低的碰撞率，并计划开源数据管线、数据集、模型权重及部署系统。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用<strong>三系统（triple-system）架构</strong>：系统-2为Qwen2.5VL-7B视觉语言模型，负责场景理解；系统-1为流匹配训练的多模态扩散Transformer（MM-DiT）动作专家，负责预测未来动作块；系统-0为SONIC低层运动跟踪器，负责高频物理执行。</li><li>数据生成采用 <strong>PET 管线</strong>：首先利用A*算法结合障碍感知代价进行全局路径规划，并插入90度航向变化以适应狭窄通道；随后通过SONIC规划器生成自然行走动作，并利用势场引导力和步态适配模块对动作进行障碍感知编辑；最后通过SONIC跟踪器验证物理可行性，过滤失败或碰撞轨迹。</li><li>将动作表示为关节角度、相对基础旋转及平面位移增量，通过训练时<strong>实时分块（RTC）</strong> 技术对齐离线训练与在线流式执行，提高动作块的连续性与执行稳定性。</li><li>训练目标结合<strong>语言建模的交叉熵损失</strong>（用于VideoQA样本，保持通用世界知识）与<strong>流匹配损失</strong>，以端到端方式联合训练视觉语言骨干和动作专家。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>基于 <strong>VLNVerse</strong>（263个场景，保留205个）和 <strong>SAGE-3D</strong>（1000个场景，保留373个）作为源场景，共578个场景用于增强。</li><li>引入三类障碍物增强：侧向障碍（构建窄通道）、地面障碍（要求迈步）、头顶障碍（要求上肢躲避），通过SO(3)变换自动实例化语义匹配的物体。</li><li>最终生成 <strong>64,633条</strong> 包含语言指令、RGB观测和全身动作监督的训练轨迹。</li><li>PET管线及渲染分别消耗 <strong>86</strong> 和 <strong>125</strong> 个 <strong>RTX PRO 6000</strong> GPU小时，总计 <strong>211个GPU小时</strong>。</li><li>模型基于 <strong>Qwen2.5VL-7B</strong> 并采用 <strong>InternVLA-N1</strong> 权重进行热启动，在单一epoch内以1×10⁻⁵的学习率完成训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>在 <strong>VLNVerse</strong> 基准（Val Seen 423条、Val Unseen 825条轨迹）上，<strong>TANGO</strong> 在Val Seen和Val Unseen中均取得了最高的成功率（SR）和最低的导航误差（NE），且在物理约束下超越了仅支持传送评估的基线。</li><li>在<strong>增强 VLNVerse-unseen</strong> 杂乱环境评测中，<strong>TANGO</strong> 以纯RGB输入取得 <strong>43.75%</strong> 的SR和 <strong>9.90%</strong> 的碰撞率（CR），优于最强的模块化基线（InternVLA-N1 + HumanoidPF，SR 41.88%，CR 15.81%，后者还额外使用了LiDAR信息）。</li><li>真实世界实验涵盖短程2D导航、长程2D导航（约30米）和杂乱3D环境三种场景，每种15次试验；<strong>TANGO</strong> 在全部三种场景中均取得了更高的成功次数且每次试验的平均碰撞数更低。</li><li>消融实验表明：去除RTC使SR从43.75%降至10.94%，碰撞率从9.90%升至14.60%；去除运动编辑使SR降至36.25%，碰撞率升至20.60%；将SONIC替换为 <strong>ScaleBFM</strong> 跟踪器时，各项指标差异在3个百分点以内，验证了方法的通用性。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.09119/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">DeCAL: Towards Physically-Grounded Dexterous Vision-Language-Action Models via Contact-Aware Latent Co-Imagination</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
