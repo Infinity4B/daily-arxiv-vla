@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RefGuard: Identity-Aware Language-Guided Robot Manipulation via Joint Target-Anchor-Frame Grounding - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="解决语言引导机器人操作中的identity switch问题：机器人在杂乱场景中对重复对象、模糊锚点或依赖帧的空间术语执行几何有效但非预期的操作 将指称解析形式化为对三个耦合潜变量（target, anchor, reference frame）的联合后验推断 提出RefGuard框架，通过延迟承诺保持指称不确定性，直到决策阶段，支持execute/clarify/reobserve/abort四种决策" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.06221">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.06221.webp" alt="RefGuard: Identity-Aware Language-Guided Robot Manipulation via Joint Target-Anchor-Frame Grounding" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">解决语言引导机器人操作中的identity switch问题：机器人在杂乱场景中对重复对象、模糊锚点或依赖帧的空间术语执行几何有效但非预期的操作</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">RefGuard: Identity-Aware Language-Guided Robot Manipulation via Joint Target-Anchor-Frame Grounding</h1>
+            <div class="detail-meta">2026-09-05 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.06221" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.06221" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.06221</span></div>
+            <p class="detail-summary">解决语言引导机器人操作中的identity switch问题：机器人在杂乱场景中对重复对象、模糊锚点或依赖帧的空间术语执行几何有效但非预期的操作 将指称解析形式化为对三个耦合潜变量（target, anchor, reference frame）的联合后验推断 提出RefGuard框架，通过延迟承诺保持指称不确定性，直到决策阶段，支持execute/clarify/reobserve/abort四种决策</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Imperial College London（主要研究机构，作者Lan Wei, Kangyi Lu…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">解决语言引导机器人操作中的identity switch问题：机器人在杂乱场景中对重复对象、模糊锚点或依赖帧的空间术语执行几何有效但非预期的操作</p>
+  <ul class="reading-intro-points"><li>解决语言引导机器人操作中的identity switch问题：机器人在杂乱场景中对重复对象、模糊锚点或依赖帧的空间术语执行几何有效但非预期的操作</li><li>将指称解析形式化为对三个耦合潜变量（target, anchor, reference frame）的联合后验推断</li><li>提出RefGuard框架，通过延迟承诺保持指称不确定性，直到决策阶段，支持execute/clarify/reobserve/abort四种决策</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>Imperial College London（主要研究机构，作者Lan Wei, Kangyi Lu, Yongchen Wang, Chenmeng Bi, Qi Chen, Dandan Zhang）</li><li>United Kingdom Atomic Energy Authority, RACE（作者Hanlin Niu）</li><li>Oxford Robotics Institute, University of Oxford（作者Hanlin Niu）</li><li>Avant Intelligence Ltd, London（作者Yip Fun Yeung）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>解决语言引导机器人操作中的<strong>identity switch</strong>问题：机器人在杂乱场景中对重复对象、模糊锚点或依赖帧的空间术语执行几何有效但非预期的操作</li><li>将指称解析形式化为对三个耦合潜变量（<strong>target</strong>, <strong>anchor</strong>, <strong>reference frame</strong>）的联合后验推断</li><li>提出<strong>RefGuard</strong>框架，通过延迟承诺保持指称不确定性，直到决策阶段，支持<strong>execute</strong>/<strong>clarify</strong>/<strong>reobserve</strong>/<strong>abort</strong>四种决策</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>将identity switch识别为一种失败模式，形式化为对target, anchor, reference frame三个耦合变量的联合推断</li><li>引入RefGuard，基于双层场景图（分离帧无关几何与方向关系）和联合目标-锚点-帧后验推断，支持execute/clarify/reobserve/abort决策</li><li>在<strong>UF850</strong>真实机器人六组应力测试和<strong>3,200集</strong>过程套件中验证，显著降低identity switch同时保持高执行覆盖率</li><li>通过匹配消融实验证明保留联合不确定性而非早期承诺是优势来源</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>使用<strong>GPT-4o</strong>将自然语言指令解析为符号原语查询序列（pick/place, target phrase, anchor phrases, relations, frame cues）</li><li>基于<strong>SAM 3</strong>的感知模块从RGB-D观测构建双层场景图：帧无关层存储拓扑关系（near, on, inside），帧条件层存储方向偏移（left-of, right-of）</li><li><strong>联合假设表</strong>对所有可能的target-anchor-frame解释进行评分，通过soft object score, relation score, action feasibility计算行分数</li><li><strong>后验到决策策略</strong>：计算目标边际信念B_T(i)，通过后验集中度分数κ和top-1/top-2差异决定execute/clarify/reobserve/abort</li><li><strong>后验感知规划与验证</strong>：规划时保留高权重锚点和帧假设，执行前验证目标和锚点是否仍可见且约束满足</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>真实机器人平台：<strong>UF850</strong>机械臂，配备Intel RealSense D435i RGB-D摄像头</li><li>真实测试集：6组设置（<strong>S1-S6</strong>），共90次ambiguity-stress试验</li><li>大规模过程测试集：<strong>3,200集</strong>LIBERO风格过程套件，20个对象类别，每场景5-20个对象</li><li>基线模型：<strong>GR00T</strong>, <strong>π₀.₅</strong>, LLM-based pipeline</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：UF850真实机器人厨房场景 + 3,200集过程套件</li><li>主要指标：Task Success (TS), Identity-Switch Rate (ISR), Correct Execution (CE), Coverage (Cov), Deferral Rate (DR)</li><li>关键结果：</li></ul>
+<p> - 在S2-S4 ambiguity-stress试验中，RefGuard实现<strong>0% identity switch</strong>（81/90正确执行），而VLA基线ISR为33-46%</p>
+<p> - 在S1清晰场景中保持93.3%任务成功率</p>
+<p> - 在S5执行时扰动下实现86.7%恢复率</p>
+<p> - 在S6硬负例中实现100%正确延迟</p>
+<p> - 在3,200集过程中套件中，将可解指令的正确执行率从56.6%提升至80.5%，同时将延迟率从43.4%降至19.5%</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.06251/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">MobileVLA-R1 2.0: RL-Enhanced Reasoning for Mobile Robot Control</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.06114/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Where Success Breaks: Failure-Boundary Learning for Robust Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

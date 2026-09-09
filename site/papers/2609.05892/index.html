@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A4A: Cross-Embodiment Transfer of Action-Oriented 4D Affordances from Human Demonstrations - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了面向动作的4D可供性（action-oriented 4D affordances），将人类演示中的交互知识表示为语言条件的交互相关3D点的未来轨迹场，而非传统的静态2D掩码、3D区域或接触点 针对现有可供性表示仅能回答&quot;在哪里交互&quot;而无法描述&quot;交互如何展开&quot;的问题，利用短时域内人类手部/物体运动与机器人末端执行器运动的SE(3)几何对应关系，实现跨embodiment的可迁移知识表示 构建了包含80K+交互片段的大规模4D可供性数据集，并提出A4A跨embodiment迁移框架，通过预测空间替换的两阶段训练（4D预训练+机器人微调），将人类演示中的操作先验迁移到多种VLA策略中" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.05892">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff; --cover-muted: rgba(247, 251, 255, 0.82); --cover-chip: rgba(247, 251, 255, 0.16); --cover-stroke: rgba(247, 251, 255, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">A4A: Cross-Embodiment Transfer of Action-Oriented 4D Affordances from Human Demonstrations</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">A4A: Cross-Embodiment Transfer of Action-Oriented 4D Affordances from Human Demonstrations</h1>
+            <div class="detail-meta">2026-09-05 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.05892" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.05892" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.05892</span></div>
+            <p class="detail-summary">论文提出了面向动作的4D可供性（action-oriented 4D affordances），将人类演示中的交互知识表示为语言条件的交互相关3D点的未来轨迹场，而非传统的静态2D掩码、3D区域或接触点 针对现有可供性表示仅能回答&quot;在哪里交互&quot;而无法描述&quot;交互如何展开&quot;的问题，利用短时域内人类手部/物体运动与机器人末端执行器运动的SE(3)几何对应关系，实现跨embodiment的可迁移知识表示 构建了包含80K+交互片段的大规模4D可供性数据集，并提出A4A跨embodiment迁移框架，通过预测空间替换的两阶段训练（4D预训练+机器人微调），将人类演示中的操作先验迁移到多种VLA策略中</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">上海交通大学 (Shanghai Jiao Tong University)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出了面向动作的4D可供性（action-oriented 4D affordances），将人类演示中的交互知识表示为语言条件的交互相关3D点的未来轨迹场，而非传统的静态2D掩码、3D区域或接触点</p>
+  <ul class="reading-intro-points"><li>论文提出了面向动作的4D可供性（action-oriented 4D affordances），将人类演示中的交互知识表示为语言条件的交互相关3D点的未来轨迹场，而非传统的静态2D掩码、3D区域或接触点</li><li>针对现有可供性表示仅能回答&quot;在哪里交互&quot;而无法描述&quot;交互如何展开&quot;的问题，利用短时域内人类手部/物体运动与机器人末端执行器运动的SE(3)几何对应关系，实现跨embodiment的可迁移知识表示</li><li>构建了包含80K+交互片段的大规模4D可供性数据集，并提出A4A跨embodiment迁移框架，通过预测空间替换的两阶段训练（4D预训练+机器人微调），将人类演示中的操作先验迁移到多种VLA策略中</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>上海交通大学</strong> (Shanghai Jiao Tong University)</li><li><strong>罗格斯大学新布朗斯维克分校</strong> (Rutgers University–New Brunswick)</li><li><strong>南洋理工大学</strong> (Nanyang Technological University)</li><li><strong>香港科技大学（广州）</strong> (The Hong Kong University of Science and Technology (GZ))</li><li><strong>上海人工智能实验室</strong> (Shanghai AI Laboratory)</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出了<strong>面向动作的4D可供性（action-oriented 4D affordances）</strong>，将人类演示中的交互知识表示为语言条件的交互相关3D点的未来轨迹场，而非传统的静态2D掩码、3D区域或接触点</li><li>针对现有可供性表示仅能回答"在哪里交互"而无法描述"交互如何展开"的问题，利用短时域内人类手部/物体运动与机器人末端执行器运动的<strong>SE(3)几何对应关系</strong>，实现跨embodiment的可迁移知识表示</li><li>构建了包含<strong>80K+交互片段</strong>的大规模4D可供性数据集，并提出<strong>A4A</strong>跨embodiment迁移框架，通过预测空间替换的两阶段训练（4D预训练+机器人微调），将人类演示中的操作先验迁移到多种VLA策略中</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>面向动作的4D可供性</strong>表示，将可供性从静态空间定位扩展为任务条件的几何演化轨迹，描述交互相关3D几何如何随时间变化，提供可直接指导控制的迁移信号</li><li>提出<strong>A4A跨embodiment迁移框架</strong>，利用4D点轨迹作为VLA策略的预训练预测空间，通过恢复原生状态和动作接口实现向机器人控制的适配，统一支持扩散、自回归、回归、流匹配等五种VLA动作生成范式</li><li>构建大规模<strong>动作导向4D可供性数据集</strong>，包含约30K室内收集的RGB-D演示和现有HOI数据集（如EPIC-KITCHENS、HOI4D），覆盖开、关、抓取、放置、推、拉、倒、切等多样化操作</li><li>在仿真（LIBERO-Object、RLBench）和真实世界（AgileX Piper机械臂）任务上系统验证，证明A4A在异构VLA架构上均能带来一致且显著的性能提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>几何前提</strong>：基于短时域假设，交互相关的3D点运动（如把手、杯沿、按钮）与机器人末端执行器运动可通过<strong>SE(3)刚性或准刚性变换</strong>相互表示，提供可迁移的交互先验，避免直接模仿人类关节运动</li><li><strong>数据构造</strong>：使用<strong>GroundingDINO</strong>定位交互物体，<strong>SAM 2</strong>生成掩码，<strong>CoTracker3</strong>跟踪2D点轨迹，结合<strong>LingBot-Depth</strong>精化深度图反投影至3D，生成身份保持的3D点轨迹；对每个演示表示为$(I^{0:H}, l, Q_{\text{int}}^{0:H})$的4D可供性格式</li><li><strong>两阶段训练</strong>：</li></ul>
+<p> - <strong>4D预训练阶段</strong>：将机器人状态替换为查询点状态，将机器人动作替换为未来点运动，使用原生VLA损失函数（扩散、自回归、回归、流匹配等）训练点轨迹预测，保留视觉-语言前端和共享潜变量模块</p>
+<p> - <strong>机器人微调阶段</strong>：将点投影器$P_Q$替换为机器人本体感知状态投影器$P_S$，将4D预测接口$H_Q$替换为机器人动作接口$H_A$，保留预训练的共享潜变量模块$F_\theta$，恢复原生控制接口进行微调</p></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集</strong>：大规模动作导向4D可供性数据集，包含超过80K交互片段（约30K为自行收集的RGB-D演示，剩余来自现有HOI数据集如EPIC-KITCHENS和HOI4D）</li><li><strong>模型架构</strong>：</li></ul>
+<p> - LIBERO实验：基于<strong>Octo</strong>（扩散）、<strong>OpenVLA</strong>（离散自回归）、<strong>OpenVLA-OFT</strong>（连续回归）、<strong>$\pi_0$</strong>（端到端流匹配）、<strong>$\pi_{0.5}$</strong>（分层流匹配）五种VLA架构</p>
+<p> - RLBench实验：基于<strong>Qwen3.5-4B</strong> backbone的Transformer架构，点投影器和动作投影器为两层MLP，上下文长度16</p>
+<ul><li><strong>训练资源</strong>：单台主机配备<strong>8块NVIDIA A800 GPU</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境与基准</strong>：</li></ul>
+<p> - 仿真：<strong>LIBERO-Object</strong>（10个任务，每个任务500 demonstrations）和<strong>RLBench</strong>（4个任务：meat off grill, sweep to dustpan, turn tap, slide block to target）</p>
+<p> - 真实世界：<strong>AgileX Piper</strong>机械臂执行6个技能（放置杯子到杯子、打开微波炉、切桃子、打开锅、倒米、倒水），每个技能100条遥操作演示</p>
+<ul><li><strong>主要评估指标</strong>：任务成功率（success rate）</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>LIBERO-Object</strong>：五种VLA策略平均成功率提升2-29个百分点，<strong>Octo提升29.0%</strong>（36%→64%），<strong>OpenVLA提升10.0%</strong>（66%→76%），<strong>$\pi_0$提升10.0%</strong>（78%→88%），即使在高基线策略（OpenVLA-OFT 98.0%、$\pi_{0.5}$ 94.0%）上仍保持 modest gains</p>
+<p> - <strong>RLBench</strong>：RGB策略平均成功率从<strong>39.0%提升至61.0%</strong>（+22.0%），超过使用显式3D/4D观察的ManiGaussian（51.0%）和ARM4R（41.0%），在需要精确空间推理和接触依赖运动的任务（meat off grill, turn tap）上提升尤为显著</p>
+<p> - <strong>架构控制对比</strong>：与ARM4R的通用场景级4D预训练相比，面向动作的4D监督将平均成功率从<strong>41.0%提升至60.0%</strong>（+19.0%），验证了交互中心监督的有效性</p>
+<p> - <strong>真实世界</strong>：四种VLA策略平均成功率从<strong>56.7%提升至72.5%</strong>，倒米和倒水等需要协调物体平移和大幅 orientation 变化的任务提升显著（如OpenVLA从4/10提升至7/10）</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.05985/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">A Brain-inspired Hierarchical Framework for Zero-Shot Robot Task Reasoning and Execution</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.05832/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">CR-VLA-Force: Learning Control-aware Compliance VLA Model for Robust Contact-rich Robotic Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
