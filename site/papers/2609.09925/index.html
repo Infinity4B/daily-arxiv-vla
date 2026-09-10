@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Time-Frequency Geometric Cross-Attention for Chunked Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有分块视觉-语言-动作（VLA）模型将T步动作块视为无结构的通用隐藏token序列，忽略了两类关键运动结构：一是动作块叠加的多时间尺度频率成分（平滑全局趋势+精细修正运动），二是块内不同操作阶段（接近、接触、抓取调整、稳定）的运动在表示空间中近似正交的跨阶段几何关系；而点积注意力仅对对齐方向敏感，对正交方向不敏感，难以直接捕捉这类跨阶段关系 研究目标是提出Time–Frequency Geometric Cross-Attention（TFGCA）即插即用模块，插入预训练VLA的backbone与动作头之间，显式建模上述两种运动结构，提升VLA的动作预测能力，尤其是分布外（OOD）场景的泛化鲁棒性 解决的问题是修复现有分块VLA对动作块的多尺度频率结构、跨阶段正交几何关系建模不足的盲区，在不破坏预训练模型原有能力的前提下提升性能" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.09925">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.09925.webp" alt="Time-Frequency Geometric Cross-Attention for Chunked Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有分块视觉-语言-动作（VLA）模型将T步动作块视为无结构的通用隐藏token序列，忽略了两类关键运动结构：一是动作块叠加的多时间尺度频率成分（平滑全局趋势+精细修正运动），二是块内不同操作阶段（接近、接触、抓取调整、稳定）的运动在表示空间中近似正交的跨阶段几何关系；而点积注意力仅对对齐方向敏感，对正交方向不敏感，难以直接捕捉这类跨阶段关系</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Time-Frequency Geometric Cross-Attention for Chunked Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-09-09 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.09925" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.09925" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.09925</span></div>
+            <p class="detail-summary">现有分块视觉-语言-动作（VLA）模型将T步动作块视为无结构的通用隐藏token序列，忽略了两类关键运动结构：一是动作块叠加的多时间尺度频率成分（平滑全局趋势+精细修正运动），二是块内不同操作阶段（接近、接触、抓取调整、稳定）的运动在表示空间中近似正交的跨阶段几何关系；而点积注意力仅对对齐方向敏感，对正交方向不敏感，难以直接捕捉这类跨阶段关系 研究目标是提出Time–Frequency Geometric Cross-Attention（TFGCA）即插即用模块，插入预训练VLA的backbone与动作头之间，显式建模上述两种运动结构，提升VLA的动作预测能力，尤其是分布外（OOD）场景的泛化鲁棒性 解决的问题是修复现有分块VLA对动作块的多尺度频率结构、跨阶段正交几何关系建模不足的盲区，在不破坏预训练模型原有能力的前提下提升性能</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文提供的HTML原文中未标注作者所属研究机构</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有分块视觉-语言-动作（VLA）模型将T步动作块视为无结构的通用隐藏token序列，忽略了两类关键运动结构：一是动作块叠加的多时间尺度频率成分（平滑全局趋势+精细修正运动），二是块内不同操作阶段（接近、接触、抓取调整、稳定）的运动在表示空间中近似正交的跨阶段几何关系；而点积注意力仅对对齐方向敏感，对正交方向不敏感，难以直接捕捉这类跨阶段关系</p>
+  <ul class="reading-intro-points"><li>现有分块视觉-语言-动作（VLA）模型将T步动作块视为无结构的通用隐藏token序列，忽略了两类关键运动结构：一是动作块叠加的多时间尺度频率成分（平滑全局趋势+精细修正运动），二是块内不同操作阶段（接近、接触、抓取调整、稳定）的运动在表示空间中近似正交的跨阶段几何关系；而点积注意力仅对对齐方向敏感，对正交方向不敏感，难以直接捕捉这类跨阶段关系</li><li>研究目标是提出Time–Frequency Geometric Cross-Attention（TFGCA）即插即用模块，插入预训练VLA的backbone与动作头之间，显式建模上述两种运动结构，提升VLA的动作预测能力，尤其是分布外（OOD）场景的泛化鲁棒性</li><li>解决的问题是修复现有分块VLA对动作块的多尺度频率结构、跨阶段正交几何关系建模不足的盲区，在不破坏预训练模型原有能力的前提下提升性能</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文提供的HTML原文中未标注作者所属研究机构</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有分块视觉-语言-动作（VLA）模型将T步动作块视为无结构的通用隐藏token序列，忽略了两类关键运动结构：一是动作块叠加的多时间尺度频率成分（平滑全局趋势+精细修正运动），二是块内不同操作阶段（接近、接触、抓取调整、稳定）的运动在表示空间中近似正交的跨阶段几何关系；而点积注意力仅对对齐方向敏感，对正交方向不敏感，难以直接捕捉这类跨阶段关系</li><li>研究目标是提出<strong>Time–Frequency Geometric Cross-Attention（TFGCA）</strong>即插即用模块，插入预训练VLA的backbone与动作头之间，显式建模上述两种运动结构，提升VLA的动作预测能力，尤其是分布外（OOD）场景的泛化鲁棒性</li><li>解决的问题是修复现有分块VLA对动作块的多尺度频率结构、跨阶段正交几何关系建模不足的盲区，在不破坏预训练模型原有能力的前提下提升性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>TFGCA</strong>即插即用模块，专门针对分块VLA的动作预测任务设计，可同时建模动作块的多尺度频率结构和跨阶段近似正交的几何关系，新增参数量仅约4.23M，约为<strong>π₀.₅</strong> backbone的0.10%</li><li>设计两个核心组件：一是基于动作空间投影的<strong>逐维度可学习小波变换（SWT）tokenization</strong>，将每个动作维度的轨迹分解为长度保留的多分辨率频率token，显式提供多尺度频率结构；二是<strong>点积-楔积混合交叉注意力</strong>，通过可学习权重融合点积（相似性）和楔积模长（对正交方向敏感）两个评分通道，让时间token能直接从块内的时间-频率证据中检索跨阶段关系</li><li>提出<strong>时间正交分工（TO-DoL）</strong>假设，通过对双机械臂操作数据的分析，发现跨阶段近似正交的运动关系沿时间轴依次展开，而非同一时刻存在，从理论上解释了点积注意力难以直接捕捉该类关系的局限性</li><li>提出零初始化残差设计，使模块插入预训练VLA时初始化阶段完全复现基模型行为，保证即插即用的安全性，无需重新训练整个模型即可联合微调</li><li>在多个仿真与真实机器人基准上验证有效性：近饱和分布内基准<strong>LIBERO</strong>上平均提升+1.5，分布外基准<strong>LIBERO-Plus</strong>上提升+6.3，域随机化基准<strong>RoboTwin 2.0</strong>上平均提升+28.5，真实<strong>AgiBot A2</strong>机器人任务上成功率提升+11.67个百分点，且OOD场景下增益更显著</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>TFGCA是插入VLA transformer输出层与线性动作头之间的轻量即插即用模块，输入为VLA输出的T×d维隐藏动作token矩阵H，输出为优化后的T×d维token矩阵H̃，整体包含三个核心阶段</li><li>第一阶段为<strong>动作空间投影</strong>：通过专用线性映射将抽象d维隐藏token投影到D维动作控制空间（对应机器人本体动作参数化，如关节角或末端执行器增量），得到Z^act，同时加入辅助对齐损失，用stop-gradient将Z^act监督向真实动作块，保证投影的物理意义和梯度流动稳定性</li><li>第二阶段为<strong>逐维度可学习SWT tokenization</strong>：对Z^act的每个动作维度，使用逐维度可学习小波滤波器（初始化为db2）进行非降采样stationary wavelet transform，分解为多分辨率频率带（保留原始时间长度，与时间步对齐），同时执行逐维度直流去除、可选有限差分预处理；再将每个时间-频带位置的D维动作向量嵌入到模型宽度d，加入频带类型和时间位置嵌入，联合编码多维度动作内容，得到频率token序列F</li><li>第三阶段为<strong>点积-楔积混合交叉注意力</strong>：以原始时间token H为查询，频率token F为键和值，分别计算点积评分矩阵和楔积模长评分矩阵，各自通过softmax得到独立注意力权重，再通过可学习标量β（初始化为0.5）混合两个注意力权重，最后通过零初始化的输出投影残差加到原始token上得到H̃</li><li>创新点与关键技术：一是将时间-频率分解引入VLA动作块表示，显式建模多尺度频率结构；二是引入楔积模长作为额外注意力评分通道，解决点积注意力对正交方向不敏感的问题，可直接捕捉跨阶段近似正交的几何关系；三是零初始化残差设计与动作空间辅助对齐损失，保证模块即插即用的安全性和训练稳定性；从理论上证明点积和楔积是相关性度量的两个正交坐标，混合注意力可实现点积无法实现的近正交key优先排序</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集包括：<strong>LIBERO</strong>（4个单臂末端执行器增量控制任务套件：Spatial、Object、Goal、Long/L10）、<strong>LIBERO-Plus</strong>（在LIBERO基础上加入7类分布外扰动的泛化基准，扰动类型包括相机视角、机器人初始化、语言重述、光照、背景、传感器噪声、物体布局）、<strong>RoboTwin 2.0</strong>（6个双机械臂单任务，含清洁环境与域随机化环境）、<strong>AgiBot A2</strong>真实机器人数据集（3个真实双机械臂操作任务）</li><li>模型规模：基模型为多模态预训练VLA <strong>π₀.₅</strong>（十亿级参数规模），<strong>TFGCA</strong>新增参数量约4.23M，仅为π₀.₅ backbone的0.10%</li><li>训练资源：论文附录G提及包含训练硬件配置与时钟时间信息，但提供的截断原文未包含具体GPU/TPU等硬件细节；训练时TFGCA与同源的复现π₀.₅基模型共享一致的数据、训练预算与评估协议，仅TFGCA特有的SWT/几何配置存在差异</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境覆盖分布内仿真、分布外仿真、域随机化仿真、真实机器人四个场景，基准包括<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong>、<strong>AgiBot A2</strong>真实机器人</li><li>主要评估指标为任务成功率（SR%）</li><li>关键实验结果：</li></ul>
+<p> - 近饱和分布内<strong>LIBERO</strong>基准上，相比复现的π₀.₅基模型（平均成功率96.7%），完整TFGCA将4个套件的平均成功率提升至<strong>98.2%</strong>，净提升<strong>+1.5</strong>，最难的长任务套件成功率从94.6%提升至97.0%；组件消融显示三个核心组件（SWT频率分支、楔积几何通道、对齐损失）共同贡献性能，移除任一组件都会降低平均成功率</p>
+<p> - 分布外<strong>LIBERO-Plus</strong>基准上，TFGCA在7类扰动中的6类上优于基模型，总成功率从66.7%提升至<strong>73.0%</strong>，净提升<strong>+6.3</strong>，在基模型最难的Noise、Robot、Camera三类扰动上增益最大；消融显示移除楔积几何通道对总成功率下降影响最大（-3.3），说明几何通道在OOD场景下贡献更显著</p>
+<p> - <strong>RoboTwin 2.0</strong>基准上，所有策略仅在清洁环境演示上训练30k步，清洁与随机化环境各评估100次，TFGCA相比基模型在清洁环境下平均提升<strong>+3.7</strong>，在未训练的域随机化（零样本泛化）环境下平均提升<strong>+28.5</strong>，随机化环境下平均成功率达42.7%，比次优方法高约24个百分点；接触/多阶段任务（click_bell、stack_bowls_three、turn_switch）的随机化增益最大，其中click_bell和stack_bowls_three在基模型随机化下成功率降至约6%，TFGCA仍保持86%和59%</p>
+<p> - 真实<strong>AgiBot A2</strong>机器人基准上，每个任务运行20次共60次试验，TFGCA在3个任务上的总体成功率比基模型提升<strong>+11.67个百分点</strong>，且分布外场景下增益更大</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.09941/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">HaWMPO: Hallucination-Aware World Model-based Policy Optimization for Generalist Robot Policy</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.09808/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">GTA-2: A Multi-VLM Framework for Synthesizing Robot Manipulation Skills via Grounded Task Axes</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Frequency-Conditioned Flow Matching for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 FreqFM，一种面向视觉-语言-动作（VLA）模型的频率条件流匹配框架，显式建模机器人动作轨迹在频率域的高度非均匀能量分布 利用离散余弦变换（DCT）将动作块映射到频率坐标，并在流匹配的整个生成流程（源分布、训练目标、推理引导）中引入频率条件化 解决现有流匹配方法仅在时间坐标中建模动作、忽略频率异构性导致的源-目标协方差不匹配和低效优化问题" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.10405">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.10405.webp" alt="Frequency-Conditioned Flow Matching for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 FreqFM，一种面向视觉-语言-动作（VLA）模型的频率条件流匹配框架，显式建模机器人动作轨迹在频率域的高度非均匀能量分布</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Frequency-Conditioned Flow Matching for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-09-09 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.10405" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.10405" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.10405</span></div>
+            <p class="detail-summary">提出 FreqFM，一种面向视觉-语言-动作（VLA）模型的频率条件流匹配框架，显式建模机器人动作轨迹在频率域的高度非均匀能量分布 利用离散余弦变换（DCT）将动作块映射到频率坐标，并在流匹配的整个生成流程（源分布、训练目标、推理引导）中引入频率条件化 解决现有流匹配方法仅在时间坐标中建模动作、忽略频率异构性导致的源-目标协方差不匹配和低效优化问题</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">AGIBOT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 FreqFM，一种面向视觉-语言-动作（VLA）模型的频率条件流匹配框架，显式建模机器人动作轨迹在频率域的高度非均匀能量分布</p>
+  <ul class="reading-intro-points"><li>提出 FreqFM，一种面向视觉-语言-动作（VLA）模型的频率条件流匹配框架，显式建模机器人动作轨迹在频率域的高度非均匀能量分布</li><li>利用离散余弦变换（DCT）将动作块映射到频率坐标，并在流匹配的整个生成流程（源分布、训练目标、推理引导）中引入频率条件化</li><li>解决现有流匹配方法仅在时间坐标中建模动作、忽略频率异构性导致的源-目标协方差不匹配和低效优化问题</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>AGIBOT</strong></li><li><strong>Xi'an Jiaotong University</strong>（通讯作者：Wang Chuang）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>FreqFM</strong>，一种面向视觉-语言-动作（VLA）模型的频率条件流匹配框架，显式建模机器人动作轨迹在频率域的高度非均匀能量分布</li><li>利用离散余弦变换（DCT）将动作块映射到频率坐标，并在流匹配的整个生成流程（源分布、训练目标、推理引导）中引入频率条件化</li><li>解决现有流匹配方法仅在时间坐标中建模动作、忽略频率异构性导致的源-目标协方差不匹配和低效优化问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>频谱匹配源分布</strong>（Spectrum-Matched Source），基于训练动作的功率谱对高斯源进行频率-wise 缩放，保持参考路径上的相对二阶矩谱不变</li><li>设计<strong>PSD 归一化自适应目标</strong>（PSD-Normalized Adaptive Objective），通过幂谱密度归一化和基于似然的多任务权重学习，自适应平衡各频率回归项的贡献</li><li>提出<strong>频谱传输预算分类器自由引导</strong>（Spectral Transport-Budgeted CFG），在参考传输尺度单位下对各频率的 CFG 残差进行径向裁剪</li><li>在 <strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>VLA-Arena</strong> 仿真基准及 6 个真实机器人任务上验证有效性，且无需修改 VLA 主干网络</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用 <strong>DCT-II</strong> 沿动作时间维度进行正交变换，将时间序列动作 $\bm{a}\in\mathbb{R}^{H\times D}$ 转换为频率系数 $\tilde{\bm{a}}=\bm{C}\bm{a}$</li><li><strong>频谱匹配源分布</strong>：估计每个频率-维度的动作功率 $P_{k,d}=\mathbb{E}[\tilde{a}_{k,d}^2]$，将源采样为 $\tilde{z}_{0,k,d}=\sqrt{P_{k,d}}\epsilon_{k,d}$，使源与目标共享频谱结构，保持路径上 $\mathbb{E}[\tilde{z}_{t,k,d}^2]=[(1-t)^2+t^2]P_{k,d}$</li><li><strong>PSD 归一化自适应目标</strong>：将频率-wise 回归误差按 $(P_{k,d}+\varepsilon)^\rho$（$\rho=0.25$）进行归一化，并采用似然多任务权重公式学习自适应权重 $s_{k,d}=\log\tau_{k,d}^2$，将目标转化为 $\mathcal{L}_{\mathrm{freq}}=\sum_{k,d}[\frac{1}{2}\exp(-s_{k,d})\bar{\ell}_{k,d}+\frac{1}{2}s_{k,d}]$</li><li><strong>STB-CFG</strong>：定义频率-wise 参考传输半径 $R_k^2=2\sum_{d\in\mathcal{D}_f} P_{k,d}/(P_{k,d}+\varepsilon)$ 和度量矩阵 $\bm{M}_k=\text{diag}_d(P_{k,d}+\varepsilon)$，将 CFG 残差 $\bm{w}_{0,k}$ 投影到半径 $\beta R_k$ 的球内，闭式解为 $\bm{w}_k^*=\gamma_k(t)\bm{w}_{0,k}(t)$，其中 $\gamma_k(t)=\min(1, \beta R_k/b_k(t))$</li><li>方法可无缝插入现有流匹配动作专家，不改变 VLM 主干网络</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真数据集</strong>：<strong>LIBERO</strong>（4 套任务，每套 10 个操作任务，每任务 50 回合）、<strong>LIBERO-Plus</strong>（7 种扰动家族，超万个扰动实例）、<strong>VLA-Arena</strong>（11 个任务，4 个类别，难度 L0-L2）</li><li><strong>真实机器人</strong>：6 个真实机器人操作任务（动作时域 $H=30$）</li><li><strong>模型架构</strong>：基于 <strong>$\pi_0$</strong> 和 <strong>$\pi_{0.5}$</strong> 主干，使用 <strong>LeRobot</strong> 代码库</li><li><strong>训练资源</strong>：2 块 <strong>NVIDIA A800 GPU</strong>，全局批量大小 64，训练 20k 优化步</li><li><strong>关键超参数</strong>：PSD 归一化指数 $\rho=0.25$，条件丢弃概率 $p_{\mathrm{drop}}=0.05$，LIBERO-Plus 零-shot 评估复用 LIBERO 训练的频谱统计</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：任务成功率（Success Rate, SR），VLA-Arena 按难度级别和任务平均</li><li><strong>LIBERO 基准</strong>：FreqFM($\pi_0$) 达到 <strong>96.1%</strong> 平均成功率（+0.7），FreqFM($\pi_{0.5}$) 达到 <strong>97.9%</strong>（+1.2）</li><li><strong>LIBERO-Plus 基准</strong>：FreqFM($\pi_0$) 达到 <strong>68.2%</strong> 总成功率（+5.5），FreqFM($\pi_{0.5}$) 达到 <strong>75.8%</strong>（+9.3）</li><li><strong>VLA-Arena 基准</strong>：FreqFM($\pi_0$) 达到 <strong>68.2%</strong> 总成功率（+5.5），FreqFM($\pi_{0.5}$) 达到 <strong>75.8%</strong>（+9.3）</li><li><strong>真实机器人</strong>：在 6 个真实机器人任务上验证了方法的实际有效性</li><li><strong>消融实验</strong>：通过控制实验验证了频率表示和频率条件化在源分布、目标优化、推理引导各阶段的贡献</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.10522/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Show-Harness: Just a VLM Agent Can Play Robots</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.10243/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">FolDeX: A Physical-World Benchmark for Long-Horizon Robotic Manipulation of Deformable Objects</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
