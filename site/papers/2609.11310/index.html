@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Model Already Knows Don&#x27;t Teach It, Learn to Ask It: Soft Prompting for Few-Shot Adaptation of Vision-Language Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对少样本（10张标注图像）场景下视觉语言模型（VLM）的域外目标检测问题（覆盖航拍、工业、医疗等特殊领域），解决现有适配方法的两大局限：离散提示优化无梯度访问、LoRA微调会引发灾难性遗忘且参数量大 提出SoftPrompt方法，通过优化少量连续软提示token实现VLM的少样本适配，在保持预训练骨干完全冻结的前提下，实现与最优LoRA相当的检测精度 验证方法的通用性，将适配方案从目标检测扩展到机器人操作策略适配，证明软提示注入位置的通用设计原则" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.11310">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.11310.webp" alt="Your Model Already Knows Don&#x27;t Teach It, Learn to Ask It: Soft Prompting for Few-Shot Adaptation of Vision-Language Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对少样本（10张标注图像）场景下视觉语言模型（VLM）的域外目标检测问题（覆盖航拍、工业、医疗等特殊领域），解决现有适配方法的两大局限：离散提示优化无梯度访问、LoRA微调会引发灾难性遗忘且参数量大</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Your Model Already Knows Don&#x27;t Teach It, Learn to Ask It: Soft Prompting for Few-Shot Adaptation of Vision-Language Models</h1>
+            <div class="detail-meta">2026-09-10 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.11310" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.11310" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.11310</span></div>
+            <p class="detail-summary">针对少样本（10张标注图像）场景下视觉语言模型（VLM）的域外目标检测问题（覆盖航拍、工业、医疗等特殊领域），解决现有适配方法的两大局限：离散提示优化无梯度访问、LoRA微调会引发灾难性遗忘且参数量大 提出SoftPrompt方法，通过优化少量连续软提示token实现VLM的少样本适配，在保持预训练骨干完全冻结的前提下，实现与最优LoRA相当的检测精度 验证方法的通用性，将适配方案从目标检测扩展到机器人操作策略适配，证明软提示注入位置的通用设计原则</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Carnegie Mellon University</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对少样本（10张标注图像）场景下视觉语言模型（VLM）的域外目标检测问题（覆盖航拍、工业、医疗等特殊领域），解决现有适配方法的两大局限：离散提示优化无梯度访问、LoRA微调会引发灾难性遗忘且参数量大</p>
+  <ul class="reading-intro-points"><li>针对少样本（10张标注图像）场景下视觉语言模型（VLM）的域外目标检测问题（覆盖航拍、工业、医疗等特殊领域），解决现有适配方法的两大局限：离散提示优化无梯度访问、LoRA微调会引发灾难性遗忘且参数量大</li><li>提出SoftPrompt方法，通过优化少量连续软提示token实现VLM的少样本适配，在保持预训练骨干完全冻结的前提下，实现与最优LoRA相当的检测精度</li><li>验证方法的通用性，将适配方案从目标检测扩展到机器人操作策略适配，证明软提示注入位置的通用设计原则</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>Carnegie Mellon University</li><li>Apple</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对少样本（10张标注图像）场景下视觉语言模型（VLM）的域外目标检测问题（覆盖航拍、工业、医疗等特殊领域），解决现有适配方法的两大局限：离散提示优化无梯度访问、LoRA微调会引发灾难性遗忘且参数量大</li><li>提出<strong>SoftPrompt</strong>方法，通过优化少量连续软提示token实现VLM的少样本适配，在保持预训练骨干完全冻结的前提下，实现与最优LoRA相当的检测精度</li><li>验证方法的通用性，将适配方案从目标检测扩展到机器人操作策略适配，证明软提示注入位置的通用设计原则</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别出软提示在多模态检测中的两个关键设计杠杆：将软提示注入视觉与文本token之间的跨模态边界、使用语义不变的空格token初始化，使平均仅7168个可训练参数的软提示即可达到最优LoRA（r=64，1.746亿参数）的检测精度，参数量减少约24000倍</li><li>量化不同适配方案对通用VLM能力的代价：LoRA微调最高导致56%的VQA性能下降，而SoftPrompt因不修改骨干权重，实现零遗忘</li><li>证明 learnt soft tokens 具备文本提示的优良特性：可跨模型版本迁移（迁移至Qwen3.5-9B带来0.8 mAP提升），且可通过<strong>Soft2Hard</strong>蒸馏方法转化为可读的自然语言提示，性能匹配专用提示搜索方法DetPO、超过GEPA</li><li>将软提示适配方法扩展到机器人操作任务，证明软提示的注入位置原则是通用设计规则，不局限于目标检测场景</li><li>系统对比了硬提示、离散提示优化、LoRA微调、专业检测器等多类基线，在Roboflow20-VL等基准上验证了方法的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>核心技术为<strong>SoftPrompt</strong>：在冻结的VLM输入序列中，插入L个可学习的连续软提示token，仅通过梯度下降优化这些token，完全冻结预训练骨干权重，使用标准检测next-token损失进行训练</li><li>关键创新点1：软提示注入位置选择跨模态边界（视觉token之后、文本token之前，即IST顺序），相比NLP领域常用的前缀注入、后缀注入等其他5种序列顺序，该位置能让软提示同时关注所有视觉patch、并被所有文本token关注，作为域特定视觉先验的自然瓶颈，平均mAP达到10.0，比前缀注入的8.4提升显著</li><li>关键创新点2：初始化策略采用空格token的嵌入向量，保证优化初始状态与冻结基线完全一致，避免语义初始化带来的初始偏差，优化过程仅在有损失信号的地方偏离基线</li><li>关键创新点3：提出<strong>Soft2Hard</strong>蒸馏方法，将训练的软提示转化为可复用的硬（离散）提示：首先让模型描述检测目标，再汇总为全局检测指令，最后在无软提示的基线模型上验证指令效果，无需额外训练学生模型即可实现软提示的可解释化和可移植化</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>主要使用数据集：<strong>Roboflow20-VL</strong>（20个域的少样本检测基准，覆盖航拍、文档、动植物、工业、医疗、运动、其他7大类，每个域提供10张标注图像的support set，评估使用完整测试集）；辅助验证数据集包括<strong>LVIS Rare 50</strong>（长尾检测跨基准验证）、<strong>RoboCasa</strong>（机器人操作任务数据集，用于验证方法通用性）</li><li>模型规模：主实验骨干为<strong>Qwen3-VL-8B-Instruct</strong>（80亿参数，完全冻结）；SoftPrompt平均可训练参数仅7168个（L∈{1,2,3}，每域独立选择长度）；对比基线LoRA的最优配置为rank=64，可训练参数1.746亿</li><li>训练资源：单GPU即可完成训练，优化器使用AdamW，学习率5e-3，余弦学习率调度，batch size为4，最多训练5轮</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：在Roboflow20-VL 10-shot少样本设置下评估，对比基线包括硬提示（类名查询、带人工指令的硬提示）、离散提示优化方法（GEPA、DetPO）、不同rank（4-128）的LoRA微调、专业单任务检测器Grounding DINO（零样本和10样本微调）；额外在NaturalBench VQA、RefCOCO指代表达任务上评估适配对通用能力的损耗，在RoboCasa机器人操作任务上验证方法通用性</li><li>主要评估指标：COCO风格mAP@50:95（检测核心指标）、NaturalBench VQA组精度（衡量通用视觉问答能力遗忘）、RefCOCO grounding精度（衡量通用指向能力损耗）、机器人操作任务成功率</li><li>关键实验结果：</li></ul>
+<p> 1. SoftPrompt在Roboflow20-VL上达到14.2的全域平均mAP，与最优LoRA（r=64）持平，比所有训练免费的提示基线高1.7-3.4 mAP，参数量仅为LoRA的1/24000</p>
+<p> 2. LoRA的检测精度随rank升高先升后降，但遗忘代价持续增长：r=64时VQA精度下降35%，r=128时下降56%；SoftPrompt因骨干完全冻结，遗忘为0</p>
+<p> 3. learnt soft tokens 具备跨模型迁移能力：直接迁移至Qwen3.5-9B可带来0.8 mAP的提升；通过Soft2Hard蒸馏得到的自然语言提示性能匹配DetPO、超过GEPA</p>
+<p> 4. 在RoboCasa的3个机器人操作任务中，跨模态边界注入的软提示在2个基线策略表现差的任务上匹配覆盖匹配的LoRA基线，证明注入位置原则的通用性</p>
+<p> 5. 医疗域上所有通用适配方法均失效（mAP≤1.0），仅专业微调的Grounding DINO达到35.3 mAP，说明当预训练骨干不包含相关知识时，轻量化适配无法生效</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.11445/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">FARM: Reading Failure Signals from the Internal Predictive States of a Frozen Robotic World Model</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.11308/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">2AM: Grounding Agent-Side Memory as Guidance for Steerable Action Models in Long-Horizon Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UniMPA: A Unified Memory-Prediction-Action Model via Action-Grounded Transition Modeling - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有视觉-语言-动作（VLA）模型的观测到动作学习存在过渡可实现性 gap，具体表现为过渡歧义、预测-执行不匹配、经验-实现不匹配三个紧密耦合的问题，是机器人操作的核心瓶颈。 论文提出UniMPA（统一记忆-预测-动作模型），通过共享的动作基础过渡接口，形成「预期-落地-细化」的统一流程，解决上述三个子问题。 目标是实现鲁棒、可泛化的机器人操作，同时大幅降低训练成本。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.11875">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.11875.webp" alt="UniMPA: A Unified Memory-Prediction-Action Model via Action-Grounded Transition Modeling" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有视觉-语言-动作（VLA）模型的观测到动作学习存在过渡可实现性 gap，具体表现为过渡歧义、预测-执行不匹配、经验-实现不匹配三个紧密耦合的问题，是机器人操作的核心瓶颈。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">UniMPA: A Unified Memory-Prediction-Action Model via Action-Grounded Transition Modeling</h1>
+            <div class="detail-meta">2026-09-10 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.11875" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.11875" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.11875</span></div>
+            <p class="detail-summary">现有视觉-语言-动作（VLA）模型的观测到动作学习存在过渡可实现性 gap，具体表现为过渡歧义、预测-执行不匹配、经验-实现不匹配三个紧密耦合的问题，是机器人操作的核心瓶颈。 论文提出UniMPA（统一记忆-预测-动作模型），通过共享的动作基础过渡接口，形成「预期-落地-细化」的统一流程，解决上述三个子问题。 目标是实现鲁棒、可泛化的机器人操作，同时大幅降低训练成本。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">哈尔滨工业大学（深圳）计算机科学与技术学院（作者Wei Li、Rui Shao、Jie He、Ling…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有视觉-语言-动作（VLA）模型的观测到动作学习存在过渡可实现性 gap，具体表现为过渡歧义、预测-执行不匹配、经验-实现不匹配三个紧密耦合的问题，是机器人操作的核心瓶颈。</p>
+  <ul class="reading-intro-points"><li>现有视觉-语言-动作（VLA）模型的观测到动作学习存在过渡可实现性 gap，具体表现为过渡歧义、预测-执行不匹配、经验-实现不匹配三个紧密耦合的问题，是机器人操作的核心瓶颈。</li><li>论文提出UniMPA（统一记忆-预测-动作模型），通过共享的动作基础过渡接口，形成「预期-落地-细化」的统一流程，解决上述三个子问题。</li><li>目标是实现鲁棒、可泛化的机器人操作，同时大幅降低训练成本。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>哈尔滨工业大学（深圳）计算机科学与技术学院</strong>（作者Wei Li、Rui Shao、Jie He、Lingsen Zhang、Liqiang Nie）</li><li><strong>南洋理工大学S-Lab</strong>（作者Ziwei Liu）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有视觉-语言-动作（VLA）模型的观测到动作学习存在<strong>过渡可实现性 gap</strong>，具体表现为过渡歧义、预测-执行不匹配、经验-实现不匹配三个紧密耦合的问题，是机器人操作的核心瓶颈。</li><li>论文提出<strong>UniMPA（统一记忆-预测-动作模型）</strong>，通过共享的<strong>动作基础过渡接口</strong>，形成「预期-落地-细化」的统一流程，解决上述三个子问题。</li><li>目标是实现鲁棒、可泛化的机器人操作，同时大幅降低训练成本。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别了<strong>过渡可实现性 gap</strong>作为观测到动作学习的核心障碍，将其分解为三个子问题，提出UniMPA，通过动作基础的过渡统一预期生成、经验落地和动作细化三个环节。</li><li>设计<strong>持久-选择性未来预测</strong>机制，通过持续隐式监督跟踪任务级进展，同时用触发门仅在过渡关键时刻激活像素解码，解决过渡歧义问题，生成的预头过渡标记直接供动作生成使用。</li><li>引入双向的<strong>视觉-动作记忆库</strong>和<strong>动作-视觉记忆库</strong>，搭配<strong>原型偏置流</strong>，将预测的过渡落地到历史上可执行的视觉-动作证据中，构建视觉基础的动作原型并自适应适配到当前场景，解决预测-执行不匹配和经验-实现不匹配问题。</li><li>大量仿真和真实世界实验表明，UniMPA仅需<strong>π₀.₅</strong>基线25%-50%的训练轮次，在<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0 Hard</strong>和真实任务上分别超越基线1.7、11.7、18.5、12.6个百分点，达到SOTA性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>UniMPA</strong>采用<strong>三系统架构</strong>：<strong>VLM主干</strong>编码视觉-语言上下文，<strong>World Expert</strong>将内容无关的过渡查询转换为未来监督的过渡表示，<strong>Action Expert</strong>基于过渡表示和历史经验生成可执行动作，三者通过动作基础的过渡接口耦合交互。</li><li>创新点1：<strong>持久-选择性未来预测</strong>，用隐式未来目标持续监督过渡标记编码任务进展，触发门仅在接触、释放等过渡关键帧激活像素解码，避免冗余像素重建偏差，预头过渡标记直接输入动作专家，无需解码未来观测。</li><li>创新点2：<strong>过渡对齐双向记忆预训练</strong>，构建两个互补记忆库存储时序对齐的视觉-动作轨迹，用状态ful Mamba模块编码episode级时序动态，通过交叉流过渡基础实现视觉记忆的动作条件化和动作记忆的视觉语义对齐，预训练后冻结记忆库供推理检索。</li><li>创新点3：<strong>原型偏置流</strong>，检索到的视觉基础动作原型用于偏置流匹配的初始流分布，引导动作生成朝向历史上支持的动作流形，再适配当前场景的观测、任务和机器人状态，实现上下文感知的动作细化。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准数据集：<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong>、<strong>VLABench</strong></li><li>真实世界任务平台：<strong>GALAXEA R1 Lite</strong>、<strong>AgileX Cobot Magic</strong></li><li>模型相关：视觉编码器采用冻结的<strong>V-JEPA 2</strong>，模型包含VLM主干、World Expert、Action Expert三个交互Transformer流，搭配状态ful Mamba模块进行时序编码，记忆库将视觉/动作特征投影为可检索的记忆标记。</li><li>训练资源：原文截断部分未明确披露具体GPU/TPU配置，仅提及训练预算为π₀.₅基线的25%-50%。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真场景覆盖<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong>、<strong>VLABench</strong>四个基准，真实场景覆盖<strong>GALAXEA R1 Lite</strong>、<strong>AgileX Cobot Magic</strong>两个机器人平台的操作任务套件。</li><li>主要评估指标：任务<strong>成功率</strong>（仿真和真实任务的核心指标），同时包含基础性能、泛化性能的对比。</li><li>关键实验结果：</li></ul>
+<p> - 在<strong>LIBERO</strong>基准上达到98.6%基础成功率、85.3%泛化成功率，分别超越π₀.₅基线1.7、11.7个百分点；</p>
+<p> - 在<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0 Hard</strong>、真实世界任务上，成功率分别超越π₀.₅基线11.7、18.5、12.6个百分点；</p>
+<p> - 训练效率显著高于基线，仅需25%-50%的训练轮次即可达到更优性能；</p>
+<p> - 消融实验验证了持久-选择性未来预测、过渡对齐双向记忆、面向未来的记忆预训练、动作流形原型细化四个核心组件的有效性；</p>
+<p> - 定性分析表明模型具备合理的时序与跨模态记忆对齐能力、可执行动作原型可视化符合预期、像素级未来预测聚焦过渡关键区域、世界过渡注意力分布合理。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.11697/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ActSafeGuard: Differentiable and Training-Aligned Constraint Enforcement for Flow-Matching Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
