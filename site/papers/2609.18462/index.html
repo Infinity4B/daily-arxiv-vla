@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CSWAM: Better Causal Semantic Representations for Out-of-Distribution Generalization in World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对FastWAM等高效动作推理世界动作模型（WAM）在视觉分布偏移下泛化性差的核心问题，提出因果语义世界动作模型（CSWAM），旨在提升分布外（OOD）泛化性的同时保留动作-only推理的高效性 分析指出FastWAM泛化差的两大原因：一是其重建导向的VAE表征过度依赖外观细节，背景或物体外观变化会干扰任务状态识别；二是动作专家缺乏观测历史提供的时序证据，无法稳定捕捉任务相关的状态变化与运动规律 CSWAM引入基于V-JEPA 2.1的因果语义专家，建模任务相关的语义状态演化，结合稀疏观测历史提供时序上下文，同时保留训练时联合建模、推理时仅生成动作的高效范式" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.18462">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.18462.webp" alt="CSWAM: Better Causal Semantic Representations for Out-of-Distribution Generalization in World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对FastWAM等高效动作推理世界动作模型（WAM）在视觉分布偏移下泛化性差的核心问题，提出因果语义世界动作模型（CSWAM），旨在提升分布外（OOD）泛化性的同时保留动作-only推理的高效性</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">CSWAM: Better Causal Semantic Representations for Out-of-Distribution Generalization in World Action Models</h1>
+            <div class="detail-meta">2026-09-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.18462" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.18462" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.18462</span></div>
+            <p class="detail-summary">针对FastWAM等高效动作推理世界动作模型（WAM）在视觉分布偏移下泛化性差的核心问题，提出因果语义世界动作模型（CSWAM），旨在提升分布外（OOD）泛化性的同时保留动作-only推理的高效性 分析指出FastWAM泛化差的两大原因：一是其重建导向的VAE表征过度依赖外观细节，背景或物体外观变化会干扰任务状态识别；二是动作专家缺乏观测历史提供的时序证据，无法稳定捕捉任务相关的状态变化与运动规律 CSWAM引入基于V-JEPA 2.1的因果语义专家，建模任务相关的语义状态演化，结合稀疏观测历史提供时序上下文，同时保留训练时联合建模、推理时仅生成动作的高效范式</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">AIRC, Midea Group</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对FastWAM等高效动作推理世界动作模型（WAM）在视觉分布偏移下泛化性差的核心问题，提出因果语义世界动作模型（CSWAM），旨在提升分布外（OOD）泛化性的同时保留动作-only推理的高效性</p>
+  <ul class="reading-intro-points"><li>针对FastWAM等高效动作推理世界动作模型（WAM）在视觉分布偏移下泛化性差的核心问题，提出因果语义世界动作模型（CSWAM），旨在提升分布外（OOD）泛化性的同时保留动作-only推理的高效性</li><li>分析指出FastWAM泛化差的两大原因：一是其重建导向的VAE表征过度依赖外观细节，背景或物体外观变化会干扰任务状态识别；二是动作专家缺乏观测历史提供的时序证据，无法稳定捕捉任务相关的状态变化与运动规律</li><li>CSWAM引入基于V-JEPA 2.1的因果语义专家，建模任务相关的语义状态演化，结合稀疏观测历史提供时序上下文，同时保留训练时联合建模、推理时仅生成动作的高效范式</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>AIRC, Midea Group</strong></li><li><strong>Tongji University</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对FastWAM等高效动作推理世界动作模型（WAM）在视觉分布偏移下泛化性差的核心问题，提出<strong>因果语义世界动作模型（CSWAM）</strong>，旨在提升分布外（OOD）泛化性的同时保留动作-only推理的高效性</li><li>分析指出FastWAM泛化差的两大原因：一是其重建导向的VAE表征过度依赖外观细节，背景或物体外观变化会干扰任务状态识别；二是动作专家缺乏观测历史提供的时序证据，无法稳定捕捉任务相关的状态变化与运动规律</li><li>CSWAM引入基于V-JEPA 2.1的因果语义专家，建模任务相关的语义状态演化，结合稀疏观测历史提供时序上下文，同时保留训练时联合建模、推理时仅生成动作的高效范式</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>揭示时序预测性表征与观测历史对高效动作-only WAM的OOD泛化增益，设计了仿真与真实机器人的受控视觉偏移评估协议</li><li>提出CSWAM架构，其基于V-JEPA 2.1的因果语义专家可从稀疏观测历史预测未来语义特征，通过因果注意力将历史衍生的语义与时序上下文共享给视频和动作流，推理时仅需迭代生成动作，无额外计算开销</li><li>大量仿真与真实机器人实验验证CSWAM在标准任务性能与OOD泛化上均显著优于FastWAM等基线，Clean-to-Randomized仿真OOD任务成功率提升35.02个百分点，真实机器人平均任务成功率提升42.5个百分点</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>CSWAM基于FastWAM的动作-only推理范式，在原有视频-动作双流架构基础上新增因果语义流，三个流通过<strong>混合专家（Mixture-of-Transformers, MoT）</strong>架构实现信息交互</li><li>因果语义专家采用流匹配框架训练：首先用冻结的V-JEPA 2.1编码器对以步长s采样的K帧历史观测提取时空语义特征，经可学习时空投影映射到隐空间；随后以未来观测的V-JEPA特征为预测目标，训练专家从历史语义预测未来的语义演化</li><li>跨流信息交互采用掩码注意力机制：视频流与语义流可在训练时交互未来预测目标，动作流仅能访问当前视频表征与历史语义表征，无法获取未来信息，推理时直接丢弃未来视频与语义流，仅保留动作流迭代去噪，保留高效推理特性</li><li>关键创新点：首次将V-JEPA的时序预测性语义表征引入高效动作-only WAM，通过因果注意力实现历史语义向多流的高效共享，在不牺牲推理效率的前提下提升分布偏移下的泛化能力</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>RoboTwin 2.0</strong>，包含50项双臂操作任务，提供Clean（无场景随机化）与Randomized（重度场景随机化）两类演示数据</li><li>真实机器人平台：双<strong>ARX Robotics</strong>机械臂平台，执行Sort（玩具分拣至容器）、Fold（毛巾折叠）两项长程双臂操作任务</li><li>模型规模：视频专家初始化自预训练<strong>Wan2.2-TI2V-5B</strong>权重，动作专家（ActionDiT）初始化自维度适配的同 backbone 参数，因果语义专家由ActionDiT热启动初始化，输入输出层单独初始化；<strong>V-JEPA 2.1</strong>（ViT-B规模）编码器全程冻结</li><li>训练资源：使用5000小时具身机器人数据集做预训练，优化采用bfloat16精度、余弦学习率调度，峰值学习率4×10⁻⁴，权重衰减10⁻²，最大梯度范数1.0</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真采用RoboTwin 2.0的两种协议，①RoboTwin2.0-Full：混合Clean与Randomized数据训练，测试标准混合分布性能；②RoboTwin2.0-Clean2Random：仅用Clean数据训练，测试Randomized场景的OOD迁移能力；真实机器人设置Normal、Hard、Extreme三个视觉偏移等级，Normal仅环境OOD，Hard额外改变光照与桌面外观，Extreme进一步更换任务物体与容器</li><li>主要评估指标：任务成功率（Success Rate, SR）、成功rollout的平均完成时间</li><li>关键实验结果：</li></ul>
+<p> - 仿真标准性能（RoboTwin2.0-Full）：CSWAM达到94.7% Clean成功率、94.3% Randomized成功率，平均94.5%，优于所有VLA与WAM基线，相对FastWAM平均提升2.6个百分点</p>
+<p> - 仿真OOD迁移（Clean-to-Randomized）：带具身预训练的CSWAM将Randomized场景成功率从FastWAM的10.16%提升至45.18%，提升35.02个百分点，平均成功率从43.42%提升至64.82%</p>
+<p> - 真实机器人OOD泛化：跨两项任务、三个偏移等级共240次rollout，CSWAM平均成功率70.0%，相对FastWAM的27.5%提升42.5个百分点；多重复合偏移的Hard与Extreme场景下，平均成功率从10%提升至55%</p>
+<p> - 消融与组件分析：观测历史与视频专家均对性能有正向贡献，V-JEPA 2.1的时序联合编码优于DINOv3的帧级独立编码，8帧历史输入的效果优于更短的历史窗口</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.18487/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ActionPiece: Rethinking Action Tokenization for Autoregressive Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.18435/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">WetRobo: A Reproducible Robot Kit for Coding Agents in Biological Laboratories</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

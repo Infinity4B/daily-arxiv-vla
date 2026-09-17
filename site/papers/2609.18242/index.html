@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ForceDelta-VLA: Distilling Force-Conditioned ActionCorrections for Contact-Rich Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对接触丰富机器人操作中，现有视觉-语言-动作（VLA）策略将任务级运动与接触依赖调整混合预测、演示数据无显式标签分解参考动作与校正的问题，提出ForceDelta-VLA校正蒸馏框架 核心目标是将可复用的慢速参考动作生成与快速力/延迟校正分离，使接触反馈调整无需等待完整动作块重新生成，提升操作效率并降低接触力 在5个单臂和4个双臂共9个真实机器人接触丰富任务上验证框架的有效性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.18242">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.18242.webp" alt="ForceDelta-VLA: Distilling Force-Conditioned ActionCorrections for Contact-Rich Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对接触丰富机器人操作中，现有视觉-语言-动作（VLA）策略将任务级运动与接触依赖调整混合预测、演示数据无显式标签分解参考动作与校正的问题，提出ForceDelta-VLA校正蒸馏框架</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">ForceDelta-VLA: Distilling Force-Conditioned ActionCorrections for Contact-Rich Manipulation</h1>
+            <div class="detail-meta">2026-09-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.18242" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.18242" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.18242</span></div>
+            <p class="detail-summary">针对接触丰富机器人操作中，现有视觉-语言-动作（VLA）策略将任务级运动与接触依赖调整混合预测、演示数据无显式标签分解参考动作与校正的问题，提出ForceDelta-VLA校正蒸馏框架 核心目标是将可复用的慢速参考动作生成与快速力/延迟校正分离，使接触反馈调整无需等待完整动作块重新生成，提升操作效率并降低接触力 在5个单臂和4个双臂共9个真实机器人接触丰富任务上验证框架的有效性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">汉堡大学多模态系统技术研究所（TAMS）信息学院</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对接触丰富机器人操作中，现有视觉-语言-动作（VLA）策略将任务级运动与接触依赖调整混合预测、演示数据无显式标签分解参考动作与校正的问题，提出ForceDelta-VLA校正蒸馏框架</p>
+  <ul class="reading-intro-points"><li>针对接触丰富机器人操作中，现有视觉-语言-动作（VLA）策略将任务级运动与接触依赖调整混合预测、演示数据无显式标签分解参考动作与校正的问题，提出ForceDelta-VLA校正蒸馏框架</li><li>核心目标是将可复用的慢速参考动作生成与快速力/延迟校正分离，使接触反馈调整无需等待完整动作块重新生成，提升操作效率并降低接触力</li><li>在5个单臂和4个双臂共9个真实机器人接触丰富任务上验证框架的有效性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>汉堡大学多模态系统技术研究所（TAMS）信息学院</li><li>中国科学技术大学</li><li>慕尼黑工业大学</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对接触丰富机器人操作中，现有视觉-语言-动作（VLA）策略将任务级运动与接触依赖调整混合预测、演示数据无显式标签分解参考动作与校正的问题，提出<strong>ForceDelta-VLA</strong>校正蒸馏框架</li><li>核心目标是将可复用的慢速参考动作生成与快速力/延迟校正分离，使接触反馈调整无需等待完整动作块重新生成，提升操作效率并降低接触力</li><li>在5个单臂和4个双臂共9个真实机器人接触丰富任务上验证框架的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>力无关校正蒸馏</strong>方法，仅使用原始演示数据集，通过冻结教师网络的力条件与力无关两种模式的配对预测，构造显式的力校正监督目标</li><li>开发<strong>状态一致双校正策略</strong>，独立学习力校正与延迟校正，复用教师缓存的任务上下文；延迟校正目标同时包含参考动作失配项与参考状态对齐项，解决参考动作延迟与状态变化带来的误差</li><li>实机评估显示ForceDelta-VLA平均任务成功率达<strong>82.2%</strong>，相比基线<strong>ForceVLA</strong>的54.4%提升显著，同时在单臂和双臂平台上将成功试验的平均峰值接触力降低约26%，完成时间大幅缩短</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用三阶段训练范式：第一阶段训练基于ForceVLA改进的时序力条件教师网络，使用时序卷积网络（TCN）编码100ms的力矩历史，预测50步长的动作块；第二阶段冻结教师，训练力无关参考动作模式，通过低秩适配器区分“力矩输入不可用”与“实测零力矩”两种场景，生成可复用的参考动作；第三阶段训练轻量级校正策略，通过异步调度回放匹配部署时的异步执行场景</li><li>校正目标构造创新：力校正目标为同一状态下力条件与力无关教师预测的位姿差，延迟校正目标为当前力无关预测与历史存储参考动作的差叠加参考状态对齐项，无需额外人工标注或在线交互</li><li>部署时采用异步执行架构：教师网络慢速周期性生成参考动作并缓存上下文，轻量级学生网络独立读取最新缓存，快速输出力与延迟校正，两者组合后发送给机器人执行，无需等待完整动作块重新生成</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>每个任务收集200条主从遥操作演示数据，单臂平台为7自由度<strong>Franka Emika Panda</strong>机器人，配备腕载与外部Intel RealSense D405相机，力矩估计使用机器人自带的关节扭矩推算，无额外腕部力/力矩传感器；双臂平台为<strong>X Square Robot</strong>，每个臂配备腕载相机与共享外部相机，通过主从遥操作收集数据</li><li>数据记录规格：多视角图像、机器人状态、指令动作记录频率为30Hz，带时间戳的力矩估计记录频率为100Hz</li><li>计算资源：部署端使用搭载2块<strong>NVIDIA RTX 4090</strong> GPU的工作站，教师网络单次前向推理平均耗时189.7ms（约5Hz），校正策略单次前向推理仅需2.43ms，远低于机器人指令传输的10ms间隔要求</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估场景：覆盖5个单臂任务（物体翻转、USB插入、橱柜开启、按钮按压、白板擦拭）和4个双臂任务（插头拔出、插头插入、抽屉开启、双臂白板擦拭），共9个接触丰富真实机器人任务，每个方法每个任务测试20次试验</li><li>评估指标：任务成功率、成功试验的平均峰值接触力、任务完成时间</li><li>关键实验结果：ForceDelta-VLA平均成功率82.2%，显著高于基线ForceVLA（54.4%）、<strong>TA-VLA</strong>（57.2%）、<strong>π₀.₅</strong>（47.2%）和<strong>ImplicitRDP</strong>（45.0%），比阶段1时序教师直接执行的70.6%提升11.7个百分点；相比ForceVLA，单臂与双臂平台的成功试验平均峰值接触力分别降低4.2N和4.3N（约26%），完成时间分别缩短5.2s和5.9s；在额外200ms参考动作延迟下，ForceDelta-VLA成功率仅下降15个百分点，优于时序教师的25个百分点</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.18243/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Acting in Meters: Learning Metric Interactions for Precise Robotic Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.18232/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">UMI-Bridge: Action-Anchored Latent Alignment across Human and Robot Manipulation Data</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

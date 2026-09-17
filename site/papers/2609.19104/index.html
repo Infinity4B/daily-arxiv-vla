@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>rMuscle: Robotic Muscle Memory for Efficient Vision-Language-Action Model Inference - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文聚焦工业场景下的具身智能机器人，指出 Vision-Language-Action（VLA）模型的推理延迟直接影响机器人响应速度和运动平滑性，是部署中的关键瓶颈。 现有VLA推理框架（如 FlashRT）未充分利用具身任务的跨执行相似性，也未针对 VLM 预填充与动作去噪两阶段的不同瓶颈分别优化，导致加速受限。 论文发现重复执行同一任务时，不仅观测与轨迹相似，模型内部状态（FFN输入、神经元激活模式）也高度相似，据此提出rMuscle——一种受人类肌肉记忆启发的实时VLA推理框架。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.19104">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.19104.webp" alt="rMuscle: Robotic Muscle Memory for Efficient Vision-Language-Action Model Inference" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文聚焦工业场景下的具身智能机器人，指出 Vision-Language-Action（VLA）模型的推理延迟直接影响机器人响应速度和运动平滑性，是部署中的关键瓶颈。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">rMuscle: Robotic Muscle Memory for Efficient Vision-Language-Action Model Inference</h1>
+            <div class="detail-meta">2026-09-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.19104" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.19104" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.19104</span></div>
+            <p class="detail-summary">论文聚焦工业场景下的具身智能机器人，指出 Vision-Language-Action（VLA）模型的推理延迟直接影响机器人响应速度和运动平滑性，是部署中的关键瓶颈。 现有VLA推理框架（如 FlashRT）未充分利用具身任务的跨执行相似性，也未针对 VLM 预填充与动作去噪两阶段的不同瓶颈分别优化，导致加速受限。 论文发现重复执行同一任务时，不仅观测与轨迹相似，模型内部状态（FFN输入、神经元激活模式）也高度相似，据此提出rMuscle——一种受人类肌肉记忆启发的实时VLA推理框架。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者来自上海交通大学并行与分布式系统研究所（Institute of Parallel and D…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文聚焦工业场景下的具身智能机器人，指出 Vision-Language-Action（VLA）模型的推理延迟直接影响机器人响应速度和运动平滑性，是部署中的关键瓶颈。</p>
+  <ul class="reading-intro-points"><li>论文聚焦工业场景下的具身智能机器人，指出 Vision-Language-Action（VLA）模型的推理延迟直接影响机器人响应速度和运动平滑性，是部署中的关键瓶颈。</li><li>现有VLA推理框架（如 FlashRT）未充分利用具身任务的跨执行相似性，也未针对 VLM 预填充与动作去噪两阶段的不同瓶颈分别优化，导致加速受限。</li><li>论文发现重复执行同一任务时，不仅观测与轨迹相似，模型内部状态（FFN输入、神经元激活模式）也高度相似，据此提出rMuscle——一种受人类肌肉记忆启发的实时VLA推理框架。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者来自<strong>上海交通大学并行与分布式系统研究所（Institute of Parallel and Distributed Systems, Shanghai Jiao Tong University）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文聚焦<strong>工业场景下的具身智能机器人</strong>，指出 <strong>Vision-Language-Action（VLA）模型</strong>的推理延迟直接影响机器人响应速度和运动平滑性，是部署中的关键瓶颈。</li><li>现有VLA推理框架（如 FlashRT）未充分利用具身任务的跨执行相似性，也未针对 VLM 预填充与动作去噪两阶段的不同瓶颈分别优化，导致加速受限。</li><li>论文发现重复执行同一任务时，不仅<strong>观测与轨迹相似</strong>，<strong>模型内部状态（FFN输入、神经元激活模式）也高度相似</strong>，据此提出<strong>rMuscle</strong>——一种受人类肌肉记忆启发的实时VLA推理框架。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>发现重复执行相同任务时，<strong>FFN输入和神经元激活模式具有高相似性</strong>，为计算复用提供了机会。</li><li>设计<strong>双阶段缓存推理系统</strong>：<strong>Context Cache</strong> 加速计算密集的 VLM 预填充，<strong>Action Cache</strong> 加速内存密集的动作去噪。</li><li>提出<strong>三位一体的缓存管理机制</strong>：异步在线重构、滑动窗口预取、以及跨去噪步骤的掩码共享，有效控制缓存内存开销与访问延迟。</li><li>在 <strong>π0.5、GR00T N1.6、X-VLA</strong> 三个模型、<strong>LIBERO</strong> 与 <strong>RoboTwin</strong> 两个仿真基准及<strong>物理机器人任务</strong>上全面评估，共 <strong>92 个任务</strong>，达到最高 <strong>1.29×（RTX 4090）</strong> 和 <strong>1.42×（Jetson Thor）</strong> 加速，同时保持原有成功率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Context Cache（视觉令牌选择重算）</strong>：基于当前与参考 FFN 输入的 RMS 偏差，选择变化较大的视觉令牌进行重算，其余复用参考输出，注意力仍保持全序列稠密计算。</li><li><strong>Action Cache（神经元稀疏更新）</strong>：利用参考执行中贡献度高的神经元掩码，仅加载并计算被选中神经元的权重，结合当前调用中的稠密锚点输出，通过差分更新保留全部神经元的贡献。</li><li><strong>组共享掩码</strong>：将连续去噪步骤分组，每组共享一个重要的神经元掩码，减少权重 gather 开销；锚点步执行稠密计算以建立当前激活基线。</li><li><strong>缓存管理</strong>：利用机器人物理执行窗口，<strong>异步在线重构</strong>缓存条目；基于<strong>时间局部性</strong>维护滑动 GPU 工作集；通过视觉特征与关节历史检索最相关的参考；视觉相似度低于阈值时回退到稠密执行。</li><li>实现层面采用<strong>侧CUDA流</strong>将参考检索和权重 gather 与主流的 VLM 预填充重叠，进一步隐藏额外开销。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong>（40个任务，含Spatial/Object/Goal/Long套件）、<strong>RoboTwin</strong>（50个任务，clean设置）、物理机器人任务（<strong>ALOHA</strong>双臂协作拾放、<strong>DOBOT/Franka</strong>单臂装配线装箱）。</li><li><strong>模型</strong>：<strong>π0.5</strong>、<strong>GR00T N1.6</strong>、<strong>X-VLA</strong>；缩放实验中使用了 Gemma 系列（VLM/denoiser 从 2B/0.3B 到 7B/7B）。</li><li><strong>硬件</strong>：桌面端 <strong>RTX 4090（24GB）</strong> + Intel Core i7-11700，边缘端 <strong>Jetson Thor（128GB 统一内存）</strong>；分别使用 PyTorch 2.6.0/CUDA 12.4 和 PyTorch 2.8.0/CUDA 13.0。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：LIBERO 和 RoboTwin 各 100 条种子 rollout；物理任务各 50 次试验，30Hz 控制频率，30 动作 chunk；延迟包含在线检索和权重 gather，成功率为任务完成比例。</li><li><strong>主要指标</strong>：端到端推理延迟（换算为 Hz）、成功率（SR）、相对 SOTA 推理引擎的加速比。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - RTX 4090 上，rMuscle 达到 π0.5、GR00T N1.6、X-VLA 的推理速率 <strong>28.1、51.0、35.7 Hz</strong>，较 FlashRT 分别加速 <strong>1.29×、1.20×、1.50×</strong>。</p>
+<p> - Jetson Thor 上，对应速率 <strong>13.4、17.5、19.7 Hz</strong>，加速分别为 <strong>1.42×、1.23×、1.43×</strong>。</p>
+<p> - 在 LIBERO 上，rMuscle 的平均成功率与 vanilla、DP-Cache 持平，且高于 NIRVANA（高出 0.3–1.1 个百分点）；在 RoboTwin 上成功率优于 DP-Cache 和 NIRVANA。</p>
+<p> - 模型缩放实验中，加速比随模型增大而提升（RTX 4090 从 1.3× 到 1.6×，Jetson Thor 从 1.4× 到 1.9×），表明双阶段缓存在更大 VLA 模型上更具优势。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.18663/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">VLA-ULAP: Interleaving Cloud VLA Calls with Ultra-Lightweight Local Action Prediction at the Edge</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

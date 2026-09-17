@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Not All Layers Need Tuning: Diagnosing and Directing Adaptation in Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对Vision-Language-Action（VLA）模型在新部署环境微调成本高、现有均匀参数高效微调（PEFT）方法默认所有网络层需要同等调整的缺陷，本文验证了该假设的不合理性 研究目标是提出一个四阶段管线，仅通过少量无标注目标域观测，在微调前诊断不同网络区域的适应成本，进而分配可变秩的LoRA适配器，在低参数预算下实现优于均匀微调的适应效果 论文在5种架构的VLA、多种仿真基准和真实机器人场景上验证了管线的有效性和局限性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.18084">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.18084.webp" alt="Not All Layers Need Tuning: Diagnosing and Directing Adaptation in Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对Vision-Language-Action（VLA）模型在新部署环境微调成本高、现有均匀参数高效微调（PEFT）方法默认所有网络层需要同等调整的缺陷，本文验证了该假设的不合理性</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Not All Layers Need Tuning: Diagnosing and Directing Adaptation in Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-09-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.18084" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.18084" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.18084</span></div>
+            <p class="detail-summary">针对Vision-Language-Action（VLA）模型在新部署环境微调成本高、现有均匀参数高效微调（PEFT）方法默认所有网络层需要同等调整的缺陷，本文验证了该假设的不合理性 研究目标是提出一个四阶段管线，仅通过少量无标注目标域观测，在微调前诊断不同网络区域的适应成本，进而分配可变秩的LoRA适配器，在低参数预算下实现优于均匀微调的适应效果 论文在5种架构的VLA、多种仿真基准和真实机器人场景上验证了管线的有效性和局限性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">卡内基梅隆大学机器人研究所（Robotics Institute, Carnegie Mellon U…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对Vision-Language-Action（VLA）模型在新部署环境微调成本高、现有均匀参数高效微调（PEFT）方法默认所有网络层需要同等调整的缺陷，本文验证了该假设的不合理性</p>
+  <ul class="reading-intro-points"><li>针对Vision-Language-Action（VLA）模型在新部署环境微调成本高、现有均匀参数高效微调（PEFT）方法默认所有网络层需要同等调整的缺陷，本文验证了该假设的不合理性</li><li>研究目标是提出一个四阶段管线，仅通过少量无标注目标域观测，在微调前诊断不同网络区域的适应成本，进而分配可变秩的LoRA适配器，在低参数预算下实现优于均匀微调的适应效果</li><li>论文在5种架构的VLA、多种仿真基准和真实机器人场景上验证了管线的有效性和局限性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>卡内基梅隆大学机器人研究所（Robotics Institute, Carnegie Mellon University, Pittsburgh, USA）</strong></li><li><strong>卡内基梅隆大学电气与计算机工程系（Department of Electrical and Computer Engineering, Carnegie Mellon University, Pittsburgh, USA）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对Vision-Language-Action（VLA）模型在新部署环境微调成本高、现有均匀参数高效微调（PEFT）方法默认所有网络层需要同等调整的缺陷，本文验证了该假设的不合理性</li><li>研究目标是提出一个四阶段管线，仅通过少量无标注目标域观测，在微调前诊断不同网络区域的适应成本，进而分配可变秩的LoRA适配器，在低参数预算下实现优于均匀微调的适应效果</li><li>论文在5种架构的VLA、多种仿真基准和真实机器人场景上验证了管线的有效性和局限性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>实证刻画了5种架构（93M-7B参数）的VLA在5种部署偏移下的适应成本分布规律，发现不同偏移类型的主导适应区域跨架构一致：外观偏移集中在视觉编码器，指令偏移集中在语言 backbone，新物体偏移集中在视觉编码器和动作头</li><li>提出了「观察-诊断-分配-适应」四阶段管线，仅需10个无标注目标观测即可在微调前估计各区域适应成本，将估计结果转换为可变秩LoRA适配器，实验中达到均匀秩32 LoRA的成功率同时大幅减少可训练参数量</li><li>在5种VLA架构、5种随机种子、6种物理部署偏移的实验中验证了管线的有效性，同时报告了管线失效的负结果，为后续研究提供了参考</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>网络区域划分：沿VLA原生模块边界划分功能区域（视觉编码器、语言 backbone、跨模态投影器、动作头等），无需为不同架构设计专属划分规则，保证跨架构可比性</li><li>缓存源域参考：由模型提供方在训练时构建，包含源域观测 coreset、各区域激活统计和Fisher信息，随模型权重一同发布，部署时无需访问源训练数据</li><li>两阶段诊断模块：第一级为基于缓存源域参考的比较层，用线性CKA计算源-目标表征相似度，结合Fisher信息加权表征偏移对输出的影响；第二级为无参考的 fallback 层，用归一化梯度范数和MC Dropout不确定性估计适应成本；通过Fréchet距离门控动态融合两级信号，源-目标域差距小时信任第一级，差距大时信任第二级</li><li>自适应秩分配模块：将诊断得分按比例转换为各区域的LoRA秩，得分低于阈值的区域直接冻结，在总参数预算约束下优先为高适应成本区域分配更高秩</li><li>微调阶段：仅训练分配好的可变秩LoRA适配器，冻结其他区域参数，不改变原有训练流程</li><li>创新点：首次在微调前从少量无标注观测测量VLA各区域的适应需求，无需完整微调即可完成容量分配；两阶段诊断结合参考和无参考信号，适配不同规模的域偏移；按原生模块边界划分区域，方案可跨不同架构的VLA通用</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：仿真基准使用<strong>LIBERO</strong>（包含40个操作任务、4个任务套件的机器人操作基准）和<strong>CALVIN</strong>（用于测试任务分布迁移能力的基准），物理实验使用<strong>UFactory xArm-7</strong>机械臂，部署偏移包含外观、空间、新物体、指令措辞、组合偏移5种可控类型</li><li>模型规模：覆盖5种架构的VLA，参数量范围93M-7B，包括<strong>OpenVLA-OFT（7B，自回归解码）</strong>、<strong>π₀（3.3B，流匹配解码）</strong>、<strong>SmolVLA（450M，流匹配解码）</strong>、<strong>DTP（350M，扩散解码）</strong>、<strong>Octo（93M，扩散解码）</strong></li><li>训练资源：训练采用BFloat16精度、AdamW优化器、梯度裁剪、余弦学习率衰减；大模型全量微调使用8-bit优化器状态和梯度检查点降低显存占用，未明确标注具体GPU/TPU硬件型号</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真评估在LIBERO和CALVIN基准上进行，每个任务收集20条目标域演示，诊断阶段仅使用10个无标注目标观测；真实机器人评估在xArm-7机械臂的5个未见场景上进行，无需重训</li><li>主要评估指标：诊断准确率用Spearman相关系数、R²拟合度衡量，任务性能用rollout任务成功率衡量</li><li>关键实验结果：</li></ul>
+<p> - 诊断模块的 median Spearman 达到0.91， pooled R² 达到0.89，可准确预测各区域适应成本的排序和绝对值</p>
+<p> - 自适应分配在所有测试的参数量预算下，任务成功率匹配或超过均匀LoRA baseline；在LIBERO组合偏移任务中，仅用约一半均匀秩32 LoRA的参数量即可达到相当的任务成功率</p>
+<p> - 在xArm-7指令措辞偏移任务中，管线仅用0.04%的全量微调可训练参数就达到全量微调的任务成功率；在5个未见场景的无重训评估中，管线成功率为11-23/30，显著高于最强参数高效基线的8-18/30和全量微调的2-11/30</p>
+<p> - 存在负结果：在特定偏移场景下，管线表现与基线相当，未展现出明显优势</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.18108/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Technical Report: One-Step Drifting Action Heads for GR00T N1.7</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.18016/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Causal-History Test-Time Scaling for Failure Recovery in Autoregressive World-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
