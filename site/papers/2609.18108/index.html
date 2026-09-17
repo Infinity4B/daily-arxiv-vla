@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Technical Report: One-Step Drifting Action Heads for GR00T N1.7 - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="该技术报告研究将GR00T N1.7的迭代式扩散-Transformer动作头替换为基于隐式漂移策略（IDP）的一步漂移动作头，以降低视觉-语言-动作（VLA）模型的推理延迟。 进一步提出DrifOv（重叠条件扩展），通过引入动作前缀接口、重叠长度和执行偏移嵌入，在异步动作预取场景下精确保留已提交的前缀坐标并仅生成未知后缀。 核心目标是实现实时推理加速，但在LIBERO基准上观察到显著的速度-成功权衡：动作头延迟降低约9倍，但任务成功率出现系统性且稳定的下降。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.18108">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.18108.webp" alt="Technical Report: One-Step Drifting Action Heads for GR00T N1.7" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">该技术报告研究将GR00T N1.7的迭代式扩散-Transformer动作头替换为基于隐式漂移策略（IDP）的一步漂移动作头，以降低视觉-语言-动作（VLA）模型的推理延迟。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Technical Report: One-Step Drifting Action Heads for GR00T N1.7</h1>
+            <div class="detail-meta">2026-09-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.18108" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.18108" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.18108</span></div>
+            <p class="detail-summary">该技术报告研究将GR00T N1.7的迭代式扩散-Transformer动作头替换为基于隐式漂移策略（IDP）的一步漂移动作头，以降低视觉-语言-动作（VLA）模型的推理延迟。 进一步提出DrifOv（重叠条件扩展），通过引入动作前缀接口、重叠长度和执行偏移嵌入，在异步动作预取场景下精确保留已提交的前缀坐标并仅生成未知后缀。 核心目标是实现实时推理加速，但在LIBERO基准上观察到显著的速度-成功权衡：动作头延迟降低约9倍，但任务成功率出现系统性且稳定的下降。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">浙江大学ZJU-UIUC Institute（浙江大学，中国杭州）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">该技术报告研究将GR00T N1.7的迭代式扩散-Transformer动作头替换为基于隐式漂移策略（IDP）的一步漂移动作头，以降低视觉-语言-动作（VLA）模型的推理延迟。</p>
+  <ul class="reading-intro-points"><li>该技术报告研究将GR00T N1.7的迭代式扩散-Transformer动作头替换为基于隐式漂移策略（IDP）的一步漂移动作头，以降低视觉-语言-动作（VLA）模型的推理延迟。</li><li>进一步提出DrifOv（重叠条件扩展），通过引入动作前缀接口、重叠长度和执行偏移嵌入，在异步动作预取场景下精确保留已提交的前缀坐标并仅生成未知后缀。</li><li>核心目标是实现实时推理加速，但在LIBERO基准上观察到显著的速度-成功权衡：动作头延迟降低约9倍，但任务成功率出现系统性且稳定的下降。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>浙江大学ZJU-UIUC Institute</strong>（浙江大学，中国杭州）</li><li><strong>LimX Dynamics</strong>（中国深圳，实习生单位）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>该技术报告研究将<strong>GR00T N1.7</strong>的迭代式扩散-Transformer动作头替换为基于隐式漂移策略（IDP）的<strong>一步漂移动作头</strong>，以降低视觉-语言-动作（VLA）模型的推理延迟。</li><li>进一步提出<strong>DrifOv</strong>（重叠条件扩展），通过引入动作前缀接口、重叠长度和执行偏移嵌入，在异步动作预取场景下精确保留已提交的前缀坐标并仅生成未知后缀。</li><li>核心目标是实现实时推理加速，但在LIBERO基准上观察到显著的速度-成功权衡：动作头延迟降低约9倍，但任务成功率出现系统性且稳定的下降。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>实现并描述了一种用于<strong>GR00T N1.7</strong>的一步漂移动作头，包括继承的训练目标、模型维度（12层Transformer，维度1024）及单次评估推理路径。</li><li>实现<strong>DrifOv</strong>重叠条件扩展，能够表示已提交动作前缀的坐标有效性、重叠长度和执行偏移，并在解码时通过掩码机制保证已提交前缀不被修改。</li><li>提供多种子（seed 1、42、1000）LIBERO实验研究，所有漂移运行均采用相同的双A800训练配置（20k步，每GPU批量32），并分别报告延迟与成功率。</li><li>识别并讨论了导致速度-成功权衡的几个关键假设：确定性一步模式平均、批量依赖的几何估计、长开环动作块执行、以及同步评估未覆盖异步重叠路径。</li><li>记录初步真实机器人部署经验（玩具放置、工业配件包装、布料折叠），作为系统集成与数据收集的工程观察。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>架构保留</strong>：保留GR00T N1.7的预处理栈和<strong>Cosmos-Reason2/Qwen3</strong>视觉-语言主干网络，从第16层读取隐藏特征并投影至动作头维度；机器人状态由 embodiment-specific MLP 编码。</li><li><strong>动作头设计</strong>：采用12块Transformer，模型维度1024，16个注意力头，前馈维度4096，dropout 0.1；每块包含动作/状态令牌的自注意力、对视觉-语言记忆的交叉注意力（交替关注图像和文本令牌）及前馈网络。</li><li><strong>继承的漂移目标</strong>：采用IDP训练目标，为每个观测-动作对构建几何加权势能（式1-2），训练时从零动作种子评估提案预测（式3），并从专家动作附近采样噪声评估邻近预测（式4-5），损失为两者势能加权和（式6，λ_prox=81.0）。</li><li><strong>几何加权</strong>：基于minibatch内观测特征的归一化内积计算邻居权重，通过softmax估计坐标条件方差（式7），使用ReLU计算对角几何矩阵（式8），实现坐标依赖的势能加权。</li><li><strong>重叠条件后缀生成（DrifOv）</strong>：引入动作前缀掩码、重叠长度嵌入和执行偏移嵌入（式9）；解码时对有效前缀坐标直接复制提供的精确值，仅对非前缀坐标生成后缀（式10）；训练时随机采样重叠长度（0至H-1，零重叠概率0.2），并对前缀施加高斯噪声（std=0.02）扰动。</li><li><strong>一步推理</strong>：同步LIBERO评估时使用空前缀、零动作种子和时间输入0，通过单次动作头评估直接生成完整动作块（H=40）；异步部署时可根据剩余有效动作行和估计延迟进行前缀条件生成。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用<strong>lerobot/libero</strong>数据集（<strong>LIBERO</strong>基准测试套件）。</li><li>模型规模：动作头为12块Transformer（模型维度1024，16注意力头，FFN维度4096，dropout 0.1）；状态与动作最大维度均为132。</li><li>训练资源：<strong>2块NVIDIA A800 GPU</strong>，20k优化步，每GPU批量大小32（有效批量64），bfloat16精度。</li><li>部署硬件：<strong>RTX 4090 + Intel 14900KF</strong>工作站（搭载于LimX Tron2机器人）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：LIBERO基准（Spatial、Goal、Long、Object四个套件），使用LeRobot训练与评估栈；真实机器人部署于LimX Tron2平台。</li><li><strong>主要指标</strong>：模型前向延迟（骨干网络、动作头、总计）及任务成功率（每子任务10幕，每套件100次rollout）。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>延迟</strong>：动作头从约45.3ms降至5.0ms（约9倍加速），骨干+动作头总时间从约70.0ms降至30.6ms（约2.2–2.4倍加速）；VLM骨干网络仍是延迟主导部分。</p>
+<p> - <strong>成功率（系统性下降）</strong>：三个漂移种子显示低方差且显著低于GR00T参考——LIBERO-Spatial: <strong>64.0±4.0%</strong>（参考82.3±6.8%），LIBERO-Goal: <strong>52.0±1.0%</strong>（参考82.3±4.0%），LIBERO-Long: <strong>26.0±2.6%</strong>（参考74.5±10.6%）；失败率随任务horizon增长而加剧。</p>
+<p> - <strong>真实机器人</strong>：完成玩具放置、工业配件包装（收集2562条rollout轨迹）和布料折叠的数据收集与系统集成，但未进行受控策略成功率对比。</p>
+<p> - <strong>内存观察</strong>：训练期间漂移运行峰值GPU内存（17.752 GiB）低于GR00T运行（45.748 GiB），但该观测为轶事性而非受控基准。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.18111/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">A Comprehensive Review of Generative Physical Artificial Intelligence</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.18084/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Not All Layers Need Tuning: Diagnosing and Directing Adaptation in Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
