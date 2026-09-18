@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FASA: Feedback-Aware Sampling Adaptation for Efficient Diffusion-Based VLA Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文提出 FASA (Feedback-Aware Sampling Adaptation)，一个训练免、即插即用的运行时框架，旨在提升基于扩散模型的视觉-语言-动作（VLA）模型在边缘设备上的推理效率。 现有加速方法要么需要昂贵的重训练，要么采用固定的采样调度，忽略了机器人交互中动态变化的工作负载。FASA 创新性地利用实时多模态反馈（视觉、力觉、本体感知）作为控制信号，动态调整扩散模型的去噪步数。 该框架解决了扩散策略在资源受限平台上因迭代采样计算量大而无法实时部署的问题，实现了在维持甚至提升任务成功率的同时，显著加速动作生成。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.19475">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.19475.webp" alt="FASA: Feedback-Aware Sampling Adaptation for Efficient Diffusion-Based VLA Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文提出 FASA (Feedback-Aware Sampling Adaptation)，一个训练免、即插即用的运行时框架，旨在提升基于扩散模型的视觉-语言-动作（VLA）模型在边缘设备上的推理效率。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FASA: Feedback-Aware Sampling Adaptation for Efficient Diffusion-Based VLA Models</h1>
+            <div class="detail-meta">2026-09-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.19475" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.19475" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.19475</span></div>
+            <p class="detail-summary">本文提出 FASA (Feedback-Aware Sampling Adaptation)，一个训练免、即插即用的运行时框架，旨在提升基于扩散模型的视觉-语言-动作（VLA）模型在边缘设备上的推理效率。 现有加速方法要么需要昂贵的重训练，要么采用固定的采样调度，忽略了机器人交互中动态变化的工作负载。FASA 创新性地利用实时多模态反馈（视觉、力觉、本体感知）作为控制信号，动态调整扩散模型的去噪步数。 该框架解决了扩散策略在资源受限平台上因迭代采样计算量大而无法实时部署的问题，实现了在维持甚至提升任务成功率的同时，显著加速动作生成。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">华南理工大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文提出 FASA (Feedback-Aware Sampling Adaptation)，一个训练免、即插即用的运行时框架，旨在提升基于扩散模型的视觉-语言-动作（VLA）模型在边缘设备上的推理效率。</p>
+  <ul class="reading-intro-points"><li>本文提出 FASA (Feedback-Aware Sampling Adaptation)，一个训练免、即插即用的运行时框架，旨在提升基于扩散模型的视觉-语言-动作（VLA）模型在边缘设备上的推理效率。</li><li>现有加速方法要么需要昂贵的重训练，要么采用固定的采样调度，忽略了机器人交互中动态变化的工作负载。FASA 创新性地利用实时多模态反馈（视觉、力觉、本体感知）作为控制信号，动态调整扩散模型的去噪步数。</li><li>该框架解决了扩散策略在资源受限平台上因迭代采样计算量大而无法实时部署的问题，实现了在维持甚至提升任务成功率的同时，显著加速动作生成。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>华南理工大学</strong></li><li><strong>平安科技（深圳）有限公司</strong></li><li><strong>哈尔滨工业大学（深圳）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文提出 <strong>FASA (Feedback-Aware Sampling Adaptation)</strong>，一个训练免、即插即用的运行时框架，旨在提升基于扩散模型的视觉-语言-动作（VLA）模型在边缘设备上的推理效率。</li><li>现有加速方法要么需要昂贵的重训练，要么采用固定的采样调度，忽略了机器人交互中动态变化的工作负载。FASA 创新性地利用实时多模态反馈（视觉、力觉、本体感知）作为控制信号，动态调整扩散模型的去噪步数。</li><li>该框架解决了扩散策略在资源受限平台上因迭代采样计算量大而无法实时部署的问题，实现了在维持甚至提升任务成功率的同时，显著加速动作生成。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出了一种<strong>反馈感知的自适应采样框架 FASA</strong>，无需训练即可动态调度扩散模型的推理计算量。</li><li>设计了<strong>交互驱动采样范围适应模块</strong>，通过融合视觉特征变化和夹爪力反馈，动态调整全局的采样步数预算范围。</li><li>设计了<strong>本体感知采样步数适应模块</strong>，利用关节状态的运动学指标，在已调整的范围内精确选择最优采样步数。</li><li>在多个基准（<strong>RLBench, ManiSkill3, LIBERO</strong>）和多种策略模型（<strong>3D Diffuser Actor, Diffusion Policy, RDT, Evo-1</strong>）上验证了 FASA 的通用性和有效性，实现了最高 1.45 倍的推理加速。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>交互驱动采样范围适应</strong>：计算相邻时刻视觉特征和夹爪力的余弦相似度作为变化评分，将其融合成一个调制因子，动态缩放采样步数的上下界。视觉和力觉信号保持稳定时收缩范围，发生突变时扩大范围。</li><li><strong>本体感知采样步数适应</strong>：基于关节速度和位移定义“运动指数”，该指数通过 S 型函数映射，在已确定的范围区间内精确插值出当前最优的采样步数。动态阶段分配更多步数，准静态阶段分配更少步数。</li><li>FASA 作为一个轻量级运行时模块，不修改任何模型权重，仅利用策略模型已有的视觉编码器和标准的传感器接口来获取所需反馈信号。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>评估基准与模型</strong>：</li></ul>
+<p> - <strong>RLBench</strong>: 使用 <strong>3D Diffuser Actor (3D-DA)</strong> 模型在 18 个桌面任务上评估。</p>
+<p> - <strong>ManiSkill3</strong>: 使用 <strong>Diffusion Policy (DP)</strong> 和 <strong>RDT</strong> 模型在 3 个任务上评估。</p>
+<p> - <strong>LIBERO</strong>: 使用 <strong>Evo-1</strong> 模型在 4 个套件共 40 个语言条件任务上评估（因环境无抓力反馈，使用无 Force 模块的 FASA 变体）。</p>
+<ul><li><strong>硬件平台</strong>：</li></ul>
+<p> - 3D-DA 和 Evo-1 在 <strong>NVIDIA RTX 4070 Laptop GPU (8GB VRAM)</strong> 上测试。</p>
+<p> - DP 和 RDT 在 <strong>NVIDIA RTX 3090 GPU (24GB VRAM)</strong> 上测试。</p></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：任务成功率（%）和动作生成加速比（基线时间 / FASA 时间）。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>RLBench (3D-DA)</strong>：平均成功率从 75.96% 提升至 77.48%，加速比达 <strong>1.40 倍</strong>。</p>
+<p> - <strong>ManiSkill3 (DP)</strong>：平均成功率从 70.28% 提升至 76.39%，加速比达 <strong>1.45 倍</strong>。<strong>(RDT)</strong>：平均成功率从 86.11% 提升至 87.50%，加速比达 <strong>1.23 倍</strong>。</p>
+<p> - <strong>LIBERO (Evo-1, 无 Force 版)</strong>：平均成功率从 93.0% 提升至 93.5%，加速比达 <strong>1.23 倍</strong>，其中长期任务（Long）加速比最高达 1.35 倍。</p>
+<ul><li><strong>消融实验</strong>：证实全局范围适应带来主要加速（1.64 倍），但会轻微损失精度；局部步数适应提升精度但加速有限（1.18 倍）。二者结合的 FASA 实现了加速（1.42 倍）与精度（77.50%）的最佳平衡。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.19579/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Recovering Aggressively Pruned Vision-Language-Action Models with Offline Hidden-State Distillation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.19441/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Predict Before You Deploy: Offline Prediction of Quantization-Induced Task Degradation for World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

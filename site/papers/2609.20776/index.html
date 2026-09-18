@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GeoAAC: Geometry-Based Adaptive Action Chunking from Denoising Trajectories in VLA Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="聚焦Vision-Language-Action（VLA）策略中动作块执行的固定动作Horizon适配性问题：不同任务阶段对动作连续性、控制精度、闭环反馈的需求存在差异，固定Horizon无法适配该变化，且现有自适应方法存在需额外训练或可靠性估计间接的不足 提出GeoAAC，一种基于Flow Matching去噪轨迹几何的自适应动作块方法，可基于单次生成过程的轨迹几何信息自适应调整动作Horizon，无需额外训练 旨在不增加额外训练成本的前提下，通过更直接的过程级可靠性信号提升VLA策略在不同任务阶段的执行性能" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.20776">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.20776.webp" alt="GeoAAC: Geometry-Based Adaptive Action Chunking from Denoising Trajectories in VLA Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">聚焦Vision-Language-Action（VLA）策略中动作块执行的固定动作Horizon适配性问题：不同任务阶段对动作连续性、控制精度、闭环反馈的需求存在差异，固定Horizon无法适配该变化，且现有自适应方法存在需额外训练或可靠性估计间接的不足</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GeoAAC: Geometry-Based Adaptive Action Chunking from Denoising Trajectories in VLA Policies</h1>
+            <div class="detail-meta">2026-09-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.20776" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.20776" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.20776</span></div>
+            <p class="detail-summary">聚焦Vision-Language-Action（VLA）策略中动作块执行的固定动作Horizon适配性问题：不同任务阶段对动作连续性、控制精度、闭环反馈的需求存在差异，固定Horizon无法适配该变化，且现有自适应方法存在需额外训练或可靠性估计间接的不足 提出GeoAAC，一种基于Flow Matching去噪轨迹几何的自适应动作块方法，可基于单次生成过程的轨迹几何信息自适应调整动作Horizon，无需额外训练 旨在不增加额外训练成本的前提下，通过更直接的过程级可靠性信号提升VLA策略在不同任务阶段的执行性能</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者所属机构包括：同济大学、香港理工大学、电子科技大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">聚焦Vision-Language-Action（VLA）策略中动作块执行的固定动作Horizon适配性问题：不同任务阶段对动作连续性、控制精度、闭环反馈的需求存在差异，固定Horizon无法适配该变化，且现有自适应方法存在需额外训练或可靠性估计间接的不足</p>
+  <ul class="reading-intro-points"><li>聚焦Vision-Language-Action（VLA）策略中动作块执行的固定动作Horizon适配性问题：不同任务阶段对动作连续性、控制精度、闭环反馈的需求存在差异，固定Horizon无法适配该变化，且现有自适应方法存在需额外训练或可靠性估计间接的不足</li><li>提出GeoAAC，一种基于Flow Matching去噪轨迹几何的自适应动作块方法，可基于单次生成过程的轨迹几何信息自适应调整动作Horizon，无需额外训练</li><li>旨在不增加额外训练成本的前提下，通过更直接的过程级可靠性信号提升VLA策略在不同任务阶段的执行性能</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者所属机构包括：<strong>同济大学</strong>、<strong>香港理工大学</strong>、<strong>电子科技大学</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>聚焦Vision-Language-Action（VLA）策略中动作块执行的固定动作Horizon适配性问题：不同任务阶段对动作连续性、控制精度、闭环反馈的需求存在差异，固定Horizon无法适配该变化，且现有自适应方法存在需额外训练或可靠性估计间接的不足</li><li>提出<strong>GeoAAC</strong>，一种基于Flow Matching去噪轨迹几何的自适应动作块方法，可基于单次生成过程的轨迹几何信息自适应调整动作Horizon，无需额外训练</li><li>旨在不增加额外训练成本的前提下，通过更直接的过程级可靠性信号提升VLA策略在不同任务阶段的执行性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>揭示Flow Matching去噪轨迹在动作前缀维度的几何变化与预测不确定性呈正相关，证明去噪几何是沿动作Horizon衡量预测可靠性的过程级信号</li><li>提出<strong>GeoAAC</strong>方法，通过时间校正聚合前缀级去噪几何得到Horizon级几何特征，基于其相对增长与累积分布自适应确定动作执行边界，单次生成即可完成选择，无需额外训练</li><li>在多个流式VLA策略、三类仿真机器人操作基准以及真实双臂操作任务上验证方法有效性，一致优于固定Horizon基线和现有自适应动作块方法</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>针对采用Flow Matching动作头的VLA策略，首先提取单次生成过程中不同动作前缀对应的中间速度预测，计算相邻速度预测的归一化L2范数作为局部几何变化，捕捉轨迹的局部几何特征</li><li>考虑到不同去噪阶段的几何变化可靠性存在差异（中间阶段可靠性更高，后期阶段可靠性下降），引入基于去噪进度的位置相关时间权重对各阶段几何变化进行校正，聚合得到Horizon级几何特征</li><li>基于该特征的相对正向增长与累积分布计算自适应执行边界，同时加入运动感知下界避免过短动作Horizon，最终输出适配当前预测可靠性的动作Horizon</li><li>核心创新点是利用Flow Matching生成过程的内部几何信息作为过程级可靠性信号，无需额外训练即可实现自适应Horizon选择，避免了输出级不确定性估计在多峰动作分布下的误判问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>LIBERO</strong>（包含Spatial、Long、Object、Goal四个子集共40个操作任务）、<strong>LIBERO-Pro</strong>（含3种位置扰动等级的10个操作任务）、<strong>RoboCasa365</strong>（18个家庭场景操作任务）；真实世界数据集为自采集的3项双臂操作任务（酒精灯熄灭、橡胶管断开、试管开盖）的150条遥操作演示数据</li><li>模型规模：采用<strong>GR00T N1.5</strong>（默认预测动作Horizon为16）、<strong>π₀.₅</strong>（默认预测动作Horizon为10）两款流式VLA策略；真实世界实验采用基于<strong>Qwen3-VL-2B-Instruct</strong>（20亿参数）视觉语言骨干与Flow Matching动作专家搭建的VLA策略，预测动作Horizon为50</li><li>训练资源：论文未明确标注具体训练硬件（GPU/TPU等）信息</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真覆盖LIBERO、LIBERO-Pro、RoboCasa365三类基准；真实世界实验基于双PiperX双臂机器人平台，配备3个Intel RealSense D435i相机（1个第三人称视角、2个腕部视角）</li><li>评估指标：任务成功率（%）</li><li>关键实验结果：</li></ul>
+<p> - LIBERO仿真中，GR00T+GeoAAC平均成功率达95.5%，超过最优固定Horizon基线（94.7%）0.8个百分点，也高于自适应基线MS（94.6%）与SA（93.8%）；π₀.₅+GeoAAC平均成功率达98.0%，超过固定Horizon基线的97.1%</p>
+<p> - LIBERO-Pro位置扰动场景下，π₀.₅+GeoAAC平均成功率达36.2%，超过固定Horizon基线5.3个百分点，优于MS（35.2%）与SA（33.8%）</p>
+<p> - RoboCasa365家庭操作场景中，GR00T+GeoAAC平均成功率达75.1%，超过最优固定Horizon基线8.7个百分点，优于MS（71.1%）与SA（68.9%），在18个任务中9个取得最优性能</p>
+<p> - 真实世界3项双臂操作任务中，GeoAAC平均成功率从固定Horizon的53.3%提升至74.4%，绝对提升21.1个百分点，其中橡胶管断开任务成功率从76.7%提升至100%</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.20761/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Agile-WAM: An Agile Tactile World Action Model for Contact-Rich Robot Control</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

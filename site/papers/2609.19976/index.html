@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Compliance for Free: Learning Identifiable Impedance via Bilateral Teleoperation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="解决核心问题：现有Vision-Language-Action（VLA）模型仅能输出机器人位姿目标，无法输出柔顺性（刚度）目标，根源是传统演示接口（VR控制器、SpaceMouse等）仅记录 realized pose 和测量力，存在严格可识别性问题：无法区分操作者意图的平衡位姿和刚度（软弹簧长位移与硬弹簧短位移可产生相同作用力，pose-only接口无法记录操作者瞄准的平衡位置）。 提出解决方案：利用四通道双边遥操作架构，将leader臂的位姿作为操作者指令的独立平衡位姿测量，解决可识别性歧义，仅依靠机械臂自带的关节扭矩传感器即可零成本提取每时间步、各向异性的合规标签，用于微调VLA同时输出位姿和刚度目标。 验证场景：在Franka Research 3机械臂的白板擦拭任务（指令为“擦{左/右}标记{正常/用力}”）上验证，证明提取的合规标签是可学习的、可随指令条件变化的动作。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.19976">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.19976.webp" alt="Compliance for Free: Learning Identifiable Impedance via Bilateral Teleoperation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">解决核心问题：现有Vision-Language-Action（VLA）模型仅能输出机器人位姿目标，无法输出柔顺性（刚度）目标，根源是传统演示接口（VR控制器、SpaceMouse等）仅记录 realized pose 和测量力，存在严格可识别性问题：无法区分操作者意图的平衡位姿和刚度（软弹簧长位移与硬弹簧短位移可产生相同作用力，pose-only接口无法记录操作者瞄准的平衡位置）。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Compliance for Free: Learning Identifiable Impedance via Bilateral Teleoperation</h1>
+            <div class="detail-meta">2026-09-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.19976" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.19976" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.19976</span></div>
+            <p class="detail-summary">解决核心问题：现有Vision-Language-Action（VLA）模型仅能输出机器人位姿目标，无法输出柔顺性（刚度）目标，根源是传统演示接口（VR控制器、SpaceMouse等）仅记录 realized pose 和测量力，存在严格可识别性问题：无法区分操作者意图的平衡位姿和刚度（软弹簧长位移与硬弹簧短位移可产生相同作用力，pose-only接口无法记录操作者瞄准的平衡位置）。 提出解决方案：利用四通道双边遥操作架构，将leader臂的位姿作为操作者指令的独立平衡位姿测量，解决可识别性歧义，仅依靠机械臂自带的关节扭矩传感器即可零成本提取每时间步、各向异性的合规标签，用于微调VLA同时输出位姿和刚度目标。 验证场景：在Franka Research 3机械臂的白板擦拭任务（指令为“擦{左/右}标记{正常/用力}”）上验证，证明提取的合规标签是可学习的、可随指令条件变化的动作。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Institut de Robòtica i Informàtica Industrial, CSIC…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">解决核心问题：现有Vision-Language-Action（VLA）模型仅能输出机器人位姿目标，无法输出柔顺性（刚度）目标，根源是传统演示接口（VR控制器、SpaceMouse等）仅记录 realized pose 和测量力，存在严格可识别性问题：无法区分操作者意图的平衡位姿和刚度（软弹簧长位移与硬弹簧短位移可产生相同作用力，pose-only接口无法记录操作者瞄准的平衡位置）。</p>
+  <ul class="reading-intro-points"><li>解决核心问题：现有Vision-Language-Action（VLA）模型仅能输出机器人位姿目标，无法输出柔顺性（刚度）目标，根源是传统演示接口（VR控制器、SpaceMouse等）仅记录 realized pose 和测量力，存在严格可识别性问题：无法区分操作者意图的平衡位姿和刚度（软弹簧长位移与硬弹簧短位移可产生相同作用力，pose-only接口无法记录操作者瞄准的平衡位置）。</li><li>提出解决方案：利用四通道双边遥操作架构，将leader臂的位姿作为操作者指令的独立平衡位姿测量，解决可识别性歧义，仅依靠机械臂自带的关节扭矩传感器即可零成本提取每时间步、各向异性的合规标签，用于微调VLA同时输出位姿和刚度目标。</li><li>验证场景：在Franka Research 3机械臂的白板擦拭任务（指令为“擦{左/右}标记{正常/用力}”）上验证，证明提取的合规标签是可学习的、可随指令条件变化的动作。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Institut de Robòtica i Informàtica Industrial, CSIC-UPC</strong>（西班牙巴塞罗那）</li><li>论文作者：Harsha Guda, Adrià Colomé, Carme Torras</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>解决核心问题：现有Vision-Language-Action（VLA）模型仅能输出机器人位姿目标，无法输出柔顺性（刚度）目标，根源是传统演示接口（VR控制器、SpaceMouse等）仅记录 realized pose 和测量力，存在严格<strong>可识别性问题</strong>：无法区分操作者意图的平衡位姿和刚度（软弹簧长位移与硬弹簧短位移可产生相同作用力，pose-only接口无法记录操作者瞄准的平衡位置）。</li><li>提出解决方案：利用<strong>四通道双边遥操作</strong>架构，将leader臂的位姿作为操作者指令的独立平衡位姿测量，解决可识别性歧义，仅依靠机械臂自带的关节扭矩传感器即可零成本提取每时间步、各向异性的合规标签，用于微调VLA同时输出位姿和刚度目标。</li><li>验证场景：在<strong>Franka Research 3</strong>机械臂的白板擦拭任务（指令为“擦{左/右}标记{正常/用力}”）上验证，证明提取的合规标签是可学习的、可随指令条件变化的动作。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出无传感器的合规标签提取流程：通过四通道双边遥操作解决pose-only接口的可识别性歧义，仅使用机械臂原生的关节扭矩传感器，即可得到每时间步的合规标签，无需额外力/触觉硬件。</li><li>构建离线合规预测基准：验证提取的标签包含可学习信号，训练的预测器在所有平移轴上均优于每轴常数预测器，整体RMSE提升1.25倍。</li><li>提出合规输出VLA策略：基于提取的标签微调VLA，使其能输出分块阻抗目标，在对比的5个策略中是唯一一个接触力会随“用力/正常”指令发生显著变化的策略。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>可识别性理论支撑：传统单边遥操作仅记录follower位姿和测量力，无法分离意图平衡位姿x_eq和刚度K（满足f_i=k_i e_i的(k_i, e_i)组合有无穷多）；四通道双边遥操作中leader位姿x_l(t)作为独立测量的意图平衡位姿，位移e(t)=x_l(t)-x_f(t)可直接观测，使刚度K和阻尼D可通过回归识别。</li><li>合规标签提取流程：</li></ul>
+<p> - 接触帧定义：通过对接触阶段的follower位置做SVD分解，最小奇异向量对应表面法向量，通过planarity（最小/最大奇异值比）判断运动是否为平面（>0.15则拒绝拟合）。</p>
+<p> - 窗口回归：300ms滑动窗口内求解正则化、带盒约束的非线性最小二乘问题，估计每轴的刚度k_i和阻尼d_i，阻尼取临界阻尼d_i=2√k_i，回归在log空间求解。</p>
+<p> - 可识别性掩码：仅保留满足回归条件数低于阈值、位移超过噪声、力超过轴噪声、处于接触状态的时间步标签，排除不可靠的回归结果。</p>
+<ul><li>无传感器扭矩估计：先通过静态位姿的最小二乘拟合估计工具的重量和质心，消除重力扭矩偏差；再用<strong>随机傅里叶特征</strong>（512维）建模自由空间的位置/速度依赖的残余扭矩偏差，得到每轴的力噪声 floors。</li><li>合规输出策略设计：</li></ul>
+<p> - 骨干网络：基于<strong>SmolVLA</strong>（总参数量~450M），冻结预训练的视觉语言模型，仅微调动作专家模块，可训练参数量99.9M。</p>
+<p> - 输入：两个224×224×3的RGB流（场景相机+手腕相机）、语言指令、500ms的6DoF扭矩历史（下采样为20个样本，经1D卷积编码）注入VLM之后。</p>
+<p> - 输出与损失：分块动作（块大小H=32），每个时间步包含6DoF绝对平衡位姿和6维log刚度，损失函数为位姿的flow-matching L1损失+刚度的Huber损失（仅计算掩码标记为可识别的时间步），训练中加入force dropout（p=0.15）和随机扭矩偏差注入防止模态掩蔽。</p>
+<p> - 低层控制：1kHz笛卡尔阻抗控制器跟踪策略输出的分块目标，采用时间集成平滑块边界，通过刚度变化率限制（\|dlogK/dt\|≤3 s^-1）和能量罐保证无源性。</p></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：双边遥操作采集的白板擦拭任务数据集，任务场景为倾斜~45°的白板，末端安装刚性橡皮擦，指令为2×2网格（referent：左/右；manner：正常/用力），共96次有效演示，每个评估指令组合8次rollout，三个训练种子。</li><li>模型规模：<strong>SmolVLA</strong>骨干，总参数量450.1M，可训练参数量99.9M。</li><li>训练资源：单块<strong>NVIDIA L40S</strong> GPU。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与对比基准：<strong>Franka Research 3</strong>机械臂，白板擦拭任务，对比5个策略：Fixed-K（手动固定刚度，仅输出位姿）、Fitted-K（用提取标签拟合的固定刚度，仅输出位姿）、Force-In（ForceVLA，输入力信息，仅输出位姿）、Hybrid（ForceVLA2，输入力信息，输出位姿+刚度，用独立线性回归头解码刚度）、Ours（输入力信息，输出位姿+刚度，共享flow-matching解码）。</li><li>主要评估指标：<strong>任务成功率</strong>（墨水去除≥50%，自动通过像素差评分）、<strong>连续墨水去除率</strong>、<strong>接触力（峰值/RMS，基于估计的扭矩计算）</strong>、<strong>保护性停止触发次数</strong>（峰值力>40N时触发）。</li><li>关键实验结果：</li></ul>
+<p> - 合规标签可学习性：离线预测基准中，训练预测器的聚合RMSE比每轴常数基线低1.25倍，在所有平移轴上均优于基线。</p>
+<p> - 指令条件柔顺性：我们的策略是5个策略中唯一接触力随指令显著变化的策略，正常擦拭RMS力6.4N，用力擦拭RMS力9.1N，Cohen's d=0.89，p=0.023，统计显著。</p>
+<p> - 任务鲁棒性：策略能稳定完成擦拭任务的全流程（接近、接触前、接触、擦拭、缩回），无意外保护性停止触发。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.20377/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">MM-Future: Multi-Mode Joint World-Action Modeling for Autonomous Driving</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.19923/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Co-VLA: Consensus-based Federated Training for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
