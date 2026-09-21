@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catch Me If You Can: Real-Time Feedback Denoising for Responsive VLAs - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有基于扩散模型的Vision-Language-Action（VLA）采用动作块（action chunking）机制，生成的整块动作以开环方式执行，执行过程中接收的新观测无法被利用，导致机器人在动态变化场景中响应性不足、任务成功率低。 本文提出VLA-Feedback双时间尺度架构，核心思路是将扩散 planners 的最终去噪步骤作为轻量反馈接口，在执行阶段利用最新观测对接近最终的动作做实时修正，无需重新运行完整的视觉语言扩散 planners，即可提升VLA在动态场景下的响应性和鲁棒性。 研究目标是在不损失静态任务性能的前提下，显著提升VLA在动态仿真任务和真实机器人动态任务上的成功率，同时降低系统反应延迟。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.21022">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.21022.webp" alt="Catch Me If You Can: Real-Time Feedback Denoising for Responsive VLAs" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有基于扩散模型的Vision-Language-Action（VLA）采用动作块（action chunking）机制，生成的整块动作以开环方式执行，执行过程中接收的新观测无法被利用，导致机器人在动态变化场景中响应性不足、任务成功率低。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Catch Me If You Can: Real-Time Feedback Denoising for Responsive VLAs</h1>
+            <div class="detail-meta">2026-09-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.21022" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.21022" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.21022</span></div>
+            <p class="detail-summary">现有基于扩散模型的Vision-Language-Action（VLA）采用动作块（action chunking）机制，生成的整块动作以开环方式执行，执行过程中接收的新观测无法被利用，导致机器人在动态变化场景中响应性不足、任务成功率低。 本文提出VLA-Feedback双时间尺度架构，核心思路是将扩散 planners 的最终去噪步骤作为轻量反馈接口，在执行阶段利用最新观测对接近最终的动作做实时修正，无需重新运行完整的视觉语言扩散 planners，即可提升VLA在动态场景下的响应性和鲁棒性。 研究目标是在不损失静态任务性能的前提下，显著提升VLA在动态仿真任务和真实机器人动态任务上的成功率，同时降低系统反应延迟。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者Yiheng Ji、Xingru Zhou所属机构为The University of Texas…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有基于扩散模型的Vision-Language-Action（VLA）采用动作块（action chunking）机制，生成的整块动作以开环方式执行，执行过程中接收的新观测无法被利用，导致机器人在动态变化场景中响应性不足、任务成功率低。</p>
+  <ul class="reading-intro-points"><li>现有基于扩散模型的Vision-Language-Action（VLA）采用动作块（action chunking）机制，生成的整块动作以开环方式执行，执行过程中接收的新观测无法被利用，导致机器人在动态变化场景中响应性不足、任务成功率低。</li><li>本文提出VLA-Feedback双时间尺度架构，核心思路是将扩散 planners 的最终去噪步骤作为轻量反馈接口，在执行阶段利用最新观测对接近最终的动作做实时修正，无需重新运行完整的视觉语言扩散 planners，即可提升VLA在动态场景下的响应性和鲁棒性。</li><li>研究目标是在不损失静态任务性能的前提下，显著提升VLA在动态仿真任务和真实机器人动态任务上的成功率，同时降低系统反应延迟。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者Yiheng Ji、Xingru Zhou所属机构为<strong>The University of Texas at Austin</strong></li><li>作者Mingyo Seo所属机构为<strong>University of Central Florida</strong></li><li>研究获得美国空军AFWERX Small Business Innovation Research (SBIR) Phase II项目部分支持，Sandeep Chinchali提供机器人基础设施支持</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有基于扩散模型的Vision-Language-Action（VLA）采用动作块（action chunking）机制，生成的整块动作以开环方式执行，执行过程中接收的新观测无法被利用，导致机器人在动态变化场景中响应性不足、任务成功率低。</li><li>本文提出<strong>VLA-Feedback</strong>双时间尺度架构，核心思路是将扩散 planners 的最终去噪步骤作为轻量反馈接口，在执行阶段利用最新观测对接近最终的动作做实时修正，无需重新运行完整的视觉语言扩散 planners，即可提升VLA在动态场景下的响应性和鲁棒性。</li><li>研究目标是在不损失静态任务性能的前提下，显著提升VLA在动态仿真任务和真实机器人动态任务上的成功率，同时降低系统反应延迟。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出VLA-Feedback双时间尺度架构，创新性地将扩散模型的最终去噪步骤转化为高频反馈修正接口，解决了开环动作块执行无法利用执行时新观测的瓶颈，无需重新运行慢速 planners 即可实现动作实时调整。</li><li>设计轻量反馈去噪模块，通过缓存 planners 生成的动作侧表征，在每次控制步骤中仅需融合最新观测即可预测去噪速度，单步运行时间仅2ms，在保留扩散 planners 强动作生成能力的同时实现了极低延迟的反馈修正。</li><li>采用两阶段训练策略，先独立训练慢速扩散 planners，再冻结 planners 仅训练反馈模块，解耦长期规划与执行时反馈的角色，简化了训练流程且避免了反馈修正破坏 planners 已学习的动作先验。</li><li>在多类任务上验证了方法的有效性：静态LIBERO任务上匹配GR00T的性能，动态仿真任务平均成功率从27.5%提升至85.0%，真实机器人任务平均成功率从51%提升至73%，同时反应延迟远低于现有双系统VLA方法。</li><li>消融实验验证了设计选择的必要性：去噪空间的反馈修正优于直接动作残差修正，高频反馈对动态任务性能至关重要，结构化视觉-动作融合模块比简单MLP更有效。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>技术架构：VLA-Feedback分为慢速 planners 通路和快速反馈通路。慢速通路使用预训练的<strong>GR00T</strong>模型（集成<strong>NVIDIA Eagle-2</strong>视觉语言编码器和<strong>DiT（Diffusion Transformer）</strong>动作生成器），以低频率生成接近最终的动作块，同时缓存动作侧表征；快速通路的反馈去噪模块在每个控制步骤中，通过轻量视觉编码器提取最新观测的特征，与缓存的动作侧特征经Transformer交叉注意力块融合，经可学习视觉残差缩放后由单层速度头预测反馈去噪速度，最终通过一步去噪更新得到可执行的最终动作。</li><li>训练策略：采用两阶段训练解耦两个模块的训练：第一阶段使用标准flow matching目标训练慢速扩散 planners，通过掩码回归损失监督速度场预测；第二阶段冻结预训练的 planners（包括VLM、DiT和共享的动作侧去噪分支），仅训练新引入的反馈组件，通过监督回归损失让反馈模块学习基于最新观测修正 planners 输出的近最终动作。</li><li>创新点与关键技术：1. 未引入单独的高频策略或事后动作残差，而是在扩散 planners 的最终去噪阶段做观测条件化修正，既锚定了 planners 学习的动作结构先验，又实现了执行时的实时反馈；2. 缓存动作侧表征避免重复计算，大幅降低反馈模块的计算开销，实现2ms的低延迟；3. 可学习视觉残差缩放机制平衡了 planners 的原始输出和视觉反馈的修正幅度，避免反馈修正过度偏离合理的动作轨迹。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用数据集：静态仿真任务采用<strong>LIBERO-Object</strong>和<strong>LIBERO-Goal</strong>基准；动态仿真任务基于<strong>Robosuite</strong>构建，包含抓取随机运动/变向的玩具机器人、把球投入移动杯子3个基础任务，以及4个未见过的动态变体（改变物体外观、形状、运动模式、速度范围）；真实机器人实验采用<strong>Franka Emika Panda</strong>平台，完成1个静态面包抓取任务和2个动态任务（接滚动罐子、把柠檬水投入移动杯子）。</li><li>模型规模：基础 planners 采用GR00T的VLM-DiT架构，为预训练基础模型；反馈去噪模块仅包含轻量视觉编码器、单层投影层、小型Transformer交叉注意力块和单层速度头，参数量远小于 planners，计算效率高。</li><li>训练资源：每个任务使用50-60条专家演示进行训练，真实任务评估20次rollout，仿真LIBERO任务评估20次rollout，动态仿真任务评估40次rollout；具体GPU/TPU等训练硬件配置未在提供的内容中明确说明。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：仿真环境为LIBERO和Robosuite，真实环境为Franka Emika Panda机器人；对比基线为<strong>OpenVLA</strong>、<strong>GR00T</strong>、<strong>FiS-VLA</strong>，所有方法使用完全相同的演示数据、评估划分、初始状态分布、目标运动模式和成功判定标准，保证公平对比。</li><li>主要评估指标：任务成功率、平均反应延迟（定义为新观测可用到第一个依赖该观测的动作执行之间的延迟，计算公式为$\bar{T}_{\mathrm{react}}=T_{\mathrm{update}}+\frac{R}{2}\Delta t$，其中$T_{\mathrm{update}}$为模块运行时间，$R$为两次观测更新间的执行动作数，$\Delta t$为控制间隔）。</li><li>关键实验结果：1. 静态任务性能：VLA-Feedback在LIBERO-Goal上匹配GR00T的92%成功率，LIBERO-Object上仅低2个百分点，证明反馈修正不会破坏静态任务的性能；2. 动态仿真任务：平均成功率从基线的27.5%提升至85.0%，在所有4个未见过的动态变体任务上均取得最优性能，证明方法对未知动态场景具有泛化能力；3. 真实机器人任务：平均成功率从51%提升至73%，静态任务略优于GR00T，动态任务提升更显著，验证了方法在真实硬件上的有效性；4. 延迟性能：反馈模块单步运行时间仅2ms，采用1:16:16的 planners-反馈-动作调度，平均反应延迟仅为$2+\frac{1}{2}\Delta t$，远低于OpenVLA的$160+\frac{1}{2}\Delta t$、GR00T的$80+8\Delta t$和FiS-VLA的$40+\frac{1}{2}\Delta t$；5. 消融实验：移除视觉反馈或采用直接动作残差修正会大幅降低动态任务性能，降低反馈频率会显著削弱动态任务成功率，验证了核心设计选择的合理性。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.21216/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Fewer Steps, Better Actions: Rethinking Flow-Matching Inference for VLA Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.20980/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ForeTac-VLA: A Forecasting-Based Tactile-Vision-Language-Action Model for Contact-Rich Robotic Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

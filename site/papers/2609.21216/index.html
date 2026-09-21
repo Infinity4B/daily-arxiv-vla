@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fewer Steps, Better Actions: Rethinking Flow-Matching Inference for VLA Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对基于流匹配（flow matching）的视觉-语言-动作（VLA）策略推理问题：多次调用动作专家（AE）进行串行积分会大幅提升推理延迟，但增加积分步数（NFE，即函数评估次数）对闭环成功率的提升存在明显递减效应 提出Coda方法，将部分冗余的串行积分预算重新分配给单次学习的端点修正，仅需训练轻量级残差修正器，保持原有VLM和AE完全冻结，即可提升少步生成的动作质量 研究目标为重新分配flow matching VLA的推理算力，在降低推理延迟的同时提升闭环任务成功率，优化质量-延迟的部署权衡" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.21216">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.21216.webp" alt="Fewer Steps, Better Actions: Rethinking Flow-Matching Inference for VLA Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对基于流匹配（flow matching）的视觉-语言-动作（VLA）策略推理问题：多次调用动作专家（AE）进行串行积分会大幅提升推理延迟，但增加积分步数（NFE，即函数评估次数）对闭环成功率的提升存在明显递减效应</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Fewer Steps, Better Actions: Rethinking Flow-Matching Inference for VLA Policies</h1>
+            <div class="detail-meta">2026-09-18 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.21216" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.21216" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.21216</span></div>
+            <p class="detail-summary">针对基于流匹配（flow matching）的视觉-语言-动作（VLA）策略推理问题：多次调用动作专家（AE）进行串行积分会大幅提升推理延迟，但增加积分步数（NFE，即函数评估次数）对闭环成功率的提升存在明显递减效应 提出Coda方法，将部分冗余的串行积分预算重新分配给单次学习的端点修正，仅需训练轻量级残差修正器，保持原有VLM和AE完全冻结，即可提升少步生成的动作质量 研究目标为重新分配flow matching VLA的推理算力，在降低推理延迟的同时提升闭环任务成功率，优化质量-延迟的部署权衡</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Institute of Computing Technology, Chinese Academy…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对基于流匹配（flow matching）的视觉-语言-动作（VLA）策略推理问题：多次调用动作专家（AE）进行串行积分会大幅提升推理延迟，但增加积分步数（NFE，即函数评估次数）对闭环成功率的提升存在明显递减效应</p>
+  <ul class="reading-intro-points"><li>针对基于流匹配（flow matching）的视觉-语言-动作（VLA）策略推理问题：多次调用动作专家（AE）进行串行积分会大幅提升推理延迟，但增加积分步数（NFE，即函数评估次数）对闭环成功率的提升存在明显递减效应</li><li>提出Coda方法，将部分冗余的串行积分预算重新分配给单次学习的端点修正，仅需训练轻量级残差修正器，保持原有VLM和AE完全冻结，即可提升少步生成的动作质量</li><li>研究目标为重新分配flow matching VLA的推理算力，在降低推理延迟的同时提升闭环任务成功率，优化质量-延迟的部署权衡</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Institute of Computing Technology, Chinese Academy of Sciences, Beijing, China</strong>（Zhipeng Tang、Xinda Chen、Weining Rao、Xiao Shi、Xiaofang Zhao、Wenting Tan所属单位）</li><li><strong>University of Chinese Academy of Sciences, Beijing, China</strong>（Wenting Tan、Xiao Shi、Xiaofang Zhao所属单位）</li><li><strong>Zhongke Haichuan Intelligent</strong>（Yuning Wang所属单位）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对基于流匹配（flow matching）的视觉-语言-动作（VLA）策略推理问题：多次调用动作专家（AE）进行串行积分会大幅提升推理延迟，但增加积分步数（NFE，即函数评估次数）对闭环成功率的提升存在明显递减效应</li><li>提出<strong>Coda</strong>方法，将部分冗余的串行积分预算重新分配给单次学习的端点修正，仅需训练轻量级残差修正器，保持原有VLM和AE完全冻结，即可提升少步生成的动作质量</li><li>研究目标为重新分配flow matching VLA的推理算力，在降低推理延迟的同时提升闭环任务成功率，优化质量-延迟的部署权衡</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出算力分配新思路：证实增加流匹配积分步数会大幅提升串行AE计算开销，但闭环收益递减，因此将部分积分预算替换为单次端点修正</li><li>设计可适配的Coda修正框架：保持原VLA策略完全冻结，复用观测前缀KV缓存，仅训练轻量Transformer残差模块学习候选动作与示范动作的差值，单修正器可适配不同测试时积分步数</li><li>多场景验证有效性：在50任务RoboTwin、独立13任务面板、官方SmolVLA 10任务集上，Coda均能在匹配或更低延迟下提升闭环成功率，优于额外积分、AE继续训练、Mix-AE等对比方案</li><li>验证直接执行的优越性：对比Mix-AE方案，直接执行学习到的残差可更大程度降低开环动作误差，保留修正效果</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础推理流程：冻结的VLM首先编码观测和指令得到前缀表示，冻结的动作专家（AE）通过N步欧拉积分将源噪声ε逐步转化为候选动作a_θ</li><li>残差修正模块设计：训练轻量级Transformer作为残差修正器，输入为观测前缀的KV缓存、候选动作a_θ、源噪声ε，输出残差Δâ，最终执行的动作为a_exec = a_θ + Δâ</li><li>关键创新点：1. 解耦动作生成与端点修正，仅训练残差模块，无需修改原VLA策略的VLM和AE；2. 复用观测前缀的KV缓存，大幅降低修正器的额外推理开销；3. 单次训练的修正器可跨不同测试时NFE复用，无需针对每个积分步数单独训练；4. 采用直接执行策略，避免修正后动作再次通过AE引入的额外误差</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用数据集：<strong>RoboTwin 50任务双机械臂操作数据集</strong>（主评估用demo_clean_50子集，视觉随机化场景用demo_randomized_50子集）、独立13任务操作面板、<strong>官方SmolVLA 10任务数据集</strong></li><li>模型规模：基座策略为<strong>π₀.₅</strong>（基于PaliGemma的VLM前缀+流匹配动作专家）和<strong>官方冻结SmolVLA</strong>；残差修正器为轻量级Transformer后缀，π₀.₅上的修正器从对应冻结AE权重初始化，SmolVLA上的为独立轻量修正器</li><li>训练资源：训练阶段使用4×A100 GPU；π₀.₅-FT训练60k步，Coda训练3k步，SmolVLA修正器训练18716步；推理评估使用<strong>A100 80GB PCIe</strong>（主评估面板）和<strong>A100 40GB</strong>（独立13任务面板），batch size为1，使用SDPA注意力机制，无编译优化</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：主评估为50任务RoboTwin Easy场景，对比不同NFE的冻结策略基线、AE继续训练基线、Mix-AE、MLP修正器；额外评估包括独立13任务面板、官方SmolVLA 10任务集、50任务RoboTwin Hard视觉随机化场景</li><li>主要评估指标：<strong>闭环任务成功率</strong>、<strong>前向推理延迟（毫秒）</strong></li><li>关键实验结果：1. 50任务主面板中，5步Coda成功率达74.68%，较匹配NFE的5步基线提升3.04个百分点，较默认10步策略延迟降低30.2%（1.43倍加速）；2步Coda成功率达71.88%，延迟降低54.8%（2.12倍加速）。2. 独立13任务面板中，5步Coda成功率达77.38%，较6步基线提升5.69个百分点，延迟几乎一致。3. 迁移到冻结SmolVLA后，2步Coda成功率从60.8%提升至69.4%，较10步官方策略快1.98倍且成功率高5个百分点。4. 开环动作误差测试中，Coda的误差较5步基线降低24.8%，优于Mix-AE方案。5. 视觉随机化场景下Coda的平均增益不显著，无明确优势。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.21220/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Safe Real-Time Policy Steering via Noise-Space Trajectory Optimization for One-Step Generative Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.21022/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Catch Me If You Can: Real-Time Feedback Denoising for Responsive VLAs</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

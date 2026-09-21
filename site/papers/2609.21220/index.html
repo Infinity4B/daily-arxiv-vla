@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Safe Real-Time Policy Steering via Noise-Space Trajectory Optimization for One-Step Generative Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对预训练生成策略在部署时遇到未训练过的约束（如避障、末端姿态保持）难以适配的问题，提出INSPO（Inference-time Noise-Space Policy Optimization）推理时转向框架 将单步生成策略的推理时转向转化为策略输入噪声空间的轨迹优化问题，通过优化输入噪声而非直接修改生成动作来满足部署时约束，同时保留策略学习到的行为分布 目标是实现低延迟、高约束满足率的实时策略转向，无需对预训练策略进行重训练，同时通过真实任务验证实际部署可行性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.21220">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.21220.webp" alt="Safe Real-Time Policy Steering via Noise-Space Trajectory Optimization for One-Step Generative Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对预训练生成策略在部署时遇到未训练过的约束（如避障、末端姿态保持）难以适配的问题，提出INSPO（Inference-time Noise-Space Policy Optimization）推理时转向框架</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Safe Real-Time Policy Steering via Noise-Space Trajectory Optimization for One-Step Generative Policies</h1>
+            <div class="detail-meta">2026-09-18 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.21220" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.21220" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.21220</span></div>
+            <p class="detail-summary">针对预训练生成策略在部署时遇到未训练过的约束（如避障、末端姿态保持）难以适配的问题，提出INSPO（Inference-time Noise-Space Policy Optimization）推理时转向框架 将单步生成策略的推理时转向转化为策略输入噪声空间的轨迹优化问题，通过优化输入噪声而非直接修改生成动作来满足部署时约束，同时保留策略学习到的行为分布 目标是实现低延迟、高约束满足率的实时策略转向，无需对预训练策略进行重训练，同时通过真实任务验证实际部署可行性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">普渡大学计算机科学系（美国印第安纳州西拉斐特），论文作者Qingyi Chen、Joseph Ruan…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对预训练生成策略在部署时遇到未训练过的约束（如避障、末端姿态保持）难以适配的问题，提出INSPO（Inference-time Noise-Space Policy Optimization）推理时转向框架</p>
+  <ul class="reading-intro-points"><li>针对预训练生成策略在部署时遇到未训练过的约束（如避障、末端姿态保持）难以适配的问题，提出INSPO（Inference-time Noise-Space Policy Optimization）推理时转向框架</li><li>将单步生成策略的推理时转向转化为策略输入噪声空间的轨迹优化问题，通过优化输入噪声而非直接修改生成动作来满足部署时约束，同时保留策略学习到的行为分布</li><li>目标是实现低延迟、高约束满足率的实时策略转向，无需对预训练策略进行重训练，同时通过真实任务验证实际部署可行性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>普渡大学计算机科学系</strong>（美国印第安纳州西拉斐特），论文作者Qingyi Chen、Joseph Ruan、Zachary Kingston均隶属于该机构</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对预训练生成策略在部署时遇到未训练过的约束（如避障、末端姿态保持）难以适配的问题，提出<strong>INSPO（Inference-time Noise-Space Policy Optimization）</strong>推理时转向框架</li><li>将<strong>单步生成策略</strong>的推理时转向转化为策略输入噪声空间的轨迹优化问题，通过优化输入噪声而非直接修改生成动作来满足部署时约束，同时保留策略学习到的行为分布</li><li>目标是实现低延迟、高约束满足率的实时策略转向，无需对预训练策略进行重训练，同时通过真实任务验证实际部署可行性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>INSPO</strong>框架，首次将单步生成策略的推理时转向建模为噪声空间轨迹优化问题，为单步生成策略的部署时约束适配提供了新范式</li><li>设计包含约束违反惩罚与噪声正则项的无约束优化目标，基于高斯Annulus定理保证优化后的噪声仍符合策略原始输入分布，避免生成离分布动作</li><li>采用种群粒子优化算法在线求解优化问题，结合warm-start机制与滚动时域控制框架，在保证约束满足的同时降低规划延迟</li><li>在<strong>Push-T</strong>、<strong>Can抓取放置</strong>、<strong>LIBERO-Spatial</strong>及真实世界lifting任务上验证方法有效性，在任务成功率、约束满足率和规划效率上均优于现有基线</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>以预训练<strong>单步生成策略π_θ</strong>的输入噪声x为优化变量，将约束满足问题转化为无约束优化问题，目标函数包含两部分：一是约束违反项的加权和，二是噪声正则项（鼓励优化后噪声的L2范数接近高维高斯分布的期望半径，保证输入分布一致性）</li><li>优化过程采用并行粒子梯度下降求解，每个粒子对应一个噪声样本，通过策略前向传播生成动作轨迹后计算目标函数梯度并更新噪声</li><li>采用滚动时域执行机制，仅对动作块的前T_e个动作评估约束，满足执行约束即可提前终止优化，同时保留对后续动作的规划能力</li><li>引入warm-start机制，每轮规划保留上一轮代价最低的N_p/2个粒子作为初始解，平衡规划效率与对动态环境的适应能力</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的仿真任务与数据集包括：<strong>Push-T</strong>任务（50个随机生成障碍的场景，支持状态和图像输入）、<strong>robomimic Can抓取放置</strong>环境（50次试验，含移动障碍和姿态约束）、<strong>LIBERO-Spatial</strong>基准、真实世界lifting任务</li><li>底层生成策略采用<strong>Drifting单步生成策略</strong>，通用VLA策略采用<strong>π₀.₅</strong>，论文未公开具体模型参数量</li><li>实验硬件为<strong>AMD Ryzen Threadripper PRO 5965WX CPU</strong>和<strong>NVIDIA RTX 4090 GPU</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境覆盖仿真与真实场景，对比基线包括无转向的预训练策略、Best-of-N采样、动作投影、梯度引导的迭代生成策略</li><li>主要评估指标为：任务成功率/得分、约束违反率（CR）、单步规划平均耗时、每回合平均约束违反步数</li><li>关键实验结果：<strong>INSPO</strong>在所有任务中均取得最高任务得分/成功率，同时完全或近乎完全消除约束违反；规划耗时显著低于梯度引导策略（即使梯度引导仅用10步推理，INSPO耗时仍更短），相比Best-of-N和动作投影在任务性能和约束满足率上有明显提升，例如<strong>Push-T</strong>状态输入场景下，INSPO（N_p=32）任务得分为69.3，约束违反率为0%，单步规划耗时0.03s，而最优梯度引导策略（NFE=100）得分为64.3，约束违反率为2%，单步耗时0.89s；真实世界lifting任务也验证了方法的实际部署有效性</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.21223/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SafeStage: Evaluating Safety Before, During, and After Vision-Language-Conditioned Robot Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.21216/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Fewer Steps, Better Actions: Rethinking Flow-Matching Inference for VLA Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
