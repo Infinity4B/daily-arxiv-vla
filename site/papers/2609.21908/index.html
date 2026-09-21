@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CommitFlow: Semantic Commitment Verification and Local Correction for Long-Horizon Robot Manipulation VLA Execution - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对长程机器人操作任务中 VLA（视觉-语言-动作）策略的可靠性问题：在执行过程中，策略可能在所需物理效果尚未建立时便提前推进到下一任务阶段，导致语义承诺（semantic commitments）与实际物理状态之间的失配。 提出了 CommitFlow，一个闭环执行框架，在保持基础策略（base policy）冻结的前提下，通过语义承诺验证与局部修正相结合的方式，在关键阶段转换之前进行早期干预，防止局部偏差积累和传播导致任务失败。 CommitFlow 由三个核心组件构成：Semantic Commitment Monitor (SCM) 负责验证物理条件并延迟依赖动作；BoundaryFlow 生成基础动作条件下的局部修正；Relation and Gain Calibration (RGC) 选择满足约束的最小修正强度。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.21908">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.21908.webp" alt="CommitFlow: Semantic Commitment Verification and Local Correction for Long-Horizon Robot Manipulation VLA Execution" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对长程机器人操作任务中 VLA（视觉-语言-动作）策略的可靠性问题：在执行过程中，策略可能在所需物理效果尚未建立时便提前推进到下一任务阶段，导致语义承诺（semantic commitments）与实际物理状态之间的失配。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">CommitFlow: Semantic Commitment Verification and Local Correction for Long-Horizon Robot Manipulation VLA Execution</h1>
+            <div class="detail-meta">2026-09-18 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.21908" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.21908" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.21908</span></div>
+            <p class="detail-summary">论文针对长程机器人操作任务中 VLA（视觉-语言-动作）策略的可靠性问题：在执行过程中，策略可能在所需物理效果尚未建立时便提前推进到下一任务阶段，导致语义承诺（semantic commitments）与实际物理状态之间的失配。 提出了 CommitFlow，一个闭环执行框架，在保持基础策略（base policy）冻结的前提下，通过语义承诺验证与局部修正相结合的方式，在关键阶段转换之前进行早期干预，防止局部偏差积累和传播导致任务失败。 CommitFlow 由三个核心组件构成：Semantic Commitment Monitor (SCM) 负责验证物理条件并延迟依赖动作；BoundaryFlow 生成基础动作条件下的局部修正；Relation and Gain Calibration (RGC) 选择满足约束的最小修正强度。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">National University of Defense Technology（国防科技大学，长沙…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对长程机器人操作任务中 VLA（视觉-语言-动作）策略的可靠性问题：在执行过程中，策略可能在所需物理效果尚未建立时便提前推进到下一任务阶段，导致语义承诺（semantic commitments）与实际物理状态之间的失配。</p>
+  <ul class="reading-intro-points"><li>论文针对长程机器人操作任务中 VLA（视觉-语言-动作）策略的可靠性问题：在执行过程中，策略可能在所需物理效果尚未建立时便提前推进到下一任务阶段，导致语义承诺（semantic commitments）与实际物理状态之间的失配。</li><li>提出了 CommitFlow，一个闭环执行框架，在保持基础策略（base policy）冻结的前提下，通过语义承诺验证与局部修正相结合的方式，在关键阶段转换之前进行早期干预，防止局部偏差积累和传播导致任务失败。</li><li>CommitFlow 由三个核心组件构成：Semantic Commitment Monitor (SCM) 负责验证物理条件并延迟依赖动作；BoundaryFlow 生成基础动作条件下的局部修正；Relation and Gain Calibration (RGC) 选择满足约束的最小修正强度。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>National University of Defense Technology</strong>（国防科技大学，长沙，中国）</li><li>通讯作者：<strong>Chuang Cheng</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对<strong>长程机器人操作任务中 VLA（视觉-语言-动作）策略</strong>的可靠性问题：在执行过程中，策略可能在所需物理效果尚未建立时便提前推进到下一任务阶段，导致语义承诺（semantic commitments）与实际物理状态之间的失配。</li><li>提出了 <strong>CommitFlow</strong>，一个闭环执行框架，在保持基础策略（base policy）冻结的前提下，通过<strong>语义承诺验证</strong>与<strong>局部修正</strong>相结合的方式，在关键阶段转换之前进行早期干预，防止局部偏差积累和传播导致任务失败。</li><li>CommitFlow 由三个核心组件构成：<strong>Semantic Commitment Monitor (SCM)</strong> 负责验证物理条件并延迟依赖动作；<strong>BoundaryFlow</strong> 生成基础动作条件下的局部修正；<strong>Relation and Gain Calibration (RGC)</strong> 选择满足约束的最小修正强度。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>SCM（语义承诺监控器）</strong>：通过轻量级时序状态估计与承诺验证，识别未满足的物理条件，推迟依赖动作并保留有效的执行进度。</li><li>提出 <strong>BoundaryFlow（边界流）</strong>：基于基础动作与专家修正之间的残差学习局部更新，采用<strong>低秩基分解（rank-12）</strong>约束修正方向与幅度，保持基础策略冻结。</li><li>提出 <strong>RGC（关系与增益校准）</strong>：从成功执行数据中建立阶段级参考范围，在运行时选择<strong>最小可行修正增益</strong>，避免过度干预。</li><li>在 <strong>RoboTwin 2.0</strong> 基准的 10 个常见任务上，CommitFlow 平均成功率达 <strong>75.9%</strong>，相对基础策略 <strong>π0.5（53.2%）</strong> 提升 <strong>22.7%</strong>。</li><li>跨策略实验显示一致增益：π0、π0.5 与 <strong>LingBot-VLA</strong> 均获得性能提升，验证了框架的通用性与迁移能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>SCM</strong>：采用 <strong>GRU</strong> 编码 L 帧历史（视觉特征、度量关系、关节状态），输出阶段（stage）与事件（event）预测，并通过 sigmoid 头预测 holding、support、contact、release 状态；通过动作权限矩阵 Γ 区分 Hold/Correct/Keep 三类控制策略。</li><li><strong>BoundaryFlow</strong>：以可视特征、归一化物体-手臂关系、测量关节、基础动作前缀为条件，预测低秩残差系数 c_t，经 tanh 限制与奇异值分解基重构修正动作增量；损失函数包含系数损失、动作损失、去噪损失、几何契约损失与零修正损失。</li><li><strong>RGC</strong>：按成功状态数据拟合参考区域（中位数 μ_i 与标准差 S_i），定义边际函数 m_i(r)，在运行时对候选增益集合 A 进行筛选，选择满足几何与约束的最小增益。</li><li>对 flow-matching 类基础策略，通过采样场反推（v_exec^τ）将修正无缝集成到基础策略的生成过程，保持基础策略完全冻结。</li><li>采用<strong>任务适配器（task adapter）</strong>绑定物体与操作角色，使承诺验证与局部修正过程可跨场景复用。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真评估使用 <strong>RoboTwin 2.0</strong> 基准中的 <strong>11 个长程交互任务</strong>（涉及交接、悬挂、方向放置、多目标放置）。</li><li>每个任务在<strong>随机化场景</strong>下评估 <strong>100 次试验</strong>（不同随机种子）。</li><li>对比方法包括 <strong>RDT</strong>、<strong>π0.5</strong>、<strong>TACO</strong>、<strong>CAPS</strong>，以及跨策略实验中的 <strong>π0</strong>、<strong>LingBot-VLA</strong>。</li><li>真实机器人实验涵盖<strong>碗堆叠（bowl stacking）</strong>与<strong>橡皮放置（eraser placement）</strong>两个任务。</li><li>BoundaryFlow 使用 <strong>10 步、6 关节窗口</strong>和<strong>rank-12 低秩基</strong>；基础策略参数全部冻结。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboTwin 2.0 十任务均值</strong>：CommitFlow 达到 <strong>75.9%</strong>，显著优于 π0.5（53.2%）、π0.5+TACO（58.7%）、π0.5+CAPS（61.5%）和 RDT（23.6%）。</li><li><strong>跨策略结果</strong>（11 任务均值）：π0 从 36.5% 提升至 <strong>52.9%</strong>；π0.5 从 49.4% 提升至 <strong>72.8%</strong>；LingBot-VLA 从 81.4% 提升至 <strong>86.6%</strong>。</li><li><strong>消融实验</strong>（6 任务均值）：Fresh + Ours 达 <strong>80.0%</strong>，优于 Fresh Base（66.8%）和 Fresh + IK（69.0%），表明纯几何对准（IK）不足以恢复与后续基础策略动作的兼容性。</li><li><strong>SCM 识别性能</strong>：在 1,971 个闭环帧上阶段识别 Macro-F1 为 <strong>88.98%</strong>，事件类别识别 Macro-F1 为 <strong>94.89%</strong>。</li><li><strong>修正增益分析</strong>：Cabinet 在 α=0.60 时成功率 71%，Basket 在 α=0.40 时成功率 88%；过大的修正强度会导致 overshoot（Cabinet 在 α=0.90 时达 20.4 mm），验证 RGC 选择最小可行增益的必要性。</li><li><strong>局限性</strong>：局部恢复成功不保证后续阶段成功（π0 局部恢复率 45.8%、最终任务成功率 18.1%），CommitFlow 无法提供基础策略本身缺失的任务技能。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.21948/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">GALA: Geometry-Aware Latent Action Modeling for Vision-Language-Action Model Pretraining across Embodiments</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.21817/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">A Sim-to-Real Integration Pipeline for Training and Deployment of Chunk-Based VLA Manipulation Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

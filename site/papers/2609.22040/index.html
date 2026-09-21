@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PRIME: Perception Feedback with Situational Memory Embeddings in VLA Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文指出当前 VLA（Vision-Language-Action）自动驾驶模型主要以前馈方式进行推理，感知模块对下游推理和导航目标不可见，只能盲目处理视觉输入。 论文提出 PRIME（Perception Feedback with Situational Memory Embeddings）机制，通过学习到的反馈路径将情境记忆注入感知查询，使感知编码具有意图感知（intent-driven）能力。 在 Bench2Drive 闭环基准上，PRIME 以极低参数开销（仅增加 29.7M 参数，占基础模型的 0.41%）实现了 SOTA 的 Driving Score 82.47（+4.73 vs ORION）和 Success Rate 60.00%（+5.38 个百分点）。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.22040">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.22040.webp" alt="PRIME: Perception Feedback with Situational Memory Embeddings in VLA Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文指出当前 VLA（Vision-Language-Action）自动驾驶模型主要以前馈方式进行推理，感知模块对下游推理和导航目标不可见，只能盲目处理视觉输入。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">PRIME: Perception Feedback with Situational Memory Embeddings in VLA Models</h1>
+            <div class="detail-meta">2026-09-18 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.22040" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.22040" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.22040</span></div>
+            <p class="detail-summary">论文指出当前 VLA（Vision-Language-Action）自动驾驶模型主要以前馈方式进行推理，感知模块对下游推理和导航目标不可见，只能盲目处理视觉输入。 论文提出 PRIME（Perception Feedback with Situational Memory Embeddings）机制，通过学习到的反馈路径将情境记忆注入感知查询，使感知编码具有意图感知（intent-driven）能力。 在 Bench2Drive 闭环基准上，PRIME 以极低参数开销（仅增加 29.7M 参数，占基础模型的 0.41%）实现了 SOTA 的 Driving Score 82.47（+4.73 vs ORION）和 Success Rate 60.00%（+5.38 个百分点）。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">RWTH Aachen University（德国亚琛工业大学），电气工程与信息技术学院</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文指出当前 VLA（Vision-Language-Action）自动驾驶模型主要以前馈方式进行推理，感知模块对下游推理和导航目标不可见，只能盲目处理视觉输入。</p>
+  <ul class="reading-intro-points"><li>论文指出当前 VLA（Vision-Language-Action）自动驾驶模型主要以前馈方式进行推理，感知模块对下游推理和导航目标不可见，只能盲目处理视觉输入。</li><li>论文提出 PRIME（Perception Feedback with Situational Memory Embeddings）机制，通过学习到的反馈路径将情境记忆注入感知查询，使感知编码具有意图感知（intent-driven）能力。</li><li>在 Bench2Drive 闭环基准上，PRIME 以极低参数开销（仅增加 29.7M 参数，占基础模型的 0.41%）实现了 SOTA 的 Driving Score 82.47（+4.73 vs ORION）和 Success Rate 60.00%（+5.38 个百分点）。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>RWTH Aachen University</strong>（德国亚琛工业大学），电气工程与信息技术学院</li><li><strong>Robert Bosch GmbH</strong>（德国罗伯特·博世公司），Corporate Research 部门</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文指出当前 VLA（Vision-Language-Action）自动驾驶模型主要以前馈方式进行推理，感知模块对下游推理和导航目标不可见，只能盲目处理视觉输入。</li><li>论文提出 <strong>PRIME</strong>（Perception Feedback with Situational Memory Embeddings）机制，通过学习到的反馈路径将情境记忆注入感知查询，使感知编码具有意图感知（intent-driven）能力。</li><li>在 <strong>Bench2Drive</strong> 闭环基准上，PRIME 以极低参数开销（仅增加 <strong>29.7M</strong> 参数，占基础模型的 <strong>0.41%</strong>）实现了 SOTA 的 Driving Score <strong>82.47</strong>（+4.73 vs ORION）和 Success Rate <strong>60.00%</strong>（+5.38 个百分点）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Situational Memory</strong>（情境记忆）模块：一个可学习的、有状态的组件，通过跨注意力在 L 步时间窗口内聚合六种潜在反馈源，涵盖场景感知、推理、导航目标和预测行为。</li><li>设计两种集成模块以适配不同结构和基数的反馈源：<strong>FiLMXAttn</strong>（基于 FiLM 特征调制 + LoRA 风格适配）和 <strong>Attention Pooling</strong>（基于学习提取查询的注意力池化）。</li><li>提出轻量级 adapter-based 方法论：在冻结骨干网络上学习源特定的低开销反馈通路，能够独立评估每种反馈源而无需昂贵的端到端重训练。</li><li>系统实证研究了跨阶段反馈在 VLA 驾驶模型中的作用，揭示推理状态（Reasoning State）反馈是唯一能独立提升闭环驾驶性能的单一反馈源。</li><li>证明端到端反馈能够提升 VLA 自动驾驶性能，PRIME-Full 在 Bench2Drive 上达到 Think2Drive-trained VLA 中最高的 Driving Score。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础架构为 <strong>ORION</strong>（QT-Former 感知编码器 → LLM 推理 → 轨迹规划器），PRIME 在其上增加反馈路径。</li><li><strong>QT-Former Query Conditioning</strong>：在感知查询处理当前相机特征之前，先用情境记忆条件化查询（即查询初始化阶段注入反馈），使特征选择过程变得任务感知。</li><li><strong>Situational Memory</strong> 包含六种反馈源，按态势感知三个层次组织：</li></ul>
+<p> - SA1（场景感知）：QT-Former Latents（Q）、Latent Motion Predictions（M）</p>
+<p> - SA2（情境理解与导航意图）：Latent Reasoning Token（R）、Planning Command（P）</p>
+<p> - SA3（未来预测）：Predicted Ego-State Queries（S）、Predicted Ego Trajectory（T）</p>
+<ul><li><strong>FiLMXAttn</strong>：用于紧凑源（R、P、T），通过源特定跨注意力从记忆检索内容，再通过 FiLM 仿射变换调制查询。</li><li><strong>Attention Pooling</strong>：用于高基数源（Q、M、S），使用一组固定数量的 Extraction Queries 通过跨注意力将整个记忆缓冲压缩成紧凑表示。</li><li><strong>Feedback Integration</strong>：源表示经源嵌入增强、拼接后，查询通过跨注意力检索相关上下文，最终以可学习的门控残差连接（sigmoid 初始化为 0.1）注入。</li><li>训练策略采用 <strong>Alignment → E2E</strong> 顺序：先对齐 QT-Former 与反馈机制（冻结 LLM/Planner），再端到端联合优化全部组件。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评估基准：<strong>Bench2Drive</strong> 闭环基准（基于 <strong>CARLA</strong> 模拟器）</li><li>训练数据：<strong>Think2Drive</strong>（T2D）专家演示</li><li>基础模型：<strong>ORION</strong>，约 <strong>7.3B</strong> 参数</li><li>PRIME 完整六源情境记忆新增 <strong>29.7M</strong> 可训练参数，占模型总参数量 <strong>0.41%</strong></li><li>训练资源：实验采用三种训练模式（Adapter 8 epochs / Alignment 4 epochs / E2E 6 epochs），具体 GPU 配置在原文中未明确提及</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>主要指标：<strong>Driving Score（DS）</strong>、<strong>Success Rate（SR）</strong>，辅助指标为 NDS（感知质量）和 mL2（轨迹误差）</li><li><strong>PRIME-Full</strong>（Alignment→E2E）达到 DS <strong>82.47</strong>（+4.73 vs ORION）、SR <strong>60.00%</strong>（+5.38 个百分点），为 Think2Drive-trained VLA 中最高 DS</li><li>训练策略消融：仅 Alignment 或仅 E2E 均低于 ORION 基线（DS 59.74 / 70.96），证明先对齐后端到端的顺序至关重要</li><li>单源 adapter 消融：仅 Reasoning Token（R）反馈提升闭环表现（DS 77.74→79.31），而感知（Q）和预测（S）反馈虽提升 NDS 却显著降低 DS/SR</li><li>跨阶段多样性消融：仅感知侧反馈（PRIME-SA1）导致闭环表现大幅下降（DS 64.18），完整跨阶段反馈（PRIME-Full）最佳（DS 82.47），说明高层次情境信息对感知引导至关重要</li><li>与 SOTA 对比：PRIME-Full 在合并（Merge）场景表现最好（SR 47.50%），而 GeRo 在超车、紧急制动和交通标志场景更强，两种方法分别在感知前端和规划端改进，具有互补潜力</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2609.21983/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SkelWAM: A Skeleton-Guided World-Action Model for Zero-Shot Cross-Embodiment Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

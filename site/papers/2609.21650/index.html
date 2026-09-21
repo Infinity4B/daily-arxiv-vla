@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SynthDemo-RL: Breaking the Zero-Reward Barrier in VLA Adaptation with LLM-Guided Synthetic Demonstrations - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文提出 SynthDemo-RL 框架，解决 VLA（视觉-语言-动作）模型在新任务适应过程中面临&quot;零奖励&quot;屏障的问题——当稀疏二元奖励下成功轨迹极少被采样时，RL 探索难以发现有效行为。 框架采用教师-学生结构：自动化教师利用模拟器的特权状态（privileged state）生成成功操作轨迹，通过 SFT 蒸馏到 VLA 学生模型，再用 PPO 以二元任务成功奖励进行强化学习精调。 论文在 LIBERO-PRO 基准上验证方法：直接 PPO 仅能解救 27 个零成功率任务中的 10 个，而 SynthDemo-RL 在无新人工演示的情况下全部解救，并在 Position/Task 轴上分别达到 97.8%/97.1% 的平均成功率。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.21650">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.21650.webp" alt="SynthDemo-RL: Breaking the Zero-Reward Barrier in VLA Adaptation with LLM-Guided Synthetic Demonstrations" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文提出 SynthDemo-RL 框架，解决 VLA（视觉-语言-动作）模型在新任务适应过程中面临&quot;零奖励&quot;屏障的问题——当稀疏二元奖励下成功轨迹极少被采样时，RL 探索难以发现有效行为。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">SynthDemo-RL: Breaking the Zero-Reward Barrier in VLA Adaptation with LLM-Guided Synthetic Demonstrations</h1>
+            <div class="detail-meta">2026-09-18 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.21650" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.21650" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.21650</span></div>
+            <p class="detail-summary">本文提出 SynthDemo-RL 框架，解决 VLA（视觉-语言-动作）模型在新任务适应过程中面临&quot;零奖励&quot;屏障的问题——当稀疏二元奖励下成功轨迹极少被采样时，RL 探索难以发现有效行为。 框架采用教师-学生结构：自动化教师利用模拟器的特权状态（privileged state）生成成功操作轨迹，通过 SFT 蒸馏到 VLA 学生模型，再用 PPO 以二元任务成功奖励进行强化学习精调。 论文在 LIBERO-PRO 基准上验证方法：直接 PPO 仅能解救 27 个零成功率任务中的 10 个，而 SynthDemo-RL 在无新人工演示的情况下全部解救，并在 Position/Task 轴上分别达到 97.8%/97.1% 的平均成功率。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Fujitsu Limited（富士通株式会社），Kawasaki, Japan</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文提出 SynthDemo-RL 框架，解决 VLA（视觉-语言-动作）模型在新任务适应过程中面临&quot;零奖励&quot;屏障的问题——当稀疏二元奖励下成功轨迹极少被采样时，RL 探索难以发现有效行为。</p>
+  <ul class="reading-intro-points"><li>本文提出 SynthDemo-RL 框架，解决 VLA（视觉-语言-动作）模型在新任务适应过程中面临&quot;零奖励&quot;屏障的问题——当稀疏二元奖励下成功轨迹极少被采样时，RL 探索难以发现有效行为。</li><li>框架采用教师-学生结构：自动化教师利用模拟器的特权状态（privileged state）生成成功操作轨迹，通过 SFT 蒸馏到 VLA 学生模型，再用 PPO 以二元任务成功奖励进行强化学习精调。</li><li>论文在 LIBERO-PRO 基准上验证方法：直接 PPO 仅能解救 27 个零成功率任务中的 10 个，而 SynthDemo-RL 在无新人工演示的情况下全部解救，并在 Position/Task 轴上分别达到 97.8%/97.1% 的平均成功率。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Fujitsu Limited</strong>（富士通株式会社），Kawasaki, Japan</li><li><strong>The Institute of Statistical Mathematics</strong>（统计数理研究所），Tokyo, Japan</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文提出 <strong>SynthDemo-RL</strong> 框架，解决 VLA（视觉-语言-动作）模型在新任务适应过程中面临"零奖励"屏障的问题——当稀疏二元奖励下成功轨迹极少被采样时，RL 探索难以发现有效行为。</li><li>框架采用教师-学生结构：自动化教师利用模拟器的特权状态（privileged state）生成成功操作轨迹，通过 SFT 蒸馏到 VLA 学生模型，再用 PPO 以二元任务成功奖励进行强化学习精调。</li><li>论文在 LIBERO-PRO 基准上验证方法：直接 PPO 仅能解救 27 个零成功率任务中的 10 个，而 <strong>SynthDemo-RL</strong> 在无新人工演示的情况下全部解救，并在 Position/Task 轴上分别达到 97.8%/97.1% 的平均成功率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>SynthDemo-RL</strong> 三阶段流水线：自动化教师生成轨迹 + SFT 蒸馏 + 稀疏奖励 PPO 精调，全程无需人工演示或任务特定训练。</li><li>提出 <strong>奖励覆盖率（reward coverage）</strong> 指标，即观察到的评估协议下至少有一次成功（非零奖励）任务的比例，作为平均成功率之外的关键诊断指标——平均成功率可能掩盖大量零奖励任务。</li><li>系统验证合成演示在 VLA 规模上可初始化稀疏奖励 RL：SFT 使 57 个扰动任务全部获得非零成功率（3 个训练种子均如此），RL 将弱初始化策略提至极高最终成功率。</li><li>分析合成 SFT 的局限性：合成轨迹在运动统计量和流匹配损失上与人类演示存在系统性差异，即使减少测量差异后仍低于人类演示 SFT 性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>自动化教师管道</strong>：输入语言指令 + 模拟器特权状态（物体真实位姿、度量深度、实例分割、相机参数、末端执行器位姿），通过预训练抓取生成器 <strong>GraspGen</strong> 提出 6-DoF 抓取位姿，脚本化控制器执行航点序列（接近-抓取-抬起-放置等操作原语），记录观察-动作轨迹供后续蒸馏。</li><li><strong>LLM 引导调优</strong>：失败后 <strong>GPT-5.5</strong> 检查失败日志和图像，修订航点序列及执行参数（接触深度、接触角、抬起/侧向退缩、放置偏移），利用成功库（跨任务迁移配置）和失败库（避免重复死路），优先保证覆盖率而非最优性。</li><li><strong>离线策略蒸馏</strong>：学生学习模型为 <strong>π₀.₅</strong>（flow-matching VLA），从第三视角+wrist 图像、本体感状态和指令预测连续动作块；每个套件训练一个策略（30,000 步，batch size 32，峰值学习率 5×10⁻⁵，8 块 MI300X GPU）。</li><li><strong>RL 精调</strong>：通过 <strong>RLinf</strong> 框架应用 PPO，探索噪声 0.5、3 步去噪、5 动作块、GAE λ=0.95、γ=0.99，无 KL 惩罚或熵奖励；使用 <strong>Flow-SDE</strong> 使去噪路径具备封闭形式密度以计算 PPO 比率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO</strong> 基准：<strong>LIBERO-Spatial</strong>（10 任务）、<strong>LIBERO-Object</strong>（10 任务）、<strong>LIBERO-Goal</strong>（9 任务，排除 Task 3），单臂 Franka Panda / MuJoCo。</li><li><strong>LIBERO-PRO</strong> 基准：Position 轴（29 任务）与 Task 轴（28 任务）扰动任务，无对应演示数据。</li><li><strong>RoboTwin 2.0</strong>：SAPIEN 双臂基准的单臂 <strong>Agilex Piper</strong> 配置 4 个任务，作为跨模拟器、跨本体测试。</li><li>训练资源：8 块 <strong>AMD MI300X</strong> GPU 用于 SFT 训练；RL 阶段使用 64 并行环境，每次迭代 8 轮 rollout，共 240 个块步。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>标准 LIBERO</strong>：<strong>SynthDemo-RL</strong> 以零人工演示达到 96.0% 平均成功率，仅比人类演示 SFT 的 97.7% 低 1.7 个点；RL 比 SFT 提高约 40 个点，并超越教师单次尝试成功率（Goal 轴 93.3% vs 43.0%）。</li><li><strong>LIBERO-PRO 扰动适应</strong>：直接 PPO 在匹配 RL 算力下救出 27 个零奖励任务中的 10 个，留下 17 个仍为 0%；<strong>SynthDemo-RL</strong> 使用每任务 50 条合成轨迹，无新人工演示，覆盖全部 57 个任务（29/29 和 28/28），Position 轴 97.8%、Task 轴 97.1%。</li><li><strong>覆盖率分析</strong>：零成功初始化的任务（均为控制组）最终平均为 26.0%，而有至少一次观测成功的初始化平均达到 91.7%（点二列相关 r=0.71）；即使覆盖率阈值提高到 50 次试验中需至少 5 次成功，SynthDemo-SFT 覆盖 53/57 任务、SynthDemo-RL 覆盖全部 57 个。</li><li><strong>RoboTwin 2.0</strong>：SynthDemo-RL 将 SFT 平均 55.5% 提升至 74.3%，接近 SimpleVLA-RL 的 72.1%（后者使用 1000 条专家演示/任务），且零人工演示。</li><li><strong>真机验证</strong>：在 MuJoCo 孪生环境中训练的策略，通过开环执行在 4 种条件下均成功 20/20 次；对比之下，人类演示参考策略（闭环运行）仅在 stack 条件达到 50%，无演示条件下为 0%。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.21659/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Outcome-Conditioned End-Effector Geometry Across Vision-Language-Action Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.21514/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Skel-WAM: A Hand-Skeleton-Conditioned World Action Model for Human-to-Robot Manipulation Transfer</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
