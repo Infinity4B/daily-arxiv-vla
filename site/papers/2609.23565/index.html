@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MaskVLA: Visual Masking Against Trajectory Overfitting of Vision-Language-Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文指出当前视觉-语言-动作模型（VLA）在有限数据上微调时存在严重的轨迹过拟合问题，过度依赖主摄像头视图而忽略多视角信息 提出 MaskVLA，一种在微调阶段随机掩蔽主摄像头输入的简单策略，引导模型主动学习更均衡的多视图视觉表示 旨在提升模型在复杂操纵任务中的鲁棒性、泛化能力以及精确动作生成能力" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.23565">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">MaskVLA: Visual Masking Against Trajectory Overfitting of Vision-Language-Action Model</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">MaskVLA: Visual Masking Against Trajectory Overfitting of Vision-Language-Action Model</h1>
+            <div class="detail-meta">2026-09-20 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.23565" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.23565" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.23565</span></div>
+            <p class="detail-summary">论文指出当前视觉-语言-动作模型（VLA）在有限数据上微调时存在严重的轨迹过拟合问题，过度依赖主摄像头视图而忽略多视角信息 提出 MaskVLA，一种在微调阶段随机掩蔽主摄像头输入的简单策略，引导模型主动学习更均衡的多视图视觉表示 旨在提升模型在复杂操纵任务中的鲁棒性、泛化能力以及精确动作生成能力</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">FNii-Shenzhen, The Chinese University of Hong Kong…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文指出当前视觉-语言-动作模型（VLA）在有限数据上微调时存在严重的轨迹过拟合问题，过度依赖主摄像头视图而忽略多视角信息</p>
+  <ul class="reading-intro-points"><li>论文指出当前视觉-语言-动作模型（VLA）在有限数据上微调时存在严重的轨迹过拟合问题，过度依赖主摄像头视图而忽略多视角信息</li><li>提出 MaskVLA，一种在微调阶段随机掩蔽主摄像头输入的简单策略，引导模型主动学习更均衡的多视图视觉表示</li><li>旨在提升模型在复杂操纵任务中的鲁棒性、泛化能力以及精确动作生成能力</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>FNii-Shenzhen, The Chinese University of Hong Kong, Shenzhen, China</strong>（香港中文大学深圳研究院）</li><li><strong>School of Science and Engineering, The Chinese University of Hong Kong, Shenzhen, China</strong></li><li><strong>Ising AI</strong></li><li><strong>University of Glasgow</strong></li><li><strong>School of Automation, Southeast University</strong>（东南大学自动化学院）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文指出当前视觉-语言-动作模型（VLA）在有限数据上微调时存在严重的<strong>轨迹过拟合</strong>问题，过度依赖主摄像头视图而忽略多视角信息</li><li>提出 <strong>MaskVLA</strong>，一种在微调阶段随机掩蔽主摄像头输入的简单策略，引导模型主动学习更均衡的多视图视觉表示</li><li>旨在提升模型在复杂操纵任务中的鲁棒性、泛化能力以及精确动作生成能力</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>通过 Grad-CAM 可视化首次明确揭露 VLA 微调中主视图过拟合的现象，验证了模型对纹理等表面统计特征的记忆</li><li>提出即插即用的 <strong>MaskVLA</strong> 微调方法，仅在训练时随机掩蔽主视图，无需改动模型架构</li><li>在模拟基准 <strong>RoboTwin 2.0</strong> 上，MaskVLA 相较 <strong>π0</strong> 和 <strong>OpenVLA-OFT</strong> 平均成功率分别提升 23.2% 和 16.8%</li><li>在真实 <strong>ALOHA</strong> 双机臂机器人的四项任务中验证了方法的有效性，尤其提升了长序列任务的表现</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于 <strong>OpenVLA-OFT</strong> 多视图 VLA 框架，输入包含语言指令、本体感受状态（14 维关节角）及主摄像头、左右腕部摄像头图像</li><li>在训练时，对主摄像头图像以概率 ρ（推荐 10%）进行<strong>完全零值掩蔽</strong>，腕部摄像头保持完整，迫使模型学习利用腕部视图信息</li><li>推理时恢复完整多视图输入，模型利用训练获得的平衡多视图特征预测动作序列</li><li>创新点在于利用随机掩蔽作为正则化手段，有效缓解预训练（单视图）与微调（多视图）之间的领域偏差，与标准数据增强互补</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>RoboTwin 2.0</strong>，包含四个双机臂任务，每个任务 50 条干净演示轨迹用于训练；评估使用 easy（纯白背景）和 hard（随机纹理、光照）两种设定</li><li>真实数据集：基于 <strong>Airbot Mobile ALOHA</strong> 平台采集，每个任务 50 条轨迹</li><li>模型规模：基于 <strong>OpenVLA-OFT</strong> 的预训练权重进行微调，未详述参数量</li><li>训练资源：2 块 <strong>NVIDIA A100</strong> GPU（每 GPU batch size 4），每个任务微调 30,000 步（约 12 小时）；评估使用 A100 或 RTX 3090</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估基准：<strong>RoboTwin 2.0</strong> 的四个操作任务（Adjust bottle, Open laptop, Put object cabinet, Stack bowls），以及真实世界的四个任务（Feed carrot, Adjust cups, Place orange, Stack bowls）</li><li>主要评估指标：任务完成成功率</li><li>关键实验结果：</li></ul>
+<p> - 在 RoboTwin hard 模式下，MaskVLA（ρ=10%）平均成功率 <strong>75.0%</strong>，相较 OpenVLA-OFT（55.0%）提升 20.0%，相较 π0（36.0%）提升显著</p>
+<p> - 在最具挑战的 Stack bowls hard 任务中，MaskVLA 达到 <strong>66.0%</strong>，而 OpenVLA-OFT 仅为 6.0%</p>
+<p> - 真实世界实验中，MaskVLA 在 Feed carrot 和 Place orange 任务上均取得 <strong>85.0%</strong> 成功率，在所有任务上均优于 OpenVLA-OFT</p>
+<p> - 消融实验确认<strong>完整掩蔽主视图（MaskVLA-main-10%）</strong>效果最佳，优于 patch 级掩蔽或随机摄像头掩蔽</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.23578/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">AR-WAM: A Visual-Conditioned Agent-Ready World Action Model for Robotic Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.23431/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HOIBlender: Blending Lightweight Detection with Vision-Language Priors for Efficient Human-Object Interaction Detection</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
