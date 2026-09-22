@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beyond Appearance Shifts: Task-Semantic Action Calibration for VLA Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型在具身操作中的可靠性缺口展开研究：当前VLA在任务语义保留变化（如光照、风格、杂乱、指令改写等外观/表述变化，任务语义不变）下会出现不必要的动作漂移，在语义破坏变化（如目标对象交换、约束改变等任务语义变化）下无法做出明确的行为区分，仍执行原有轨迹 提出BAS-VLA任务语义动作校准框架，该框架基于冻结的基座VLA构建，无需重训基座策略，仅通过轻量级校准层对动作输出进行校准 研究目标是通过不对称的动作校准机制，使VLA在任务语义不变时保持行为稳定，在任务语义改变时产生明确的行为分离，提升VLA的可靠性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.23650">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.23650.webp" alt="Beyond Appearance Shifts: Task-Semantic Action Calibration for VLA Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对视觉-语言-动作（VLA）模型在具身操作中的可靠性缺口展开研究：当前VLA在任务语义保留变化（如光照、风格、杂乱、指令改写等外观/表述变化，任务语义不变）下会出现不必要的动作漂移，在语义破坏变化（如目标对象交换、约束改变等任务语义变化）下无法做出明确的行为区分，仍执行原有轨迹</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Beyond Appearance Shifts: Task-Semantic Action Calibration for VLA Models</h1>
+            <div class="detail-meta">2026-09-20 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.23650" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.23650" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.23650</span></div>
+            <p class="detail-summary">针对视觉-语言-动作（VLA）模型在具身操作中的可靠性缺口展开研究：当前VLA在任务语义保留变化（如光照、风格、杂乱、指令改写等外观/表述变化，任务语义不变）下会出现不必要的动作漂移，在语义破坏变化（如目标对象交换、约束改变等任务语义变化）下无法做出明确的行为区分，仍执行原有轨迹 提出BAS-VLA任务语义动作校准框架，该框架基于冻结的基座VLA构建，无需重训基座策略，仅通过轻量级校准层对动作输出进行校准 研究目标是通过不对称的动作校准机制，使VLA在任务语义不变时保持行为稳定，在任务语义改变时产生明确的行为分离，提升VLA的可靠性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">香港科技大学（广州）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对视觉-语言-动作（VLA）模型在具身操作中的可靠性缺口展开研究：当前VLA在任务语义保留变化（如光照、风格、杂乱、指令改写等外观/表述变化，任务语义不变）下会出现不必要的动作漂移，在语义破坏变化（如目标对象交换、约束改变等任务语义变化）下无法做出明确的行为区分，仍执行原有轨迹</p>
+  <ul class="reading-intro-points"><li>针对视觉-语言-动作（VLA）模型在具身操作中的可靠性缺口展开研究：当前VLA在任务语义保留变化（如光照、风格、杂乱、指令改写等外观/表述变化，任务语义不变）下会出现不必要的动作漂移，在语义破坏变化（如目标对象交换、约束改变等任务语义变化）下无法做出明确的行为区分，仍执行原有轨迹</li><li>提出BAS-VLA任务语义动作校准框架，该框架基于冻结的基座VLA构建，无需重训基座策略，仅通过轻量级校准层对动作输出进行校准</li><li>研究目标是通过不对称的动作校准机制，使VLA在任务语义不变时保持行为稳定，在任务语义改变时产生明确的行为分离，提升VLA的可靠性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>香港科技大学（广州）</li><li>伯恩茅斯大学国家计算机动画中心</li><li>上海交通大学</li><li>宁波东方理工高等研究院</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对视觉-语言-动作（VLA）模型在具身操作中的可靠性缺口展开研究：当前VLA在<strong>任务语义保留变化</strong>（如光照、风格、杂乱、指令改写等外观/表述变化，任务语义不变）下会出现不必要的动作漂移，在<strong>语义破坏变化</strong>（如目标对象交换、约束改变等任务语义变化）下无法做出明确的行为区分，仍执行原有轨迹</li><li>提出<strong>BAS-VLA</strong>任务语义动作校准框架，该框架基于冻结的基座VLA构建，无需重训基座策略，仅通过轻量级校准层对动作输出进行校准</li><li>研究目标是通过不对称的动作校准机制，使VLA在任务语义不变时保持行为稳定，在任务语义改变时产生明确的行为分离，提升VLA的可靠性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次明确VLA模型在语义保留与语义破坏两类干预下的互补失败模式，将VLA的可靠性问题正式定义为<strong>任务语义动作校准</strong>问题，为后续研究提供了清晰的问题边界</li><li>提出以<strong>破坏为中心的动作校准核心</strong>作为默认部署路径，通过匹配的指令三元组（清洁、语义保留控制、语义破坏）设计对比训练目标，实现语义保留变体的动作收缩与语义破坏变体的动作分离</li><li>设计<strong>证据门控保留辅助模块</strong>，该模块仅在检测到强 nuisance 变异且任务语义保持一致时激活，通过弱融合方式对基座动作做有界修正，抑制外观变化导致的不必要动作漂移，避免过度干预</li><li>在仿真与真实机器人多组基准上验证方法有效性，在不损失清洁任务成功率的前提下，显著提升风格保留任务的鲁棒性，同时实现对 altered 任务的有效 stale-task 抑制</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>BAS-VLA作为轻量级动作校准层部署在冻结基座VLA的动作输出端，完全不修改基座模型参数，保持基座策略的通用性的同时实现任务语义相关的动作校准，部署成本极低</li><li><strong>破坏为中心校准核心</strong>为默认启用组件：以冻结基座输出的清洁动作为参考，训练一个小型残差校准器，通过三项联合损失实现校准目标：① 约束损失保持清洁/语义保留指令的输出动作接近清洁参考动作；② 一致性损失保证清洁与语义保留指令的输出动作彼此接近；③ 带边际的分离损失强制语义破坏指令的输出动作与清洁动作的距离，显著大于语义保留指令与清洁动作的距离，从而在动作空间实现语义破坏的明确分离</li><li><strong>证据门控保留辅助</strong>为选择性激活组件：首先通过基于文本条件 grounding 与SAM 2掩码细化的确定性外观规范化映射，将原始观测转换为抑制低阶外观 cues（如色偏、光照、纹理）但保留任务相关几何信息的探针观测；复用基座VLA的冻结视觉特征计算视觉漂移、语义一致性、动作不一致性三类门控信号，结合时间阶段权重生成0-1区间的门控值，仅当门控值大于0时，以弱融合方式将基座动作与探针路径输出的动作做加权融合，实现有界的稳定修正</li><li>方法核心创新点包括：针对两类干预的不对称校准目标设计、选择性激活的低开销辅助机制、无需重训基座的高部署友好性，可适配不同的VLA基座</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的仿真基准与任务集：<strong>OpenPI-pi0.5</strong> 基准、<strong>LIBERO-Object</strong>（Milk-Swap目标对象交换任务）、<strong>LIBERO-Spatial</strong>、Bowl-on-Ramekin风格迁移任务集，同时包含真实机器人部署验证场景</li><li>基座模型：采用<strong>OpenVLA-OFT</strong>作为基座VLA，基于其官方微调 recipe 构建</li><li>辅助工具：探针模块用到<strong>SAM 2（Segment Anything Model 2）</strong>用于掩码细化，外观规范化映射基于文本条件 grounding 模型实现</li><li>训练资源：论文未明确标注具体GPU/TPU配置，训练与评估覆盖仿真环境与真实机器人部署场景</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：覆盖OpenPI、LIBERO系列仿真基准，以及真实机器人操作场景</li><li>主要评估指标：任务成功率（分为清洁成功率、控制成功率、破坏条件下的清洁成功率，其中破坏条件下的清洁成功率越低代表 stale-task 抑制能力越强）、风格迁移任务成功率提升幅度（Δ_style）、控制-破坏任务成功率 gap</li><li>关键实验结果：</li></ul>
+<p> - 在OpenPI-pi0.5 / LIBERO-Object Milk-Swap基准上，BAS-VLA保持98.0%的清洁任务成功率、97.5%的控制任务成功率，同时将语义破坏条件下的清洁任务成功率降至0.0%，实现了极强的 stale-task 抑制和任务语义分离</p>
+<p> - 在Bowl-on-Ramekin风格迁移任务上，BAS-VLA将风格变化下的任务成功率从基线的42.0%提升至70.0%，同时清洁任务成功率不降反升（97.5% vs 基线97.0%），验证了保留辅助模块的有效性</p>
+<p> - 消融实验验证了破坏为中心核心的独立有效性，默认仅启用破坏核心的部署模式在语义破坏任务上表现最优，证据门控保留辅助仅在需要时激活，不会带来不必要的性能损失</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.23863/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Grounded Action Model: 3D Grounding as a Foundation for Robotics</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.23614/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">CompVLA: A Variable Compliance Vision-Language-Action Model for Contact-rich Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

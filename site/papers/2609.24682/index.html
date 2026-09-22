@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Think Like a World Model, Act Like a VLA: Distilling World-Model Representations into Compact Robot Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对现有视觉-语言-动作（VLA）模型未显式建模世界动态、鲁棒性依赖数据覆盖的问题，以及世界模型推理成本过高无法直接部署的问题，提出将大世界模型的内在物理感知表征蒸馏到轻量VLA策略中，无需修改部署结构即可提升策略性能 核心创新是仅通过一个特征对齐损失项，利用冻结世界模型离线缓存的特征监督学生模型学习，训练和部署阶段均不引入额外计算开销 验证了该方案在仿真基准和真实机器人（单臂、双臂）任务上的有效性，实现了小规模策略逼近大规模策略的性能" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.24682">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.24682.webp" alt="Think Like a World Model, Act Like a VLA: Distilling World-Model Representations into Compact Robot Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对现有视觉-语言-动作（VLA）模型未显式建模世界动态、鲁棒性依赖数据覆盖的问题，以及世界模型推理成本过高无法直接部署的问题，提出将大世界模型的内在物理感知表征蒸馏到轻量VLA策略中，无需修改部署结构即可提升策略性能</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Think Like a World Model, Act Like a VLA: Distilling World-Model Representations into Compact Robot Policies</h1>
+            <div class="detail-meta">2026-09-21 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.24682" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.24682" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.24682</span></div>
+            <p class="detail-summary">针对现有视觉-语言-动作（VLA）模型未显式建模世界动态、鲁棒性依赖数据覆盖的问题，以及世界模型推理成本过高无法直接部署的问题，提出将大世界模型的内在物理感知表征蒸馏到轻量VLA策略中，无需修改部署结构即可提升策略性能 核心创新是仅通过一个特征对齐损失项，利用冻结世界模型离线缓存的特征监督学生模型学习，训练和部署阶段均不引入额外计算开销 验证了该方案在仿真基准和真实机器人（单臂、双臂）任务上的有效性，实现了小规模策略逼近大规模策略的性能</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">威斯康星大学麦迪逊分校（University of Wisconsin–Madison, USA）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对现有视觉-语言-动作（VLA）模型未显式建模世界动态、鲁棒性依赖数据覆盖的问题，以及世界模型推理成本过高无法直接部署的问题，提出将大世界模型的内在物理感知表征蒸馏到轻量VLA策略中，无需修改部署结构即可提升策略性能</p>
+  <ul class="reading-intro-points"><li>针对现有视觉-语言-动作（VLA）模型未显式建模世界动态、鲁棒性依赖数据覆盖的问题，以及世界模型推理成本过高无法直接部署的问题，提出将大世界模型的内在物理感知表征蒸馏到轻量VLA策略中，无需修改部署结构即可提升策略性能</li><li>核心创新是仅通过一个特征对齐损失项，利用冻结世界模型离线缓存的特征监督学生模型学习，训练和部署阶段均不引入额外计算开销</li><li>验证了该方案在仿真基准和真实机器人（单臂、双臂）任务上的有效性，实现了小规模策略逼近大规模策略的性能</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>威斯康星大学麦迪逊分校（University of Wisconsin–Madison, USA）</strong></li><li><strong>伊利诺伊大学厄巴纳-香槟分校（University of Illinois Urbana-Champaign, USA）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对现有视觉-语言-动作（VLA）模型未显式建模世界动态、鲁棒性依赖数据覆盖的问题，以及世界模型推理成本过高无法直接部署的问题，提出将大世界模型的内在物理感知表征蒸馏到轻量VLA策略中，无需修改部署结构即可提升策略性能</li><li>核心创新是仅通过一个特征对齐损失项，利用冻结世界模型离线缓存的特征监督学生模型学习，训练和部署阶段均不引入额外计算开销</li><li>验证了该方案在仿真基准和真实机器人（单臂、双臂）任务上的有效性，实现了小规模策略逼近大规模策略的性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>零推理成本的世界模型表征蒸馏方案</strong>：仅添加一个余弦特征对齐损失项，训练时无需加载教师模型，部署阶段丢弃对齐投影层，策略架构与原始 undistilled 基线完全一致，无额外推理开销</li><li><strong>轻量策略达到接近大规模模型的性能</strong>：0.8B 参数的蒸馏策略在 LIBERO 仿真基准上达到 97.9% 的平均成功率，在 RoboCasa-GR1 人形机器人仿真任务和真实单臂、双臂机器人操作任务上均取得稳定提升，性能接近数倍规模的政策</li><li><strong>方案设计鲁棒性强</strong>：消融实验证明增益不随学生规模、视觉骨架、对齐层位置、教师模型的变化而消失，说明转移的是通用的物理表征先验，而非特定网络间的脆弱对齐</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>学生模型采用 <strong>QwenGR00T</strong> 架构：基于 Qwen3-VL 系列的视觉-语言骨架，搭配 GR00T 风格的流匹配动作头，基础训练目标为流匹配动作回归损失，仅使用真实演示动作作为监督信号</li><li>新增世界模型表征对齐损失：将学生模型各视角的图像 token 特征按视角均值池化后，通过两层 MLP 投影层映射到教师特征维度，与离线缓存的世界模型对应视角特征计算余弦相似度损失（对教师特征使用 stop-gradient），损失权重固定为 0.5，与基础动作损失联合优化</li><li>关键创新点：1. 教师模型提前离线推理一次训练帧的特征并缓存到磁盘，训练全程无需加载教师权重，师生可处于不同环境，缓存可被多个学生复用；2. 仅要求特征方向对齐而非精确匹配，无需师生共享特征空间或维度，投影层训练结束后丢弃，部署阶段与原始学生模型完全一致；3. 对齐层可附着在学生模型任意隐藏层，最终选择最后一层以避免额外激活存储开销，部署后蒸馏策略在 RTX 5090 上推理延迟为 32ms，显存占用 1.86GB，与未蒸馏基线完全一致</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>LIBERO</strong>（包含 spatial、object、goal、libero-10 四个套件，共 ~273k 演示步，双相机视角）；<strong>RoboCasa-GR1</strong>（24 个 GR1 人形机器人操作任务，共 1000 个演示/环境，总 6.02M 步，单 ego 相机，29 维双臂动作）</li><li>真实机器人平台：AgileX Nero 7 自由度单臂、<strong>TRIP-Bag</strong> 7 自由度双臂平台</li><li>模型规模：学生模型主实验为 0.8B 参数的 Qwen3.5-VL 骨架 QwenGR00T，消融实验覆盖 1B InternVL、4B Qwen3-VL 的变体；教师模型主实验为 Cosmos3-Nano 的 8B 理解塔（总参数量 16B），消融实验使用 Fast-WAM（5B，基于 Wan2.2-TI2V-5B 视频扩散 Transformer）、V-JEPA2-AC（1B ViT-g/16 视频编码器 + 0.3B 动作条件预测头）；部署阶段蒸馏后 0.8B 策略在 RTX 5090 上的推理延迟为 32ms，显存占用 1.86GB，与未蒸馏基线完全一致</li><li>训练资源：4 张 A100-80GB GPU，采用 DeepSpeed ZeRO-2 并行策略，有效批次大小为 256，使用余弦学习率调度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：仿真覆盖 LIBERO 四套件、RoboCasa-GR1 24 个环境，真实机器人覆盖单臂水果/鸡蛋抓放、双臂水果传递共 3 类任务；所有仿真结果均通过 2 个评估种子 × 2 款 GPU（A100-80GB、RTX 5090）共 4 次评估取均值并报告标准差，消除仿真随机性和硬件差异带来的评估波动</li><li>主要评估指标：任务成功率（SR），LIBERO 报告四套件平均成功率，RoboCasa-GR1 报告 24 环境的平均成功率，真实机器人报告 30 次试验的成功率</li><li>关键实验结果：</li></ul>
+<p> - LIBERO 基准：蒸馏后 0.8B 策略平均成功率达到 <strong>97.9% ± 0.5</strong>，比未蒸馏同规模学生高 2.6 个百分点，优于大部分 4B 以下规模的 VLA 和世界模型策略</p>
+<p> - RoboCasa-GR1 基准：蒸馏后 0.8B 策略成功率从 48.2% 提升至 <strong>50.5%</strong>，接近 4B 规模 QwenGR00T 的 54.8%，优于 QwenFAST、QwenPI 等多个 4B 级基线</p>
+<p> - 真实机器人任务：单臂水果抓放任务达到 93.3%（28/30），匹配 4B π 类策略性能，比未蒸馏学生多成功 3 次；鸡蛋抓放任务从 46.7% 提升至 60.0%，缩小了与 4B 策略 70.0% 的差距；双臂水果传递任务从 40.0% 提升至 46.7%，接近 4B 策略的 53.3%</p>
+<p> - 消融实验：增益在学生规模（0.8B/1B/4B）、视觉骨架（Qwen/InternVL）、对齐层深度（1/3 到全层）、教师模型（Cosmos3-Nano/Fast-WAM/V-JEPA2-AC）变化时均稳定存在，证明方法是通用的表征蒸馏方案而非特定组合的脆弱对齐</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.24745/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Beyond Visual Quality: A Study of Test-Time Planning with World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.24525/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Bridge3D: Enabling Vision-Language-Action Models to See and Act in 3D</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

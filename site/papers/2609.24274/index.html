@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vla.simd: Efficient CPU Inference for Language-Conditioned Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="解决无专用GPU的机器人部署语言条件操作策略时的核心矛盾：既要满足控制器要求的高动作供给频率，又要保留语言指令驱动的目标选择能力，现有方案普遍存在推理延迟过高、缺乏语言条件或未充分考虑动作供给预算的问题 提出 vla.simd 通用CPU推理引擎，通过SIMD指令优化、计算重用和处理器特定调优，显著降低策略推理延迟 提出 IMPACT 轻量语言条件操作策略，在极低语言计算开销下实现语言指令驱动的操作任务，适配边缘CPU部署场景" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.24274">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.24274.webp" alt="vla.simd: Efficient CPU Inference for Language-Conditioned Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">解决无专用GPU的机器人部署语言条件操作策略时的核心矛盾：既要满足控制器要求的高动作供给频率，又要保留语言指令驱动的目标选择能力，现有方案普遍存在推理延迟过高、缺乏语言条件或未充分考虑动作供给预算的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">vla.simd: Efficient CPU Inference for Language-Conditioned Manipulation</h1>
+            <div class="detail-meta">2026-09-21 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.24274" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.24274" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.24274</span></div>
+            <p class="detail-summary">解决无专用GPU的机器人部署语言条件操作策略时的核心矛盾：既要满足控制器要求的高动作供给频率，又要保留语言指令驱动的目标选择能力，现有方案普遍存在推理延迟过高、缺乏语言条件或未充分考虑动作供给预算的问题 提出 vla.simd 通用CPU推理引擎，通过SIMD指令优化、计算重用和处理器特定调优，显著降低策略推理延迟 提出 IMPACT 轻量语言条件操作策略，在极低语言计算开销下实现语言指令驱动的操作任务，适配边缘CPU部署场景</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者主要隶属于 VinRobotics（越南），通讯作者 An T. Le 同时隶属于 VinUn…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">解决无专用GPU的机器人部署语言条件操作策略时的核心矛盾：既要满足控制器要求的高动作供给频率，又要保留语言指令驱动的目标选择能力，现有方案普遍存在推理延迟过高、缺乏语言条件或未充分考虑动作供给预算的问题</p>
+  <ul class="reading-intro-points"><li>解决无专用GPU的机器人部署语言条件操作策略时的核心矛盾：既要满足控制器要求的高动作供给频率，又要保留语言指令驱动的目标选择能力，现有方案普遍存在推理延迟过高、缺乏语言条件或未充分考虑动作供给预算的问题</li><li>提出 vla.simd 通用CPU推理引擎，通过SIMD指令优化、计算重用和处理器特定调优，显著降低策略推理延迟</li><li>提出 IMPACT 轻量语言条件操作策略，在极低语言计算开销下实现语言指令驱动的操作任务，适配边缘CPU部署场景</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者主要隶属于 <strong>VinRobotics（越南）</strong>，通讯作者 An T. Le 同时隶属于 <strong>VinUniversity 人工智能研究中心（越南）</strong> 及 <strong>达姆施塔特工业大学智能自主系统实验室（德国）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>解决无专用GPU的机器人部署语言条件操作策略时的核心矛盾：既要满足控制器要求的高动作供给频率，又要保留语言指令驱动的目标选择能力，现有方案普遍存在推理延迟过高、缺乏语言条件或未充分考虑动作供给预算的问题</li><li>提出 <strong>vla.simd</strong> 通用CPU推理引擎，通过SIMD指令优化、计算重用和处理器特定调优，显著降低策略推理延迟</li><li>提出 <strong>IMPACT</strong> 轻量语言条件操作策略，在极低语言计算开销下实现语言指令驱动的操作任务，适配边缘CPU部署场景</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>vla.simd</strong> CPU推理引擎：采用共享SIMD微内核（SMK）统一支持线性层、卷积、注意力投影，结合离线寄存器块自动选择、目标特定分块和W8A8量化，相比PyTorch编译参考实现获得约1.4倍中位加速，同时保持fp32数值精度</li><li>提出 <strong>IMPACT</strong> 语言条件操作策略：通过缓存冻结T5-small的文本表示、FiLM调制视觉特征实现语言条件，语言相关计算仅占单次查询总计算量的约2.6%，是唯一在树莓派5上以fp32满足30Hz动作供给预算的语言条件策略</li><li>建立动作供给预算量化分析框架：区分延迟执行和时间对齐执行两种模式，明确动作供给率与反馈频率的差异，为边缘设备部署操作策略的速度要求提供可量化的评估标准</li><li>完成6种策略、4款CPU、2种机器人本体的全面评估：验证CPU优化与动作供给预算的匹配性，同时评估热效应、数值保真度及真实机器人部署效果，GPU评估下IMPACT在LIBERO四个套件上平均成功率达76.4%</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>vla.simd 引擎</strong>：采用计算生命周期分离设计，权重按进程打包、指令相关张量按episode缓存、观测相关特征按查询计算；共享SIMD微内核适配Intel/AMD AVX2、ARM NEON及Apple Accelerate指令集，离线算法自动选择最优寄存器块，平衡寄存器限制、FMA延迟隐藏与内存负载吞吐；卷积通过im2col复用微内核，注意力采用单独内核处理QK^T和Softmax后SV运算，支持行块处理非对齐输出宽度；运行时支持W8A8对称量化，利用Arm dotprod或AVX-VNNI加速整数运算</li><li><strong>IMPACT 策略</strong>：视觉 backbone 为ImageNet预训练、BN折叠的ResNet-18；每episode仅需一次计算冻结T5-small的文本编码，缓存投影后的文本token和FiLM系数，每次查询仅需计算观测相关的视觉和状态特征；FiLM系数调制每个ResNet阶段的特征图；6层Transformer编码器+4层解码器配合50个可学习查询，单次输出50步动作块，训练采用CVAE框架（L1动作重建损失+KL散度损失），推理时 latent 设为0</li><li>核心创新：首次将共享SIMD微内核与操作策略的动作供给预算分析结合，提出跨算子的通用CPU推理优化方案；通过缓存语言特征将语言条件的计算开销压缩到总计算量的2.6%以下，不干扰实时推理；离线寄存器块选择算法自动适配不同CPU的ISA特性，无需人工调优</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>训练/评估数据集：30Hz频率的SO-101机器人操作数据集、<strong>LIBERO</strong> 多任务操作仿真数据集</li><li>模型规模：IMPACT单次查询策略参数量为60M，配套冻结的T5-small文本编码器参数量为35.3M（每episode缓存）；评估的其他策略包括34M参数的<strong>ACT</strong>、278M参数的<strong>Diffusion Policy（DP）</strong>、27M参数的<strong>Octo-Small</strong>、0.2B参数的<strong>TurboVLA</strong>、450M参数的<strong>SmolVLA</strong></li><li>硬件资源：CPU评估覆盖4款平台——<strong>Apple M4</strong>（4性能核+6能效核，NEON指令集，8线程）、<strong>Intel i9-14900HX</strong>（AVX2指令集，8性能核+16能效核，16线程）、<strong>AMD Ryzen 5 5500</strong>（AVX2指令集，6核12线程，12线程）、<strong>Raspberry Pi 5</strong>（Cortex-A76核心，NEON指令集，4核4线程）</li><li>真实机器人实验硬件：<strong>SO-101</strong> 机械臂、<strong>UR10e</strong> 机械臂配 <strong>Robotiq</strong> 夹爪</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：4款CPU平台的推理延迟与动作供给率测试、<strong>LIBERO</strong> 四个任务套件的仿真成功率评估、SO-101和UR10e的真实机器人操作实验</li><li>主要评估指标：中位查询延迟、动作供给率、动作供给预算满足情况（C1：有效动作供给率≥控制器频率fc；C2：时间对齐执行下延迟步数d满足2d≤可用动作窗口H，避免动作块耗尽）、LIBERO任务成功率、与PyTorch参考实现的数值保真度、90秒热 soak后的性能稳定性</li><li>关键实验结果：<strong>vla.simd</strong> 在4款CPU上对6种策略实现约1.4倍中位加速，完全保持fp32数值精度；树莓派5上<strong>IMPACT</strong> 经90秒热 soak后，fp32模式提供33.5 actions/s，int8模式达81.2 actions/s，是唯一满足30Hz动作供给预算的语言条件策略；GPU评估下IMPACT在LIBERO四个套件上平均成功率达76.4%，无需机器人预训练，指令shuffle测试验证其具备熟悉目标间的选择能力；真实机器人实验验证了IMPACT在SO-101、SmolVLA在UR10e上的CPU部署可行性</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.24350/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">LIBERO-VPro: Benchmarking Closed-Loop Visual Robustness of Robotic Foundation Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.24187/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">StenoVLA-3D: 3D-Aware Reasoning VLA for Navigation Through Gastrointestinal Stenoses</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

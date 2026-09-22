@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FoldQuantVLA: Native Low-Bit Quantization of Vision-Language-Action Models via Consistent Folding - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型推理延迟高、低比特量化易丢失机器人行为精度的问题，提出训练后量化框架FoldQuantVLA，无需重训练原始策略即可实现低比特部署 核心是通过一致性折叠机制，在激活标定、权重舍入、原生整数执行全流程保持统一的激活表示，解决多消费者共享激活的变换一致性问题 结合通道缩放、块哈达玛变换与动态每令牌量化，支持W4A4原生低比特执行，同时针对敏感投影层采用选择性INT8精度分配，平衡精度与延迟" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.24433">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.24433.webp" alt="FoldQuantVLA: Native Low-Bit Quantization of Vision-Language-Action Models via Consistent Folding" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对视觉-语言-动作（VLA）模型推理延迟高、低比特量化易丢失机器人行为精度的问题，提出训练后量化框架FoldQuantVLA，无需重训练原始策略即可实现低比特部署</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FoldQuantVLA: Native Low-Bit Quantization of Vision-Language-Action Models via Consistent Folding</h1>
+            <div class="detail-meta">2026-09-21 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.24433" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.24433" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.24433</span></div>
+            <p class="detail-summary">针对视觉-语言-动作（VLA）模型推理延迟高、低比特量化易丢失机器人行为精度的问题，提出训练后量化框架FoldQuantVLA，无需重训练原始策略即可实现低比特部署 核心是通过一致性折叠机制，在激活标定、权重舍入、原生整数执行全流程保持统一的激活表示，解决多消费者共享激活的变换一致性问题 结合通道缩放、块哈达玛变换与动态每令牌量化，支持W4A4原生低比特执行，同时针对敏感投影层采用选择性INT8精度分配，平衡精度与延迟</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">VinRobotics, Vietnam</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对视觉-语言-动作（VLA）模型推理延迟高、低比特量化易丢失机器人行为精度的问题，提出训练后量化框架FoldQuantVLA，无需重训练原始策略即可实现低比特部署</p>
+  <ul class="reading-intro-points"><li>针对视觉-语言-动作（VLA）模型推理延迟高、低比特量化易丢失机器人行为精度的问题，提出训练后量化框架FoldQuantVLA，无需重训练原始策略即可实现低比特部署</li><li>核心是通过一致性折叠机制，在激活标定、权重舍入、原生整数执行全流程保持统一的激活表示，解决多消费者共享激活的变换一致性问题</li><li>结合通道缩放、块哈达玛变换与动态每令牌量化，支持W4A4原生低比特执行，同时针对敏感投影层采用选择性INT8精度分配，平衡精度与延迟</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>VinRobotics, Vietnam</li><li>AICV Lab, EECS Department, University of Arkansas</li><li>School of Advanced Manufacturing and Robotics, Peking University, China</li><li>Center for AI Research, VinUniversity, Vietnam</li><li>Intelligent Autonomous Systems, TU Darmstadt, Germany</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对视觉-语言-动作（VLA）模型推理延迟高、低比特量化易丢失机器人行为精度的问题，提出训练后量化框架<strong>FoldQuantVLA</strong>，无需重训练原始策略即可实现低比特部署</li><li>核心是通过<strong>一致性折叠</strong>机制，在激活标定、权重舍入、原生整数执行全流程保持统一的激活表示，解决多消费者共享激活的变换一致性问题</li><li>结合通道缩放、块哈达玛变换与动态每令牌量化，支持W4A4原生低比特执行，同时针对敏感投影层采用选择性INT8精度分配，平衡精度与延迟</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>一致性折叠</strong>契约：为每个共享激活站点分配唯一的可逆变换，将变换逆矩阵统一折叠到所有消费该激活的权重中，保证标定、舍入、执行阶段的坐标一致性，避免多消费者变换不匹配带来的精度损失</li><li>提出面向VLA策略的W4A4量化方案：结合通道缩放、快速沃尔什-哈达玛变换（FWHT）与动态每令牌量化，无需时间步索引的缩放表，给出步长不变的归一化投影误差的理论条件</li><li>提出<strong>选择性INT8精度分配</strong>策略：将语言骨干的输出投影（o_proj）和动作专家的下投影（down_proj）保留为W8A8精度，可在所有评估checkpoint上提升保留动作保真度，将GR00T N1.7真实机器人任务成功率从80.0%提升至92.5%，额外延迟仅1ms</li><li>开发可部署的原生低比特执行引擎：基于自定义TensorRT插件，在Ada GPU和Jetson AGX Orin上实现语言骨干与迭代动作专家的W4A4投影原生整数执行，无需浮点数反量化中间步骤</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>核心方法为<strong>一致性折叠</strong>框架，分为离线标定与运行时执行两个阶段：离线阶段为每个共享激活站点固定可逆变换$T_v$，将其逆变换折叠到消费权重中得到折叠权重$\widetilde{W}$，使用GPTQ优化4bit权重舍入、RTN优化8bit权重舍入，同时标定每令牌激活缩放因子与裁剪比例，针对RMS归一化层优化增益吸收</li><li>运行时阶段先对输入激活施加变换$T_v$，再执行动态每令牌量化，随后通过整数GEMM完成计算，最终通过权重与激活的缩放因子 rescale 得到浮点结果</li><li>关键技术包括：块哈达玛变换（FWHT）用于激活旋转，通道缩放机制平衡激活异常值分布，针对VLA迭代去噪特性设计的步长不变量化方案，以及针对敏感投影层的选择性精度分配</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评估数据集：仿真任务使用<strong>LIBERO</strong>（4个任务套件，每套件10个任务）、<strong>SimplerEnv</strong>；真实机器人平台使用<strong>ALOHA</strong>、<strong>SO-101</strong></li><li>模型规模：评估<strong>GR00T N1.7</strong>、<strong>GR00T N1.6</strong>、<strong>GR00T N1.5</strong>三个版本，以及<strong>$\pi_{0.5}$</strong>模型；GR00T系列采用4步迭代去噪、长度16的动作块，$\pi_{0.5}$采用10步迭代去噪、长度10的动作块</li><li>部署资源：标定与保真度测试使用H100 MIG 3g.40gb、RTX 4070 Ti SUPER；桌面延迟测试使用RTX 4070 Ti SUPER（TensorRT 10.15）；边缘部署使用<strong>Jetson AGX Orin</strong>（TensorRT 10.3）；自定义TensorRT插件基于<strong>CUTLASS v3.6.0</strong>开发，W4A4路径采用m16n8k64 MMA形状，W8A8路径采用m16n8k32 MMA形状</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：LIBERO仿真共800 episodes（每任务20个初始状态，种子7，步数上限520）；真实机器人评估4个任务，每配置80次试验；保真度测试使用32个种子观测（H100平台）与32个保留轨迹观测（RTX 4070 Ti SUPER）</li><li>主要评估指标：仿真与真实机器人任务成功率、保留观测下的动作余弦相似度与最大坐标误差、端到端观测-动作推理延迟</li><li>关键实验结果：</li></ul>
+<p> 1. W4A4配置相比浮点TensorRT，在Jetson AGX Orin上实现1.20x-1.33x加速，桌面端RTX 4070 Ti SUPER上实现1.25x-1.52x加速</p>
+<p> 2. 选择性INT8配置将GR00T N1.7在真实机器人任务上的成功率从80.0%提升至92.5%，仅带来1ms的额外Orin延迟</p>
+<p> 3. LIBERO仿真中，FQ W4A4 + o/d INT8在GR00T N1.7上平均成功率达95.6%，仅比BF16参考低0.1个百分点，显著优于HoloQ-VLA、DuQuant等 prior W4A4方案；在$\pi_{0.5}$上成功率达97.8%，与 prior 最优方案持平</p>
+<p> 4. 桌面端W4A4配置在$\pi_{0.5}$上可实现2.22x的加速比</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.24525/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Bridge3D: Enabling Vision-Language-Action Models to See and Act in 3D</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.24411/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Zeva-Ego: Egocentric Mid-Training with In-Context Causal Learning for Robot Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
