@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HABILIS Brain 0: Geometry-Change Supervision for Vision-Language-Action and Residual Flow Recovery - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出几何变化视觉-语言-动作模型（GC-VLA）与几何条件残差流（GCRF），旨在解决现有VLA策略仅依赖当前帧几何监督、无法显式建模操作过程中几何变化的问题，目标是学习可跨机器人和第一人称视频预训练、与本体无关的视觉接口，后续再进行机器人特定动作对齐。 核心设计为四阶段渐进式训练流水线：先通过多视角未来-当前几何变化token预训练几何变化VLM（GC-VLM），再经解耦动作对齐、耦合VLA适配，最终用GCRF基于闭环反馈做选择性残差修正，推理时无需使用未来帧或离线目标编码器。 论文在LIBERO基准上验证方案效果，GC-VLA基座达到95.20%成功率，搭配GCRF后提升至99.55%。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.25558">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.25558.webp" alt="HABILIS Brain 0: Geometry-Change Supervision for Vision-Language-Action and Residual Flow Recovery" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出几何变化视觉-语言-动作模型（GC-VLA）与几何条件残差流（GCRF），旨在解决现有VLA策略仅依赖当前帧几何监督、无法显式建模操作过程中几何变化的问题，目标是学习可跨机器人和第一人称视频预训练、与本体无关的视觉接口，后续再进行机器人特定动作对齐。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">HABILIS Brain 0: Geometry-Change Supervision for Vision-Language-Action and Residual Flow Recovery</h1>
+            <div class="detail-meta">2026-09-22 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.25558" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.25558" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.25558</span></div>
+            <p class="detail-summary">论文提出几何变化视觉-语言-动作模型（GC-VLA）与几何条件残差流（GCRF），旨在解决现有VLA策略仅依赖当前帧几何监督、无法显式建模操作过程中几何变化的问题，目标是学习可跨机器人和第一人称视频预训练、与本体无关的视觉接口，后续再进行机器人特定动作对齐。 核心设计为四阶段渐进式训练流水线：先通过多视角未来-当前几何变化token预训练几何变化VLM（GC-VLM），再经解耦动作对齐、耦合VLA适配，最终用GCRF基于闭环反馈做选择性残差修正，推理时无需使用未来帧或离线目标编码器。 论文在LIBERO基准上验证方案效果，GC-VLA基座达到95.20%成功率，搭配GCRF后提升至99.55%。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者所属机构为Tommoro Robotics， Correspondence 邮箱为 resea…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出几何变化视觉-语言-动作模型（GC-VLA）与几何条件残差流（GCRF），旨在解决现有VLA策略仅依赖当前帧几何监督、无法显式建模操作过程中几何变化的问题，目标是学习可跨机器人和第一人称视频预训练、与本体无关的视觉接口，后续再进行机器人特定动作对齐。</p>
+  <ul class="reading-intro-points"><li>论文提出几何变化视觉-语言-动作模型（GC-VLA）与几何条件残差流（GCRF），旨在解决现有VLA策略仅依赖当前帧几何监督、无法显式建模操作过程中几何变化的问题，目标是学习可跨机器人和第一人称视频预训练、与本体无关的视觉接口，后续再进行机器人特定动作对齐。</li><li>核心设计为四阶段渐进式训练流水线：先通过多视角未来-当前几何变化token预训练几何变化VLM（GC-VLM），再经解耦动作对齐、耦合VLA适配，最终用GCRF基于闭环反馈做选择性残差修正，推理时无需使用未来帧或离线目标编码器。</li><li>论文在LIBERO基准上验证方案效果，GC-VLA基座达到95.20%成功率，搭配GCRF后提升至99.55%。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者所属机构为<strong>Tommoro Robotics</strong>， Correspondence 邮箱为 research@tommoro.ai，机构官网为 https://tommoro.ai</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出<strong>几何变化视觉-语言-动作模型（GC-VLA）</strong>与<strong>几何条件残差流（GCRF）</strong>，旨在解决现有VLA策略仅依赖当前帧几何监督、无法显式建模操作过程中几何变化的问题，目标是学习可跨机器人和第一人称视频预训练、与本体无关的视觉接口，后续再进行机器人特定动作对齐。</li><li>核心设计为四阶段渐进式训练流水线：先通过多视角未来-当前几何变化token预训练几何变化VLM（GC-VLM），再经解耦动作对齐、耦合VLA适配，最终用GCRF基于闭环反馈做选择性残差修正，推理时无需使用未来帧或离线目标编码器。</li><li>论文在<strong>LIBERO</strong>基准上验证方案效果，GC-VLA基座达到95.20%成功率，搭配GCRF后提升至99.55%。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出几何变化监督目标：通过预测多视角未来-当前帧的几何变化token作为VLA预训练信号，替代传统当前帧几何监督，可同时利用机器人和无动作的第一人称视频预训练，无需机器人动作标注。</li><li>设计四阶段渐进式训练流水线：依次完成几何变化VLM预训练、解耦动作对齐、耦合VLA适配、残差后训练，通过梯度路由课程逐步对齐视觉几何表示与机器人动作空间，避免早期训练不稳定。</li><li>提出几何条件残差流（GCRF）：包含二元干预路由器与单有界残差速度策略，可在冻结基座策略的前提下，基于闭环执行反馈学习选择性动作流修正，提升策略鲁棒性。</li><li>验证几何变化表示的有效性：通过表征探针、直接训练消融等实验证明几何变化监督相比当前深度监督可编码更多动作相关信息，在LIBERO基准上取得领先的闭环操控成功率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>技术方法：整体采用四阶段训练流水线。Stage1基于36层<strong>Molmo2-ER</strong> backbone扩展12层初始化自预训练块的transformer模块，训练<strong>GC-VLM</strong>预测多视角几何变化token，离线仅使用<strong>Depth Anything 3 Base</strong>和<strong>DINOv2 Small</strong>构建未来-当前几何变化监督目标，推理时无需调用这两个模型；Stage2引入连续<strong>ActionExpert</strong>，将异构机器人动作统一为14维双臂末端执行器delta表示，同时停止动作流梯度在VLM接口的回传；Stage3移除梯度解耦边界，联合更新可训练VLM组件与ActionExpert；Stage4冻结GC-VLA，训练GCRF，其由二元路由器和有界残差速度策略组成，基于闭环执行上下文、几何表示和流历史特征输出残差修正。</li><li>创新点与关键技术：1. 以未来-当前几何变化作为预训练监督信号，更聚焦操作过程中的空间变化信息，支持跨模态、无动作数据的预训练；2. 采用梯度路由课程，先解耦动作对齐再联合优化，降低多任务训练的耦合难度；3. GCRF在流velocity空间施加有界残差修正，而非直接修改最终动作块，通过路由器选择性干预，最小化对基座策略的破坏；4. 设计统一的异构机器人末端执行器动作表示，支持多源机器人数据的动作对齐与联合预训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用数据集：预训练阶段使用<strong>HoloAssist</strong>（第一人称人机交互视频）、<strong>Hy-Embodied</strong>（跨本体双臂数据）、<strong>HABIT</strong>（人机共存双臂操作数据）、<strong>MolmoAct tabletop/household</strong>（语言条件桌面操作数据）、<strong>Bimanual YAM</strong>（双臂操作数据）、<strong>FMB/DROID100</strong>（单臂操作数据）、<strong>ALOHA</strong>（双臂操作数据）、<strong>Austin Sailor/Berkeley UR5</strong>、<strong>Berkeley Fanuc</strong>（单臂操作数据）；下游适配与评估使用<strong>LIBERO</strong>基准（包含4个任务套件，共40个任务）。</li><li>模型规模：GC-VLM基于36层Molmo2-ER backbone扩展12层transformer块；离线目标生成使用Depth Anything 3 Base（0.12B参数）和DINOv2 Small（21M参数）。</li><li>训练资源：原文未明确说明具体GPU/TPU等训练资源配置。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：核心评估基准为<strong>LIBERO</strong>，包含4个任务套件，每个套件10个任务，每个任务50个固定初始状态，共2000个评估回合；额外进行表征探针实验，使用LIBERO的1600个观测（400个回合）做分层10折交叉验证。</li><li>主要评估指标：闭环任务成功率、动作块预测MSE、R²、操作阶段分类准确率。</li><li>关键实验结果：</li></ul>
+<p> - 表征探针实验：GC-VLA的几何变化表示相比当前深度表示，动作块预测R²从0.512提升至0.532，操作阶段准确率从86.9%提升至90.6%，证明其编码了更多动作相关信息。</p>
+<p> - 直接训练消融：仅替换几何监督目标、不使用Stage1-2预训练课程时，几何变化监督相比当前深度监督将LIBERO成功率从82.1%提升至86.1%，证明目标设计本身可带来性能增益。</p>
+<p> - 主实验结果：Stage1-3的GC-VLA在LIBERO上达到95.20%成功率，搭配GCRF后进一步提升至99.55%，在四个LIBERO套件上的平均成功率优于现有监督训练或闭环后训练的基线方法。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.25562/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">IndustrialVLA-Bench: A Traceable Multi-Axis Evaluation of Open Robot Policy Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.25376/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">VLAQuantBench: Closed-Loop Evaluation of Post-Training Quantization for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
