@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SafeLoop: Risk-Aware Rollback for Vision-Language-Action Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对当前视觉-语言-动作（VLA）模型在长程操作中易因状态估计与控制误差累积，发生碰撞、物体掉落等不可逆安全失败的问题，现有安全方法多需修改VLA参数或仅能实现反应式停止，无法主动恢复执行，本文提出非侵入式安全包装器SafeLoop，无需修改基础VLA策略参数即可实现风险预测与回滚恢复。 SafeLoop构建双速率异步安全控制循环：高频运行冻结的基础VLA策略生成控制动作，低频异步运行风险预测器与安全决策器，在风险演变为不可逆失败前触发回滚到历史安全航点，利用基础策略的随机采样特性生成替代执行路径规避风险。 研究目标是验证该方法在不同VLA骨架上均能实现安全-任务成功率的平衡，且可迁移至真实机器人场景，无需真实环境强化学习训练。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.26313">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.26313.webp" alt="SafeLoop: Risk-Aware Rollback for Vision-Language-Action Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对当前视觉-语言-动作（VLA）模型在长程操作中易因状态估计与控制误差累积，发生碰撞、物体掉落等不可逆安全失败的问题，现有安全方法多需修改VLA参数或仅能实现反应式停止，无法主动恢复执行，本文提出非侵入式安全包装器SafeLoop，无需修改基础VLA策略参数即可实现风险预测与回滚恢复。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">SafeLoop: Risk-Aware Rollback for Vision-Language-Action Manipulation</h1>
+            <div class="detail-meta">2026-09-22 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.26313" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.26313" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.26313</span></div>
+            <p class="detail-summary">针对当前视觉-语言-动作（VLA）模型在长程操作中易因状态估计与控制误差累积，发生碰撞、物体掉落等不可逆安全失败的问题，现有安全方法多需修改VLA参数或仅能实现反应式停止，无法主动恢复执行，本文提出非侵入式安全包装器SafeLoop，无需修改基础VLA策略参数即可实现风险预测与回滚恢复。 SafeLoop构建双速率异步安全控制循环：高频运行冻结的基础VLA策略生成控制动作，低频异步运行风险预测器与安全决策器，在风险演变为不可逆失败前触发回滚到历史安全航点，利用基础策略的随机采样特性生成替代执行路径规避风险。 研究目标是验证该方法在不同VLA骨架上均能实现安全-任务成功率的平衡，且可迁移至真实机器人场景，无需真实环境强化学习训练。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者Zeyu Lou、Xinquan Yue、Chenyang Si所属机构为南京大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对当前视觉-语言-动作（VLA）模型在长程操作中易因状态估计与控制误差累积，发生碰撞、物体掉落等不可逆安全失败的问题，现有安全方法多需修改VLA参数或仅能实现反应式停止，无法主动恢复执行，本文提出非侵入式安全包装器SafeLoop，无需修改基础VLA策略参数即可实现风险预测与回滚恢复。</p>
+  <ul class="reading-intro-points"><li>针对当前视觉-语言-动作（VLA）模型在长程操作中易因状态估计与控制误差累积，发生碰撞、物体掉落等不可逆安全失败的问题，现有安全方法多需修改VLA参数或仅能实现反应式停止，无法主动恢复执行，本文提出非侵入式安全包装器SafeLoop，无需修改基础VLA策略参数即可实现风险预测与回滚恢复。</li><li>SafeLoop构建双速率异步安全控制循环：高频运行冻结的基础VLA策略生成控制动作，低频异步运行风险预测器与安全决策器，在风险演变为不可逆失败前触发回滚到历史安全航点，利用基础策略的随机采样特性生成替代执行路径规避风险。</li><li>研究目标是验证该方法在不同VLA骨架上均能实现安全-任务成功率的平衡，且可迁移至真实机器人场景，无需真实环境强化学习训练。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者Zeyu Lou、Xinquan Yue、Chenyang Si所属机构为<strong>南京大学</strong></li><li>作者Tianran Zhang所属机构为<strong>香港科技大学（广州）</strong></li><li>作者Ya Jing所属机构为<strong>北京工业大学</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对当前视觉-语言-动作（VLA）模型在长程操作中易因状态估计与控制误差累积，发生碰撞、物体掉落等不可逆安全失败的问题，现有安全方法多需修改VLA参数或仅能实现反应式停止，无法主动恢复执行，本文提出非侵入式安全包装器<strong>SafeLoop</strong>，无需修改基础VLA策略参数即可实现风险预测与回滚恢复。</li><li><strong>SafeLoop</strong>构建双速率异步安全控制循环：高频运行冻结的基础VLA策略生成控制动作，低频异步运行风险预测器与安全决策器，在风险演变为不可逆失败前触发回滚到历史安全航点，利用基础策略的随机采样特性生成替代执行路径规避风险。</li><li>研究目标是验证该方法在不同VLA骨架上均能实现安全-任务成功率的平衡，且可迁移至真实机器人场景，无需真实环境强化学习训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出非侵入式的双速率安全包装器，可直接适配各类冻结VLA策略，无需修改基础模型参数，不改变基础策略的任务能力</li><li>设计四输出轻量级风险预测器，基于机载多视角视觉、本体感觉及基础策略提议的动作，同时预测身体级与物体级风险的发生概率及到风险的剩余时间</li><li>提出基于安全航点记忆的回滚机制与学习型安全决策器，通过非对称强化学习训练，可在模拟环境训练后直接迁移至真实机器人，无需真实场景强化学习训练，同时在仿真和真实机器人上验证了有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>SafeLoop</strong>采用三阶段实施流程：首先在冻结基础VLA策略上收集执行回滚，通过仿真规则或人工标注识别安全关键事件作为监督信号；接着训练轻量级风险预测器，基于历史多帧视觉、本体感觉观测与当前基础策略提议的动作，输出四维风险向量；最后通过强化学习训练低频率元决策器，将连续风险向量映射为继续执行（<code>noop</code>）、记录安全航点（<code>record</code>）、回滚到历史安全航点（<code>rollback</code>）三种离散干预动作。</li><li>核心创新点包括：双速率异步控制架构，将风险预测、决策逻辑与基础策略的高频控制解耦，不额外增加基础策略的控制延迟；非对称actor-critic训练框架，actor仅使用机载可部署信号，critic在训练时可使用模拟环境的特权状态，解决仿真到真实的安全决策迁移问题；采用规则策略预训练的PPO优化，通过行为克隆 warm-start 解决风险事件稀疏导致的强化学习训练不稳定问题。</li><li>运行时风险预测器异步运行，安全决策器以约1Hz的低频率运行，回滚过程由独立运动规划控制器执行，恢复至安全航点后重新查询基础策略生成后续动作。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>模拟数据集：使用<strong>LIBERO</strong>标准操作任务套件（包含Object、Goal、10、Spatial四个子集），风险预测器在所有四个子集上训练，决策器仅在Libero_10子集训练；评估时采样24个跨套件任务及<strong>Libero_90</strong>（策略分布外测试集），每个任务设置16个随机种子，共384次rollout。</li><li>真实机器人数据集：三个实际长程操作任务，分别为Folding Cloth（折布）、Stacking Cups（叠杯子）、Toy in Drawer（抽屉取玩具），每个任务进行25次rollout，风险预测器通过少量真实标注图像微调，决策器直接迁移无需真实环境训练。</li><li>模型规模：风险预测器的视觉骨干为冻结的<strong>Qwen2.5-VL-3B</strong>，仅训练轻量级四输出预测头；安全决策器为宽度128的MLP，参数量极小，部署开销低。</li><li>训练资源：论文未明确具体GPU/TPU等训练硬件配置；部署时风险预测器异步运行，不增加基础VLA策略的控制延迟，真实机器人平台为双6-DoF PIPER机械臂，搭配第三方视角RealSense L515相机。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真环境为LIBERO操作任务套件，真实机器人实验平台包含双6-DoF PIPER机械臂与第三方视角RealSense L515相机，工作区放置多类不同形状、材质的日常物品。</li><li>主要评估指标：任务成功率（Success Rate，越高越好）、身体级风险发生率（Haz-Body，指单次rollout中出现碰撞、卡滞、失控运动的比例，越低越好）、物体级风险发生率（Haz-O，指单次rollout中出现物体掉落、倾倒、非目标扰动比例，越低越好）、每千步基础策略步的风险事件数（Events/1k，统计从安全状态进入风险状态的转换次数，越低越好）。</li><li>关键实验结果：</li></ul>
+<p> 1. 跨三个主流VLA骨架（<strong>Pi-0</strong>、<strong>OpenVLA-OFT</strong>、<strong>Pi-0.5</strong>），<strong>SafeLoop</strong>将身体级风险率降低56%-75%（如OpenVLA-OFT从22.9%降至5.7%），每千步风险事件数降低约80%（如OpenVLA-OFT从1.03降至0.21），同时保持任务成功率与基础策略基本持平（如OpenVLA-OFT从67.7%微升至68.2%）。</p>
+<p> 2. 对比基线方法（端到端RL安全决策器、<strong>SAFE</strong>+stop、SAFE+backtrack），<strong>SafeLoop</strong>在任务成功率（59.6%）、物体级风险率（6.8%）、每千步风险事件数（0.22）上均达到最优，仅在身体级风险率上略低于SAFE+backtrack。</p>
+<p> 3. 消融实验验证了核心设计必要性：回滚机制显著优于静态重采样方案（重采样方案身体级风险率达16.6%远高于SafeLoop的5.2%），移除视觉输入或缩短历史上下文长度会大幅降低安全与任务性能，学习型决策器优于固定阈值规则策略。</p>
+<p> 4. 真实机器人迁移实验中，仅微调风险预测器，仿真训练的决策器无需真实场景强化学习即可直接部署，平均风险发生率降低约78%，同时保持基础VLA策略的任务成功率。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.26467/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RouteRLT: Learning When and Which RL Specialist Should Control a Vision-Language-Action Policy</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.26292/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RoboTwin-Phys: Do WAMs and VLAs Understand the Physical World?</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

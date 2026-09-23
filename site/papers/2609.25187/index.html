@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>X-Planner: Event-Structured Task Planning for Embodied Intelligence - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="当前长期具身操作任务中，Vision-Language-Action（VLA）模型通常将高层指令到低层动作的映射隐含在端到端网络中，缺乏显式的任务规划中间结构；现有基于链式思维（CoT）的规划器依赖粗粒度任务级标注或逐token串行推理，存在数据标注缺口（缺乏事件边界和执行错误监督）、规划粒度缺口（采用固定外部粒度，未以语义事件为规划单元）、解码延迟缺口（自回归串行解码存在长临界路径，易传播错误）三类核心问题。 本文提出X-Planner，一个面向具身智能的任务规划前端，通过事件结构化的规划表示桥接高层自然语言指令与下游世界动作模型， jointly解决上述三类问题。 论文核心目标是实现可解释、低延迟、监督充分的具身任务规划，同时验证离线规划文本质量和真实机器人上的执行效果。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.25187">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.25187.webp" alt="X-Planner: Event-Structured Task Planning for Embodied Intelligence" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">当前长期具身操作任务中，Vision-Language-Action（VLA）模型通常将高层指令到低层动作的映射隐含在端到端网络中，缺乏显式的任务规划中间结构；现有基于链式思维（CoT）的规划器依赖粗粒度任务级标注或逐token串行推理，存在数据标注缺口（缺乏事件边界和执行错误监督）、规划粒度缺口（采用固定外部粒度，未以语义事件为规划单元）、解码延迟缺口（自回归串行解码存在长临界路径，易传播错误）三类核心问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">X-Planner: Event-Structured Task Planning for Embodied Intelligence</h1>
+            <div class="detail-meta">2026-09-21 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.25187" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.25187" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.25187</span></div>
+            <p class="detail-summary">当前长期具身操作任务中，Vision-Language-Action（VLA）模型通常将高层指令到低层动作的映射隐含在端到端网络中，缺乏显式的任务规划中间结构；现有基于链式思维（CoT）的规划器依赖粗粒度任务级标注或逐token串行推理，存在数据标注缺口（缺乏事件边界和执行错误监督）、规划粒度缺口（采用固定外部粒度，未以语义事件为规划单元）、解码延迟缺口（自回归串行解码存在长临界路径，易传播错误）三类核心问题。 本文提出X-Planner，一个面向具身智能的任务规划前端，通过事件结构化的规划表示桥接高层自然语言指令与下游世界动作模型， jointly解决上述三类问题。 论文核心目标是实现可解释、低延迟、监督充分的具身任务规划，同时验证离线规划文本质量和真实机器人上的执行效果。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者所属研究机构为X Square Robot Team，项目牵头人为Shalfun Li，通讯作…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">当前长期具身操作任务中，Vision-Language-Action（VLA）模型通常将高层指令到低层动作的映射隐含在端到端网络中，缺乏显式的任务规划中间结构；现有基于链式思维（CoT）的规划器依赖粗粒度任务级标注或逐token串行推理，存在数据标注缺口（缺乏事件边界和执行错误监督）、规划粒度缺口（采用固定外部粒度，未以语义事件为规划单元）、解码延迟缺口（自回归串行解码存在长临界路径，易传播错误）三类核心问题。</p>
+  <ul class="reading-intro-points"><li>当前长期具身操作任务中，Vision-Language-Action（VLA）模型通常将高层指令到低层动作的映射隐含在端到端网络中，缺乏显式的任务规划中间结构；现有基于链式思维（CoT）的规划器依赖粗粒度任务级标注或逐token串行推理，存在数据标注缺口（缺乏事件边界和执行错误监督）、规划粒度缺口（采用固定外部粒度，未以语义事件为规划单元）、解码延迟缺口（自回归串行解码存在长临界路径，易传播错误）三类核心问题。</li><li>本文提出X-Planner，一个面向具身智能的任务规划前端，通过事件结构化的规划表示桥接高层自然语言指令与下游世界动作模型， jointly解决上述三类问题。</li><li>论文核心目标是实现可解释、低延迟、监督充分的具身任务规划，同时验证离线规划文本质量和真实机器人上的执行效果。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者所属研究机构为<strong>X Square Robot Team</strong>，项目牵头人为Shalfun Li，通讯作者为Hao Wang与Qian Wang。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>当前长期具身操作任务中，Vision-Language-Action（VLA）模型通常将高层指令到低层动作的映射隐含在端到端网络中，缺乏显式的任务规划中间结构；现有基于链式思维（CoT）的规划器依赖粗粒度任务级标注或逐token串行推理，存在<strong>数据标注缺口</strong>（缺乏事件边界和执行错误监督）、<strong>规划粒度缺口</strong>（采用固定外部粒度，未以语义事件为规划单元）、<strong>解码延迟缺口</strong>（自回归串行解码存在长临界路径，易传播错误）三类核心问题。</li><li>本文提出<strong>X-Planner</strong>，一个面向具身智能的任务规划前端，通过事件结构化的规划表示桥接高层自然语言指令与下游世界动作模型， jointly解决上述三类问题。</li><li>论文核心目标是实现可解释、低延迟、监督充分的具身任务规划，同时验证离线规划文本质量和真实机器人上的执行效果。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>多源分层规划监督体系</strong>：整合第一人称视角（Ego）、UMI、遥操作三类数据源，采用L3任务/L2子任务/L1动作/L0细粒度片段的四层分层标注框架（遥操作数据覆盖全层级，Ego与UMI数据标注至L1动作层级）；通过接管时间标注和人工设计的失败样本监督执行过程中的错误识别，构建1500集分析子集验证语义和时序覆盖度。</li><li><strong>阶梯式解码的双规划形式</strong>：基于共享VLM骨干网络，同时支持显式离散事件状态（可解释、可编辑）和隐式连续CoT状态两种规划输出；通过<strong>Staircase Decoding（阶梯式解码）</strong>在Transformer的不同深度并行传递隐式计划状态，缩短 planner 内部的串行计算路径，避免逐token序列化，配合冻结的隐式-文本重建目标保证隐式表示的语义保留。</li><li><strong>双层级效果验证</strong>：离线两步规划文本评估中，X-Planner在语义匹配和综合质量上均优于Qwen、Doubao，仅次于kimi3；真实机器人实验中，事件模式耦合下游世界动作模型后，在推理操作和泛化任务上的平均任务进度均高于所有评估基线。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础架构：采用<strong>Qwen系列VLM</strong>作为共享骨干网络，输入为高层任务指令、多视角实时观测、可选历史信息，输出事件结构化规划表示。</li><li>双规划输出形式：离散显式形式输出结构化的JSON事件状态，包含初始计划、执行过程中的当前/下一个事件、归一化进度、延续状态、错误识别结果及episode结束标记，可直接作为下游世界动作模型的文本条件；隐式连续形式通过阶梯式解码实现，将Transformer在指定继电器深度（relay depth）分层，下层共享视觉-语言 grounding 计算，上层独立更新多个推理位置的隐式状态，实现隐式计划状态的并行生成，直接输入下游模型的交叉注意力层。</li><li>通用文本条件接口：通过可学习投影层将VLM输出的文本token隐藏状态投影到下游世界动作模型的原生文本特征空间，配合特征对齐损失保证投影后表示与下游模型预期的文本特征几何一致，无需修改下游模型的文本通路。</li><li>隐式-文本重建：仅训练阶梯推理分支和前缀投影器，将隐式状态映射到轻量级冻结语言模型的嵌入空间作为软前缀，由固定语言模型自回归重建对应的文本CoT轨迹，为隐式规划提供语义监督，同时支持隐式计划的文本可视化。</li><li>推理模式：支持两种部署模式，事件模式（输出显式事件描述条件化下游模型）和统一模式（输出隐式连续状态条件化下游固定长度动作块推理）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：构建多源事件结构化规划数据集，整合三类数据源：第一人称视角（Ego）演示数据、UMI演示数据、遥操作演示数据；采用四层分层标注体系：L3任务（episode目标）、L2子任务（语义阶段）、L1动作（可执行基元）、L0细粒度片段（仅遥操作数据标注该层级，Ego与UMI因运动速度快难以稳定标注L0边界，故最高标注至L1）；构建1500集确定性分析子集，来自1654集候选集，覆盖30个命名任务类别+未知标签、167个独立数据集、41种原子动作标签，保留长尾分布。</li><li>模型规模：共享VLM骨干为Qwen2.5/Qwen3.5系列；隐式推理分支为轻量级Mixture-of-Transformers（MoT）结构；前缀投影器连接轻量级冻结语言模型，整体参数量未明确公开。</li><li>训练资源：原文未提及具体的GPU/TPU等训练硬件配置。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：</li></ul>
+<p> - 离线评估：针对两步规划文本预测任务，对比基准为<strong>Qwen</strong>、<strong>Doubao</strong>、<strong>kimi3</strong>三类通用大模型。</p>
+<p> - 真实机器人评估：在桌面双手臂机器人平台开展实验，采用同步多视角观测，对比基准包括<strong>U-Scratch</strong>（同supervision下从头训练的固定长度指令到动作系统）、<strong>π₀.₅</strong>、<strong>DreamZero</strong>、<strong>LingBot-VA</strong>；评估场景分为两类：Reasoning Manipulation（测试类别grounding、关系匹配、顺序执行、指令条件选择，包含排序耳机、按形状分类、按序按键、物品配对、摘水果到篮子5项任务）、Generalization（测试杂乱场景下的指令条件迁移能力）。</p>
+<ul><li>主要评估指标：</li></ul>
+<p> - 离线评估：<strong>BERTScore-F1</strong>（衡量预测规划文本与参考标注的语义相似度，无基线重缩放）、<strong>Doubao Judge Overall评分</strong>（综合评估规划结果的准确性、连贯性和合理性，越高越好）。</p>
+<p> - 真实机器人评估：<strong>Task Progress</strong>（0-100分的密集任务进度评分，根据任务特定评分规则计算部分完成度，非二元成功指标，越高越好）。</p>
+<ul><li>关键实验结果：</li></ul>
+<p> - 离线两步规划评估：X-Planner的BERTScore-F1为0.9011，Overall评分为1.411，在四个模型中排名第二，高于Qwen（0.8878/1.367）和Doubao（0.8846/1.366），低于kimi3（0.9108/1.434）。</p>
+<p> - 真实机器人推理操作场景：X-Planner平均Task Progress为71.60%，优于最强基线U-Scratch（59.50%）12.10个百分点，高于π₀.₅（56.40%）、DreamZero（32.70%）、LingBot-VA（31.60%），在按序按键、指令条件水果选择任务上提升尤为明显。</p>
+<p> - 真实机器人泛化场景：X-Planner平均Task Progress为53.75%，优于最强基线DreamZero（28.50%）25.25个百分点，高于π₀.₅（24.00%）、U-Scratch（18.50%）。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.25369/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Capability-Aware Arbitration for Semantic Intent-Based Shared Control</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.25146/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Brain-Inspired Hierarchical Modularity for General Continual Learning</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

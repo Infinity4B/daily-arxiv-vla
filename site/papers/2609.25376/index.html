@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLAQuantBench: Closed-Loop Evaluation of Post-Training Quantization for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型训练后量化（PTQ）的评估痛点：现有方法无法隔离数值格式、量化层范围、校准方法的独立影响，且单层敏感度测试无法反映联合量化的非可加交互效应 提出VLAQuantBench闭环评估基准，包含409次评估运行、94,574次仿真episodes，覆盖4类主流VLA模型在LIBERO、SIMPLER、CALVIN、VLABench等多个仿真基准的测试 核心目标是揭示VLA量化中各因素的交互作用，识别可落地的低比特量化精度配置方案，为VLA模型的部署优化提供可靠依据" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.25376">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.25376.webp" alt="VLAQuantBench: Closed-Loop Evaluation of Post-Training Quantization for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对视觉-语言-动作（VLA）模型训练后量化（PTQ）的评估痛点：现有方法无法隔离数值格式、量化层范围、校准方法的独立影响，且单层敏感度测试无法反映联合量化的非可加交互效应</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">VLAQuantBench: Closed-Loop Evaluation of Post-Training Quantization for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-09-21 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.25376" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.25376" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.25376</span></div>
+            <p class="detail-summary">针对视觉-语言-动作（VLA）模型训练后量化（PTQ）的评估痛点：现有方法无法隔离数值格式、量化层范围、校准方法的独立影响，且单层敏感度测试无法反映联合量化的非可加交互效应 提出VLAQuantBench闭环评估基准，包含409次评估运行、94,574次仿真episodes，覆盖4类主流VLA模型在LIBERO、SIMPLER、CALVIN、VLABench等多个仿真基准的测试 核心目标是揭示VLA量化中各因素的交互作用，识别可落地的低比特量化精度配置方案，为VLA模型的部署优化提供可靠依据</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Colorado School of Mines（作者Jiuyi Xu、Yangming Shi）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对视觉-语言-动作（VLA）模型训练后量化（PTQ）的评估痛点：现有方法无法隔离数值格式、量化层范围、校准方法的独立影响，且单层敏感度测试无法反映联合量化的非可加交互效应</p>
+  <ul class="reading-intro-points"><li>针对视觉-语言-动作（VLA）模型训练后量化（PTQ）的评估痛点：现有方法无法隔离数值格式、量化层范围、校准方法的独立影响，且单层敏感度测试无法反映联合量化的非可加交互效应</li><li>提出VLAQuantBench闭环评估基准，包含409次评估运行、94,574次仿真episodes，覆盖4类主流VLA模型在LIBERO、SIMPLER、CALVIN、VLABench等多个仿真基准的测试</li><li>核心目标是揭示VLA量化中各因素的交互作用，识别可落地的低比特量化精度配置方案，为VLA模型的部署优化提供可靠依据</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Colorado School of Mines</strong>（作者Jiuyi Xu、Yangming Shi）</li><li><strong>Independent Researcher</strong>（作者Qing Jin）</li><li><strong>University of Central Florida</strong>（作者Meida Chen）</li><li><strong>USC Institute for Creative Technologies</strong>（作者Song Wang）</li><li><strong>Microsoft AI</strong>（作者Yang Sui）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对视觉-语言-动作（VLA）模型训练后量化（PTQ）的评估痛点：现有方法无法隔离数值格式、量化层范围、校准方法的独立影响，且单层敏感度测试无法反映联合量化的非可加交互效应</li><li>提出<strong>VLAQuantBench</strong>闭环评估基准，包含409次评估运行、94,574次仿真episodes，覆盖4类主流VLA模型在LIBERO、SIMPLER、CALVIN、VLABench等多个仿真基准的测试</li><li>核心目标是揭示VLA量化中各因素的交互作用，识别可落地的低比特量化精度配置方案，为VLA模型的部署优化提供可靠依据</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>发布开源的VLA量化评估框架：提供模型适配器、显式量化范围定义、基准评估器、全量episode记录，支持对新策略和量化器的扩展验证</li><li>揭示VLA量化的非单调、非可加任务敏感度：嵌套动作头干预实验发现联合量化存在单独测试无法捕捉的恢复效应和联合失效，结合格式与校准控制明确了效应的recipe依赖性</li><li>提出W3/A8严重失效的针对性修复方案：仅保留OpenVLA-OFT的输出投影层以全精度运行，即可恢复失效配置的接近baseline的任务成功率</li><li>提供实用的精度选择控制集：通过多模型校准测试、任务聚类不确定性分析、真实内核测量、物理机器人执行验证，覆盖精度配置选择的全流程影响因素</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基准设计采用组件化分层干预思路：将VLA模型划分为视觉编码器（VE）、多模态投影器（MP）、语言backbone（LLM）、动作头（AH）四个组件，通过显式模块层列表和排除模式定义互不重叠的量化范围，支持从组件级到具体投影层的细粒度精度分配干预</li><li>采用共享的Round-to-Nearest（RTN）量化器作为锚点，测试W3/W4/W8权重量化、W4A4/W4A8/W8A8激活量化共6种主配置：权重采用128输入特征分组的非对称网格，激活采用动态对称per-token absmax量化，排除嵌入、偏置、归一化、注意力矩阵、词表头等不可量化模块，计算过程保持浮点运算，模拟量化效果</li><li>创新点包括：同时设计独立层组干预和联合干预实验，避免单层测试无法反映联合失效的问题；采用相同观测、相同噪声的固定轨迹回放，验证量化效应在环境反馈前就已存在于数值输出中；结合校准控制、替代量化器测试、真实内核profiling、物理机器人验证，全链路评估量化的准确性与实用性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的仿真基准：<strong>LIBERO</strong>（包含Spatial、Object、Goal、Long 4个任务套件）、<strong>SIMPLER</strong>、<strong>CALVIN</strong>、<strong>VLABench</strong>；物理机器人实验使用Franka Research 3硬件，测试Pick和Pick-and-place两项任务</li><li>模型规模与参数量：测试4个主流VLA模型，分别为OpenVLA-OFT（基于LLaMA-2-7B backbone，动作头总参数量151.0M）、π₀、π₀.₅、X-VLA（基于Florence-2 backbone）；其中OpenVLA-OFT的最终动作输出投影仅28,672参数，占动作头总参数的0.019%</li><li>训练与评估资源：仿真评估使用RTX 4090、RTX 5080 Laptop GPU；物理机器人LoRA微调使用200条演示数据；真实内核profiling在RTX 4090上开展，batch size为1，每方法测试20条LIBERO-Spatial rollout</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：仿真环境覆盖上述4类基准家族，物理机器人使用Franka Research 3实体硬件；评估包含封闭-loop任务成功率、相同轨迹回放动作误差、真实内核延迟、内存占用等多维度指标</li><li>主要评估指标：核心指标为任务成功率（Success Rate, SR%），辅助指标包括归一化动作块MAE、夹爪指令偏差、激活统计量（如per-token absmax 99分位数）、控制调用延迟、完整网络推理延迟、内存占用</li><li>关键实验结果：</li></ul>
+<p> - 激活量化对任务的影响远大于权重量化：W4A4配置下π₀.₅的动作头从126层扩展到167层，LIBERO-Spatial成功率从7.0%提升至70.5%；但W4/W4A8配置下该范围扩展不会带来成功率下降，说明严重失效仅在未校准的per-token absmax A4 recipe下出现</p>
+<p> - 联合量化存在显著非可加效应：单独量化π₀.₅的注意力层和adaRMS层仅分别损失1.0pp和5.5pp，但联合量化后成功率跌至1.5%，远低于可加损失预测的6.5pp；相同轨迹回放验证该效应来自数值输出的交互，而非仅任务阈值效应</p>
+<p> - 小投影层的敏感度被局部代理指标隐藏：OpenVLA-OFT仅量化最终28,672参数的动作输出投影（fc2），即可导致W4A8下Spatial任务成功率下降82pp，而局部激活统计量几乎无法捕捉该敏感度</p>
+<p> - 针对性保护关键层可完全恢复失效配置性能：仅保留OpenVLA-OFT的最终输出投影为全精度，其余441层量化至W3时，LIBERO-Long任务成功率恢复至93.5%，接近92.5%的baseline；该保护规则还可解决OpenVLA-OFT所有4个LIBERO套件下的W4A8/W8A8严重失效，恢复后成功率与baseline差距在2.5pp以内</p>
+<p> - 内存减少不必然带来延迟降低：实际整数内核测量显示量化后内存占用明显下降，但推理延迟未出现对应降低</p>
+<p> - 物理机器人验证结果与仿真一致：LoRA微调后的OpenVLA-OFT和π₀.₅在Franka机器人上的任务性能趋势与仿真测试结果吻合</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.25558/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">HABILIS Brain 0: Geometry-Change Supervision for Vision-Language-Action and Residual Flow Recovery</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.25369/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Capability-Aware Arbitration for Semantic Intent-Based Shared Control</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

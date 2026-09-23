@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RouteRLT: Learning When and Which RL Specialist Should Control a Vision-Language-Action Policy - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 RouteRLT，一个学习何时及让哪个 RL 专家控制 VLA 策略的路由框架，解决通用 VLA 在接触密集型工业任务的精确关键阶段表现不佳的问题 通过协调冻结的通用 SmolVLA与阶段特定的 RL 专家库，在保持通用行为的同时，仅在精确适应最有价值的阶段应用专家控制 在仿真和真实机器人电缆拾取与插入任务中验证自动路由能力，支持多专家组合和失败恢复" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.26467">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.26467.webp" alt="RouteRLT: Learning When and Which RL Specialist Should Control a Vision-Language-Action Policy" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 RouteRLT，一个学习何时及让哪个 RL 专家控制 VLA 策略的路由框架，解决通用 VLA 在接触密集型工业任务的精确关键阶段表现不佳的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">RouteRLT: Learning When and Which RL Specialist Should Control a Vision-Language-Action Policy</h1>
+            <div class="detail-meta">2026-09-22 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.26467" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.26467" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.26467</span></div>
+            <p class="detail-summary">提出 RouteRLT，一个学习何时及让哪个 RL 专家控制 VLA 策略的路由框架，解决通用 VLA 在接触密集型工业任务的精确关键阶段表现不佳的问题 通过协调冻结的通用 SmolVLA与阶段特定的 RL 专家库，在保持通用行为的同时，仅在精确适应最有价值的阶段应用专家控制 在仿真和真实机器人电缆拾取与插入任务中验证自动路由能力，支持多专家组合和失败恢复</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">多伦多大学机械与工业工程系（Department of Mechanical and Industri…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 RouteRLT，一个学习何时及让哪个 RL 专家控制 VLA 策略的路由框架，解决通用 VLA 在接触密集型工业任务的精确关键阶段表现不佳的问题</p>
+  <ul class="reading-intro-points"><li>提出 RouteRLT，一个学习何时及让哪个 RL 专家控制 VLA 策略的路由框架，解决通用 VLA 在接触密集型工业任务的精确关键阶段表现不佳的问题</li><li>通过协调冻结的通用 SmolVLA与阶段特定的 RL 专家库，在保持通用行为的同时，仅在精确适应最有价值的阶段应用专家控制</li><li>在仿真和真实机器人电缆拾取与插入任务中验证自动路由能力，支持多专家组合和失败恢复</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>多伦多大学机械与工业工程系</strong>（Department of Mechanical and Industrial Engineering, University of Toronto, Toronto, ON, Canada）</li><li>作者包括 Chongyu Zhu, Jaden Hinds, Hyegang Kim, Juan Sebastian Rojas, Ramy Elmallah, Chi-Guhn Lee</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>RouteRLT</strong>，一个学习何时及让哪个 <strong>RL 专家</strong>控制 <strong>VLA 策略</strong>的路由框架，解决通用 VLA 在接触密集型工业任务的精确关键阶段表现不佳的问题</li><li>通过协调冻结的通用 <strong>SmolVLA</strong>与阶段特定的 <strong>RL 专家库</strong>，在保持通用行为的同时，仅在精确适应最有价值的阶段应用专家控制</li><li>在仿真和真实机器人电缆拾取与插入任务中验证自动路由能力，支持多专家组合和失败恢复</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>引入 <strong>RouteRLT</strong> 控制器路由框架，包含 <strong>阶段选择器</strong>（phase selector）、<strong>路由器稳定器</strong>（router stabilizer）和 <strong>动作边界管理器</strong>（action-boundary manager），实现从通用 VLA 到 RL 专家的无缝切换</li><li>框架支持多对象任务和包含多个精确关键阶段的轨迹，能够在多个控制器之间进行所有权决策而非仅在两控制器间切换</li><li>在 <strong>LIBERO</strong> 仿真中将完整任务成功率从 <strong>85.00%</strong> 提升至 <strong>92.22%</strong>，在真实机器人插入任务中将成功率从 <strong>6.7%</strong> 提升至 <strong>35.0%</strong>，且无需部署时的特权信号</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>基础模型</strong>：使用轻量级 <strong>SmolVLA</strong> 作为冻结的通用 VLA 骨干网络，提供视觉-语言-动作表示和参考动作块</li><li><strong>RL 专家</strong>：每个专家是针对单个精确关键阶段训练的轻量级 Actor-Critic 策略，输出 C 步动作块，以 VLA 参考动作为条件，并加入时间平滑惩罚和参考偏离惩罚，采用离线到在线训练范式</li><li><strong>阶段选择器</strong>：基于因果窗口的潜在状态序列（W=2），通过带类平衡的二元交叉熵（单专家）或多类交叉熵（多专家）预测控制器后验概率，仅使用紧凑潜在状态 z_t 作为输入</li><li><strong>路由器稳定器</strong>：采用三阶段状态机（PRE/ACTIVE/POST），使用不对称进入/退出阈值和停留计数器抑制瞬时切换，确保进入召回率和退出稳定性</li><li><strong>动作边界管理器</strong>：当控制器所有权改变时立即使未执行的块后缀失效，立即查询传入控制器，确保切换在下一个动作生效而非等待重新规划边界</li><li><strong>训练协议</strong>：四阶段训练流程——VLA 微调、表示编码器训练、RL 专家离线到在线微调、路由器在特权路由下收集数据后拟合</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真数据集</strong>：<strong>LIBERO Object</strong> 多对象拾取和放置任务（番茄酱、黄油、巧克力布丁）</li><li><strong>真实机器人</strong>：<strong>Trossen Stationary AI</strong> 平台（基于 ALOHA），执行电缆拾取和端口插入任务，使用 1mm 间隙的 3D 打印端口</li><li><strong>模型规模</strong>：基础 <strong>SmolVLA</strong> 为紧凑型 VLA；RL 专家为轻量级策略，接收紧凑潜在状态 z_t 和机器人本体感觉 q_t</li><li><strong>训练资源</strong>：专家在线微调使用更新到数据比率 5；仿真使用 60 个保留 episodes 和 300 步时间范围；计算预算适中</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：<strong>LIBERO</strong> 仿真（20Hz，300 步时间范围，C_VLA=10, C=5）和 <strong>Trossen</strong> 真实机器人平台</li><li><strong>主要指标</strong>：完整任务成功率、拾取成功率、每 1000 步成功率、路由器进入召回率、切换次数</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - LIBERO 仿真中 <strong>RouteRLT</strong> 达到 <strong>92.22%</strong> 完整任务成功率，优于 <strong>SmolVLA@10</strong>（85.00%）和 <strong>Oracle-routed RLT</strong>（91.11%），每 1000 步成功率提升 <strong>14.3%</strong></p>
+<p> - 路由器进入召回率 <strong>1.0</strong>，中位延迟 <strong>0</strong> 步，每 episode 平均 <strong>2.12</strong> 次切换（接近理想的双切换序列）</p>
+<p> - 真实机器人上完整轨迹插入成功率从基线 <strong>6.7%</strong> 提升至 <strong>35.0%</strong>，自动路由到拾取和插入专家均成功</p>
+<p> - 消融实验表明，图像-语言输入比仅图像输入更优，且分阶段专家控制优于全轨迹单一专家</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.26520/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">MATE: Multi-Agent Virtual Teleoperation Platform for Humanoid Collaboration Data Collection</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.26313/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SafeLoop: Risk-Aware Rollback for Vision-Language-Action Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
