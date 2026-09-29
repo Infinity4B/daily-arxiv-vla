@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What Makes World Action Models Generalize? An Empirical Study of Test-Time Future Modeling - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对World Action Models（WAMs）中显式范式（推理时需迭代去噪未来视频，泛化性好但效率低）与隐式范式（推理时丢弃未来视频，效率高但泛化性差）的权衡问题，开展控制实验研究推理时未来建模对WAM泛化能力的必要性 研究目标是明确未来建模在WAM推理时的作用机制，提出既能保留泛化性又能保证推理效率的WAM方案 通过三维泛化评估框架（环境扰动、数据效率、任务泛化）对比两种范式的差异，揭示WAM泛化性的核心来源" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.34981">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.34981.webp" alt="What Makes World Action Models Generalize? An Empirical Study of Test-Time Future Modeling" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对World Action Models（WAMs）中显式范式（推理时需迭代去噪未来视频，泛化性好但效率低）与隐式范式（推理时丢弃未来视频，效率高但泛化性差）的权衡问题，开展控制实验研究推理时未来建模对WAM泛化能力的必要性</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">What Makes World Action Models Generalize? An Empirical Study of Test-Time Future Modeling</h1>
+            <div class="detail-meta">2026-09-28 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.34981" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.34981" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.34981</span></div>
+            <p class="detail-summary">针对World Action Models（WAMs）中显式范式（推理时需迭代去噪未来视频，泛化性好但效率低）与隐式范式（推理时丢弃未来视频，效率高但泛化性差）的权衡问题，开展控制实验研究推理时未来建模对WAM泛化能力的必要性 研究目标是明确未来建模在WAM推理时的作用机制，提出既能保留泛化性又能保证推理效率的WAM方案 通过三维泛化评估框架（环境扰动、数据效率、任务泛化）对比两种范式的差异，揭示WAM泛化性的核心来源</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者所属研究机构包括：Leap Lab, Tsinghua University、Universi…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对World Action Models（WAMs）中显式范式（推理时需迭代去噪未来视频，泛化性好但效率低）与隐式范式（推理时丢弃未来视频，效率高但泛化性差）的权衡问题，开展控制实验研究推理时未来建模对WAM泛化能力的必要性</p>
+  <ul class="reading-intro-points"><li>针对World Action Models（WAMs）中显式范式（推理时需迭代去噪未来视频，泛化性好但效率低）与隐式范式（推理时丢弃未来视频，效率高但泛化性差）的权衡问题，开展控制实验研究推理时未来建模对WAM泛化能力的必要性</li><li>研究目标是明确未来建模在WAM推理时的作用机制，提出既能保留泛化性又能保证推理效率的WAM方案</li><li>通过三维泛化评估框架（环境扰动、数据效率、任务泛化）对比两种范式的差异，揭示WAM泛化性的核心来源</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者所属研究机构包括：<strong>Leap Lab, Tsinghua University</strong>、<strong>University of Science and Technology of China</strong>、<strong>Beijing Institute of Technology</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对World Action Models（WAMs）中显式范式（推理时需迭代去噪未来视频，泛化性好但效率低）与隐式范式（推理时丢弃未来视频，效率高但泛化性差）的权衡问题，开展控制实验研究推理时未来建模对WAM泛化能力的必要性</li><li>研究目标是明确未来建模在WAM推理时的作用机制，提出既能保留泛化性又能保证推理效率的WAM方案</li><li>通过三维泛化评估框架（环境扰动、数据效率、任务泛化）对比两种范式的差异，揭示WAM泛化性的核心来源</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出WAM泛化性的三维评估协议，涵盖环境扰动、数据效率、任务泛化三个维度，为WAM的泛化能力提供系统性评估标准</li><li>通过控制实验发现两项关键结论：一是无推理时未来建模会导致WAM泛化性全面下降；二是完全加噪的未来视频token足以支撑泛化，无需迭代去噪生成清晰未来帧</li><li>提出<strong>Simple-WAM</strong>方法，仅需单次前向传播处理完全加噪的未来视频token，同时匹配显式WAM的泛化性与隐式WAM的推理效率</li><li>在仿真和真实世界任务上验证了方法的有效性，在多项基准上取得最优性能</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Simple-WAM</strong>基于WAM基础框架，包含初始化自预训练视频生成模型<strong>Wan2.2-5B</strong>的视频专家，以及初始化自视频DiT插值的1B参数动作专家</li><li>推理阶段创新：放弃显式WAM的迭代未来去噪流程，视频专家仅对包含当前观测token和完全加噪的未来视频token的序列做单次前向传播，输出的表征作为所有动作去噪步骤的条件，实现与隐式WAM相近的推理成本</li><li>训练阶段创新：采用混合噪声调度策略，以概率p将未来视频token的流时间设为1（完全加噪），其余时间沿用显式WAM的常规流时间调度，解决训练与推理的噪声分布不匹配问题，默认设置p=0.5</li><li>核心创新点在于证明WAM的泛化性不依赖于清晰的未来视频生成，仅需单次处理加噪的未来token即可保留，同时通过混合调度对齐训练与推理的输入分布</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>LIBERO</strong>（4个任务套件，每个套件10任务、500条专家演示）、<strong>LIBERO-Plus</strong>（扩展7类环境扰动因素）、<strong>RoboTwin 2.0</strong>（双臂操作基准）</li><li>真实世界数据集：AgileX Aloha双臂平台，4个操作任务（Stack the Bowls、Store the Blocks、Sort in Row、Move in Order），每个任务收集200条演示</li><li>模型规模：视频专家为<strong>Wan2.2-5B</strong>（50亿参数），动作专家为1B参数</li><li>训练资源：模型训练采用<strong>NVIDIA A800 GPU</strong>，延迟测试在单张<strong>NVIDIA GeForce RTX 5090 GPU</strong>上完成</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：覆盖仿真（LIBERO、LIBERO-Plus、RoboTwin 2.0）与真实世界（AgileX Aloha双臂平台）两类场景，核心评估指标为任务成功率（%）</li><li>关键实验结果：</li></ul>
+<p> - 控制实验显示，隐式WAM与显式WAM在分布内性能接近（96.85% vs 97.75%），但在泛化维度全面落后：环境扰动下低13.97个百分点，10-shot数据效率下低8.45个百分点，带视频的任务泛化下低64个百分点</p>
+<p> - 消融实验表明，仅对完全加噪的未来做单次前向传播即可恢复大部分泛化差距，后续迭代去噪的收益最高仅1.8个百分点，几乎可忽略</p>
+<p> - 主实验结果：Simple-WAM在LIBERO-Plus环境扰动维度平均达79.5%，比显式WAM（67.7%）和隐式WAM（53.8%）分别高11.8和25.7个百分点；LIBERO 10-shot任务成功率97.2%，RoboTwin 10-shot达37.2%；带视频的任务泛化下，LIBERO达73.6%，RoboTwin达44.5%</p>
+<p> - 效率结果：Simple-WAM单动作块推理延迟为74.7ms，是显式WAM（286.9ms）的3.8倍，仅比隐式WAM（62.0ms）高12.7ms，实现了泛化性与效率的最优平衡</p>
+<p> - 真实世界验证中，环境扰动下Simple-WAM保持69.2%成功率，远高于隐式WAM的25.2%；50演示/任务的少样本设置下达69.6%，远高于隐式WAM的37.2%；held-out任务带视频时达87.8%，远高于隐式WAM的10.0%</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.34982/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ActionUNet: Improving Robustness of VLA Models with Efficient Multi-scale Fine-tuning</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.34968/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RoboFL: Federated Expert Assembly for World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

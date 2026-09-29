@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RefineDrive: Reliable Failure-Guided Learning for Vision-Language-Action Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对自动驾驶Vision-Language-Action（VLA）模型过度依赖专家示范、自身 rollout 暴露的碰撞/驶出可行驶区域等安全失效未被有效利用的问题，提出故障引导的后训练框架RefineDrive 解决现有失效学习方法的三个核心局限：失效诊断不可靠、修正目标与失效场景不匹配、奖励信号粗糙无法提供细粒度安全优化指引 目标是让已具备基础驾驶能力的VLA通过针对性学习自身暴露的失效点，提升安全性能与规划质量，无需反复模仿已掌握的专家行为" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.35078">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.35078.webp" alt="RefineDrive: Reliable Failure-Guided Learning for Vision-Language-Action Driving" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对自动驾驶Vision-Language-Action（VLA）模型过度依赖专家示范、自身 rollout 暴露的碰撞/驶出可行驶区域等安全失效未被有效利用的问题，提出故障引导的后训练框架RefineDrive</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">RefineDrive: Reliable Failure-Guided Learning for Vision-Language-Action Driving</h1>
+            <div class="detail-meta">2026-09-28 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.35078" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.35078" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.35078</span></div>
+            <p class="detail-summary">针对自动驾驶Vision-Language-Action（VLA）模型过度依赖专家示范、自身 rollout 暴露的碰撞/驶出可行驶区域等安全失效未被有效利用的问题，提出故障引导的后训练框架RefineDrive 解决现有失效学习方法的三个核心局限：失效诊断不可靠、修正目标与失效场景不匹配、奖励信号粗糙无法提供细粒度安全优化指引 目标是让已具备基础驾驶能力的VLA通过针对性学习自身暴露的失效点，提升安全性能与规划质量，无需反复模仿已掌握的专家行为</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者主要所属机构为浙江大学计算机科学与技术学院，另有作者来自尹网智能技术有限公司</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对自动驾驶Vision-Language-Action（VLA）模型过度依赖专家示范、自身 rollout 暴露的碰撞/驶出可行驶区域等安全失效未被有效利用的问题，提出故障引导的后训练框架RefineDrive</p>
+  <ul class="reading-intro-points"><li>针对自动驾驶Vision-Language-Action（VLA）模型过度依赖专家示范、自身 rollout 暴露的碰撞/驶出可行驶区域等安全失效未被有效利用的问题，提出故障引导的后训练框架RefineDrive</li><li>解决现有失效学习方法的三个核心局限：失效诊断不可靠、修正目标与失效场景不匹配、奖励信号粗糙无法提供细粒度安全优化指引</li><li>目标是让已具备基础驾驶能力的VLA通过针对性学习自身暴露的失效点，提升安全性能与规划质量，无需反复模仿已掌握的专家行为</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者主要所属机构为<strong>浙江大学计算机科学与技术学院</strong>，另有作者来自<strong>尹网智能技术有限公司</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对自动驾驶Vision-Language-Action（VLA）模型过度依赖专家示范、自身 rollout 暴露的碰撞/驶出可行驶区域等安全失效未被有效利用的问题，提出故障引导的后训练框架<strong>RefineDrive</strong></li><li>解决现有失效学习方法的三个核心局限：失效诊断不可靠、修正目标与失效场景不匹配、奖励信号粗糙无法提供细粒度安全优化指引</li><li>目标是让已具备基础驾驶能力的VLA通过针对性学习自身暴露的失效点，提升安全性能与规划质量，无需反复模仿已掌握的专家行为</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>RefineDrive</strong>故障引导后训练框架，聚焦模型自身rollout暴露的残缺点进行学习，避免对已掌握专家行为的重复模仿</li><li>提出<strong>可靠诊断</strong>与<strong>最小修正目标检索</strong>机制：基于NAVSIM模拟器状态生成可验证的结构化失效诊断，通过聚类的人类轨迹库检索满足硬安全约束且与失效轨迹偏差最小的修正目标，减少过度修正</li><li>设计<strong>分层安全奖励</strong>，严格优先硬安全轨迹，为 unsafe 和硬安全轨迹保留连续安全反馈，仅在满足硬安全后奖励驾驶进度，提供细粒度安全优化信号</li><li>在NAVSIM基准上验证有效性，4B规模模型在NAVSIM v1上取得91.7 PDMS，无额外训练下在NAVSIM v2扩展指标上取得89.4 EPDMS</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>框架包含四个阶段：失效发现、结构化失效修正、修正SFT、分层安全强化学习</li><li>失效发现阶段：对基础SFT策略在训练场景做离线rollout，通过NAVSIM PDM模拟器复现轨迹，筛选无责碰撞、可行驶区域违规两类安全-critical失效构建失效集</li><li>结构化失效修正阶段：从模拟器状态提取可验证的失效诊断（如碰撞的发生时间、涉及物体、视觉位置，或驶出边界的方向）；将人类轨迹按运动模式聚类，检索与失效轨迹距离最小且满足硬安全约束（无责碰撞、可行驶区域合规、TTC安全）的修正轨迹</li><li>修正SFT阶段：以驾驶上下文和失效轨迹为输入，训练模型生成结构化诊断+修正轨迹，为训练-only辅助任务，推理时不执行诊断修复步骤，直接基于驾驶上下文输出最终轨迹</li><li>分层安全强化学习阶段：采用GRPO算法配合分层奖励，硬安全轨迹获得更高奖励，unsafe轨迹仅获得连续安全分数，硬安全轨迹额外获得进度奖励</li><li>创新点为模拟器可验证的诊断机制、最小化偏差的修正检索策略、分层奖励设计，解决了现有方法诊断不可靠、过度修正、奖励信号粗糙的问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用自动驾驶规划 benchmark <strong>NAVSIM</strong>：采用<strong>NAVTRAIN</strong> split进行监督训练、失效挖掘与强化学习，<strong>NAVTEST</strong> split进行评估，同时使用NAVSIM v2扩展指标在原始NAVTEST场景开展额外评估</li><li>模型规模为4B参数，基于<strong>Qwen3.5-4B</strong>实例化</li><li>论文未明确说明具体训练硬件资源（GPU/TPU等）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：NAVSIM v1官方协议基准，以及NAVSIM v2扩展指标下的原始NAVTEST场景</li><li>评估指标：核心指标为<strong>PDMS</strong>（预测驾驶员模型得分），同时关注<strong>NC</strong>（无责碰撞）、<strong>DAC</strong>（可行驶区域合规）、<strong>TTC</strong>（碰撞时间安全）、<strong>EP</strong>（自我进度）、<strong>C</strong>（舒适度）等细粒度安全与进度指标，所有指标均为越高越好</li><li>关键实验结果：</li></ul>
+<p> - 在NAVSIM v1上，4B规模的RefineDrive取得91.7 PDMS，NC达98.7、DAC达98.2、TTC达95.9，显著优于同规模Base SFT的87.7 PDMS，性能接近更大参数量的SOTA方法</p>
+<p> - 无额外训练的情况下，同一检查点在NAVTEST原始场景的NAVSIM v2扩展指标上取得89.4 <strong>EPDMS</strong></p>
+<p> - 消融实验验证：结构化诊断监督、最小修正检索、分层安全奖励均对最终性能有正向贡献；分层奖励相比直接PDMS优化，可在保持相同EP的前提下，显著提升NC、DAC、TTC等安全指标</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.35231/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Zero-Shot Reactive Obstacle Avoidance for Generative Robot Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.35039/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Do Not Cut When Uncertain: Rejectable and Calibrated Decision Heads for VLA Policies in Robotic Harvesting</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
