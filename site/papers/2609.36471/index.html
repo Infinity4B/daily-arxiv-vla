@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Staircase Policy: Streaming Inference for World-Action Models with Large Action Chunks - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="世界动作模型（World-Action Model, WAM）通过预测未来观测条件化动作生成，可提升机器人操作性能，但未来预测模块会增加额外推理开销，且长动作块执行时后期动作基于初始条件化的过时观测，成功率随执行时程增加大幅下降 论文提出Staircase Policy（简称S-WAM），一种面向大动作块世界动作模型的流式推理与训练框架，将大动作块拆分为多个子块，在交错去噪阶段实现近期动作的即时执行与后期动作的持续细化，无需反复调用完整策略即可解决长时程执行中动作条件过时与推理效率低的矛盾 该方法还可利用未来预测误差作为自适应分块信号，动态决定是否终止当前动作块并重新规划，进一步提升动态场景下的适应性" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.36471">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">Staircase Policy: Streaming Inference for World-Action Models with Large Action Chunks</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Staircase Policy: Streaming Inference for World-Action Models with Large Action Chunks</h1>
+            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.36471" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.36471" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.36471</span></div>
+            <p class="detail-summary">世界动作模型（World-Action Model, WAM）通过预测未来观测条件化动作生成，可提升机器人操作性能，但未来预测模块会增加额外推理开销，且长动作块执行时后期动作基于初始条件化的过时观测，成功率随执行时程增加大幅下降 论文提出Staircase Policy（简称S-WAM），一种面向大动作块世界动作模型的流式推理与训练框架，将大动作块拆分为多个子块，在交错去噪阶段实现近期动作的即时执行与后期动作的持续细化，无需反复调用完整策略即可解决长时程执行中动作条件过时与推理效率低的矛盾 该方法还可利用未来预测误差作为自适应分块信号，动态决定是否终止当前动作块并重新规划，进一步提升动态场景下的适应性</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of Maryland, College Park：作者Guoheng Sun、…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">世界动作模型（World-Action Model, WAM）通过预测未来观测条件化动作生成，可提升机器人操作性能，但未来预测模块会增加额外推理开销，且长动作块执行时后期动作基于初始条件化的过时观测，成功率随执行时程增加大幅下降</p>
+  <ul class="reading-intro-points"><li>世界动作模型（World-Action Model, WAM）通过预测未来观测条件化动作生成，可提升机器人操作性能，但未来预测模块会增加额外推理开销，且长动作块执行时后期动作基于初始条件化的过时观测，成功率随执行时程增加大幅下降</li><li>论文提出Staircase Policy（简称S-WAM），一种面向大动作块世界动作模型的流式推理与训练框架，将大动作块拆分为多个子块，在交错去噪阶段实现近期动作的即时执行与后期动作的持续细化，无需反复调用完整策略即可解决长时程执行中动作条件过时与推理效率低的矛盾</li><li>该方法还可利用未来预测误差作为自适应分块信号，动态决定是否终止当前动作块并重新规划，进一步提升动态场景下的适应性</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Maryland, College Park</strong>：作者Guoheng Sun、Ang Li所属机构</li><li><strong>Oxford Robotics Institute, University of Oxford</strong>：作者Jin Wang所属机构</li><li>独立研究员：作者Chen Chen、Teresa Lv所属，其中Teresa Lv为论文通讯作者</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>世界动作模型（World-Action Model, WAM）通过预测未来观测条件化动作生成，可提升机器人操作性能，但未来预测模块会增加额外推理开销，且长动作块执行时后期动作基于初始条件化的过时观测，成功率随执行时程增加大幅下降</li><li>论文提出<strong>Staircase Policy</strong>（简称S-WAM），一种面向大动作块世界动作模型的流式推理与训练框架，将大动作块拆分为多个子块，在交错去噪阶段实现近期动作的即时执行与后期动作的持续细化，无需反复调用完整策略即可解决长时程执行中动作条件过时与推理效率低的矛盾</li><li>该方法还可利用未来预测误差作为自适应分块信号，动态决定是否终止当前动作块并重新规划，进一步提升动态场景下的适应性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>Staircase Policy</strong>流式推理与训练框架，将大动作块拆分为K个大小为G的子块，在交错去噪阶段实现近期子块的即时执行与后期子块的持续去噪细化，生成与执行并行，无需等待完整动作块生成即可开始执行</li><li>设计低成本的<strong>观察条件刷新机制</strong>，仅在子块边界调用轻量级未来预测器，用最新观测重新生成未来潜变量更新所有未执行动作的条件，无需重复调用昂贵的视觉-语言骨干网络，即可解决长时程执行中动作条件过时的问题</li><li>证明<strong>未来预测误差可作为实用自适应分块信号</strong>，通过对比预测的未来潜变量与实际观测到的潜变量的均方误差，可判断场景是否偏离规划时的预期，动态调整动作块长度，平衡吞吐量与成功率</li><li>在多个仿真基准、不同策略骨干以及真实机器人任务上验证方法有效性，S-WAM在保持最高水平任务成功率的同时，大幅提升推理效率并降低首动作延迟</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础架构：以流匹配Vision-Language-Action (VLA) 模型为基础，添加轻量级未来预测器（由冻结的视觉编码器和轻量解码器组成，用于预测未来观测的潜变量表示），将普通VLA转化为JEPA风格的世界动作模型（即S-WAM），仅需保证动作专家可基于缓存的骨干网络上下文执行单步欧拉去噪</li><li>核心去噪楼梯机制：将长度为H的大动作块划分为K个大小为G的子块（H=K*G），所有动作位置共享同一流时间τ，每次查询对所有位置执行一步大小为1/K的欧拉去噪，随后立即将第j个子块通过外推至τ=1读出并交付控制器执行，剩余子块继续去噪，实现动作生成与执行的流水线，无需等待完整块生成</li><li>观察条件刷新机制：在每个子块边界，机器人获取新观测后，仅需调用轻量未来预测器重新生成未来潜变量，即可更新所有未执行动作的条件，计算成本仅为毫秒级，远低于重复调用数十亿参数的视觉-语言骨干网络的成本</li><li>训练策略：采用与推理完全一致的流式调度进行训练，用自预测的未来潜变量而非真实未来潜变量作为条件，损失函数同时监督读出的动作误差与未来潜变量预测误差，支持端到端优化，且训练收敛速度远快于常规分块训练</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>LIBERO</strong>（包含4个套件共40个通用机器人操作任务）、<strong>LIBERO-Plus</strong>（在LIBERO任务基础上新增7类场景扰动，用于测试策略鲁棒性）、<strong>DOMINO</strong>（动态操作基准，执行过程中场景会发生动态变化，用于测试策略对动态场景的适应性）</li><li>真实机器人数据集：在<strong>UFACTORY xArm 850</strong>工业机器人平台上，通过<strong>Meta Quest 3</strong>头显遥操作收集，包含9个操作任务（6个静态场景与动态场景对应的3类操作技能，另有3个持续、精确、多阶段操作任务），每个任务收集30条演示数据，每个任务评估40次试验</li><li>模型规模：基础骨干为<strong>23亿参数（2.3B）</strong>的潜变量世界动作模型（LaWAM），附加的未来预测器为轻量级小模块，总参数量略高于基础骨干</li><li>部署硬件：真实机器人端部署在<strong>NVIDIA Jetson Thor</strong>边缘计算设备上，实现端侧实时推理</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真场景在LIBERO、LIBERO-Plus、DOMINO三个公开基准上评估，真实机器人在自建的9个操作任务上评估，部署硬件为NVIDIA Jetson Thor</li><li>评估指标：任务成功率（Success Rate, SR）、每秒执行动作数（actions per second）、首动作延迟（Time-To-First-Action, TTFA）</li><li>关键实验结果：</li></ul>
+<p> - 仿真基准性能：在LIBERO上达到<strong>97.7%成功率</strong>，匹配现有最高成功率的同时，吞吐量达292.7 actions/s，是次快方法的1.8倍；在LIBERO-Plus上达到<strong>87.9%平均成功率</strong>，相比vanilla策略H_exec=50时提升17.3个百分点，在机器人初始状态扰动类别下达到76.0%的成功率，为该类别最优</p>
+<p> - 推理效率提升：相比准确率匹配的vanilla策略（H_exec=10），S-WAM将吞吐量从80.9 actions/s提升至292.7 actions/s（提升3.62倍），TTFA从123.6ms降低至73.3ms（降低40.7%）；加入CUDA Graph捕获和提示缓存优化后，吞吐量进一步提升至642.9 actions/s，TTFA降至48.6ms</p>
+<p> - 真实机器人性能：在6个静态任务上达到72.5%成功率，高于vanilla策略H_exec=20的67.5%和H_exec=50的57.1%；在动态任务上达到44.2%成功率，远高于vanilla H_exec=20的10.8%和H_exec=50的25.8%，验证了方法在动态场景下的优势</p>
+<p> - 训练效率：虽然单步流式训练的FLOPs是常规训练的1.87倍，但收敛速度大幅领先，在批次大小为4时，10k训练步即可达到72.5%成功率，而vanilla策略25k步仅达到32.2%，总训练FLOPs更少</p>
+<p> - 跨骨干迁移性：方法可无差别迁移到<strong>LaWAM</strong>、<strong>π₀.₅</strong>、<strong>FLOWER</strong>三种不同VLA骨干，在三种骨干上分别提升15.25、30.15、14.05个成功率点，吞吐量提升2.74~3.62倍，TTFA降低37.9%~40.7%，无需依赖骨干预训练未来潜变量预测能力</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.36518/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">LIBERO-MAX: Do Robot Policies Adapt When the World Changes?</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.36416/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">FineART: Fine-grained Annotated Robotic Trajectory Dataset and Vision-Language-Action Model for Bimanual Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

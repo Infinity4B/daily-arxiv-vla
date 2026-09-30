@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WayFinder: Hierarchical Visual-Language-Action for Zero-Shot Waypoint Generation and Low-Level Kinematic Control - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 WayFinder，一种端到端、闭环的分层视觉-语言-动作（VLA）框架，用于未知环境下的自主机器人导航。 核心思想是将高层任务推理与低层运动控制解耦，避免传统 VLA 模型因微调带来的巨大计算成本与数据稀缺问题。 解决核心问题：低层 DRL 控制器在复杂、分布外场景中容易陷入死锁（dead-end / infinite loop），而高频加载 MLLM 推理又不现实；WayFinder 仅在被检测到“停滞（stalled）”时才异步调用零样本 MLLM 生成恢复航点。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.37922">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.37922.webp" alt="WayFinder: Hierarchical Visual-Language-Action for Zero-Shot Waypoint Generation and Low-Level Kinematic Control" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 WayFinder，一种端到端、闭环的分层视觉-语言-动作（VLA）框架，用于未知环境下的自主机器人导航。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">WayFinder: Hierarchical Visual-Language-Action for Zero-Shot Waypoint Generation and Low-Level Kinematic Control</h1>
+            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.37922" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.37922" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.37922</span></div>
+            <p class="detail-summary">提出 WayFinder，一种端到端、闭环的分层视觉-语言-动作（VLA）框架，用于未知环境下的自主机器人导航。 核心思想是将高层任务推理与低层运动控制解耦，避免传统 VLA 模型因微调带来的巨大计算成本与数据稀缺问题。 解决核心问题：低层 DRL 控制器在复杂、分布外场景中容易陷入死锁（dead-end / infinite loop），而高频加载 MLLM 推理又不现实；WayFinder 仅在被检测到“停滞（stalled）”时才异步调用零样本 MLLM 生成恢复航点。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Timothy K Johnsen：加州大学尔湾分校（UC Irvine）与圣地亚哥州立大学（San…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 WayFinder，一种端到端、闭环的分层视觉-语言-动作（VLA）框架，用于未知环境下的自主机器人导航。</p>
+  <ul class="reading-intro-points"><li>提出 WayFinder，一种端到端、闭环的分层视觉-语言-动作（VLA）框架，用于未知环境下的自主机器人导航。</li><li>核心思想是将高层任务推理与低层运动控制解耦，避免传统 VLA 模型因微调带来的巨大计算成本与数据稀缺问题。</li><li>解决核心问题：低层 DRL 控制器在复杂、分布外场景中容易陷入死锁（dead-end / infinite loop），而高频加载 MLLM 推理又不现实；WayFinder 仅在被检测到“停滞（stalled）”时才异步调用零样本 MLLM 生成恢复航点。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Timothy K Johnsen</strong>：加州大学尔湾分校（UC Irvine）与圣地亚哥州立大学（San Diego State University）联合计算科学博士项目（Computational Science joint program）</li><li><strong>Marco Levorato</strong>：加州大学尔湾分校（UC Irvine）计算机科学系</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>WayFinder</strong>，一种端到端、闭环的分层视觉-语言-动作（VLA）框架，用于未知环境下的自主机器人导航。</li><li>核心思想是将高层任务推理与低层运动控制解耦，避免传统 VLA 模型因微调带来的巨大计算成本与数据稀缺问题。</li><li>解决核心问题：低层 DRL 控制器在复杂、分布外场景中容易陷入死锁（dead-end / infinite loop），而高频加载 MLLM 推理又不现实；WayFinder 仅在被检测到“停滞（stalled）”时才异步调用零样本 MLLM 生成恢复航点。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>设计了基于 <strong>Deep Reinforcement Learning (DRL)</strong> 的低层高频运动控制策略，融合深度传感器、GPS 与 IMU 数据，实现实时点对点导航与确定性避障。</li><li>提出将状态地图（occupancy grid 渲染为 RGB 图像）与结构化语言提示结合，作为零样本 <strong>MLLM（Gemma 3）</strong> 的输入，用于战略航点生成与故障恢复。</li><li>构建了完整的 <strong>Hierarchical VLA edge 框架</strong>：低层策略默认运行，仅在检测到停滞状态时才触发高层 MLLM 查询，显著降低推理频率与计算开销。</li><li>发布完整的训练/评估数据集与开源代码仓库（<strong>OmniNaviPy</strong>，https://github.com/WreckItTim/OmniNaviPy），支持后续研究。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>低层策略</strong>：基于 <strong>DQN（Deep Q-Network）</strong>，状态空间包括滚动时间窗内的 2D 深度图（144×256）、相对 GPS 坐标与 IMU 航向；动作空间为离散的平移（1–32 米）与 90° 偏航旋转。</li><li><strong>碰撞避免</strong>：确定性短距距离传感器机制，在检测到障碍时于碰撞前停止运动，使得碰撞惩罚从 POMDP 中移除。</li><li><strong>状态缓存与离散化</strong>：预计算 AirSim 环境中所有可能的 ego-centric 深度图与碰撞布尔状态，将训练时间从数周缩短到数小时。</li><li>**离线 A\* 路径生成**：利用 A\* 算法生成 ground-truth 路线，按最优步数定义路径难度，并划分训练/验证/测试集。</li><li><strong>课程学习（Curriculum Learning）</strong>：从简单路径渐进到复杂路径，配合 100 GB 大容量回放缓冲与随机采样缓解灾难性遗忘，并用早停机制冻结最优权重。</li><li><strong>高层策略（MLLM）</strong>：采用零样本 <strong>Gemma 3</strong>（4B/12B/27B），输入为彩色编码的视觉状态地图（黑=自由、白=障碍、灰=未知、紫=轨迹、红=历史航点、绿=起点、蓝=机器人、黄=目标）+ 结构化文本提示（含坐标与上下文）。</li><li><strong>停滞检测</strong>：通过滚动窗口内最大前进距离 Δρ_t 与阈值 ε 比较，判定是否触发 MLLM 查询，避免频繁推理。</li><li><strong>全局地图构建</strong>：通过相机内参、球面畸变校正与光线投射（ray tracing），将局部深度图转换为三值占用网格，再旋转/平移到全局地图，仅用新观察更新已探索区域。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真环境</strong>：<strong>Microsoft AirSim</strong> 高保真物理/图形模拟器</li><li><strong>四个 AirSim 环境</strong>：<strong>Blocks</strong>（低复杂度）、<strong>AirSimNH</strong>（城市）、<strong>CityEnviron</strong>（密集都市）、<strong>Coastline</strong>（最大地图，海岸/海洋）</li><li><strong>训练数据</strong>：离线 A\* 生成 4,000 条静态 hold-out 测试路径；训练集来自 AirSimNH 环境及其他环境分区</li><li><strong>MLLM 规模</strong>：<strong>gemma3:4b</strong>、<strong>gemma3:12b</strong>、<strong>gemma3:27b</strong></li><li><strong>训练资源</strong>：低层 DQN 训练使用预缓存离散状态，100 GB RAM 回放缓冲；高层 MLLM 通过 offboard/edge 计算托管</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估方式</strong>：AirSim 四环境中闭环导航，完全观察地图（ground truth occupancy grid）与部分观察地图（ray-traced maps）两种配置</li><li><strong>导航准确率（整体）</strong>：仅低层策略 baseline 为 <strong>44.55%–83.71%</strong>；加入 WayFinder 高层 MLLM 后提升至 <strong>72.00%–96.64%</strong></li><li><strong>成功率提升范围</strong>：相对 baseline 提升 <strong>1.82%–27.45%</strong>（与环境及模型规模相关）</li><li><strong>恢复率（Recovery Rate）</strong>：完全观察地图下，Gemma3:27b 在各环境恢复率提升 <strong>+48.03% ~ +77.71%</strong>；部分观察地图下提升 <strong>+25.08% ~ +80.72%</strong>；模型规模越大，恢复率越高、失败恢复率越低</li><li><strong>消融实验</strong>：移除语言坐标导致恢复率大幅下降至 12.26%（vs 默认 56.79%）；移除航点历史导致重复失败方式（48.02%）；移除视觉地图仅造成中等下降（55.62%）；使用 ground truth 占用网格反而低于 ray-traced 部分观察地图（53.45% vs 56.79%），说明局部视角有助于 MLLM 进行以机器人为中心的推理</li><li><strong>计算效率</strong>：仅停滞时查询 MLLM，显著减少昂贵推理次数，实现 edge 部署可行性</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.37970/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">PhysWAM: Physically Consistent World Action Model for Autonomous Driving</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.37810/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Explore, Execute, Evolve: A Skill Acquisition and Reuse Loop for Embodied Agents</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AeroManip-VLA: Scalable Vision-Language-Action Learning for Aerial Manipulation with RL-Generated Demonstrations - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有Vision-Language-Action（VLA）模型主要针对固定基座或地面机器人设计，无法适配飞行-操纵强耦合、观测动态变化、安全关键交互的空中操纵场景，且人工遥操作收集演示成本高、难扩展，缺乏系统化的空中VLA评估框架 本文提出AeroManip-VLA，首个结合大规模并行仿真、自动演示生成、轨迹级分析的可扩展空中VLA基准，支持负载感知的飞行-操纵控制，可实现可扩展的空中操纵数据生成与策略评估 核心目标是解决空中操纵场景下VLA训练数据难获取、策略评估不系统的问题，为空中操纵VLA的仿真训练和真实部署前验证提供统一平台" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.36915">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff; --cover-muted: rgba(247, 251, 255, 0.82); --cover-chip: rgba(247, 251, 255, 0.16); --cover-stroke: rgba(247, 251, 255, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">AeroManip-VLA: Scalable Vision-Language-Action Learning for Aerial Manipulation with RL-Generated Demonstrations</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">AeroManip-VLA: Scalable Vision-Language-Action Learning for Aerial Manipulation with RL-Generated Demonstrations</h1>
+            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.36915" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.36915" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.36915</span></div>
+            <p class="detail-summary">现有Vision-Language-Action（VLA）模型主要针对固定基座或地面机器人设计，无法适配飞行-操纵强耦合、观测动态变化、安全关键交互的空中操纵场景，且人工遥操作收集演示成本高、难扩展，缺乏系统化的空中VLA评估框架 本文提出AeroManip-VLA，首个结合大规模并行仿真、自动演示生成、轨迹级分析的可扩展空中VLA基准，支持负载感知的飞行-操纵控制，可实现可扩展的空中操纵数据生成与策略评估 核心目标是解决空中操纵场景下VLA训练数据难获取、策略评估不系统的问题，为空中操纵VLA的仿真训练和真实部署前验证提供统一平台</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">National University of Singapore（新加坡国立大学，作者Rui Huan…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有Vision-Language-Action（VLA）模型主要针对固定基座或地面机器人设计，无法适配飞行-操纵强耦合、观测动态变化、安全关键交互的空中操纵场景，且人工遥操作收集演示成本高、难扩展，缺乏系统化的空中VLA评估框架</p>
+  <ul class="reading-intro-points"><li>现有Vision-Language-Action（VLA）模型主要针对固定基座或地面机器人设计，无法适配飞行-操纵强耦合、观测动态变化、安全关键交互的空中操纵场景，且人工遥操作收集演示成本高、难扩展，缺乏系统化的空中VLA评估框架</li><li>本文提出AeroManip-VLA，首个结合大规模并行仿真、自动演示生成、轨迹级分析的可扩展空中VLA基准，支持负载感知的飞行-操纵控制，可实现可扩展的空中操纵数据生成与策略评估</li><li>核心目标是解决空中操纵场景下VLA训练数据难获取、策略评估不系统的问题，为空中操纵VLA的仿真训练和真实部署前验证提供统一平台</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>National University of Singapore</strong>（新加坡国立大学，作者Rui Huang、Yanlin Mu、Lidong Li、Yucong Wang、Zichen Yan、Lin Zhao所属单位）</li><li><strong>Beijing Institute of Technology</strong>（北京理工大学，作者Yanlin Mu第二所属单位）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有Vision-Language-Action（VLA）模型主要针对固定基座或地面机器人设计，无法适配飞行-操纵强耦合、观测动态变化、安全关键交互的空中操纵场景，且人工遥操作收集演示成本高、难扩展，缺乏系统化的空中VLA评估框架</li><li>本文提出<strong>AeroManip-VLA</strong>，首个结合大规模并行仿真、自动演示生成、轨迹级分析的可扩展空中VLA基准，支持负载感知的飞行-操纵控制，可实现可扩展的空中操纵数据生成与策略评估</li><li>核心目标是解决空中操纵场景下VLA训练数据难获取、策略评估不系统的问题，为空中操纵VLA的仿真训练和真实部署前验证提供统一平台</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首个可扩展的GPU加速空中VLA基准，整合大规模并行仿真、自动演示生成、轨迹级分析能力，支持低层级负载感知飞行-操纵控制，覆盖基础操纵技能和融合导航的长期任务</li><li>无需人工遥操作的自动化演示生成方案，结合特权混合专家规则与强化学习（RL）策略，可自动生成跨不同物体、环境、随机初始条件的多样化演示，包含基础技能和长程导航-操纵任务</li><li>结构化轨迹分析与基线评估体系，提出面向空中操纵的自动化事件标注和轨迹分类方案，支持任务进展、行为结果、安全故障的细粒度分析，评估多种模仿学习（IL）和VLA基线，揭示其性能特征与故障模式</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>底层构建基于<strong>ManiSkill3</strong>的GPU加速并行仿真框架，支持X500四旋翼搭载1-DoF UMI风格抓手或3-DoF机械臂的空中操纵平台，物理与控制更新频率为240Hz，策略运行频率为20Hz</li><li>低层采用负载感知级联飞行控制器，通过虚拟关节建模自由飞行机体，补偿抓取、运输、释放过程中的负载变化，支持GPU批量并行执行</li><li>策略学习采用三层方案：①特权混合专家：结合几何规划、规则控制、学习组件与仿真特权信息生成高质量演示；②行为克隆（BC）：模仿专家连续动作，实现高效策略蒸馏；③PPO优化：在GPU并行环境中进一步优化策略，支持从零训练或BC预训练，结合任务奖励与惩罚项优化策略</li><li>创新提出面向空中操纵的事件标注协议，同时标注任务交互事件与飞行约束（过度倾斜、高度违规、非目标接触、负载丢失等），支持技能级/全轨迹结果分析、轨迹分割有效性验证，为故障分析提供可追溯标准</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：<strong>AeroManip-VLA数据集</strong>，包含超过8万条演示，覆盖4类任务设置：TidyHouse（家庭整理拾取放置）、PrepareGroceries（厨房杂货拾取放置）、PackageDelivery（户外包裹递送，需拾取、导航、放置）、LongHorizonRearrangement（长期重排，需开门、拾取、放置、关门）</li><li>模型与平台：仿真平台基于ManiSkill3，机器人采用X500四旋翼，配置1-DoF抓手或3-DoF机械臂，均配备UMI风格指尖；评估基线包括ACT、Diffusion Policy、预训练VLA模型<strong>π₀</strong>与<strong>π₀.₅</strong></li><li>训练资源：GPU加速的大规模并行仿真环境，支持批量数据收集、策略训练与评估，单次25秒飞行测试的仿真与CPU浮点基座参考偏差仅2-3mm</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：AeroManip-VLA仿真基准，覆盖多类别物体、随机初始条件的4类任务场景；评估指标包括演示生成策略的成功率、学习效率、轨迹多样性、执行效率，以及下游策略的任务成功率</li><li>关键实验结果：</li></ul>
+<p> - 数据生成策略对比：BC仅需67-81k演示转移即可接近专家在Pick任务上的成功率，学习效率远高于PPO；PPO虽训练交互量更高，但可发现更多样、执行更快的成功轨迹，TidyHouse任务平均成功时间从15.8s降至3.8s，PrepareGroceries从14.7s降至4.0s，轨迹空间覆盖度、速度方向熵均显著高于专家和BC</p>
+<p> - 下游策略评估：预训练VLA模型<strong>π₀.₅</strong>平均成功率最高（44.6%），其次是π₀（38.9%）、Diffusion Policy（33.9%）、ACT（29.5%），预训练VLA向空中操纵的迁移效果更优；Pick任务成功率普遍低于Place，是核心瓶颈，不同物体的成功率差异显著，验证了基准的区分度</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.36934/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VLALight: A Vision-Language-Action Model for Traffic Signal Control</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.36774/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

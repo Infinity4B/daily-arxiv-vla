@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Direct Experience World-Model Optimization: Learning the World Beyond Action Imitation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对世界动作模型（WAM）的后部署学习问题，现有方法仅优化动作行为、不强制要求提升世界预测能力，在灵巧操作场景中微小动作偏差会累积并超出模型训练分布，导致策略改进困难 提出直接经验世界模型优化（DEWO）范式，在动作模仿之外，通过部署获得的视觉经验优化世界表示，从而更好地为动作生成提供条件 核心目标是让世界建模成为WAM后部署适应的主动组成部分，通过交互转折点的匹配经验提升控制性能，解决灵巧操作中部署后误差累积、泛化失效的问题" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.37398">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.37398.webp" alt="Direct Experience World-Model Optimization: Learning the World Beyond Action Imitation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对世界动作模型（WAM）的后部署学习问题，现有方法仅优化动作行为、不强制要求提升世界预测能力，在灵巧操作场景中微小动作偏差会累积并超出模型训练分布，导致策略改进困难</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Direct Experience World-Model Optimization: Learning the World Beyond Action Imitation</h1>
+            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.37398" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.37398" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.37398</span></div>
+            <p class="detail-summary">针对世界动作模型（WAM）的后部署学习问题，现有方法仅优化动作行为、不强制要求提升世界预测能力，在灵巧操作场景中微小动作偏差会累积并超出模型训练分布，导致策略改进困难 提出直接经验世界模型优化（DEWO）范式，在动作模仿之外，通过部署获得的视觉经验优化世界表示，从而更好地为动作生成提供条件 核心目标是让世界建模成为WAM后部署适应的主动组成部分，通过交互转折点的匹配经验提升控制性能，解决灵巧操作中部署后误差累积、泛化失效的问题</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">哈尔滨工业大学（Harbin Institute of Technology）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对世界动作模型（WAM）的后部署学习问题，现有方法仅优化动作行为、不强制要求提升世界预测能力，在灵巧操作场景中微小动作偏差会累积并超出模型训练分布，导致策略改进困难</p>
+  <ul class="reading-intro-points"><li>针对世界动作模型（WAM）的后部署学习问题，现有方法仅优化动作行为、不强制要求提升世界预测能力，在灵巧操作场景中微小动作偏差会累积并超出模型训练分布，导致策略改进困难</li><li>提出直接经验世界模型优化（DEWO）范式，在动作模仿之外，通过部署获得的视觉经验优化世界表示，从而更好地为动作生成提供条件</li><li>核心目标是让世界建模成为WAM后部署适应的主动组成部分，通过交互转折点的匹配经验提升控制性能，解决灵巧操作中部署后误差累积、泛化失效的问题</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>哈尔滨工业大学</strong>（Harbin Institute of Technology）</li><li><strong>大连理工大学</strong>（Dalian University of Technology）</li><li><strong>南方科技大学</strong>（Southern University of Science and Technology）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对<strong>世界动作模型（WAM）</strong>的后部署学习问题，现有方法仅优化动作行为、不强制要求提升世界预测能力，在灵巧操作场景中微小动作偏差会累积并超出模型训练分布，导致策略改进困难</li><li>提出<strong>直接经验世界模型优化（DEWO）</strong>范式，在动作模仿之外，通过部署获得的视觉经验优化世界表示，从而更好地为动作生成提供条件</li><li>核心目标是让世界建模成为WAM后部署适应的主动组成部分，通过交互转折点的匹配经验提升控制性能，解决灵巧操作中部署后误差累积、泛化失效的问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>DEWO</strong>后部署学习范式，核心是从部署交互中持续进行世界模型学习，而非仅优化动作策略</li><li>构建围绕交互转折点的完整框架：结合回放探索、结果条件世界建模、进度门控动作引导，从匹配的成功/失败交互后续中学习，且仅对成功行为提供动作监督</li><li>在三种WAM范式（联合建模、视频-动作逆动力学（IDM）、<strong>FastWAM</strong>）和两种真实世界灵巧手平台上验证有效性，证明该方法可跨架构提升任务成功率</li><li>通过控制消融实验证明，成功和失败的视觉经验能够同时提升世界预测精度和控制性能，效果优于纯动作监督</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>核心是<strong>DEWO</strong>，将后部署的世界模型学习作为WAM适应的核心环节，重点利用交互转折点处的发散物理未来提供监督信号</li><li>交互转折点识别与经验收集：通过回放探索在失败的部署轨迹中查询交互上下文，计算经验可恢复性，定位可恢复性从正转零的边界作为交互转折点，收集匹配的成功/失败后续（称为关键经验），仅成功后续提供动作监督</li><li>结果条件世界模型学习：为条件输入添加成功/失败标签，成功后续同时监督视觉预测和动作预测，失败后续仅监督视觉预测，复用WAM原有的视觉预测目标</li><li>进度门控动作引导：训练基于视频表示的价值头估计任务进度，推理时当进度停滞时激活分类器自由引导，在基础条件动作预测和成功条件动作预测之间插值引导动作生成，视觉预测始终基于基础条件</li><li>创新点：围绕交互转折点组织训练经验，利用成功和失败的视觉未来提供互补监督，通过进度感知的门控机制选择性触发引导，实现预测与控制的协同提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>模拟数据集：采用<strong>DexJoCo</strong>灵巧操作基准，包含5项任务：Water Plant、Fold Glasses、Hammer Nail、Pick Bucket、Pinch Tongs；评估使用3个各含50个场景的固定集合，每任务共150次试验，5任务平均加权总计750次试验</li><li>真实世界数据集：基于<strong>Wuji</strong>和<strong>Sharpa</strong>两种灵巧手平台，开展水瓶、胶带、橡皮、网球4类物体的抓取放置任务；采用3×3空间位置网格，每轮每单元格10次试验，共3轮（R0/R1/R2）部署学习迭代，总计2160次试验</li><li>模型：评估的基线模型包括<strong>FastWAM</strong>、<strong>FACT</strong>、<strong>π₀.₅</strong> VLA； additionally 构造了<strong>DEWO-S</strong>变体，从预训练的<strong>Wan2.2 VideoDiT</strong>和<strong>ActionDiT</strong>组件初始化联合WAM</li><li>训练资源：原文未明确说明具体GPU/TPU配置及各模型参数量</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：模拟环境（<strong>DexJoCo</strong> 5项灵巧操作任务）、真实世界环境（<strong>Wuji</strong>和<strong>Sharpa</strong>灵巧手，4类物体的抓取放置任务，3×3空间网格评估）</li><li>主要评估指标：任务成功率、离线验证视频预测损失</li><li>关键实验结果：</li></ul>
+<p> - 模拟场景：<strong>DEWO</strong>将<strong>FastWAM</strong>的平均成功率从80.7%提升至82.3%，将<strong>FACT</strong>的平均成功率从64.5%提升至81.2%，均超过SFT baseline；在三种WAM范式上均有提升，其中联合建模范式平均提升4.8个百分点，效果最显著；从预训练组件构造的<strong>DEWO-S</strong>初始平均成功率即达89.9%</p>
+<p> - 真实世界场景：两轮部署学习后，全网格pooled成功率从20.6%提升至28.9%；在包含至少一次初始成功的29个固定单元格中，成功率从51.0%提升至71.7%，提升20.7个百分点；迭代提升主要集中在初始已能偶尔成功的非中心位置，初始为0的单元格无提升，说明DEWO主要强化模型已有的空间泛化能力</p>
+<p> - 消融实验：加入成功视觉未来可提升成功率，再加入失败视觉未来可进一步提纯；关键经验训练效果优于匹配预算下的全轨迹训练；进度门控引导的效果优于无引导和连续引导</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.37530/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RawVLA: Embodied Neural Image Signal Processor For Robotic Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.37334/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Taming VLAs under Robot Execution Errors: Self-Compensation and Stress Testing</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
