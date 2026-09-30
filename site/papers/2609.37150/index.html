@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoRe-VLA: Preserving Cross-View Coordination in VLAs under Camera Shifts - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="当前主流视觉-语言-动作（VLA）模型在外部相机发生偏移时任务成功率骤降，现有修复方法需要额外收集多视角数据或对VLA进行微调，部署成本较高 论文首先识别出外部相机偏移下VLA的失效核心机制为跨视角协调崩溃：机器人过度依赖腕部视角线索，导致子任务执行顺序与全局任务状态不匹配 论文提出CoRe-VLA即插即用框架，无需额外多视角数据收集或VLA重训，通过重建场景点云并渲染到VLA训练时的外部视角，恢复跨视角协调能力，解决相机偏移下的VLA性能下降问题" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.37150">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.37150.webp" alt="CoRe-VLA: Preserving Cross-View Coordination in VLAs under Camera Shifts" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">当前主流视觉-语言-动作（VLA）模型在外部相机发生偏移时任务成功率骤降，现有修复方法需要额外收集多视角数据或对VLA进行微调，部署成本较高</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">CoRe-VLA: Preserving Cross-View Coordination in VLAs under Camera Shifts</h1>
+            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.37150" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.37150" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.37150</span></div>
+            <p class="detail-summary">当前主流视觉-语言-动作（VLA）模型在外部相机发生偏移时任务成功率骤降，现有修复方法需要额外收集多视角数据或对VLA进行微调，部署成本较高 论文首先识别出外部相机偏移下VLA的失效核心机制为跨视角协调崩溃：机器人过度依赖腕部视角线索，导致子任务执行顺序与全局任务状态不匹配 论文提出CoRe-VLA即插即用框架，无需额外多视角数据收集或VLA重训，通过重建场景点云并渲染到VLA训练时的外部视角，恢复跨视角协调能力，解决相机偏移下的VLA性能下降问题</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者均隶属于东南大学（南京，中国），其中作者Jun Yang同时隶属于国家EDA技术创新中心（南京…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">当前主流视觉-语言-动作（VLA）模型在外部相机发生偏移时任务成功率骤降，现有修复方法需要额外收集多视角数据或对VLA进行微调，部署成本较高</p>
+  <ul class="reading-intro-points"><li>当前主流视觉-语言-动作（VLA）模型在外部相机发生偏移时任务成功率骤降，现有修复方法需要额外收集多视角数据或对VLA进行微调，部署成本较高</li><li>论文首先识别出外部相机偏移下VLA的失效核心机制为跨视角协调崩溃：机器人过度依赖腕部视角线索，导致子任务执行顺序与全局任务状态不匹配</li><li>论文提出CoRe-VLA即插即用框架，无需额外多视角数据收集或VLA重训，通过重建场景点云并渲染到VLA训练时的外部视角，恢复跨视角协调能力，解决相机偏移下的VLA性能下降问题</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者均隶属于<strong>东南大学</strong>（南京，中国），其中作者Jun Yang同时隶属于<strong>国家EDA技术创新中心</strong>（南京，中国）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>当前主流视觉-语言-动作（VLA）模型在外部相机发生偏移时任务成功率骤降，现有修复方法需要额外收集多视角数据或对VLA进行微调，部署成本较高</li><li>论文首先识别出外部相机偏移下VLA的失效核心机制为<strong>跨视角协调崩溃</strong>：机器人过度依赖腕部视角线索，导致子任务执行顺序与全局任务状态不匹配</li><li>论文提出<strong>CoRe-VLA</strong>即插即用框架，无需额外多视角数据收集或VLA重训，通过重建场景点云并渲染到VLA训练时的外部视角，恢复跨视角协调能力，解决相机偏移下的VLA性能下降问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别出<strong>跨视角协调崩溃</strong>是外部相机偏移下VLA失效的关键机制，为后续方法设计提供指导</li><li>提出<strong>ETCA（执行轨迹条件对齐）</strong>异步控制策略，可适配所有机器人策略，减少任务执行时间并自动缓解高推理延迟下的运动冲突</li><li>提出<strong>CoRe-VLA</strong>即插即用框架，无需额外数据收集或VLA重训，即可整合到现有主流VLA中，大幅提升其视角鲁棒性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>几何视角恢复模块</strong>：基于直接RGB-D重投影重建场景点云，再通过已知的相机刚性变换将点云渲染到VLA训练时的外部相机视角，无需训练视角变换模型或收集配对多视角数据，快速恢复训练视角的几何结构</li><li><strong>Render-to-Camera (R2C) 恢复模块</strong>：采用轻量<strong>NAFNet</strong>网络，从现有任务演示视频中构造渲染退化图像对作为训练数据，结合感知损失、颜色损失和像素损失，修复渲染导致的纹理丢失、颜色失真、清晰度下降问题，仅更新恢复网络，VLA参数保持冻结</li><li><strong>Execution-Trajectory-Conditioned Alignment (ETCA) 模块</strong>：将动作块切换建模为轨迹匹配问题，将预测的动作前缀重采样为与机器人实际执行轨迹相同长度的状态序列，通过路径误差、终端关节状态误差、运动方向一致性及时间匹配误差的综合度量，选择最佳匹配的前缀，让机器人从剩余动作后缀继续执行，减少推理等待的空闲时间，缓解运动冲突</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>真实机器人实验采用自建5任务真实机器人测试集，涵盖基础操作、长程执行、空间推理三类任务；模拟实验采用<strong>LIBERO-100</strong>全量任务集和<strong>LIBERO-Plus</strong>相机子集</li><li>测试的VLA模型包括<strong>π₀.₅</strong>、<strong>OpenVLA-OFT</strong>、<strong>GR00T</strong>，所有VLA参数在应用CoRe-VLA时保持冻结；R2C模块基于轻量NAFNet实现</li><li>训练资源未明确指定，R2C模块的训练数据来自现有任务的2D演示视频，无需额外多视角数据收集</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：真实机器人场景（UR7e机器人，配备外部RGB-D相机与腕部固定相机，相机偏移范围0.0~1.6m，每个偏移随机采样3个位置，搭配2种初始物体布局）；模拟场景（LIBERO-100偏移范围0.0~0.9m，步长0.1m，每个偏移随机10个位置；LIBERO-Plus标准化相机偏移场景）</li><li>主要评估指标：任务成功率（SR）、失败类型2（任务状态不一致，F2）占比，ETCA模块额外评估平均完成时间、平均空闲时间</li><li>关键实验结果：真实机器人场景下，1.6m相机偏移时，π₀.₅的任务成功率从13.3%提升至83.3%，GR00T从6.7%提升至80.0%，任务状态不一致失败占比从76.7%降至13.3%（π₀.₅）；LIBERO-100场景下，0.9m偏移时π₀.₅成功率从13.8%提升至71.5%，OpenVLA-OFT从5.9%提升至55.1%；LIBERO-Plus场景下，π₀.₅成功率从72.0%提升至89.1%，增益17.1个百分点，全程无需额外多视角数据或VLA微调。消融实验表明R2C模块在1.6m偏移时为π₀.₅带来33.3个百分点的成功率提升，ETCA模块显著减少了任务执行的空闲时间。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.37165/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Disentangling Spurious Correlations in Vision-Language-Action Models via Predicting Domain-Invariant Latent Lookahead</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.37098/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">V2X-WAM: A Cooperative World Action Model for End-to-End Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

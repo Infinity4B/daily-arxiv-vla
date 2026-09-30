@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EgoAlign: Bridging the Human-Humanoid Gap for Long-Range Loco-Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 EgoAlign，一个数据构建框架，将第一人称人类演示（egocentric human demonstrations）转化为与目标人形机器人兼容的动作和状态监督信号，用于长距离移动操作（long-range loco-manipulation）任务。 核心问题：人体与机器人之间存在体型尺度差异和控制器响应差异，且人类录制数据缺乏机器人状态历史，导致人类演示难以直接作为人形机器人的有效训练监督。 该方法不依赖物理机器人遥操作采集数据，而是利用目标机器人模型、控制器和仿真环境（SONIC–MuJoCo）进行运动适配和状态重建，实现纯人类数据训练 + 零样本实体部署。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.38046">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.38046.webp" alt="EgoAlign: Bridging the Human-Humanoid Gap for Long-Range Loco-Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 EgoAlign，一个数据构建框架，将第一人称人类演示（egocentric human demonstrations）转化为与目标人形机器人兼容的动作和状态监督信号，用于长距离移动操作（long-range loco-manipulation）任务。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">EgoAlign: Bridging the Human-Humanoid Gap for Long-Range Loco-Manipulation</h1>
+            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.38046" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.38046" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.38046</span></div>
+            <p class="detail-summary">论文提出 EgoAlign，一个数据构建框架，将第一人称人类演示（egocentric human demonstrations）转化为与目标人形机器人兼容的动作和状态监督信号，用于长距离移动操作（long-range loco-manipulation）任务。 核心问题：人体与机器人之间存在体型尺度差异和控制器响应差异，且人类录制数据缺乏机器人状态历史，导致人类演示难以直接作为人形机器人的有效训练监督。 该方法不依赖物理机器人遥操作采集数据，而是利用目标机器人模型、控制器和仿真环境（SONIC–MuJoCo）进行运动适配和状态重建，实现纯人类数据训练 + 零样本实体部署。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">北京航空航天大学（Beihang University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 EgoAlign，一个数据构建框架，将第一人称人类演示（egocentric human demonstrations）转化为与目标人形机器人兼容的动作和状态监督信号，用于长距离移动操作（long-range loco-manipulation）任务。</p>
+  <ul class="reading-intro-points"><li>论文提出 EgoAlign，一个数据构建框架，将第一人称人类演示（egocentric human demonstrations）转化为与目标人形机器人兼容的动作和状态监督信号，用于长距离移动操作（long-range loco-manipulation）任务。</li><li>核心问题：人体与机器人之间存在体型尺度差异和控制器响应差异，且人类录制数据缺乏机器人状态历史，导致人类演示难以直接作为人形机器人的有效训练监督。</li><li>该方法不依赖物理机器人遥操作采集数据，而是利用目标机器人模型、控制器和仿真环境（SONIC–MuJoCo）进行运动适配和状态重建，实现纯人类数据训练 + 零样本实体部署。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>北京航空航天大学</strong>（Beihang University）</li><li><strong>阿里巴巴集团</strong>（Alibaba Group）</li><li><strong>上海创新研究院</strong>（Shanghai Innovation Institute）</li><li><strong>四川大学</strong>（Sichuan University）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>EgoAlign</strong>，一个数据构建框架，将<strong>第一人称人类演示</strong>（egocentric human demonstrations）转化为与目标人形机器人兼容的动作和状态监督信号，用于<strong>长距离移动操作</strong>（long-range loco-manipulation）任务。</li><li>核心问题：人体与机器人之间存在<strong>体型尺度差异</strong>和<strong>控制器响应差异</strong>，且人类录制数据缺乏机器人状态历史，导致人类演示难以直接作为人形机器人的有效训练监督。</li><li>该方法不依赖物理机器人遥操作采集数据，而是利用目标机器人模型、控制器和仿真环境（<strong>SONIC–MuJoCo</strong>）进行运动适配和状态重建，实现<strong>纯人类数据训练 + 零样本实体部署</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>EgoAlign</strong> 框架，无需物理机器人演示即可从人类演示构建机器人兼容的动作和状态监督，用于VLA策略训练。</li><li>开发<strong>运动适配方法</strong>，包括动力学引导的采集（dynamics-guided collection）和上肢尺度对齐（scale alignment），并结合控制器在环（controller-in-the-loop）优化进行残差校正。</li><li>设计<strong>因果状态重建</strong>（causal state reconstruction），将适配后的动作与对应的机器人本体感知状态配对，生成完整训练数据。</li><li>通过<strong>纯人类数据训练 + 零样本实体部署</strong>验证了监督质量：在物理 G1 人形机器人上完成约 10 米端到端物体搬运、位置泛化导航和独立评估的脚部交互任务。</li><li>系统消融实验证明各组件（导航数据、水平视角、状态重建、尺度对齐）的贡献，并量化人类采集相比遥操作在时间效率上的提升。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>数据采集</strong>：使用 <strong>PICO 4 Ultra</strong> 头显和五个追踪器（手腕、脚踝、腰部）采集人体运动，通过 SONIC 的 PICO-to-SMPL 转换得到 24 关节 SMPL 运动参考；两台 <strong>GoPro Hero 13</strong> 相机提供胸部下视（近场交互）和水平视角（远程导航）双路图像。</li><li><strong>动力学引导采集</strong>：实时将 SMPL 运动流经 SONIC 并在 MuJoCo 中回放，为演示者提供实时视觉反馈，指导其放大被抑制的低幅动作。</li><li><strong>尺度对齐</strong>：分为运动学对齐和控制器在环细化两阶段。构造匹配 G1 体型比例的 SMPL 代理模型，在保持骨盆轨迹和下肢运动的前提下优化上肢关节（领部、肩部、肘部），使机器人的手部端点接近人类参考目标；随后通过 SONIC–MuJoCo 回放残差进行迭代校正。</li><li><strong>因果状态重建</strong>：对最终定稿的运动在 SONIC–MuJoCo 中执行确定性回放，重建 VLA 训练所需的 43 维机器人本体状态（29 维关节位置 + 双手 14 维状态），并配对同一控制时刻的 64 维运动 token 标签和手部指令。</li><li><strong>VLA 微调</strong>：使用 <strong>π₀.₅</strong> 架构，从 <strong>PaliGemma-3B-PT-224</strong> 初始化骨干网络，预测 76 维动作（64 维运动 token + 双手各 6 维指令），SONIC 解码器将 token 解码为 29 维全身动作。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>任务数据：<strong>200 条</strong>物体搬运完整轨迹、<strong>各 200 条</strong>导航和脚部交互演示、<strong>100 条</strong>提篮导航演示（约 90% 通过过滤保留），由三名演示者采集。</li><li>机器人平台：<strong>Unitree G1</strong>（参考高度 1.25 m），搭载 <strong>SONIC</strong> 控制器，使用 <strong>MuJoCo</strong> 仿真回放。</li><li>训练资源：<strong>8 张 A800 GPU</strong>，全局 batch size 为 256，训练 50,000 步。</li><li>相机高度约 1.3 m，下视视角覆盖前方约 2 m 区域。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>零样本实体部署</strong>：在物理 G1 上无任务特定物理机器人演示，直接部署微调后的策略。物体搬运在 Direct 端点达到 <strong>65% 完全成功率</strong>，Multi-seen 和 Multi-unseen 均为 40%；导航在三种端点协议下达到 <strong>65–70% 成功率</strong>；脚部交互在 Multi-seen 和 Multi-unseen 均为 <strong>60% 完全成功率</strong>。</li><li><strong>尺度对齐效果</strong>：模拟右掌端点在激活帧上的宏平均误差从 NoAlign 的 <strong>14.27 cm</strong> 降至运动学对齐（Round 0）的 6.48 cm、Round 1 的 3.60 cm、Round 2 的 <strong>1.65 cm</strong>（有滞后补偿）；物理抓取成功率从 <strong>0% 提升至 90%</strong>。</li><li><strong>消融实验</strong>：移除导航数据使多位置设置成功率降低 20–25 个百分点；移除水平视角使多位置 S1 成功率降低 30–35 个百分点；状态重建消融（w/o State Recon. 和 Zero History）均导致 0/20 次通过 S1；<strong>NoAlign</strong> 与 <strong>GMR–SONIC</strong> 基线在全部 20 次试验中均失败于 S1 阶段。</li><li><strong>采集效率</strong>：人类采集将单条物体搬运示教的现场获取时间从遥操作的 <strong>130 秒降至 25 秒</strong>，吞吐量提升 <strong>5.2 倍</strong>。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.38057/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">EVO-WAM: Evolving World Action Models through Video-Action Verification</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.37970/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">PhysWAM: Physically Consistent World Action Model for Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
