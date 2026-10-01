@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tactile Curiosity Drives Robot Interaction - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 TacEx（Tactile Exploration Drives Efficient Learning）框架，将触觉反馈作为机器人操作任务中定向探索的核心先验信号，以解决强化学习（RL）在操纵任务中样本效率低下的问题。 核心问题：传统 RL 算法依赖随机动作采样，导致智能体将大部分训练预算浪费在自由空间运动上，远离产生操纵技能的接触区域；现有的基于模型分歧或认知不确定性的内在动机方法同样会对功能无关的过渡（如自由空间中的杂乱运动）奖励不确定性。 TacEx 通过将模型不确定性按感官模态分解，并将好奇心明确锚定到触觉通道，驱动机器人发现复杂接触动力学，在探索阶段不需要任务奖励或专家示范即可学习抓取和操纵技能。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.40134">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.40134.webp" alt="Tactile Curiosity Drives Robot Interaction" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 TacEx（Tactile Exploration Drives Efficient Learning）框架，将触觉反馈作为机器人操作任务中定向探索的核心先验信号，以解决强化学习（RL）在操纵任务中样本效率低下的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Tactile Curiosity Drives Robot Interaction</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.40134" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.40134" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.40134</span></div>
+            <p class="detail-summary">论文提出 TacEx（Tactile Exploration Drives Efficient Learning）框架，将触觉反馈作为机器人操作任务中定向探索的核心先验信号，以解决强化学习（RL）在操纵任务中样本效率低下的问题。 核心问题：传统 RL 算法依赖随机动作采样，导致智能体将大部分训练预算浪费在自由空间运动上，远离产生操纵技能的接触区域；现有的基于模型分歧或认知不确定性的内在动机方法同样会对功能无关的过渡（如自由空间中的杂乱运动）奖励不确定性。 TacEx 通过将模型不确定性按感官模态分解，并将好奇心明确锚定到触觉通道，驱动机器人发现复杂接触动力学，在探索阶段不需要任务奖励或专家示范即可学习抓取和操纵技能。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">ETH Zürich（苏黎世联邦理工学院），瑞士</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 TacEx（Tactile Exploration Drives Efficient Learning）框架，将触觉反馈作为机器人操作任务中定向探索的核心先验信号，以解决强化学习（RL）在操纵任务中样本效率低下的问题。</p>
+  <ul class="reading-intro-points"><li>论文提出 TacEx（Tactile Exploration Drives Efficient Learning）框架，将触觉反馈作为机器人操作任务中定向探索的核心先验信号，以解决强化学习（RL）在操纵任务中样本效率低下的问题。</li><li>核心问题：传统 RL 算法依赖随机动作采样，导致智能体将大部分训练预算浪费在自由空间运动上，远离产生操纵技能的接触区域；现有的基于模型分歧或认知不确定性的内在动机方法同样会对功能无关的过渡（如自由空间中的杂乱运动）奖励不确定性。</li><li>TacEx 通过将模型不确定性按感官模态分解，并将好奇心明确锚定到触觉通道，驱动机器人发现复杂接触动力学，在探索阶段不需要任务奖励或专家示范即可学习抓取和操纵技能。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>ETH Zürich</strong>（苏黎世联邦理工学院），瑞士</li><li><strong>University of California, Berkeley</strong>（加州大学伯克利分校），美国</li><li><strong>The University of Texas at Austin</strong>（德克萨斯大学奥斯汀分校），美国</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>TacEx</strong>（Tactile Exploration Drives Efficient Learning）框架，将触觉反馈作为机器人操作任务中定向探索的核心先验信号，以解决强化学习（RL）在操纵任务中样本效率低下的问题。</li><li>核心问题：传统 RL 算法依赖随机动作采样，导致智能体将大部分训练预算浪费在自由空间运动上，远离产生操纵技能的接触区域；现有的基于模型分歧或认知不确定性的内在动机方法同样会对功能无关的过渡（如自由空间中的杂乱运动）奖励不确定性。</li><li><strong>TacEx</strong> 通过将模型不确定性按感官模态分解，并将好奇心明确锚定到触觉通道，驱动机器人发现复杂接触动力学，在探索阶段不需要任务奖励或专家示范即可学习抓取和操纵技能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出了<strong>模态加权的探索目标</strong>（modality-weighted exploration objective），受信息增益探索启发，显式优先考虑触觉预测不确定性，避免触觉信号在无差别聚合中被稀释。</li><li>纯触觉驱动的探索阶段可从零开始涌现抓取行为，且所采集的<strong>交互密集数据集</strong>无需额外环境交互即可支持下游抓取-放置（pick-and-place）策略的离线学习。</li><li>将同一原则应用于<strong>视觉-语言-动作（VLA）模型的后训练</strong>：尽管 VLA 预训练时不含触觉反馈，使用 <strong>TacEx</strong> 后训练仍能显著提升下游性能，同时保持高样本效率。</li><li>实验表明触觉与视觉不确定性的结合既能促进聚焦的接触探索，又能带来更广泛的交互多样性（多物体场景中有效交互物体数约 2）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>将状态定义为 <code>s = [z^T, ι^T, v^T]^T</code>，其中 z 为融合潜表征，v 为视觉嵌入，ι 为触觉嵌入，由独立 CNN 编码器分别从 RGB 图像和触觉力图中提取。</li><li>使用<strong>集成动力学模型</strong>（ensemble dynamics model）预测下一状态，以集成头之间的分歧作为认知不确定性估计，并将不确定性分解为视觉、触觉、潜状态三个模态分量 <code>(σ^v_n, σ^ι_n, σ^z_n)</code>。</li><li>探索目标改进自 MaxInfoRL：在奖励中加入模态加权的探索奖励 <code>λ(ω_v‖σ^v_n‖ + ω_ι‖σ^ι_n‖ + ω_z‖σ^z_n‖)</code>，通过设置 <code>ω_ι ≫ ω_v, ω_z</code> 将探索偏向接触密集区域。</li><li>采用<strong>力场图</strong>（force maps）作为触觉表征——对接触斑块进行空间分箱，记录每个单元的压力和剪切力三维向量，保留接触位置、多点接触、旋转和滑移线索。</li><li>在 VLA 后训练中采用<strong>扩散引导</strong>（diffusion steering）架构：冻结 VLA 策略 π₀，训练轻量 MLP 策略 π^w 预测扩散噪声 w_t，触觉观测和触觉分歧作为额外输入信号和内在奖励。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真环境</strong>：带机器人夹爪和单个物体的模拟环境；扩展至包含四个物体的多物体环境。</li><li><strong>LIBERO-90</strong> 基准套件：选取 8 个接触密集型任务，并在夹爪上添加触觉传感。</li><li><strong>基线模型</strong>：<strong>DrQ</strong>（在线 RL 稀疏奖励基线）、<strong>DSRL-SAC</strong>（仅视觉+本体感觉的扩散引导 SAC 基线）、DSRL-PPO、DPPO。</li><li><strong>预训练 VLA 模型</strong>：π₀（视觉-语言-动作流模型），训练过程中保持冻结。</li><li><strong>评估资源</strong>：奖励自由探索实验报告 5 个随机种子的均值和标准误；扩散引导实验报告 10 个随机种子的结果；数值模拟在 <strong>ETH Zürich Euler 集群</strong>上运行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：物体交互频率、下游抓取-放置任务离线回报、交互多样性（有效抓取物体数 <code>2^H</code>，基于熵 H）、任务成功率（平均评估回报作为在线环境交互次数的函数）。</li><li>奖励自由探索（单物体）：加入触觉偏差显著提高物体交互与抓取尝试频率；无触觉偏差时智能体几乎不与物体互动；触觉变体产生的物体交互甚至超过稀疏奖励在线 RL 基线 <strong>DrQ</strong>。</li><li>基于触觉驱动采集数据离线训练的策略获得更高的离线回报，验证了接触密集数据收集对下游 RL 的关键作用。</li><li>多物体场景：触觉+视觉偏差组合将交互多样性提升至有效物体数约 2，而纯触觉探索更聚焦（有效物体数接近 1）；在单物体下游任务上纯触觉偏差性能略优。</li><li>扩散引导：<strong>DSRL-TacEx</strong> 在 8 个接触密集型 LIBERO-90 任务上整体优于仅视觉的 <strong>DSRL-SAC</strong> 基线，效果呈任务依赖性——预训练先验探索充分时额外内在奖励作用减小。</li><li>消融研究（附录 C）：触觉观测提升性能；信息增益探索优于纯 SAC；包含触觉分歧的探索变体性能最高；触觉+视觉变体在全部 5 个任务上取得最高平均最终回报，优于聚合 taxel 控制组和 PPO 类基线。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.40165/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">PrefPI: Preference-Guided Steering into Out-of-Distribution Behaviors</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.40007/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Multi-Link Safety Filtering for VLA Policies Around Moving Hazards</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

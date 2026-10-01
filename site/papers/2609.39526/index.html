@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Discrete Forcing: Infusing Discrete Guidance into Continuous Denoising for Few-Step Action Experts - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Discrete Forcing，一个面向视觉-语言-动作（VLA）模型的流匹配（flow-matching）动作生成框架，解决动作生成中&quot;粗粒度结构&quot;与&quot;细粒度精度&quot;难以兼顾的问题。 离散动作 token 提供紧凑的结构化表示但损失精度，连续动作 token 精度高但通常需要多步去噪、推理缓慢；Discrete Forcing 通过显式的从粗到细（coarse-to-fine）生成过程统一两者：先预测离散动作 token 建立粗动作结构，再以此引导连续动作精修。 在多个仿真基准和真实机器人实验中验证了该方法相较参数匹配的连续动作专家具有更优性能和更快推理速度，且随模型容量增大性能持续提升。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.39526">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.39526.webp" alt="Discrete Forcing: Infusing Discrete Guidance into Continuous Denoising for Few-Step Action Experts" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 Discrete Forcing，一个面向视觉-语言-动作（VLA）模型的流匹配（flow-matching）动作生成框架，解决动作生成中&quot;粗粒度结构&quot;与&quot;细粒度精度&quot;难以兼顾的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Discrete Forcing: Infusing Discrete Guidance into Continuous Denoising for Few-Step Action Experts</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.39526" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.39526" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.39526</span></div>
+            <p class="detail-summary">论文提出 Discrete Forcing，一个面向视觉-语言-动作（VLA）模型的流匹配（flow-matching）动作生成框架，解决动作生成中&quot;粗粒度结构&quot;与&quot;细粒度精度&quot;难以兼顾的问题。 离散动作 token 提供紧凑的结构化表示但损失精度，连续动作 token 精度高但通常需要多步去噪、推理缓慢；Discrete Forcing 通过显式的从粗到细（coarse-to-fine）生成过程统一两者：先预测离散动作 token 建立粗动作结构，再以此引导连续动作精修。 在多个仿真基准和真实机器人实验中验证了该方法相较参数匹配的连续动作专家具有更优性能和更快推理速度，且随模型容量增大性能持续提升。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">香港科技大学（广州）（The Hong Kong University of Science and…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 Discrete Forcing，一个面向视觉-语言-动作（VLA）模型的流匹配（flow-matching）动作生成框架，解决动作生成中&quot;粗粒度结构&quot;与&quot;细粒度精度&quot;难以兼顾的问题。</p>
+  <ul class="reading-intro-points"><li>论文提出 Discrete Forcing，一个面向视觉-语言-动作（VLA）模型的流匹配（flow-matching）动作生成框架，解决动作生成中&quot;粗粒度结构&quot;与&quot;细粒度精度&quot;难以兼顾的问题。</li><li>离散动作 token 提供紧凑的结构化表示但损失精度，连续动作 token 精度高但通常需要多步去噪、推理缓慢；Discrete Forcing 通过显式的从粗到细（coarse-to-fine）生成过程统一两者：先预测离散动作 token 建立粗动作结构，再以此引导连续动作精修。</li><li>在多个仿真基准和真实机器人实验中验证了该方法相较参数匹配的连续动作专家具有更优性能和更快推理速度，且随模型容量增大性能持续提升。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>香港科技大学（广州）</strong>（The Hong Kong University of Science and Technology (Guangzhou)）</li><li><strong>华南理工大学</strong>（South China University of Technology）</li><li><strong>中国科学技术大学</strong>（University of Science and Technology of China）</li><li><strong>西湖大学</strong>（Westlake University）</li><li><strong>浙江大学</strong>（Zhejiang University）</li><li><strong>清华大学</strong>（Tsinghua University）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>Discrete Forcing</strong>，一个面向视觉-语言-动作（VLA）模型的流匹配（flow-matching）动作生成框架，解决动作生成中"粗粒度结构"与"细粒度精度"难以兼顾的问题。</li><li>离散动作 token 提供紧凑的结构化表示但损失精度，连续动作 token 精度高但通常需要多步去噪、推理缓慢；Discrete Forcing 通过显式的从粗到细（coarse-to-fine）生成过程统一两者：先预测离散动作 token 建立粗动作结构，再以此引导连续动作精修。</li><li>在多个仿真基准和真实机器人实验中验证了该方法相较参数匹配的连续动作专家具有更优性能和更快推理速度，且随模型容量增大性能持续提升。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Discrete Forcing</strong> 流匹配框架，通过"离散→连续"的去噪过程生成动作，从粗结构到精确细节。</li><li>设计<strong>部分共享的双分支 Action DiT</strong>（共享 Transformer 层 + 离散/连续专用分支），每个分支仅需一次前向传播，参数量与常规单分支 DiT 相当，无额外模型规模开销。</li><li>将离散预测直接作为连续流匹配的<strong>源分布</strong>（discrete-guided source），构建同一动作轨迹的粗细两级表示，区别于以往将离散表示仅作为语义意图或规划变量的层次策略。</li><li>引入<strong>单步重建损失</strong>（one-step reconstruction objective），使连续分支在推理时仅需一次去噪即可生成高质量动作，实现仅 2 次函数评估（NFE）的高效推理。</li><li>大量基准与真实实验表明：性能更优、推理更快，随模型规模增大一致提升，并在高精度和动态操控任务上均有增益。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>整体架构集成 VLM 与 <strong>Discrete Forcing Expert</strong>：前 $L_s$ 层 Transformer 共享参数学习共同动作特征，后续层与输出头按离散预测和连续精修独立参数化，各分支通过交叉注意力接收 VLM 层级的视觉-语言条件。</li><li><strong>离散表示</strong>：归一化动作逐元素量化到 255 个动作 bin，配合 <code>[MASK]</code> token 构成词表大小 $K=256$，经可学习嵌入表映射为离散 token；<strong>连续表示</strong>：通过 MLP 动作编码器投影为连续 token，两者进入专家前具有相同隐藏维度。</li><li><strong>训练</strong>：动作 chunk 每次只分配给一个分支——离散分支以掩码恢复目标（交叉熵损失 $\mathcal{L}_{\mathrm{disc}}$），连续分支学习将离散引导源 $\mathbf{S}_t=(1-\alpha)\epsilon+\alpha Q^{-1}(\mathbf{Z}_t)$（$\alpha=0.3$）映射到目标动作的向量场，并联合流匹配损失 $\mathcal{L}_{\mathrm{FM}}$ 与单步重建损失 $\mathcal{L}_{\mathrm{1step}}$（$\lambda_{\mathrm{1step}}=0.5$，$\lambda_{\mathrm{disc}}=0.1$）。</li><li><strong>推理</strong>：仅需 2 次前向传播（2 NFE）——先从全掩码离散序列并行 argmax 预测粗动作，再反量化构造离散引导连续源，连续分支执行一次单步去噪得到最终执行的动作。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>LIBERO</strong>（单臂）、<strong>RoboTwin 2.0</strong>（双臂）、<strong>RoboCasa-GR1</strong>（灵巧手/高维动作空间）。</li><li>真实实验平台：<strong>ARX LIFT2 双臂机器人</strong>，配备 3 个 <strong>Intel RealSense D405</strong> 相机（1 个头部 + 每臂各 1 个）。</li><li>参数规模：LIBERO 上约 <strong>1.5B</strong>，RoboTwin 2.0 与 RoboCasa-GR1 上约 <strong>5.5B</strong>；缩放实验覆盖 <strong>1.0B / 2.6B / 5.5B</strong>（对应动作专家 175M / 400M / 900M 参数）。</li><li>峰值 GPU 显存：所有变体在评估设置下均为 <strong>3.09 GiB</strong>；RoboTwin 2.0 每任务仅 50 条演示数据。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO 基准</strong>：Discrete Forcing（1.5B, NFE=2）平均成功率 <strong>97.6%</strong>，为快速生成（NFE≤2）方法中最佳，比同规模 StarVLA（2 步）高 2.5 个百分点，且平均表现超过表中所有迭代生成（NFE>2）方法。</li><li><strong>RoboTwin 2.0</strong>：平均成功率 <strong>59.32%</strong>，较 StarVLA（49.80%）提升 9.52 个百分点，且无需机器人专用预训练，体现少样本（每任务 50 条演示）下的强泛化能力。</li><li><strong>RoboCasa-GR1</strong>：平均成功率 <strong>56.8%</strong>，较 StarVLA（43.9%）提升 12.9%，超越对比方法中最佳。</li><li><strong>模型缩放</strong>：1.0B 变体达到 47.96% 成功率，逼近 5.5B 基线（48.60%），却快 <strong>2.97×</strong> 且参数少 <strong>81.8%</strong>；性能随规模单调提升，无明显饱和。</li><li><strong>推理效率</strong>：动作延迟 P50 为 <strong>24.91ms</strong>（StarVLA 2 步为 29.20ms、10 步为 145.46ms），端到端延迟 P50 为 <strong>78.95ms</strong>；相较 10 步基线实现动作生成 <strong>5×</strong> 加速、端到端 <strong>2×</strong>+ 加速且成功率更高。</li><li><strong>结构分析</strong>：首次离散前向（DF@1）即达到全局方向相似度 <strong>0.989</strong>、归一化轨迹形状误差 <strong>0.0399</strong>，显著优于连续基线在 1–10 NFE 范围内表现，验证离散预测早期形成全局动作结构的机制。</li><li><strong>消融实验</strong>（LIBERO-Long）：完整模型 95.2%；离散→连续生成顺序最优；移除离散引导源（-2.6）、移除单步损失（-1.8）、加入分支通信（-4.8）均导致性能下降；训练时使用预测离散源与真实离散源结果几乎一致（95.3% vs 95.2%），故采用真实离散源以避免额外前向。</li><li><strong>真实实验</strong>：4 个任务（Transfer Tubes、Match Size、Pick Rotating Light、Grasp Moving Cube）均优于 OpenVLA-OFT 与 π₀ 基线，平均 Task Progress <strong>74.9%</strong>，提升 <strong>16.4%</strong>，在动态目标跟踪等高延迟敏感任务上增益尤为显著。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.39601/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">GroundingPI: A Grounding Foundation Model towards Physical Intelligence with Visual Primitives</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.39514/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Spike-driven Vision-Language-Action Model</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

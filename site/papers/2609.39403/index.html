@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IronMind: Scaling Humanoid Dexterous Manipulation via Camera-Space Ego-Centric Pretraining - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 IronMind，一个用于人形机器人灵巧操作的视觉-语言-动作（VLA）模型，通过大规模第一视角（Egocentric）人类视频与异构机器人数据进行预训练。 要解决两大核心挑战：（1）具身鸿沟——人手与机器人末端执行器在结构上存在差异，且低成本第一视角录制缺乏躯干运动学信息，传统重定向方法不可行；（2）异构数据质量问题——手部姿态估计噪声大、文本标注与动作对齐弱、未筛选视频包含无效操作片段。 论文验证了相机空间动作表示（Camera-Space Action Representation）配合大规模人类第一视角数据预训练，可作为人形机器人操作的可扩展基础范式。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.39403">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.39403.webp" alt="IronMind: Scaling Humanoid Dexterous Manipulation via Camera-Space Ego-Centric Pretraining" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 IronMind，一个用于人形机器人灵巧操作的视觉-语言-动作（VLA）模型，通过大规模第一视角（Egocentric）人类视频与异构机器人数据进行预训练。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">IronMind: Scaling Humanoid Dexterous Manipulation via Camera-Space Ego-Centric Pretraining</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.39403" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.39403" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.39403</span></div>
+            <p class="detail-summary">论文提出 IronMind，一个用于人形机器人灵巧操作的视觉-语言-动作（VLA）模型，通过大规模第一视角（Egocentric）人类视频与异构机器人数据进行预训练。 要解决两大核心挑战：（1）具身鸿沟——人手与机器人末端执行器在结构上存在差异，且低成本第一视角录制缺乏躯干运动学信息，传统重定向方法不可行；（2）异构数据质量问题——手部姿态估计噪声大、文本标注与动作对齐弱、未筛选视频包含无效操作片段。 论文验证了相机空间动作表示（Camera-Space Action Representation）配合大规模人类第一视角数据预训练，可作为人形机器人操作的可扩展基础范式。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">XPENG Robotics（小鹏机器人）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 IronMind，一个用于人形机器人灵巧操作的视觉-语言-动作（VLA）模型，通过大规模第一视角（Egocentric）人类视频与异构机器人数据进行预训练。</p>
+  <ul class="reading-intro-points"><li>论文提出 IronMind，一个用于人形机器人灵巧操作的视觉-语言-动作（VLA）模型，通过大规模第一视角（Egocentric）人类视频与异构机器人数据进行预训练。</li><li>要解决两大核心挑战：（1）具身鸿沟——人手与机器人末端执行器在结构上存在差异，且低成本第一视角录制缺乏躯干运动学信息，传统重定向方法不可行；（2）异构数据质量问题——手部姿态估计噪声大、文本标注与动作对齐弱、未筛选视频包含无效操作片段。</li><li>论文验证了相机空间动作表示（Camera-Space Action Representation）配合大规模人类第一视角数据预训练，可作为人形机器人操作的可扩展基础范式。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>XPENG Robotics</strong>（小鹏机器人）</li><li><strong>World Model Team</strong>（世界模型团队）</li><li>论文项目主页：https://xpeng-robotics.github.io/ironmind/</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>IronMind</strong>，一个用于人形机器人灵巧操作的视觉-语言-动作（<strong>VLA</strong>）模型，通过大规模第一视角（Egocentric）人类视频与异构机器人数据进行预训练。</li><li>要解决两大核心挑战：（1）<strong>具身鸿沟</strong>——人手与机器人末端执行器在结构上存在差异，且低成本第一视角录制缺乏躯干运动学信息，传统重定向方法不可行；（2）<strong>异构数据质量问题</strong>——手部姿态估计噪声大、文本标注与动作对齐弱、未筛选视频包含无效操作片段。</li><li>论文验证了<strong>相机空间动作表示</strong>（Camera-Space Action Representation）配合大规模人类第一视角数据预训练，可作为人形机器人操作的可扩展基础范式。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>相机空间预训练方案</strong>：提出相机空间动作表示作为统一的人-机接口，通过跨具身动作维度语义对齐，结合多阶段数据清洗流水线（规则过滤、原子任务重标注、逐帧质量加权），构建超过 <strong>10,000 小时</strong>的预训练语料。</li><li><strong>带可选多模态世界先验的 VLA 架构</strong>：提出双专家 <strong>Mixture-of-Transformers（MoT）</strong> 骨干网络，结合流匹配（Flow-Matching）动作解码，并探索基于视频生成模型未来帧预测、语义特征与空间几何表示的世界先验监督，推理时无需运行辅助教师模型。</li><li><strong>开环到闭环的完整评估套件</strong>：构建三级评估体系，包括相机空间开环接近/抓取指标、策略在环（Policy-in-the-Loop）滚动评估、以及真实机器人闭环测试协议。</li><li><strong>真实机器人实证验证</strong>：在 <strong>IRON-R01</strong> 人形机器人上，10,000 小时预训练模型在 6 个分布外（OOD）任务上达到 <strong>55.0%</strong> 成功率，远超较小预训练预算（≤11.7%）和无预训练（5.0%）水平。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>相机空间动作表示</strong>：将人类第一视角轨迹与机器人轨迹统一到相同的相机空间坐标系（通过外参标定），绕开人体到机器人的显式重定向，并减少头部相机安装偏差带来的观测-动作不匹配。</li><li><strong>多阶段数据清洗流水线</strong>：（1）规则过滤——剔除相机内参缺失、3D 手部姿态不合理（遮挡或估计错误）的帧；（2）原子任务重标注——使用 VLM（Qwen3.6-35B-A3B）将连续视频切分为单一意图的原子任务片段并重新生成标注；（3）运动学速度对齐——对时间轴重缩放以匹配真实遥操作数据的速度分布；（4）逐帧质量加权——按公式 p(f)=e(f)·g(f)·s_cam(f)·s_move(f)·b_vel(f) 计算采样权重。</li><li><strong>双专家 MoT 架构</strong>：<strong>理解专家</strong>（Understanding Expert）基于预训练视觉-语言骨干，处理头部相机 RGB 图像与语言指令；<strong>动作专家</strong>（Action Expert）为基于流匹配目标的 Diffusion Transformer（DiT）；两者通过<strong>共享注意力层</strong>（Shared Attention Fusion）在指定深度进行跨流交互。</li><li><strong>多模态世界先验</strong>：通过可学习的查询标记（Query Tokens）监督三类先验——空间几何先验（Depth-Anything-3-Base 深度表示）、语义表示先验（DINOv3 自监督特征）、动态世界模型先验（冻结的 Wan2.2 视频生成模型预测未来 VAE 隐变量）；训练后移除辅助头，仅保留查询标记。</li><li><strong>两阶段训练范式</strong>：大规模预训练阶段（人类视频为主 + 异构机器人数据补充），随后在约 <strong>40,000</strong> 条 IRON-R01 遥操作轨迹上进行后训练适配，目标机器人数据仅在 post-training 阶段引入。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>IronMind 预训练语料</strong>：超过 10,000 小时，涵盖第一视角人类视频与异构非目标具身机器人数据，场景包括家庭、食品饮料、实验室/车间、酒店、零售、教育、办公室等。</li><li><strong>评估数据集</strong>：自采集的 970 个接近测试案例（101 张 RealSense D435 RGB-D 快照、23 个物体类别、46 个提示词）和 120 个抓取事件（10 个场景）。</li><li><strong>后训练数据</strong>：约 40,000 条经筛选的 IRON-R01 遥操作轨迹。</li><li><strong>训练配置</strong>：AdamW 优化器，全局 batch size 为 <strong>1024</strong>，cosine 学习率调度（衰减至峰值的 10%）；预训练预算从 250 小时到 10,000 小时。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>开环评估</strong>：10,000 小时模型相比 250 小时基线，接近距离 d_p10 从 37.8cm 降至 <strong>25.8cm</strong>，接近进度从 14.7% 提升至 <strong>44.9%</strong>，手指开度误差 e_FA 从 19.97mm 降至 <strong>15.66mm</strong>。</li><li><strong>策略在环滚动评估</strong>（3 个 chunk，970 个案例）：进度从 21.4%（250h）提升至 <strong>49.3%</strong>（10,000h），对齐角度从 46.1° 降至 <strong>21.6°</strong>，d_p10 从 32.0cm 降至 <strong>14.6cm</strong>。</li><li><strong>规模定律</strong>：预训练验证损失在 250h–10,000h 范围内呈近似对数线性下降，斜率为 <strong>-0.058/十进小时</strong>，未出现饱和。</li><li><strong>用户研究</strong>：盲测中 10,000h 检查点对 250h 基线在 70 张已决策投票中胜出 47 票，<strong>胜率 67.1%</strong>。</li><li><strong>世界先验消融</strong>：三先验完整配置在开放接近集上最优（d_p10=22.6cm，进度=53.4%），优于无先验基线（27.6cm，40.9%）；移除任一支路均导致性能下降，其中移除深度先验影响最大。</li><li><strong>真实机器人闭环评估</strong>（IRON-R01，10Hz，6 个 OOD 任务）：10,000h 模型平均成功率 <strong>55.0%</strong>、进度 <strong>71.3%</strong>，优于躯干坐标系基线（26.7%/46.2%）、带世界先验版本（31.7%/53.3%）及外部基线 <strong>InternVLA-A1.5</strong>（30.0%/47.8%）；与 5,000h 及以下预算相比提升明显（此前成功率均 ≤11.7%）。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.39514/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Spike-driven Vision-Language-Action Model</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.39388/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">UniWAM Technical Report: Unified Mobile Manipulation via Mixed-Stream World-Action Modeling and Manipulation Anchor Pose Supervision</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

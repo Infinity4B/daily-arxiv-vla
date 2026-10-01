@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>When Instructions Retrieve Trajectories: Diagnosing and Mitigating Generalization Failures in VLA Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文聚焦于视觉-语言-动作（VLA）模型在反事实扰动（counterfactual perturbations）下的泛化失败问题。模型在分布内任务上可超过 90% 成功率，也能承受不改变所需动作的干扰性扰动（nuisance perturbations），但在要求不同动作的场景变更（如交换物体位置、更换目标）下表现急剧下降。 论文提出并诊断了名为 instruction-action binding（指令-动作绑定）的失败模式：策略对语言和视觉各自都有响应，但未能将二者组合起来选择任务所要求的动作。指令会检索熟悉的轨迹族，视觉反馈只调整该轨迹的执行，而非纠正任务级动作选择。 基于该诊断，论文提出 Equivariant Counterfactual Training (ECT) 训练方法，通过补充&quot;同一指令下不同场景要求不同动作&quot;的监督信号，修复 VLA 模型的指令-动作绑定泛化失败。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.39971">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.39971.webp" alt="When Instructions Retrieve Trajectories: Diagnosing and Mitigating Generalization Failures in VLA Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文聚焦于视觉-语言-动作（VLA）模型在反事实扰动（counterfactual perturbations）下的泛化失败问题。模型在分布内任务上可超过 90% 成功率，也能承受不改变所需动作的干扰性扰动（nuisance perturbations），但在要求不同动作的场景变更（如交换物体位置、更换目标）下表现急剧下降。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">When Instructions Retrieve Trajectories: Diagnosing and Mitigating Generalization Failures in VLA Models</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.39971" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.39971" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.39971</span></div>
+            <p class="detail-summary">论文聚焦于视觉-语言-动作（VLA）模型在反事实扰动（counterfactual perturbations）下的泛化失败问题。模型在分布内任务上可超过 90% 成功率，也能承受不改变所需动作的干扰性扰动（nuisance perturbations），但在要求不同动作的场景变更（如交换物体位置、更换目标）下表现急剧下降。 论文提出并诊断了名为 instruction-action binding（指令-动作绑定）的失败模式：策略对语言和视觉各自都有响应，但未能将二者组合起来选择任务所要求的动作。指令会检索熟悉的轨迹族，视觉反馈只调整该轨迹的执行，而非纠正任务级动作选择。 基于该诊断，论文提出 Equivariant Counterfactual Training (ECT) 训练方法，通过补充&quot;同一指令下不同场景要求不同动作&quot;的监督信号，修复 VLA 模型的指令-动作绑定泛化失败。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">National Tsing Hua University（台湾清华大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文聚焦于视觉-语言-动作（VLA）模型在反事实扰动（counterfactual perturbations）下的泛化失败问题。模型在分布内任务上可超过 90% 成功率，也能承受不改变所需动作的干扰性扰动（nuisance perturbations），但在要求不同动作的场景变更（如交换物体位置、更换目标）下表现急剧下降。</p>
+  <ul class="reading-intro-points"><li>论文聚焦于视觉-语言-动作（VLA）模型在反事实扰动（counterfactual perturbations）下的泛化失败问题。模型在分布内任务上可超过 90% 成功率，也能承受不改变所需动作的干扰性扰动（nuisance perturbations），但在要求不同动作的场景变更（如交换物体位置、更换目标）下表现急剧下降。</li><li>论文提出并诊断了名为 instruction-action binding（指令-动作绑定）的失败模式：策略对语言和视觉各自都有响应，但未能将二者组合起来选择任务所要求的动作。指令会检索熟悉的轨迹族，视觉反馈只调整该轨迹的执行，而非纠正任务级动作选择。</li><li>基于该诊断，论文提出 Equivariant Counterfactual Training (ECT) 训练方法，通过补充&quot;同一指令下不同场景要求不同动作&quot;的监督信号，修复 VLA 模型的指令-动作绑定泛化失败。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>National Tsing Hua University</strong>（台湾清华大学）</li><li><strong>National Taiwan University</strong>（台湾大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文聚焦于视觉-语言-动作（VLA）模型在<strong>反事实扰动</strong>（counterfactual perturbations）下的泛化失败问题。模型在分布内任务上可超过 90% 成功率，也能承受不改变所需动作的<strong>干扰性扰动</strong>（nuisance perturbations），但在要求不同动作的场景变更（如交换物体位置、更换目标）下表现急剧下降。</li><li>论文提出并诊断了名为 <strong>instruction-action binding</strong>（指令-动作绑定）的失败模式：策略对语言和视觉各自都有响应，但未能将二者组合起来选择任务所要求的动作。指令会检索熟悉的轨迹族，视觉反馈只调整该轨迹的执行，而非纠正任务级动作选择。</li><li>基于该诊断，论文提出 <strong>Equivariant Counterfactual Training (ECT)</strong> 训练方法，通过补充"同一指令下不同场景要求不同动作"的监督信号，修复 VLA 模型的指令-动作绑定泛化失败。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>识别并命名"指令-动作绑定"失败模式</strong>：在 <strong>π₀.₅</strong> 和 <strong>GR00T-N1.7</strong> 两种 VLA 架构中，通过 381 个行为学探针测试发现，69% 的失败 rollout 表现为重放源任务或其他演示过的任务轨迹，而非无结构崩溃（仅 4%），证明策略对语言和视觉有响应但任务级动作选择错误。</li><li><strong>提供机制层面的诊断证据</strong>：通过 prefix-KV 读出实验（34/45 正确恢复已执行任务）和状态替换干预实验（200 次 rollout 全部从源任务转向目标任务方向），证明任务条件化的内部状态直接影响动作选择。</li><li><strong>形式化解释泛化失败的来源</strong>：从 flow matching 模仿目标的视角说明，当训练数据中同一指令对应的条件动作支撑（conditional action support）过窄时，指令键控（instruction-keyed）解可以在不解析场景的情况下拟合监督数据，构成欠定（underspecification）问题。</li><li><strong>提出 ECT 双层训练方法</strong>：<strong>ECT data</strong>（构造同一指令下、场景可区分且动作不同的有效反事实演示对）与 <strong>ECT loss</strong>（在同一更新步中配对计算两个分支的模仿损失）互补使用；在 LIBERO-PRO 上使 Swap 平均成功率从 36% 提升至 59%。</li><li><strong>跨环境验证 ECT 的通用性</strong>：在构造的 <strong>LIBERO</strong> 反事实、自然出现的 <strong>CALVIN</strong> 替代演示（ECT loss 单独提升五任务完成率从 58% 到 76%）、以及真实 <strong>UR5e</strong> 机器人固定演示预算（未见位置成功率从 8% 提升至 88%）三种场景下均验证有效。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>论文构建了"干扰性 vs 反事实"扰动的分类框架，用 Δₖ（指令键是否改变）和 Δₐ（所需动作是否改变）两个指标区分扰动类型，将指令键控查找模型 π_lookup 与真实 grounded 策略进行对比分析。</li><li><strong>行为学诊断</strong>：设计定向规则扰动，人工标注失败 rollout 属于"源任务重放"、"其他任务检索"、"混合轨迹"还是"正确跟随"，并验证标注者间一致性（κ=0.78）。</li><li><strong>机制诊断</strong>：使用 prefix-KV 余弦距离读出已执行任务，并通过替换 prefix-KV 缓存或 backbone 特征序列进行干预，观察动作重定向。</li><li><strong>ECT 数据构建</strong>：采用几何变换（镜像、平移）变换原始场景并重放变换后的末端执行器路径，由 replay 控制器验证动作有效性；关键设计原则是反事实对必须既能区分不同动作，又让场景线索可区分所需动作——仅改变动作而场景无法辨别（如前后镜像）会导致 ID 成功率从 94% 暴跌至 24%。</li><li><strong>ECT loss</strong>：从配对集合 E 中采样匹配的演示对，在同一更新步中求和两个分支的标准模仿损失，两个分支共享 flow matching 噪声样本和时间步长，不引入额外辅助目标。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO-PRO</strong> 四个套件：<strong>Spatial</strong>、<strong>Object</strong>、<strong>Goal</strong>（LIBERO-10 中部分）、<strong>Long</strong>（LIBERO-10），涵盖 ID、Semantic、Object、Swap、Task 五个评估单元。</li><li><strong>CALVIN</strong> ABC→D 基准：五任务连续操作完成率评估。</li><li><strong>真实机器人 UR5e</strong> 研究：400 个演示/主模型，固定演示预算下的未见位置泛化评估。</li><li>评估模型：<strong>π₀.₅</strong>（Frozen-LM 和 Full-FT 两种微调方式）与 <strong>GR00T-N1.7</strong>，两者均为 flow matching 架构。</li><li>训练配置：Frozen-LM 微调训练视觉编码器和动作专家，冻结语言模型；对比实验匹配训练步数与 batch size（64 examples/update），每行结果平均 3 个训练种子。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO-PRO 诊断结果</strong>：在两个架构中，每个套件的干扰性单元（Semantic、Object）成功率均高于每个反事实单元（Swap、Task），Swap 和 Task 比 ID 低至少 42 个百分点；381 个 π₀.₅ rollout 中 69% 为检索式失败、27% 正确或接近正确跟随；GR00T-N1.7 上 73% 检索式行为。</li><li><strong>机制干预结果</strong>：45 个 Goal 探针中，prefix-KV 读出在 34/45 中首位命中实际执行任务（文本 TF-IDF 仅 22/45）；50 个 Object 任务对 × 4 次 rollout 中，状态注入使 109/200（π₀.₅）和 121/200（GR00T-N1.7）rollout 更接近目标任务物体，对照组均为 0/200，源任务完成率从 200/200 降至 0。</li><li><strong>ECT 主结果</strong>：受控 π₀.₅ Frozen-LM 对比中，ECT 将平均 Swap 成功率从 36% 提至 59%，平均 Task 成功率从 21% 提至 28%；Full-FT 设置下 Swap 提升最高达 +26.2 点。</li><li><strong>组件消融</strong>：ECT data 贡献大部分 Swap 增益（+10.5 至 +32.8 点），ECT loss 在 Spatial/Goal/Long 上额外增加 2.3–5.2 点；在 CALVIN 上 ECT loss 单独将五任务完成率从 58% 提至 76%。</li><li><strong>行为学改善</strong>：ECT 后正确/近似跟随比例从 27% 升至 48%，检索式失败从 69% 降至 47%；新 Spatial 目的地下错误完成原放置从 29/30 降至 3/30。</li><li><strong>真实机器人结果</strong>：实时 UR5e 上 400 演示/主模型，ECT 使未见位置成功率从 3/40 提升至 35/40（8%→88%）。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.39973/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">EWAM: Emergent Depth-Wise Specialization in a Unified Embodied Model -- From Semantic Understanding through Visual Foresight to Action</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.39873/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SplineWAM: Adaptive Action Horizons for World Action Models via B-Spline Representations</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

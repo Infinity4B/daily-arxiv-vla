@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spike-driven Vision-Language-Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出首个 Spike-driven VLA（视觉-语言-动作）框架，支持端到端直接训练，用于机器人操作任务。 现有 VLA 模型大多依赖大型 Transformer 架构，存在延迟高、能耗大的问题，难以部署到资源受限的边缘平台。本文利用脉冲神经网络（SNN）的事件驱动与稀疏计算特性解决这一瓶颈。 该框架包含三大核心组件：脉冲视觉/指令编码器、多赢家尖峰融合（MWSF）、尖峰动作分块 Transformer（SpikeACT），在 LIBERO 和 Meta-World 基准上实现与 ANN 方法相当甚至更优的性能。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.39514">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.39514.webp" alt="Spike-driven Vision-Language-Action Model" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出首个 Spike-driven VLA（视觉-语言-动作）框架，支持端到端直接训练，用于机器人操作任务。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Spike-driven Vision-Language-Action Model</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.39514" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.39514" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.39514</span></div>
+            <p class="detail-summary">论文提出首个 Spike-driven VLA（视觉-语言-动作）框架，支持端到端直接训练，用于机器人操作任务。 现有 VLA 模型大多依赖大型 Transformer 架构，存在延迟高、能耗大的问题，难以部署到资源受限的边缘平台。本文利用脉冲神经网络（SNN）的事件驱动与稀疏计算特性解决这一瓶颈。 该框架包含三大核心组件：脉冲视觉/指令编码器、多赢家尖峰融合（MWSF）、尖峰动作分块 Transformer（SpikeACT），在 LIBERO 和 Meta-World 基准上实现与 ANN 方法相当甚至更优的性能。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">电子科技大学（University of Electronic Science and Technol…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出首个 Spike-driven VLA（视觉-语言-动作）框架，支持端到端直接训练，用于机器人操作任务。</p>
+  <ul class="reading-intro-points"><li>论文提出首个 Spike-driven VLA（视觉-语言-动作）框架，支持端到端直接训练，用于机器人操作任务。</li><li>现有 VLA 模型大多依赖大型 Transformer 架构，存在延迟高、能耗大的问题，难以部署到资源受限的边缘平台。本文利用脉冲神经网络（SNN）的事件驱动与稀疏计算特性解决这一瓶颈。</li><li>该框架包含三大核心组件：脉冲视觉/指令编码器、多赢家尖峰融合（MWSF）、尖峰动作分块 Transformer（SpikeACT），在 LIBERO 和 Meta-World 基准上实现与 ANN 方法相当甚至更优的性能。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>电子科技大学（University of Electronic Science and Technology of China）</strong></li><li>作者：<strong>Shuai Wang</strong>、<strong>Malu Zhang</strong>（通讯作者）、Mingquan Liu、Weihui Dai、Dehao Zhang、Jieyuan Zhang、Yimeng Shan、Zijian Zhou、<strong>Yang Yang</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出<strong>首个 Spike-driven VLA（视觉-语言-动作）框架</strong>，支持端到端直接训练，用于机器人操作任务。</li><li>现有 VLA 模型大多依赖大型 Transformer 架构，存在<strong>延迟高、能耗大</strong>的问题，难以部署到资源受限的边缘平台。本文利用脉冲神经网络（SNN）的事件驱动与稀疏计算特性解决这一瓶颈。</li><li>该框架包含三大核心组件：<strong>脉冲视觉/指令编码器</strong>、<strong>多赢家尖峰融合（MWSF）</strong>、<strong>尖峰动作分块 Transformer（SpikeACT）</strong>，在 LIBERO 和 Meta-World 基准上实现与 ANN 方法相当甚至更优的性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>开发了<strong>脉冲视觉编码器（SVE）</strong>和基于 <strong>BERT</strong> 的<strong>脉冲指令编码器（SIE）</strong>，将视觉观测与语言指令分别编码为稀疏、可靠的尖峰表示，用于后续跨模态融合。</li><li>提出<strong>多赢家尖峰融合（MWSF）</strong>模块，通过<strong>双向 top-k Winner-Take-All（WTA）尖峰路由</strong>实现指令引导的场景理解，有效抑制背景干扰并降低跨模态计算开销。</li><li>提出<strong>尖峰动作分块 Transformer（SpikeACT）</strong>，利用尖峰交叉注意力结合融合记忆与当前机器人状态，端到端并行生成连续动作块用于机器人控制。</li><li>构建了完整的 <strong>Spike-driven VLA</strong> 框架，首次实现直接训练的纯尖峰 VLA 模型，并验证了其高能效、低参数部署优势。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用<strong>离散 LIF 脉冲神经元模型</strong>，通过替代梯度（surrogate gradient）实现端到端的直接训练（direct training），而非 ANN-to-SNN 转换。</li><li>视觉编码器基于<strong>Spiking Transformer（Spikformer 架构）</strong>，在 ImageNet 上预训练后，以双视角（主视角 + 腕部视角）方式微调；指令编码器基于<strong>SpikeBERT</strong>，通过掩码语言建模预训练并保持冻结。</li><li><strong>MWSF</strong> 利用共享跨模态亲和矩阵，配合方向独立的 top-k 稀疏路由预算 $k_v$ 与 $k_\ell$，在不使用 Softmax 的情况下抑制背景响应并保留指令相关视觉证据。</li><li><strong>SpikeACT</strong> 使用 $K$ 个可学习动作令牌，通过与状态增强记忆的尖峰交叉注意力检索位置特定子集，经时间维平均读出并用 $\tanh$ 约束输出连续动作块。</li><li>记忆保留连续膜电位残差，可折叠的通道缩放因子 $\boldsymbol{\gamma}$ 不引入额外推理非脉冲开销。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>Meta-World MT50</strong>：50 个桌面操作任务，2,500 条演示，含 RGB 观测、机器人状态、语言指令与连续动作。</li><li><strong>LIBERO</strong>：四个套件（Spatial、Object、Goal、Long），每套 10 个任务，使用 OpenVLA 发布的 no-op RLDS 数据集，预测 12 步连续 7-DoF 动作块。</li><li><strong>LIBERO-Plus</strong>：10,030 个扰动任务实例，涵盖 7 个分布偏移维度（布局、相机、机器人初始状态、语言、光照、背景、传感器噪声），用于零样本鲁棒性评估。</li><li>模型参数量：<strong>0.15B</strong>；LIBERO 训练 80K 步（含 10K warm-up），有效批量大小 <strong>256</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>Meta-World</strong>：平均成功率 <strong>72.4%</strong>，超越 TinyVLA (31.6%)、π₀ (47.9%)、SmolVLA-0.45B (57.3%) 与 SmolVLA-2.25B (68.2%)，在 Medium 和 Hard 任务上排名第一；参数仅为 SmolVLA-2.25B 的 <strong>1/15</strong>，FLOPs 为 10.5 G，估算推理能耗 <strong>11.6 mJ</strong>。</li><li><strong>LIBERO</strong>：平均成功率 <strong>92.4%</strong>（Spatial 95.0%、Object 95.4%、Goal 96.6%、Long 82.4%），优于 OpenVLA (76.5%) 15.9 个百分点、SmolVLA (88.8%) 3.6 个百分点；仅比 DreamVLA (92.6%) 低 0.2 个百分点，而参数量比 π₀ 少 <strong>95.3%</strong>。</li><li><strong>LIBERO-Plus</strong>：在零样本分布偏移下整体成功率 <strong>53.2%</strong>，在 7 个扰动维度上与参数量远大于自身的 ANN VLA 模型保持竞争力（相机 1.1%、机器人 4.1%、语言 26.8%、光照 4.4%、背景 25.3%、噪声 19.3%、布局 31.6%）。</li><li>综合结果表明：紧凑的尖峰驱动架构能以更少参数与极低能耗获得与大规模 ANN VLA 相当的操控性能，为边缘端具身智能提供了一条高效新路径。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.39526/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Discrete Forcing: Infusing Discrete Guidance into Continuous Denoising for Few-Step Action Experts</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.39403/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">IronMind: Scaling Humanoid Dexterous Manipulation via Camera-Space Ego-Centric Pretraining</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

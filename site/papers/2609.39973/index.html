@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EWAM: Emergent Depth-Wise Specialization in a Unified Embodied Model -- From Semantic Understanding through Visual Foresight to Action - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 EWAM（Emergent Depth-Wise Specialization in a Unified Embodied Model），一个以动作（action）为中心的统一具身模型，旨在解决现有 VLA（视觉-语言-动作）模型与 WAM（世界-动作）模型在策略内部各管一块、动作计算偏向单一专家的问题。 通过非对称联合注意力机制，让 action token 在每一层都能读取语义（VL）、当前视觉、预测未来帧与动作信息，同时保持感知专家各自的独立角色。 论文发现并验证了一种自发涌现的深度方向专门化（emergent depth-wise specialization）：浅层主要关注 VL 语义特征、中间层关注预测未来帧特征、深层则以动作自注意力为主导，形成&quot;语义理解 → 视觉预视 → 动作生成&quot;的内部有序加工链。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.39973">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.39973.webp" alt="EWAM: Emergent Depth-Wise Specialization in a Unified Embodied Model -- From Semantic Understanding through Visual Foresight to Action" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 EWAM（Emergent Depth-Wise Specialization in a Unified Embodied Model），一个以动作（action）为中心的统一具身模型，旨在解决现有 VLA（视觉-语言-动作）模型与 WAM（世界-动作）模型在策略内部各管一块、动作计算偏向单一专家的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">EWAM: Emergent Depth-Wise Specialization in a Unified Embodied Model -- From Semantic Understanding through Visual Foresight to Action</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.39973" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.39973" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.39973</span></div>
+            <p class="detail-summary">论文提出 EWAM（Emergent Depth-Wise Specialization in a Unified Embodied Model），一个以动作（action）为中心的统一具身模型，旨在解决现有 VLA（视觉-语言-动作）模型与 WAM（世界-动作）模型在策略内部各管一块、动作计算偏向单一专家的问题。 通过非对称联合注意力机制，让 action token 在每一层都能读取语义（VL）、当前视觉、预测未来帧与动作信息，同时保持感知专家各自的独立角色。 论文发现并验证了一种自发涌现的深度方向专门化（emergent depth-wise specialization）：浅层主要关注 VL 语义特征、中间层关注预测未来帧特征、深层则以动作自注意力为主导，形成&quot;语义理解 → 视觉预视 → 动作生成&quot;的内部有序加工链。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Yinwang Intelligent Technology Co. Ltd（银望智能科技有限公司）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 EWAM（Emergent Depth-Wise Specialization in a Unified Embodied Model），一个以动作（action）为中心的统一具身模型，旨在解决现有 VLA（视觉-语言-动作）模型与 WAM（世界-动作）模型在策略内部各管一块、动作计算偏向单一专家的问题。</p>
+  <ul class="reading-intro-points"><li>论文提出 EWAM（Emergent Depth-Wise Specialization in a Unified Embodied Model），一个以动作（action）为中心的统一具身模型，旨在解决现有 VLA（视觉-语言-动作）模型与 WAM（世界-动作）模型在策略内部各管一块、动作计算偏向单一专家的问题。</li><li>通过非对称联合注意力机制，让 action token 在每一层都能读取语义（VL）、当前视觉、预测未来帧与动作信息，同时保持感知专家各自的独立角色。</li><li>论文发现并验证了一种自发涌现的深度方向专门化（emergent depth-wise specialization）：浅层主要关注 VL 语义特征、中间层关注预测未来帧特征、深层则以动作自注意力为主导，形成&quot;语义理解 → 视觉预视 → 动作生成&quot;的内部有序加工链。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Yinwang Intelligent Technology Co. Ltd</strong>（银望智能科技有限公司）</li><li>论文作者及项目页面均归属于该机构，项目主页为 https://wanghao00pro.github.io/EWAM-project</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>EWAM</strong>（Emergent Depth-Wise Specialization in a Unified Embodied Model），一个以动作（action）为中心的<strong>统一具身模型</strong>，旨在解决现有 VLA（视觉-语言-动作）模型与 WAM（世界-动作）模型在策略内部各管一块、动作计算偏向单一专家的问题。</li><li>通过<strong>非对称联合注意力</strong>机制，让 action token 在每一层都能读取语义（VL）、当前视觉、预测未来帧与动作信息，同时保持感知专家各自的独立角色。</li><li>论文发现并验证了一种<strong>自发涌现的深度方向专门化（emergent depth-wise specialization）</strong>：浅层主要关注 VL 语义特征、中间层关注预测未来帧特征、深层则以动作自注意力为主导，形成"语义理解 → 视觉预视 → 动作生成"的内部有序加工链。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出了 <strong>EWAM</strong> 统一具身模型，采用动作中心化的<strong>非对称联合注意力</strong>（Action-Centric Asymmetric Attention），使动作流成为唯一的跨模态信息整合接口，同时保留 VL 专家与视频专家的独立源头身份。</li><li>首次系统刻画了<strong>涌现的深度方向专门化</strong>现象：跨任务复现的"语义→预视→动作"注意力交接（handoff），且在不同去噪步骤间保持稳定；通过 checkpoint 追踪、层定向干预与反事实未来特征注入，证明了该组织是<strong>学习得到的、且对动作生成具有因果功能影响</strong>。</li><li>提出了<strong>子任务感知后训练</strong>（Subtask-Aware Post-Training），通过语义子任务预测与相位索引回归，显著提升长时程任务的完成率。</li><li>建立了<strong>人类第一视角视频学习</strong>新流程：将异构人类语料统一到相机相对末端执行器动作空间，支持跨具身预训练与真实机器人协同训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>模型包含三个层对齐的专家流：<strong>VL 专家</strong>（基于 <strong>Qwen3-VL-2B</strong> 初始化，编码指令与当前图像）、<strong>视频专家</strong>（基于 <strong>Wan2.2-TI2V-5B</strong> 初始化，处理当前条件帧与噪声未来帧）、<strong>动作专家</strong>（嵌入噪声动作块）。</li><li>注意力掩码设置为：动作查询可读 {视频、动作、VL} 全部键，而视频流仅读视频、VL 流仅读 VL，确保动作流是唯一跨模态读取者。</li><li>视频与动作输出采用<strong>联合流匹配（Joint Video–Action Flow Matching）</strong>训练，推断时在同一前向过程中协同去噪，使不断演化的未来视觉特征直接参与动作计算。</li><li>后训练阶段引入<strong>子任务相位划分</strong>：将长时程示范划分为语义相位，附加文本子任务标签与归一化相位索引监督（自回归子任务解码器 + 相位索引 MLP 头）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>机器人操控数据：<strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong> 仿真基准，以及三个不同真实机器人本体数据。</li><li>人类第一视角视频数据：<strong>Ego4D</strong>、<strong>EPIC-Kitchens</strong>、<strong>Something-Something v2</strong> 三个异构人类语料库。</li><li>视频专家约 <strong>5B</strong> 参数（Wan2.2-TI2V-5B），VL 专家约 <strong>2B</strong> 参数（Qwen3-VL-2B），统一结构共 <strong>30 个模块</strong>。</li><li>训练采用大规模预训练（跨具身轨迹与人类视频两个独立体制）+ 任务特定后训练两阶段流程。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboTwin 2.0</strong> 清洁到随机（C2R）评估达到 <strong>72.1%</strong>，域内（in-domain）平均 <strong>92.9%</strong>，均超过现有 VLA、WAM 及混合基线。</li><li><strong>LIBERO</strong> 仿真基准平均成功率 <strong>98.8%</strong>。</li><li>三个真实机器人本体上均取得一致性能；<strong>人类视频预训练</strong>将保留机器本体成功率从 <strong>40.1%</strong> 提升至 <strong>66.9%</strong>；<strong>第一视角协同训练</strong>在场景变化下将真实机器人成功率从 <strong>10%</strong> 提升至 <strong>60%</strong>。</li><li>因果验证实验（训练期结构消融、固定 checkpoint 深度干预、同任务反事实未来特征注入）确认了深度方向专门化对策略行为的实际依赖关系；子任务相位监督在仿真与真实长时程任务中均进一步改善任务完成率。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.40007/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Multi-Link Safety Filtering for VLA Policies Around Moving Hazards</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.39971/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">When Instructions Retrieve Trajectories: Diagnosing and Mitigating Generalization Failures in VLA Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

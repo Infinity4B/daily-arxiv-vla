@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Correcting WHERE, Preserving HOW: Compositional Generalization for Vision-Language-Action Models via Referential Guidance - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对视觉-语言-动作（VLA）模型在组合泛化（compositional generalization）上的失败问题：当训练数据中物体、目的地、场景等要素以固定组合出现时，VLA 会利用视觉捷径，将动作绑定到与任务无关的视觉特征上，导致面对已见要素的新组合时失败。 论文提出核心观察：VLA 在组合偏移下虽然全局接地（global grounding）错误，但局部操作技能（local manipulation skills）仍然保留，即模型在&quot;在哪里行动&quot;（WHERE）上出错，而&quot;如何交互&quot;（HOW）的能力尚存。 基于此观察，论文提出ReGuide（Referential Guidance）——一种无需训练（training-free）、与骨干网络无关的包装器，通过语义与几何&quot;重绑定&quot;（rebinding）将端效应器引导至正确的参照物，让冻结的策略恢复执行。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.38616">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff; --cover-muted: rgba(247, 251, 255, 0.82); --cover-chip: rgba(247, 251, 255, 0.16); --cover-stroke: rgba(247, 251, 255, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">Correcting WHERE, Preserving HOW: Compositional Generalization for Vision-Language-Action Models via Referential Guidance</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Correcting WHERE, Preserving HOW: Compositional Generalization for Vision-Language-Action Models via Referential Guidance</h1>
+            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.38616" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.38616" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.38616</span></div>
+            <p class="detail-summary">论文针对视觉-语言-动作（VLA）模型在组合泛化（compositional generalization）上的失败问题：当训练数据中物体、目的地、场景等要素以固定组合出现时，VLA 会利用视觉捷径，将动作绑定到与任务无关的视觉特征上，导致面对已见要素的新组合时失败。 论文提出核心观察：VLA 在组合偏移下虽然全局接地（global grounding）错误，但局部操作技能（local manipulation skills）仍然保留，即模型在&quot;在哪里行动&quot;（WHERE）上出错，而&quot;如何交互&quot;（HOW）的能力尚存。 基于此观察，论文提出ReGuide（Referential Guidance）——一种无需训练（training-free）、与骨干网络无关的包装器，通过语义与几何&quot;重绑定&quot;（rebinding）将端效应器引导至正确的参照物，让冻结的策略恢复执行。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Case Western Reserve University（美国凯斯西储大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对视觉-语言-动作（VLA）模型在组合泛化（compositional generalization）上的失败问题：当训练数据中物体、目的地、场景等要素以固定组合出现时，VLA 会利用视觉捷径，将动作绑定到与任务无关的视觉特征上，导致面对已见要素的新组合时失败。</p>
+  <ul class="reading-intro-points"><li>论文针对视觉-语言-动作（VLA）模型在组合泛化（compositional generalization）上的失败问题：当训练数据中物体、目的地、场景等要素以固定组合出现时，VLA 会利用视觉捷径，将动作绑定到与任务无关的视觉特征上，导致面对已见要素的新组合时失败。</li><li>论文提出核心观察：VLA 在组合偏移下虽然全局接地（global grounding）错误，但局部操作技能（local manipulation skills）仍然保留，即模型在&quot;在哪里行动&quot;（WHERE）上出错，而&quot;如何交互&quot;（HOW）的能力尚存。</li><li>基于此观察，论文提出ReGuide（Referential Guidance）——一种无需训练（training-free）、与骨干网络无关的包装器，通过语义与几何&quot;重绑定&quot;（rebinding）将端效应器引导至正确的参照物，让冻结的策略恢复执行。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Case Western Reserve University</strong>（美国凯斯西储大学）</li><li>作者：Yanyan Zhang、Disheng Liu、Xinpeng Li、Chaoda Song、Mohsen Hariri、Debargha Ganguly、Wang Yang、Kai Ye、Bryce Grant、Vipin Chaudhary、Yu Yin</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对<strong>视觉-语言-动作（VLA）模型</strong>在组合泛化（compositional generalization）上的失败问题：当训练数据中物体、目的地、场景等要素以固定组合出现时，VLA 会利用视觉捷径，将动作绑定到与任务无关的视觉特征上，导致面对已见要素的新组合时失败。</li><li>论文提出核心观察：VLA 在组合偏移下虽然<strong>全局接地（global grounding）</strong>错误，但<strong>局部操作技能（local manipulation skills）仍然保留</strong>，即模型在"在哪里行动"（WHERE）上出错，而"如何交互"（HOW）的能力尚存。</li><li>基于此观察，论文提出<strong>ReGuide（Referential Guidance）</strong>——一种<strong>无需训练（training-free）、与骨干网络无关</strong>的包装器，通过语义与几何"重绑定"（rebinding）将端效应器引导至正确的参照物，让冻结的策略恢复执行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>发现 VLA 在组合偏移下仍保留局部操作技能，可通过将端效应器引导至演示支持的构型来复用这些技能。</li><li>提出 <strong>ReGuide</strong>，一种无需训练、骨干无关的推理期包装器，通过<strong>语义重绑定（Semantic Rebinding）</strong>与<strong>几何重绑定（Geometric Rebinding）</strong>修正错误的参照物绑定。</li><li>语义端利用轻量接地模块解析指示的参照物，并以策略自身的动作预测作为<strong>参照物失配检测信号</strong>，无需外部评分器。</li><li>几何端将端效应器沿<strong>有界流（bounded flow）</strong>输送至正确参照物的<strong>演示支持预接触集合（pre-contact set）</strong>，随后让冻结策略从真实观察恢复局部交互。</li><li>实验表明 ReGuide 在仿真中组合成功率最高提升 <strong>56.8 个百分点</strong>，在真实机器人上最高提升 <strong>75.0 个百分点</strong>，同时保持标准任务性能不降。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>问题建模</strong>：将阶段成功分解为绑定项 β_k（到达正确交互区域）与能力项 γ_k（完成后继交互）的乘积，设计目标即恢复策略局部技能可用的交互构型。</li><li><strong>语义重绑定</strong>：从训练演示构造候选参照物集合 E_k = {e*_k} ∪ H_k ∪ W；利用未执行的动作块预测端点与姿态，通过承诺判据 χ_t(e) 检测策略实际朝向的参照物是否与指令参照物失配。</li><li><strong>几何重绑定</strong>：从演示中提取各类物体/目的地类的接触前构型（位置、姿态中位数），通过重力对齐的规范坐标系（canonical frame）转移到新物体几何上；预接触集合 K_e 约束位置、侧向与姿态容差。</li><li><strong>执行与恢复</strong>：传输按演示每步运动限量（Q.95 分位）约束，进入预接触集后丢弃待执行块并重新查询冻结策略；后续动作受侧向容差与高度包络约束，每阶段最多两次传输，并有完成证书与恢复机制。</li><li>ReGuide 全部统计量（目标、上下界、承诺阈值）均来自策略的训练演示，无需调整引导权重或重训练骨干模型。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真数据集</strong>：基于 <strong>LIBERO</strong> 构建基准，4 个任务 × 4 种偏移设置（目标区域、目标物体、未见物体、任务场景）共 <strong>16 个组合单元</strong>，另有 10 个未修改训练任务构成 Orig. 组；每单元 50 个配对初始状态，共 1300 个配对试验。</li><li><strong>真实数据集</strong>：在 <strong>UFACTORY xArm6</strong> 上微调 π0.5，使用 250 条脚本化演示（3 个抓取放置任务 + 2 个推挤任务），含底座与腕部 RGB-D 相机。</li><li><strong>评估的 VLA 骨干</strong>：<strong>OpenVLA-OFT、π0、π0.5、X-VLA、GR00T N1.7</strong>（共 5 种）；ReGuide 包装其中 3 种（OpenVLA-OFT、π0.5、GR00T N1.7）。</li><li><strong>对比方法</strong>：<strong>OTTER、GuidedVLA、APT、CAG</strong>（强化接地或指令跟随的 4 种方法）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真结果（表 1）</strong>：裸骨干 Comp. Avg. 仅为 3.4%（OTTER）～39.0%（π0.5）；ReGuide 将 OpenVLA-OFT、π0.5、GR00T N1.7 的组合平均分别提升至 <strong>70.8%、94.5%、69.1%</strong>，提升幅度 55.5～56.8 个百分点。</li><li><strong>标准任务保持</strong>：ReGuide 包装后 Orig.（原始任务）相对裸策略最多仅变化 0.8 个百分点（如 π0.5 从 94.0% 到 94.2%），而 CAG 等对比方法在提升组合性能时使 Orig. 从 94.0% 降至 81.4%。</li><li><strong>真实机器人（表 2）</strong>：裸 π0.5 组合成功率 15.0%，+ReGuide 达 <strong>90.0%</strong>（提升 75.0 个百分点）；原始任务从 86.0% 提升至 92.0%，全部任务平均从 38.7% 提升至 90.7%。</li><li><strong>局部技能诊断</strong>：将端效应器传输至正确物体预接触目标后冻结策略运行，8 个重组单元上抓取成功率从 64.5% 升至 95.8%，证实配置转移可激活局部操作技能。</li><li><strong>手回传后动作分析（消融）</strong>：若用默认下降-闭合动作替换手回传后的 VLA 动作，成功率从 94.5% 跌至 38.1%（p<10⁻¹⁰⁰），说明策略自身动作对手回传后执行至关重要。</li><li><strong>感知接地</strong>：最强骨干 π0.5 在感知接地（非 oracle）下组合成功率达 87.5%，比 oracle 接地低 7.0 点，但仍比裸策略高 48.5 点。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.38641/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Vision-Language-Action Autonomous Driving Agent with Language-based Memory</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.38570/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Data-Efficient Adaptation of a Driving VLA to Class 8 Trucks</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
