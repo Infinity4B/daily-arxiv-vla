@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UniWAM Technical Report: Unified Mobile Manipulation via Mixed-Stream World-Action Modeling and Manipulation Anchor Pose Supervision - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出UniWAM，一个统一的混合流世界-动作模型（Mixed-Stream World-Action Model），用于解决移动操作中导航与操作在多方面（视觉观测、动作空间、控制频率）的异构性问题。 针对现有统一策略模型隐式学习&quot;操作就绪终止位姿&quot;、依赖昂贵完整轨迹数据的问题，引入Manipulation Anchor Pose (MAP) 显式监督，并自动化构建大规模数据集 MAP-Data（超过 150 万个 episode、7,500 小时），提供逐帧目标框和图像平面 MAP 坐标作为辅助导航监督。 在 MAP-Bench 基准上，UniWAM 相比最强外部基线将位置误差降低 30.1%、航向误差降低 44.0%；在 24 项真实机器人任务上取得领先的 MAP 导航与移动操作成功率，并具有竞争力的操作性能。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.39388">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff; --cover-muted: rgba(253, 247, 255, 0.82); --cover-chip: rgba(253, 247, 255, 0.16); --cover-stroke: rgba(253, 247, 255, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">UniWAM Technical Report: Unified Mobile Manipulation via Mixed-Stream World-Action Modeling and Manipulation Anchor Pose Supervision</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">UniWAM Technical Report: Unified Mobile Manipulation via Mixed-Stream World-Action Modeling and Manipulation Anchor Pose Supervision</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.39388" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.39388" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.39388</span></div>
+            <p class="detail-summary">提出UniWAM，一个统一的混合流世界-动作模型（Mixed-Stream World-Action Model），用于解决移动操作中导航与操作在多方面（视觉观测、动作空间、控制频率）的异构性问题。 针对现有统一策略模型隐式学习&quot;操作就绪终止位姿&quot;、依赖昂贵完整轨迹数据的问题，引入Manipulation Anchor Pose (MAP) 显式监督，并自动化构建大规模数据集 MAP-Data（超过 150 万个 episode、7,500 小时），提供逐帧目标框和图像平面 MAP 坐标作为辅助导航监督。 在 MAP-Bench 基准上，UniWAM 相比最强外部基线将位置误差降低 30.1%、航向误差降低 44.0%；在 24 项真实机器人任务上取得领先的 MAP 导航与移动操作成功率，并具有竞争力的操作性能。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Fysics AI（奇维智能）物理超智能实验室</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出UniWAM，一个统一的混合流世界-动作模型（Mixed-Stream World-Action Model），用于解决移动操作中导航与操作在多方面（视觉观测、动作空间、控制频率）的异构性问题。</p>
+  <ul class="reading-intro-points"><li>提出UniWAM，一个统一的混合流世界-动作模型（Mixed-Stream World-Action Model），用于解决移动操作中导航与操作在多方面（视觉观测、动作空间、控制频率）的异构性问题。</li><li>针对现有统一策略模型隐式学习&quot;操作就绪终止位姿&quot;、依赖昂贵完整轨迹数据的问题，引入Manipulation Anchor Pose (MAP) 显式监督，并自动化构建大规模数据集 MAP-Data（超过 150 万个 episode、7,500 小时），提供逐帧目标框和图像平面 MAP 坐标作为辅助导航监督。</li><li>在 MAP-Bench 基准上，UniWAM 相比最强外部基线将位置误差降低 30.1%、航向误差降低 44.0%；在 24 项真实机器人任务上取得领先的 MAP 导航与移动操作成功率，并具有竞争力的操作性能。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Fysics AI（奇维智能）物理超智能实验室</strong></li><li><strong>复旦大学智能机器人及先进制造学院</strong>（College of Intelligent Robotics and Advanced Manufacturing, Fudan University）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>UniWAM</strong>，一个统一的混合流世界-动作模型（Mixed-Stream World-Action Model），用于解决移动操作中导航与操作在多方面（视觉观测、动作空间、控制频率）的异构性问题。</li><li>针对现有统一策略模型隐式学习"操作就绪终止位姿"、依赖昂贵完整轨迹数据的问题，引入<strong>Manipulation Anchor Pose (MAP)</strong> 显式监督，并自动化构建大规模数据集 <strong>MAP-Data</strong>（超过 150 万个 episode、7,500 小时），提供逐帧目标框和图像平面 MAP 坐标作为辅助导航监督。</li><li>在 <strong>MAP-Bench</strong> 基准上，UniWAM 相比最强外部基线将位置误差降低 <strong>30.1%</strong>、航向误差降低 <strong>44.0%</strong>；在 24 项真实机器人任务上取得领先的 MAP 导航与移动操作成功率，并具有竞争力的操作性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>UniWAM</strong> 混合流架构：导航流和操作流各自拥有独立视觉输入、动作编码器和输出头，共享视频 DiT 和动作 DiT（基于 <strong>Wan2.2-TI2V-5B</strong> 初始化），支持独立推理与批量并行推理。</li><li>设计 <strong>独立流采样与混合流批次打包</strong> 机制：每个训练样本只监督单个流，可直接使用导航-only、操作-only 及完整移动操作数据，避免闲置动作的无效监督。</li><li>定义 <strong>Manipulation Anchor Pose (MAP)</strong> 并自动化生成 <strong>MAP-Data</strong>，据作者所述为目前最大的操作导向导航数据集；同时构建无泄漏评估基准 <strong>MAP-Bench</strong>。</li><li>引入 <strong>图像平面辅助监督</strong>：导航流预测目标框与投影 MAP 坐标，操作流预测投影末端执行器轨迹及可见性标志，增强动作与视觉观测之间的一致性。</li><li>在 <strong>MAP-Bench</strong> 和 24 个真实机器人任务上进行全面评估，公开了代码、数据和基准。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>混合流世界-动作模型</strong>：导航与操作流各自独立采样，经流专用线性编码器映射到共享隐藏空间，通过混合变换器（Mixture-of-Transformers）注意力耦合视频与动作 DiT，注意力掩码保证动作 token 只能访问当前视觉上下文、可学习 token 及前序动作，支持前缀条件的异步推理。</li><li><strong>MAP 定义与生成</strong>：MAP 为操作目标对应的机器人基座终止位置与航向，由场景几何与 VLM 确定操作朝向面，通过射线与可导航区域边界求交得出；多段三次 Bézier 曲线合成逼近轨迹，A* 用于避障走廊拟合。</li><li><strong>MAP-Data 构建流程</strong>：三阶段自动化管线（目标筛选、MAP 与观测姿态生成、轨迹合成与同步几何标签），来源包括 HM3D、HM3D-Semantics、InteriorGS 及大规模内部场景语料。</li><li><strong>导航动作表示</strong>：预测平面位姿增量 (Δx, Δy, Δθ) 而非速度，避免速度标签的双峰分布，使连续动作更容易学习。</li><li><strong>操作动作表示</strong>：每臂 10 维（3D 位置 + 6D 旋转 + 1D 夹爪），双臂共 20 维，旋转用旋转矩阵前两列通过 Gram–Schmidt 正交化恢复，统一在主相机坐标系下表示。</li><li><strong>图像平面辅助监督</strong>：导航流预测目标框和投影 MAP 坐标；操作流通过校准几何（末端执行器投影）与外观门控可见性（DINOv2 原型相似度）生成可见性掩码，只对可见点计算辅助损失。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>MAP-Data</strong>：超过 <strong>150 万个 episode</strong>、<strong>7,500 小时</strong>导航轨迹，含逐帧 RGB、导航动作、投影 MAP 坐标、目标框及五项目标级指令。</li><li><strong>MAP-Bench</strong>：<strong>300 个目标</strong>、<strong>109 个场景</strong>，训练集 35,454 条轨迹（7,184,098 帧，15 Hz），评估集 15,000 条轨迹，按初始距离分为短（<1.5 m）、中（1.5–3.5 m）、长（≥3.5 m）三档，通过 SE(2) 聚类确保评估初始位姿无泄漏。</li><li>模型基于 <strong>Wan2.2-TI2V-5B</strong> 视频 Diffuser 初始化，行动 DiT 共享主干。</li><li>评估使用封闭环路线评估协议，以连续三次近零动作块判定终止。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估基准</strong>：MAP-Bench 的 MAP 位置误差（E_pos）与 MAP 航向误差（E_head），按距离范围分层并取总体平均。</li><li><strong>对比基线</strong>：π0.5、GR00T N1.7、Xiaomi-Robotics-1（VLA 统一模型），ABot-M0.5 与 MobileWAM（世界-动作模型），以及 CrossFormer、HPT 等跨具身策略。</li><li><strong>关键结果</strong>：在 MAP-Bench 上，UniWAM 将位置误差降低 <strong>30.1%</strong>、航向误差降低 <strong>44.0%</strong>（相对最强外部基线），并将移动操作成功率提升 <strong>17.5 个百分点</strong>。</li><li><strong>真实机器人评估</strong>：在 24 项真实机器人任务中，UniWAM 在 MAP 导航与移动操作任务上取得领先结果，同时保持有竞争力的操作性能；研究还包含统一架构对比与消融实验，验证了位姿增量表示、混合流采样及辅助监督的有效性。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.39403/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">IronMind: Scaling Humanoid Dexterous Manipulation via Camera-Space Ego-Centric Pretraining</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.39324/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">MotionWeave: Learning Motion-Centered Future Dynamics for Vision-Language-Action Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

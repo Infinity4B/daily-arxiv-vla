@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learning from Runtime Feedback through Failure-Bank Self-Evolution for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 FailBank 框架，用于解决视觉-语言-动作（VLA）模型在复杂环境中需要兼顾任务成功与非预期接触的难题 现有运行时防护（如 AEGIS 的 CBF 投影）只能临时修正动作，无法解决策略与防护盾之间的持久不匹配（policy–shield mismatch），可能导致任务超时 FailBank 将运行时反馈转化为持久性策略改进，通过四阶段自进化循环实现无需部署防护模块的策略更新" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2609.39820">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2609.39820.webp" alt="Learning from Runtime Feedback through Failure-Bank Self-Evolution for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 FailBank 框架，用于解决视觉-语言-动作（VLA）模型在复杂环境中需要兼顾任务成功与非预期接触的难题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Learning from Runtime Feedback through Failure-Bank Self-Evolution for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.39820" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.39820" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.39820</span></div>
+            <p class="detail-summary">论文提出 FailBank 框架，用于解决视觉-语言-动作（VLA）模型在复杂环境中需要兼顾任务成功与非预期接触的难题 现有运行时防护（如 AEGIS 的 CBF 投影）只能临时修正动作，无法解决策略与防护盾之间的持久不匹配（policy–shield mismatch），可能导致任务超时 FailBank 将运行时反馈转化为持久性策略改进，通过四阶段自进化循环实现无需部署防护模块的策略更新</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of Notre Dame（圣母大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 FailBank 框架，用于解决视觉-语言-动作（VLA）模型在复杂环境中需要兼顾任务成功与非预期接触的难题</p>
+  <ul class="reading-intro-points"><li>论文提出 FailBank 框架，用于解决视觉-语言-动作（VLA）模型在复杂环境中需要兼顾任务成功与非预期接触的难题</li><li>现有运行时防护（如 AEGIS 的 CBF 投影）只能临时修正动作，无法解决策略与防护盾之间的持久不匹配（policy–shield mismatch），可能导致任务超时</li><li>FailBank 将运行时反馈转化为持久性策略改进，通过四阶段自进化循环实现无需部署防护模块的策略更新</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Notre Dame</strong>（圣母大学）</li><li>作者：Mingyue Cui、Zheyuan Liu、Yihan Zhu、Zheyuan Zhang、Meng Jiang</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>FailBank</strong> 框架，用于解决视觉-语言-动作（VLA）模型在复杂环境中需要兼顾任务成功与非预期接触的难题</li><li>现有运行时防护（如 <strong>AEGIS</strong> 的 CBF 投影）只能临时修正动作，无法解决策略与防护盾之间的持久不匹配（policy–shield mismatch），可能导致任务超时</li><li><strong>FailBank</strong> 将运行时反馈转化为持久性策略改进，通过四阶段自进化循环实现无需部署防护模块的策略更新</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别并定义了 <strong>策略-防护盾持久不匹配</strong> 作为运行时防护的关键局限，提出只观察（observe-only）接口，在策略自身 rollout 分布上收集反事实教师提案而不改变执行</li><li>提出 <strong>四阶段自进化框架</strong>：观察标注（Observe and Label）→ 接收加权（Admit and Weight）→ 累积（Accumulate）→ 受保护更新（Update）</li><li>引入 <strong>结果感知式（outcome-aware）学习记录</strong> 与 <strong>静默锚点（quiet anchors）</strong> 机制，保留成功行为并防止分布漂移</li><li>采用 <strong>带守卫的 LoRA 更新</strong>（guarded LoRA update），通过 held-out 损失和首动作漂移约束确保更新安全接受</li><li>在 <strong>VLA-Arena</strong> 基准上跨两个难度级别和两个 VLA 骨干验证，显著提升联合成功-成本工作点</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Stage 1（Observe and Label）</strong>：策略执行名义动作，固定 CBF 教师仅基于特权场景几何提出反事实修正，不改变执行；记录触发指示器 z_t 并附加 episode 结果</li><li><strong>Stage 2（Admit and Weight）</strong>：基于 rollout 结果和修正时机过滤记录；修正记录使用教师提案作为目标，成功未修正记录作为静默锚点；CBF 触发记录按效用得分分配权重 η ∈ {0, 0.25, 0.60, 1.00}</li><li><strong>Stage 3（Accumulate）</strong>：将新记录与历史累积的失败银行合并，保持训练/验证拆分以保证守卫独立性</li><li><strong>Stage 4（Update）</strong>：从同一基础 checkpoint 拟合新 LoRA 适配器，优化加权首动作流匹配损失；仅在 held-out 全块流损失比 ≤ τ_loss 且首动作漂移 ≤ τ_drift 时接受更新</li><li>部署时仅需 RGB 观测和本体感觉，不需要教师或特权几何信息</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>VLA-Arena</strong> 基准的静态障碍安全套件（Static-Obstacle Suite）</li><li>两个难度级别：<strong>Level 1</strong> 和 <strong>Level 2</strong>，每级别 5 个任务（Apple、Lemon、Mango、Onion、Tomato）</li><li>两个 VLA 骨干：<strong>π₀.₅</strong>（主实验）和 <strong>π₀</strong>（跨骨干验证），均为 Arena 微调 checkpoint</li><li>收集数据仅在 Level 1 Mango 任务上进行，其他任务用于泛化评估</li><li>使用 <strong>LoRA</strong> 低秩适配器进行参数高效微调，从基础 checkpoint 出发</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标：任务成功率（SR）、官方累积成本（CC）、策略诱导成本（CC_policy）以及提出的<strong>基础相对分数（BRS）</strong>，同时对比 <strong>AEGIS</strong> 运行时防护基线</li><li>相比基础策略，<strong>FailBank</strong> 在两个骨干上分别将 SR 提升 <strong>8.5 和 6.9 个百分点</strong>，CC_policy 降低 <strong>35.6% 和 23.8%</strong></li><li>相比 AEGIS，SR 分别提升 <strong>25.4 和 9.5 个百分点</strong>，同时保持可比的策略诱导成本</li><li><strong>FailBank</strong> 在 8 个任务-骨干对上实现 SR 和 CC_policy 的双重改进，而 AEGIS 仅 3 对</li><li>泛化方面：在 Level 1 Mango 未见初始状态上，π₀.₅ SR 从 71.1% 提升至 93.3%；四个未见 Level 1 任务平均 SR 从 82.5% 提升至 88.7%；Level 2 任务平均 SR 从 50.5% 提升至 59.4%（无 Level 2 更新数据）</li><li>消融实验表明：observe-only 收集避免盾牌诱导的分布偏移；静默锚点进一步降低 CC_policy（20.88 → 16.52）而不损失 SR</li><li>五轮累积自进化实验中，SR 在 Round 2 达到峰值，CC_policy 在 Round 3 达到最小值，所有轮次均优于基础策略</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.39822/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Toward Real-Time VLAs: Stage-Aware Two-Step Flow Denoising and System-Level Evaluation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.39794/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Inline Memory Meets Reusable Skills: Memory-centric Framework for Vision-Language-Action Model</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
