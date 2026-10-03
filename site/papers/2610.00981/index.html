@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NarrativeFlow: Flow-Based Vision-Language-Action Model Using Robot Velocity Fields - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文聚焦于语言条件化的基于流（flow-based）的机器人操作任务，即模型根据指令和初始图像生成&quot;机器人流&quot;（robot velocity field），再据此执行物体操作。 现有方法（如 Im2Flow2Act）用稀疏关键点位移粗糙地近似机器人流，且难以处理语言条件化设置；而 Flow as Flow 虽能建模稠密速度场，却不支持语言指令。 为此，论文提出 NarrativeFlow，在流匹配（flow matching）框架下将机器人流建模为连续概率速度场，并通过辅助损失增强模型对任务相关场景变化的理解。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.00981">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.00981.webp" alt="NarrativeFlow: Flow-Based Vision-Language-Action Model Using Robot Velocity Fields" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文聚焦于语言条件化的基于流（flow-based）的机器人操作任务，即模型根据指令和初始图像生成&quot;机器人流&quot;（robot velocity field），再据此执行物体操作。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">NarrativeFlow: Flow-Based Vision-Language-Action Model Using Robot Velocity Fields</h1>
+            <div class="detail-meta">2026-10-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.00981" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.00981" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.00981</span></div>
+            <p class="detail-summary">论文聚焦于语言条件化的基于流（flow-based）的机器人操作任务，即模型根据指令和初始图像生成&quot;机器人流&quot;（robot velocity field），再据此执行物体操作。 现有方法（如 Im2Flow2Act）用稀疏关键点位移粗糙地近似机器人流，且难以处理语言条件化设置；而 Flow as Flow 虽能建模稠密速度场，却不支持语言指令。 为此，论文提出 NarrativeFlow，在流匹配（flow matching）框架下将机器人流建模为连续概率速度场，并通过辅助损失增强模型对任务相关场景变化的理解。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Keio University, Japan（日本庆应义塾大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文聚焦于语言条件化的基于流（flow-based）的机器人操作任务，即模型根据指令和初始图像生成&quot;机器人流&quot;（robot velocity field），再据此执行物体操作。</p>
+  <ul class="reading-intro-points"><li>论文聚焦于语言条件化的基于流（flow-based）的机器人操作任务，即模型根据指令和初始图像生成&quot;机器人流&quot;（robot velocity field），再据此执行物体操作。</li><li>现有方法（如 Im2Flow2Act）用稀疏关键点位移粗糙地近似机器人流，且难以处理语言条件化设置；而 Flow as Flow 虽能建模稠密速度场，却不支持语言指令。</li><li>为此，论文提出 NarrativeFlow，在流匹配（flow matching）框架下将机器人流建模为连续概率速度场，并通过辅助损失增强模型对任务相关场景变化的理解。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Keio University, Japan</strong>（日本庆应义塾大学）</li><li>作者：Shota Kobayashi、Koki Seno、Daichi Yashima、Komei Sugiura</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文聚焦于<strong>语言条件化的基于流（flow-based）的机器人操作任务</strong>，即模型根据指令和初始图像生成"机器人流"（robot velocity field），再据此执行物体操作。</li><li>现有方法（如 Im2Flow2Act）用稀疏关键点位移粗糙地近似机器人流，且难以处理语言条件化设置；而 Flow as Flow 虽能建模稠密速度场，却不支持语言指令。</li><li>为此，论文提出 <strong>NarrativeFlow</strong>，在流匹配（flow matching）框架下将机器人流建模为连续概率速度场，并通过辅助损失增强模型对任务相关场景变化的理解。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>NarrativeFlow</strong>：一种语言条件化的机器人流生成方法，采用流匹配框架将机器人流建模为概率速度场，实现高质量、物理一致性更强的流生成。</li><li>引入 <strong>Narrative Delta Loss</strong>：一种辅助训练目标，将模型中间表示与任务相关的场景变化文本表示（narrative representations）对齐，提升模型对任务相关语义的捕捉能力。</li><li>提出两个 <strong>subtask tokens</strong>：分别用于条件化 Flow-as-Flow 模块和计算 Narrative Delta Loss，缓解两个下游目标之间的学习信号干扰。</li><li>在 <strong>Fractal</strong> 和 <strong>Bridge V2</strong> 标准数据集上，NarrativeFlow 在 ADE、FDE、LTDR 指标上全面超越 FLIP 和 Im2Flow2Act 基线方法，差异具有统计显著性（p<0.01）。</li><li>在真实世界实验中，NarrativeFlow 在多种移动操作任务上取得比基线更高的成功率，且与使用真值流的 oracle 方法差距更小。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>模型由<strong>视觉-语言融合编码器</strong>和<strong>Flow-as-Flow 模块</strong>两部分组成。</li><li>语言和图像分别使用 <strong>Qwen3-Embedding-0.6B</strong> 和 <strong>DINOv3-ViT-B/16</strong> 编码，并通过 Transformer 编码器融合。</li><li>两个可学习的 <strong>subtask tokens</strong> 与视觉、语言嵌入拼接后输入 Transformer，输出分别用于条件化流生成和计算辅助损失。</li><li><strong>Narrative Delta Loss</strong> 离线构造：用多模态大语言模型 <strong>Qwen3.5-9B</strong> 对初始图像与目标图像生成多段（Nc=5）任务相关场景变化描述，嵌入后作为辅助监督信号。</li><li>Flow-as-Flow 模块基于 <strong>Diffusion Transformer (DiT)</strong> 架构，采用 adaLN-Zero 调制，接收历史点轨迹序列和条件向量，预测稠密速度场，通过积分得到未来点位置。</li><li>总体损失为 L = L_FaF + λ·L_ND，其中 L_FaF 为条件流匹配损失，λ 在前 30k 步为 0.1，之后降为 1.0×10⁻⁵。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>Fractal</strong>（Google Robot 平台）和 <strong>Bridge V2</strong>（WidowX 平台）两个标准真实机器人数据集。</li><li>Fractal：训练集 84,212 样本、验证集 1,000、测试集 2,000；Bridge V2：训练集 57,064、验证集 1,000、测试集 2,000。</li><li>点轨迹使用 <strong>CoTracker3</strong> 提取，端点分割掩码使用微调后的 <strong>Robot-SAM</strong> 生成。</li><li>模型参数量约 <strong>487M</strong>；训练使用单张 <strong>GeForce RTX 5090</strong>（32GB 显存），训练约 6 小时，推理约 62ms。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标：<strong>ADE</strong>（平均位移误差，主指标）、<strong>FDE</strong>（最终位移误差）、<strong>LTDR</strong>（小于阈值比率），仅在端效应器区域计算。</li><li>在 <strong>Fractal</strong> 测试集上：NarrativeFlow 的 ADE=21.68、FDE=31.59、LTDR=76.29%，优于最优基线 Im2Flow2Act（ADE=37.14、FDE=47.74、LTDR=60.61%）。</li><li>在 <strong>Bridge V2</strong> 测试集上：NarrativeFlow 的 ADE=30.59、FDE=42.42、LTDR=66.30%，优于最优基线（ADE=50.73、FDE=68.43、LTDR=47.72%）。</li><li>消融实验表明：移除 subtask tokens 或 Narrative Delta Loss 均导致 ADE 明显下降（2.6~4.2 分），验证了各组件有效性。</li><li>真实世界实验使用 <strong>Toyota Human Support Robot (HSR)</strong> 在三个移动操作任务上评估：Mobile drawer closing、Mobile bin picking、Mobile cup stacking；NarrativeFlow 平均成功率 <strong>55%</strong>，优于 Im2Flow2Act（42%）和 FLIP（28%），且与 oracle（63%）的差距仅 8 个百分点（基线差距为 21 个百分点）。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.00982/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Divide-and-Remember: Recursive Action-Relevant Memory for Long-Horizon VLA Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.00913/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">eRLT: Efficient VLA Reinforcement Learning via Action-Relevant Token Routing</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

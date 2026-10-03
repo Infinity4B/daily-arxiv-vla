@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TOAST: Stochastic Robot Action Tokenization for Autoregressive Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 TOAST（TOkenization of Action Sequences with STochastic Sampling），一种面向自回归视觉-语言-动作模型（VLA）的随机动作 tokenization 方法 针对 FAST 等频率压缩 tokenizer 对同一量化动作序列仅分配单一确定性 tokenization 的问题，TOAST 在训练时采样多个等价 token 序列，在保留底层机器人动作的同时多样化离散监督 在 LIBERO 仿真基准和四个真实机器人操作任务上验证了该方法在演示数据有限时提升策略学习效率的有效性，无需额外收集机器人数据" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.00899">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.00899.webp" alt="TOAST: Stochastic Robot Action Tokenization for Autoregressive Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 TOAST（TOkenization of Action Sequences with STochastic Sampling），一种面向自回归视觉-语言-动作模型（VLA）的随机动作 tokenization 方法</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TOAST: Stochastic Robot Action Tokenization for Autoregressive Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.00899" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.00899" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.00899</span></div>
+            <p class="detail-summary">提出 TOAST（TOkenization of Action Sequences with STochastic Sampling），一种面向自回归视觉-语言-动作模型（VLA）的随机动作 tokenization 方法 针对 FAST 等频率压缩 tokenizer 对同一量化动作序列仅分配单一确定性 tokenization 的问题，TOAST 在训练时采样多个等价 token 序列，在保留底层机器人动作的同时多样化离散监督 在 LIBERO 仿真基准和四个真实机器人操作任务上验证了该方法在演示数据有限时提升策略学习效率的有效性，无需额外收集机器人数据</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">AIST（日本产业技术综合研究所）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 TOAST（TOkenization of Action Sequences with STochastic Sampling），一种面向自回归视觉-语言-动作模型（VLA）的随机动作 tokenization 方法</p>
+  <ul class="reading-intro-points"><li>提出 TOAST（TOkenization of Action Sequences with STochastic Sampling），一种面向自回归视觉-语言-动作模型（VLA）的随机动作 tokenization 方法</li><li>针对 FAST 等频率压缩 tokenizer 对同一量化动作序列仅分配单一确定性 tokenization 的问题，TOAST 在训练时采样多个等价 token 序列，在保留底层机器人动作的同时多样化离散监督</li><li>在 LIBERO 仿真基准和四个真实机器人操作任务上验证了该方法在演示数据有限时提升策略学习效率的有效性，无需额外收集机器人数据</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>AIST</strong>（日本产业技术综合研究所）</li><li>作者：Keisuke Shirai、Tomohiro Motoda、Hanbit Oh、Ryoichi Nakajo、Roman Mykhailyshyn、Ryo Hanai、Shotaro Miwa、Yukiyasu Domae</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>TOAST</strong>（TOkenization of Action Sequences with STochastic Sampling），一种面向自回归视觉-语言-动作模型（VLA）的随机动作 tokenization 方法</li><li>针对 FAST 等频率压缩 tokenizer 对同一量化动作序列仅分配单一确定性 tokenization 的问题，TOAST 在训练时采样多个等价 token 序列，在保留底层机器人动作的同时多样化离散监督</li><li>在 <strong>LIBERO</strong> 仿真基准和四个真实机器人操作任务上验证了该方法在演示数据有限时提升策略学习效率的有效性，无需额外收集机器人数据</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>识别确定性动作 tokenization 是导致策略过度依赖单一离散表示的问题来源，并将随机 tokenization 形式化为自回归 VLA 的表示级正则化效应</li><li>引入 <strong>TOAST</strong> 框架，通过 unigram 语言模型与 n-best 搜索采样等价 tokenization，使每个演示在不增加机器人数据的情况下产生更多样化的监督</li><li>在 LIBERO 上证明随机 tokenization 的收益随训练数据减少而增大，仅用 1/16 数据时成功率提升 <strong>6.8 个百分点</strong></li><li>在四个真实机器人操作任务上将平均成功率提升 <strong>15.8 个百分点</strong>（对比确定性对应物），验证了数据受限真实场景下的实用价值</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用 <strong>DCT 量化</strong>（缩放因子 10）+ <strong>维度主序展平</strong>（dimension-major flattening），使用 <strong>SentencePiece</strong> 在量化动作序列上构建 <strong>unigram 语言模型</strong>，词表大小为 512</li><li>训练时通过 **Forward-DP Backward-A\* 算法**进行 n-best 搜索（n=64），按 P(t^i\|q) ≈ P(t^i)^α / Σ P(t^j)^α 的多项分布采样候选 token 序列，α 控制采样分布尖锐度（LIBERO 用 α=0.1，真实机器人用 α=0.5）</li><li>所有采样的 token 序列都解码回相同的量化动作序列；采样仅用于训练阶段，推理时保持贪婪解码；策略架构和标准下一 token 预测损失不变，仅修改训练目标表示</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>LIBERO</strong>（Spatial/Object/Goal/Long 四个任务套件），Franka Emika Panda，10 Hz 控制频率，7 维末端执行器动作</li><li>真实机器人：<strong>Franka Research 3</strong>，配备 RealSense D405 腕部相机、两台 RealSense D435 场景相机和 Robotiq 2F-85 夹爪；四个任务（Table Bussing、Grocery Bagging、Breakfast Setup、Drawer Stowing）通过 GELLO 遥操作收集 200/200/100/60 条演示</li><li>词表构建：来自 <strong>DROID</strong> 数据集的 1M 动作块（外部语料，LIBERO 用末端执行器动作，真实机器人用关节角）</li><li>策略骨干：<strong>PaliGemma-3B</strong>，从视觉-语言预训练权重微调；30,000 步训练、batch size 32、AdamW 优化器，推理在单张 RTX 4090 上生成 1 秒关节角块耗时 168 ms</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>LIBERO 评估：每套件 500 次 rollout（每任务 50 次）、每随机种子共 2,000 次；数据规模取 1/k（k∈{1,2,4,8,16}）；使用分层 bootstrap（10,000 次重采样）进行显著性检验</li><li>TOAST 在 LIBERO 所有数据规模下均优于确定性对应物：1/1 时 91.4 vs 90.9，1/8 时 60.2 vs 55.0，1/16 时 42.8 vs 36.0（+6.8）；在 1/4 及以下数据时超越全部基线（FAST+、FAST rebuilt、BEAST、VQ-VLA、Binning）</li><li>真实机器人：TOAST 平均成功率 <strong>50.8%</strong>，比 TOAST (deterministic) 高 15.8 点、比 FAST+ 高 20.0 点，两者均显著；除 Grocery Bagging 外所有任务均获得较大收益</li><li>设计分析：α 在 [0.05, 1.0] 区间内性能稳定；词表越贴近目标域采样增益越大（仅用 LIBERO 词表时 +11.9 点）；维度主序展平优于时间步主序；随机训练将等价 tokenization 的损失差距降至接近零（Δtok），且持出集 loss 更低；训练额外开销仅 <strong>0.4%</strong></li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.00913/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">eRLT: Efficient VLA Reinforcement Learning via Action-Relevant Token Routing</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.00859/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">CtrlWAM: Controllable World Action Models with Aligned Intent and Foresight</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

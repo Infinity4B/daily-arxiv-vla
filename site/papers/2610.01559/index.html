@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Completion Aware Guidance for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文聚焦于World Action Models（WAMs，世界动作模型）在机器人操作中的一种失败模式——task-incomplete imagination（任务不完整想象），即模型生成的视频和动作在局部上合理且相互一致，却始终遗漏了完成当前任务阶段所需的状态转换。 作者指出该失败并非视频扩散主干模型的固有缺陷，而是源于固定时域视频生成目标与短时域视频-动作预测目标之间的目标失配（objective mismatch），导致完成任务所需的转换在短块自回归生成中被反复推迟。 为缓解该问题，论文提出Completion Aware Guidance（CAG，完成感知引导），一种免训练（training-free）的采样时引导方法，在不重新训练模型的前提下提升WAM的任务完成能力。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.01559">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.01559.webp" alt="Completion Aware Guidance for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文聚焦于World Action Models（WAMs，世界动作模型）在机器人操作中的一种失败模式——task-incomplete imagination（任务不完整想象），即模型生成的视频和动作在局部上合理且相互一致，却始终遗漏了完成当前任务阶段所需的状态转换。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Completion Aware Guidance for World Action Models</h1>
+            <div class="detail-meta">2026-10-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.01559" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.01559" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.01559</span></div>
+            <p class="detail-summary">论文聚焦于World Action Models（WAMs，世界动作模型）在机器人操作中的一种失败模式——task-incomplete imagination（任务不完整想象），即模型生成的视频和动作在局部上合理且相互一致，却始终遗漏了完成当前任务阶段所需的状态转换。 作者指出该失败并非视频扩散主干模型的固有缺陷，而是源于固定时域视频生成目标与短时域视频-动作预测目标之间的目标失配（objective mismatch），导致完成任务所需的转换在短块自回归生成中被反复推迟。 为缓解该问题，论文提出Completion Aware Guidance（CAG，完成感知引导），一种免训练（training-free）的采样时引导方法，在不重新训练模型的前提下提升WAM的任务完成能力。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Seoul National University（首尔国立大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文聚焦于World Action Models（WAMs，世界动作模型）在机器人操作中的一种失败模式——task-incomplete imagination（任务不完整想象），即模型生成的视频和动作在局部上合理且相互一致，却始终遗漏了完成当前任务阶段所需的状态转换。</p>
+  <ul class="reading-intro-points"><li>论文聚焦于World Action Models（WAMs，世界动作模型）在机器人操作中的一种失败模式——task-incomplete imagination（任务不完整想象），即模型生成的视频和动作在局部上合理且相互一致，却始终遗漏了完成当前任务阶段所需的状态转换。</li><li>作者指出该失败并非视频扩散主干模型的固有缺陷，而是源于固定时域视频生成目标与短时域视频-动作预测目标之间的目标失配（objective mismatch），导致完成任务所需的转换在短块自回归生成中被反复推迟。</li><li>为缓解该问题，论文提出Completion Aware Guidance（CAG，完成感知引导），一种免训练（training-free）的采样时引导方法，在不重新训练模型的前提下提升WAM的任务完成能力。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Seoul National University</strong>（首尔国立大学）</li><li><strong>KAIST</strong>（韩国科学技术院）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文聚焦于<strong>World Action Models（WAMs，世界动作模型）</strong>在机器人操作中的一种失败模式——<strong>task-incomplete imagination（任务不完整想象）</strong>，即模型生成的视频和动作在局部上合理且相互一致，却始终遗漏了完成当前任务阶段所需的状态转换。</li><li>作者指出该失败并非视频扩散主干模型的固有缺陷，而是源于<strong>固定时域视频生成目标</strong>与<strong>短时域视频-动作预测目标</strong>之间的<strong>目标失配（objective mismatch）</strong>，导致完成任务所需的转换在短块自回归生成中被反复推迟。</li><li>为缓解该问题，论文提出<strong>Completion Aware Guidance（CAG，完成感知引导）</strong>，一种免训练（training-free）的采样时引导方法，在不重新训练模型的前提下提升WAM的任务完成能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次系统地识别并明确定义了WAM中的<strong>task-incomplete imagination</strong>失败模式，区别于一般的视频损坏或视频-动作错位问题。</li><li>通过对比<strong>原生视频生成时域</strong>与<strong>WAM短块控制时域</strong>，揭示了任务不完整想象产生的机理——模型适应短时域控制后，局部合理的延续会掩盖完成任务所必需的转换。</li><li>提出<strong>Completion Aware Guidance（CAG）</strong>，一种免训练、可即插即用的采样时引导算法，通过强化与当前视频-动作预测最相关的指令token的交叉注意力条件，引导生成趋向任务完成。</li><li>CAG在<strong>两种代表性WAM架构（DreamZero 与 Fast-WAM）</strong>上均取得一致的性能提升，表明该方法不依赖于显式未来视频生成的特定机制，具备良好的通用性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>形式化定义WAM的短时域视频-动作块预测 z_t = (o_{t+1:t+H}, a_{t:t+H-1})，并引入<strong>阶段完成指示器 E_t(z_t)</strong> 以及含KL正则的理想完成感知分布。</li><li>通过分析指令信息经由<strong>交叉注意力通路（cross-attention pathway）</strong>进入视频-动作生成的过程，对每个指令token计算聚合注意力亲和度 r_{t,j}，衡量当前生成对各个指令组件的依赖程度。</li><li>采用<strong>稀疏二值门控函数</strong>将注意力信号转换为有界干预：γ̂_{t,j} = 1 + α·ψ(r_{t,j})，并据此缩放指令token的key/value，从而强化与当前动作阶段最相关的指令信号（实验中 α=0.15，且无需逐任务调参）。</li><li>整个方法只作用于<strong>采样（推理）阶段</strong>，不修改WAM参数，属于训练无关的即插即用式引导。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboTwin 2.0</strong> 数据集：选取9个成功率低于90%的非饱和任务进行评估。</li><li><strong>DREAM（DreamZero DROID simulation）</strong>：使用官方DreamZero的3个DROID模拟场景进行零样本（zero-shot）评估。</li><li>验证的WAM模型：<strong>DreamZero</strong>（显式未来视频生成）与 <strong>Fast-WAM</strong>（隐式世界建模）。</li><li>论文未报告具体的GPU/TPU训练资源与模型参数量信息。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboTwin 2.0</strong> 九任务子集上，平均任务成功率由 <strong>64.4% 提升至 70.0%</strong>；其中 Hanging Mug（60→63）、Turn Switch（53→67）、Move Stapler Pad（57→73）、Stack Bowls Three（67→87）、Place Object Basket（87→90）等任务提升明显。</li><li><strong>DreamZero 零样本模拟</strong> 上，平均成功率由 <strong>69% 提升至 75%</strong>，三个任务（Cube to Bowl、Can to Mug、Banana to Bin）均获得增益（如 Can to Mug 由60提升至72）。</li><li><strong>失败模式分析</strong>：在代表性子任务中，任务不完整想象占失败样本的比例由 <strong>79% 下降至 40%</strong>，证明CAG的收益主要来源于直接缓解该失败模式。</li><li>论文所有实验仅改变推理时引导策略，其余评估协议与基线完全一致；但未报告方差、置信区间或消融实验等统计信息。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.01698/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ActiveWAM: Evidence-Aware Active Vision for World-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.01351/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Is Success All You Need? Investigating the Impact of Input Perturbations on VLA Behaviour in Tabletop Manipulation Tasks</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

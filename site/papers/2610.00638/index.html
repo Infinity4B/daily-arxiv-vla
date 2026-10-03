@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TacDyn-WAM: Learning Implicit Tactile Dynamics in a Heterogeneous Visuo-Tactile World Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文提出 TacDyn-WAM，一种异构视觉-触觉世界动作模型（Heterogeneous Visuo-Tactile World Action Model），用于预测隐式触觉动力学（implicit tactile dynamics），而非像现有方法那样重建未来触觉像素图像。 核心动机是：现有触觉世界模型复用视频生成管线，在部署分布偏移（deployment drift）下易失效——接触位置或力的微小变化会显著改变触觉像素，但底层接触演化仍可预测；因此应预测动力学感知的表示空间中的接触演化，而非重建像素。 论文同时引入 TacRep（dynamics-aware 触觉表示空间）和 Tactile Understanding Memory（当前触觉状态记忆），并通过分阶段训练（staged training）整合到 InternVLA-A1 基础模型中，在模拟基准 UniVTAC 和五类真实机器人任务上验证了有效性。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.00638">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.00638.webp" alt="TacDyn-WAM: Learning Implicit Tactile Dynamics in a Heterogeneous Visuo-Tactile World Action Model" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文提出 TacDyn-WAM，一种异构视觉-触觉世界动作模型（Heterogeneous Visuo-Tactile World Action Model），用于预测隐式触觉动力学（implicit tactile dynamics），而非像现有方法那样重建未来触觉像素图像。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TacDyn-WAM: Learning Implicit Tactile Dynamics in a Heterogeneous Visuo-Tactile World Action Model</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.00638" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.00638" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.00638</span></div>
+            <p class="detail-summary">本文提出 TacDyn-WAM，一种异构视觉-触觉世界动作模型（Heterogeneous Visuo-Tactile World Action Model），用于预测隐式触觉动力学（implicit tactile dynamics），而非像现有方法那样重建未来触觉像素图像。 核心动机是：现有触觉世界模型复用视频生成管线，在部署分布偏移（deployment drift）下易失效——接触位置或力的微小变化会显著改变触觉像素，但底层接触演化仍可预测；因此应预测动力学感知的表示空间中的接触演化，而非重建像素。 论文同时引入 TacRep（dynamics-aware 触觉表示空间）和 Tactile Understanding Memory（当前触觉状态记忆），并通过分阶段训练（staged training）整合到 InternVLA-A1 基础模型中，在模拟基准 UniVTAC 和五类真实机器人任务上验证了有效性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">清华大学智能产业研究院（AIR）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文提出 TacDyn-WAM，一种异构视觉-触觉世界动作模型（Heterogeneous Visuo-Tactile World Action Model），用于预测隐式触觉动力学（implicit tactile dynamics），而非像现有方法那样重建未来触觉像素图像。</p>
+  <ul class="reading-intro-points"><li>本文提出 TacDyn-WAM，一种异构视觉-触觉世界动作模型（Heterogeneous Visuo-Tactile World Action Model），用于预测隐式触觉动力学（implicit tactile dynamics），而非像现有方法那样重建未来触觉像素图像。</li><li>核心动机是：现有触觉世界模型复用视频生成管线，在部署分布偏移（deployment drift）下易失效——接触位置或力的微小变化会显著改变触觉像素，但底层接触演化仍可预测；因此应预测动力学感知的表示空间中的接触演化，而非重建像素。</li><li>论文同时引入 TacRep（dynamics-aware 触觉表示空间）和 Tactile Understanding Memory（当前触觉状态记忆），并通过分阶段训练（staged training）整合到 InternVLA-A1 基础模型中，在模拟基准 UniVTAC 和五类真实机器人任务上验证了有效性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>清华大学智能产业研究院（AIR）</strong></li><li><strong>中国科学院自动化研究所</strong></li><li><strong>香港科技大学（广州）</strong></li><li><strong>清华大学</strong></li><li><strong>中国人民大学信息学院</strong></li><li><strong>复旦大学</strong></li><li><strong>TARS Robotics</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文提出 <strong>TacDyn-WAM</strong>，一种异构视觉-触觉世界动作模型（Heterogeneous Visuo-Tactile World Action Model），用于预测隐式触觉动力学（implicit tactile dynamics），而非像现有方法那样重建未来触觉像素图像。</li><li>核心动机是：现有触觉世界模型复用视频生成管线，在部署分布偏移（deployment drift）下易失效——接触位置或力的微小变化会显著改变触觉像素，但底层接触演化仍可预测；因此应预测动力学感知的表示空间中的接触演化，而非重建像素。</li><li>论文同时引入 <strong>TacRep</strong>（dynamics-aware 触觉表示空间）和 <strong>Tactile Understanding Memory</strong>（当前触觉状态记忆），并通过分阶段训练（staged training）整合到 InternVLA-A1 基础模型中，在模拟基准 <strong>UniVTAC</strong> 和五类真实机器人任务上验证了有效性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>TacDyn-WAM</strong>，一个包含第四个专家（Implicit Tactile Dynamics Expert, ITDE）的异构视觉-触觉世界动作模型，视觉专家与触觉专家使用独立参数和目标空间，通过逐层联合注意力交互。</li><li>引入 <strong>TacRep</strong> 表示空间：基于 V-JEPA 2.1 的掩码时空预测训练，并通过关系结构蒸馏（Relational Structure Distillation）保持局部空间结构，使预测在触觉分布偏移下保持鲁棒。</li><li>提出 <strong>多视野隐式触觉动力学预测</strong>：ITDE 在单次前向传播中同时预测未来触觉表示及其变化（Delta 表示），覆盖多个时间视野（5/15/25 帧），无需迭代去噪。</li><li>设计 <strong>Tactile Understanding Memory</strong>：使用 AnyTouch2 编码器与紧凑注意力池化器，以只读键值（read-only KV）方式向动作专家提供当前触觉状态。</li><li>采用 <strong>四阶段训练策略</strong>（TacRep 训练 → 触觉世界接地 → 触觉-动作对齐 → 联合训练），逐步开放注意力连接，保护预训练专家权重。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础模型为 <strong>InternVLA-A1 3B</strong>（混合 Transformer 世界动作模型），包含 Understanding Expert（Qwen3-VL-2B）、Visual Generation Expert（Cosmos tokenizer + 未来视觉 latent 预测）和 Action Expert（flow matching 动作去噪）。</li><li><strong>TacRep 编码器</strong>：从 V-JEPA 2.1 ViT-B 初始化，使用 Tactile Dynamics Prediction（TDP，掩码块预测 EMA 目标特征）与 Relational Structure Distillation（RSD，对齐局部 patch 余弦关系）联合训练；训练后保留 EMA 编码器作为冻结 TacRep Encoder。</li><li><strong>Implicit Tactile Dynamics Expert（ITDE）</strong>：约 0.4B 参数的 28 层 Transformer（hidden size 1024），输入为每传感器 32 个 TacRep 上下文 token 和 3 个视野共 48 个未来查询 token；通过 Future Readout 和 Delta Readout 两个细粒度读出头预测 7×7 未来表示和变化表示；损失采用补丁自适应重加权（patch-adaptive reweighting）。</li><li><strong>Tactile Understanding Memory</strong>：AnyTouch2 编码器提取特征，经紧凑注意力池化器压缩为 10 token/传感器，再通过两层 Q-Former 融合跨传感器信息并接受前缀条件；以只读 KV 形式注入各专家，不参与残差流更新。</li><li><strong>异构联合注意力</strong>：每个 layer 中各 block（prefix、visual、tactile、action、memory）的 Q/K/V 拼接后执行块间因果掩码注意力；最终阶段中 prefix 只自注意力，visual/tactile 可读 prefix、memory 及彼此，action 可读所有上下文。</li><li><strong>分阶段训练</strong>：Stage 1 仅训练 TacRep；Stage 2 冻结其他专家只训练 ITDE 及读出；Stage 3 训练记忆和 Action Expert；Stage 4 联合优化所有可训练模块，整体损失为 L_act + λ_vis L_vis + λ_tac L_tac。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>模拟基准</strong>：<strong>UniVTAC</strong>（含 8 个接触丰富的操作任务，GelSight Mini 传感器，每个任务提供独立演示）。</li><li><strong>真实世界预训练数据</strong>：<strong>OmniViTac</strong> 子集（约 6,000 条轨迹：2,500 装配、2,000 抓取、1,000 擦拭、500 调整），另加 300 条自采集真实任务演示（每任务 60 条）。</li><li><strong>真实机器人平台</strong>：Franka Research 3 机械臂 + 并行夹爪 + Xense 视觉触觉传感器（每指一个）+ 腕部相机与第三人称相机。</li><li><strong>模型规模</strong>：TacDyn-WAM 总参数量约 <strong>3.6B</strong>（基础模型 3B + ITDE 0.4B + 记忆少量参数）；对比模型 N₀-TWAM 为 7.2B。</li><li><strong>训练资源</strong>：A100 GPU（用于推理延迟测试，训练资源未详细列出）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>UniVTAC 模拟基准</strong>：TacDyn-WAM 平均成功率 <strong>81.5%</strong>，仅用每任务演示训练，达到 state-of-the-art 水平；与使用超过 30,000 小时视触觉轨迹预训练的 N₀-VTLA（83.1%）和 N₀-TWAM（84.5%）差距小于 3 个点，且参数量更少（3.6B vs 7.2B）。</li><li><strong>对比基线</strong>：相比其基础模型 InternVLA-A1 提升 25.7 个点；超过最强纯视觉 VLA StarVLA-α（25.4 点优势）；超过触觉策略 FTP-1（62.9%）18.6 点；强于动作级触觉模型 TacForcing（65.3%）等。</li><li><strong>消融实验</strong>：去除触觉世界模型（仅留下记忆）平均降至 67.9%；去除触觉记忆降至 71.3%；将 TacRep 替换为 Cosmos VAE（像素重建空间）降至 62.0%；替换为单帧 DINOv2 降至 74.0%，验证了 TacRep 对触觉演化预测的关键作用。</li><li><strong>真实世界实验</strong>：训练于每个任务 60 条演示时，TacDyn-WAM 平均成功率 <strong>71.0%</strong>，高于 FTP-1（55.0%）、InternVLA-A1（40.0%）和 LingBot-VA（32.0%）；经 OmniViTac 中等规模预训练后提升至 <strong>85.0%</strong>，每个任务均有改善。</li><li><strong>推理延迟</strong>：单块 A100 上，TacDyn-WAM 每个动作平均延迟 <strong>9.7 ms</strong>（每动作块 484 ms，块长 50），显著低于 LingBot-VA 优化后的 33.5 ms/动作（块长 40），且延迟恒定不随情节历史增长。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.00801/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ECoMEM: Explicit Concept Memory for Memory-Dependent Robot Control</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.00604/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">MIKASA-Robo-VLA: Benchmarking Memory in VLA Models for Long-Horizon Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
