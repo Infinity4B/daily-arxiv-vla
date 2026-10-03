@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fewer Tokens, Better Action: GPT-6 Astra Robot Agents with 14% Higher Success Rate but 65% Fewer Tokens - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 PyRUA-Lean（Python for Lean Robot-Use Agents），一种交互式代码执行框架，用于 VLM 机器人智能体，通过反馈驱动的基元组合（feedback-driven primitive composition）与选择性观察（selective observation）减少推理时的 token 开销。 核心问题：VLM 智能体在通过视觉反馈和动作基元控制机器人时，反复的模型调用和冗余观察会产生大量 token 消耗，论文旨在探索如何让 VLM 智能体组合机器人基元，在保证任务完成率的同时降低 token 消耗。 论文在 700 个模拟任务实例上，将 PyRUA-Lean 与使用相同 GPT-6 Astra 规划器和底层机器人基元的工具调用（tool-calling）基线进行对比，验证了&quot;更少 token、更好动作&quot;的核心假设。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.01939">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.01939.webp" alt="Fewer Tokens, Better Action: GPT-6 Astra Robot Agents with 14% Higher Success Rate but 65% Fewer Tokens" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 PyRUA-Lean（Python for Lean Robot-Use Agents），一种交互式代码执行框架，用于 VLM 机器人智能体，通过反馈驱动的基元组合（feedback-driven primitive composition）与选择性观察（selective observation）减少推理时的 token 开销。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Fewer Tokens, Better Action: GPT-6 Astra Robot Agents with 14% Higher Success Rate but 65% Fewer Tokens</h1>
+            <div class="detail-meta">2026-10-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.01939" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.01939" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.01939</span></div>
+            <p class="detail-summary">论文提出 PyRUA-Lean（Python for Lean Robot-Use Agents），一种交互式代码执行框架，用于 VLM 机器人智能体，通过反馈驱动的基元组合（feedback-driven primitive composition）与选择性观察（selective observation）减少推理时的 token 开销。 核心问题：VLM 智能体在通过视觉反馈和动作基元控制机器人时，反复的模型调用和冗余观察会产生大量 token 消耗，论文旨在探索如何让 VLM 智能体组合机器人基元，在保证任务完成率的同时降低 token 消耗。 论文在 700 个模拟任务实例上，将 PyRUA-Lean 与使用相同 GPT-6 Astra 规划器和底层机器人基元的工具调用（tool-calling）基线进行对比，验证了&quot;更少 token、更好动作&quot;的核心假设。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">北京大学（Peking University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 PyRUA-Lean（Python for Lean Robot-Use Agents），一种交互式代码执行框架，用于 VLM 机器人智能体，通过反馈驱动的基元组合（feedback-driven primitive composition）与选择性观察（selective observation）减少推理时的 token 开销。</p>
+  <ul class="reading-intro-points"><li>论文提出 PyRUA-Lean（Python for Lean Robot-Use Agents），一种交互式代码执行框架，用于 VLM 机器人智能体，通过反馈驱动的基元组合（feedback-driven primitive composition）与选择性观察（selective observation）减少推理时的 token 开销。</li><li>核心问题：VLM 智能体在通过视觉反馈和动作基元控制机器人时，反复的模型调用和冗余观察会产生大量 token 消耗，论文旨在探索如何让 VLM 智能体组合机器人基元，在保证任务完成率的同时降低 token 消耗。</li><li>论文在 700 个模拟任务实例上，将 PyRUA-Lean 与使用相同 GPT-6 Astra 规划器和底层机器人基元的工具调用（tool-calling）基线进行对比，验证了&quot;更少 token、更好动作&quot;的核心假设。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>北京大学</strong>（Peking University）</li><li><strong>新加坡国立大学</strong>（National University of Singapore）</li><li><strong>NVIDIA</strong></li><li><strong>Impossible Research</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>PyRUA-Lean</strong>（Python for Lean Robot-Use Agents），一种交互式代码执行框架，用于 VLM 机器人智能体，通过反馈驱动的基元组合（feedback-driven primitive composition）与选择性观察（selective observation）减少推理时的 token 开销。</li><li>核心问题：VLM 智能体在通过视觉反馈和动作基元控制机器人时，反复的模型调用和冗余观察会产生大量 token 消耗，论文旨在探索如何让 VLM 智能体组合机器人基元，在保证任务完成率的同时降低 token 消耗。</li><li>论文在 <strong>700 个模拟任务实例</strong>上，将 PyRUA-Lean 与使用相同 <strong>GPT-6 Astra</strong> 规划器和底层机器人基元的工具调用（tool-calling）基线进行对比，验证了"更少 token、更好动作"的核心假设。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>提出交互式机器人基元组合接口</strong>：PyRUA-Lean 基于 RPent 的机器人栈构建，支持反馈驱动基元组合、持久程序状态（persistent program state）和选择性观察传递。</li><li><strong>三个机器人基准上的全面评估</strong>：在 700 个模拟实例上，PyRUA-Lean 相对工具调用基线将整体成功率提升约 14%（63.1% → 71.7%）；在两者均解决的实例上，LLM 调用减少 49%，输入 token 减少 65%。</li><li><strong>效率增益与局限性的分析</strong>：通过轨迹和消融实验识别出 LLM 调用次数减少是 token 节省的主要来源；该收益在无 VLA 策略或操作指南时依然存在，但在 VLA 主导的任务上有所缩减；同时展示了几何计算与脚本化恢复等能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>执行模型</strong>：机器人以 Python 对象 <code>robo</code> 暴露，其方法调用基元并返回结构化结果（如物体位置、运动结果）；VLM 通过 <code>python(code)</code> 工具与机器人交互，每个代码单元（cell）执行后返回反馈供 LLM 重规划。</li><li><strong>反馈驱动组合</strong>：单个代码单元可组合多个基元、执行条件分支和局部重试（如接近物体、仅在成功时抓取、失败后重试），在单元内部完成中间协调，无需额外 LLM 调用；还可进行任务相关几何计算（如从世界坐标图推算碗的底座高度）和定义辅助函数。</li><li><strong>选择性观察与上下文管理</strong>：基元结果保留在运行时而不逐条加入对话；只有代码中显式输出的内容和通过 <code>robo.show</code> 请求的相机图像才返回给 VLM；持久命名空间跨单元保留中间数据，控制进入上下文的新信息量。</li><li><strong>创新点</strong>：将中间执行步骤"下沉"到代码运行时，同时保留 LLM 级重规划能力；与工具调用基线相比，PyRUA-Lean 在依赖前序结果的操作上无需额外 VLM 往返。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO-PRO</strong>：4 个扰动套件共 40 个任务，使用 <strong>π0.5</strong> VLA 策略</li><li><strong>RoboTwin 2.0</strong>：50 个双臂任务，使用 <strong>LingBot-VLA</strong> 策略</li><li><strong>RoboCasa365 Target50</strong>：50 个任务（含原子与复合任务），使用 <strong>RLDX-1</strong> 策略</li><li>每个任务 5 个环境种子，每个智能体各跑一次，共 <strong>700 个配对任务实例、1,400 个 episode</strong></li><li>分割模型：<strong>SAM 3</strong>；规划器：<strong>GPT-6 Astra</strong>（高推理强度）；运行环境：<strong>Codex CLI</strong>（对话接近 272K tokens 时自动压缩）</li><li>另设 <strong>RoboDojo</strong> 试点：3 个任务，PyRUA-Lean 达 26.7% 成功率，工具调用仅 3.4%</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估设置</strong>：LLM 调用预算为每 episode 40 次（RoboCasa365 复合任务为 100 次），时间为 2 小时；成功率按各基准自身成功判据在全部实例上统计。</li><li><strong>主要结果（表 2）</strong>：整体成功率 63.1% → 71.7%（+8.6 个百分点，约 14% 相对提升）；LIBERO-PRO 83.0% → 94.0%，RoboTwin 2.0 60.0% → 69.2%，RC365 原子任务 78.9% → 86.7%，复合任务 34.4% → 39.4%。</li><li><strong>效率指标（共同解决实例）</strong>：LLM 调用从 17.0 降至 8.7（减少 49%）；输入 token 从 788k 降至 276k（减少 65%）；每 episode 估计费用从 $1.63 降至 $0.74（部分受缓存折扣影响）。</li><li><strong>Token 节省分解</strong>：LIBERO-PRO 上 4.48× 的 token 比率由 2.55× 更少调用和 1.76× 更少每调用 token 组成；主要来自 LLM 调用频率降低，而非每轮 prompt 变小。</li><li><strong>消融实验（表 3）</strong>：移除 VLA 策略或操作指南后，PyRUA-Lean 在相同任务实例上仍保持更高成功率和更低输入 token；RoboTwin 2.0 无 VLA 时成功率 68.8% vs 工具调用 42.8%；单一"按需返回图像"修改无法复现收益（LIBERO-PRO 上成功率反而从 83.0% 降至 68.5%）。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.02054/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">UniWAM: Unified World-Action Model</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.01856/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ChunkVLA-AM: Parallel Action Chunking for Vision-Language-Action Robot Control in Additive Manufacturing</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MIKASA-Robo-VLA: Benchmarking Memory in VLA Models for Long-Horizon Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 MIKASA-Robo-VLA，一个用于评估视觉-语言-动作（VLA）模型中记忆能力的基准，包含 90 个语言条件化操作任务，覆盖 10 种记忆类型。 核心研究问题是：策略必须记住什么信息、需要记住多久？基准通过信息间隙（information gap）和任务时间跨度来系统刻画记忆需求。 现有 VLA 基准（如 CALVIN、LIBERO）侧重技能组合和知识迁移，缺乏对记忆内容和保留时长的显式控制；记忆专用基准任务覆盖范围较窄，本工作提供更广的参数化任务套件和标准化评估协议。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.00604">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.00604.webp" alt="MIKASA-Robo-VLA: Benchmarking Memory in VLA Models for Long-Horizon Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 MIKASA-Robo-VLA，一个用于评估视觉-语言-动作（VLA）模型中记忆能力的基准，包含 90 个语言条件化操作任务，覆盖 10 种记忆类型。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">MIKASA-Robo-VLA: Benchmarking Memory in VLA Models for Long-Horizon Manipulation</h1>
+            <div class="detail-meta">2026-09-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.00604" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.00604" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.00604</span></div>
+            <p class="detail-summary">论文提出 MIKASA-Robo-VLA，一个用于评估视觉-语言-动作（VLA）模型中记忆能力的基准，包含 90 个语言条件化操作任务，覆盖 10 种记忆类型。 核心研究问题是：策略必须记住什么信息、需要记住多久？基准通过信息间隙（information gap）和任务时间跨度来系统刻画记忆需求。 现有 VLA 基准（如 CALVIN、LIBERO）侧重技能组合和知识迁移，缺乏对记忆内容和保留时长的显式控制；记忆专用基准任务覆盖范围较窄，本工作提供更广的参数化任务套件和标准化评估协议。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">AXXX（莫斯科，俄罗斯）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 MIKASA-Robo-VLA，一个用于评估视觉-语言-动作（VLA）模型中记忆能力的基准，包含 90 个语言条件化操作任务，覆盖 10 种记忆类型。</p>
+  <ul class="reading-intro-points"><li>论文提出 MIKASA-Robo-VLA，一个用于评估视觉-语言-动作（VLA）模型中记忆能力的基准，包含 90 个语言条件化操作任务，覆盖 10 种记忆类型。</li><li>核心研究问题是：策略必须记住什么信息、需要记住多久？基准通过信息间隙（information gap）和任务时间跨度来系统刻画记忆需求。</li><li>现有 VLA 基准（如 CALVIN、LIBERO）侧重技能组合和知识迁移，缺乏对记忆内容和保留时长的显式控制；记忆专用基准任务覆盖范围较窄，本工作提供更广的参数化任务套件和标准化评估协议。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>AXXX</strong>（莫斯科，俄罗斯）</li><li><strong>MIRIAI</strong>（莫斯科，俄罗斯）</li><li><strong>HSE University</strong>（莫斯科，俄罗斯）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>MIKASA-Robo-VLA</strong>，一个用于评估视觉-语言-动作（VLA）模型中记忆能力的基准，包含 <strong>90 个</strong>语言条件化操作任务，覆盖 <strong>10 种记忆类型</strong>。</li><li>核心研究问题是：策略必须记住什么信息、需要记住多久？基准通过信息间隙（information gap）和任务时间跨度来系统刻画记忆需求。</li><li>现有 VLA 基准（如 CALVIN、LIBERO）侧重技能组合和知识迁移，缺乏对记忆内容和保留时长的显式控制；记忆专用基准任务覆盖范围较窄，本工作提供更广的参数化任务套件和标准化评估协议。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提供 <strong>90 个</strong>语言条件化操作任务，覆盖 <strong>10 种记忆类型</strong>、<strong>26 个任务族</strong>，包含困难度变体，并按 <strong>25–2,160 步</strong>划分为 Short/Medium/Long 三个时间跨度分组。</li><li>发布 <strong>22,500 条</strong> oracle 演示轨迹（共 <strong>6,306,953 帧</strong>），同时提供 <strong>RLDS</strong> 和 <strong>LeRobotDataset v3</strong> 两种格式，并附带稠密奖励以支持强化学习微调。</li><li>建立标准化评估协议：固定推理种子、每任务 50 集默认评估、统一成功判定，并提供信息间隙分析和随机策略的下界参考。</li><li>在 14 个任务上微调参考基线 <strong>π₀.₅</strong>，报告其平均成功率为 <strong>0.211 ± 0.044</strong>，并分析了信息间隙、时间跨度与性能之间的关联（在有限子集上未发现显著统计关联）。</li><li>扩展了原 <strong>MIKASA-Robo</strong>（RL 套件）至 VLA 语言条件化设置，增加了任务类型、时间变体和通用接口。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>所有任务基于 <strong>ManiSkill 3</strong> 模拟器实现，共享统一策略接口：顶视相机 + 腕部相机 RGB 图像（128×128×3）以及 7 维本体感受向量，动作空间为 7 维末端执行器增量位姿 + 夹爪控制，以 10 Hz 执行。</li><li>任务设计核心为“提示-隐藏-行动”结构：多数任务先呈现线索（如颜色、形状、序列），随后遮挡或移除线索，再进入依赖该线索的行动阶段；另有 10 个反应式控制任务始终保持线索可见。</li><li>提出<strong>信息间隙</strong>指标：测量线索最后一次可见与依赖该线索的行动阶段开始之间的间隔，用于描述环境层面的记忆需求，而非依赖策略推断。</li><li>参考基线 π₀.₅ 仅使用当前帧图像和本体感受（无观察历史、无显式记忆模块），采用 8 步开环动作块执行；此外对比了带 64-token 循环记忆模块的 <strong>OpenVLA-OFT</strong>（外部评估显示记忆模块可将训练任务成功率从 0.42 提升至 0.84）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集包含 <strong>22,500 条</strong> oracle 成功轨迹，<strong>6,306,953 帧</strong>，对应 175.2 小时模拟交互。</li><li>每条任务 250 条成功演示，由 <strong>PPO</strong> 策略（34 个任务）或<strong>脚本化运动规划器</strong>（56 个任务）生成。</li><li>发布格式：</li></ul>
+<p> - <strong>RLDS</strong>：遵循 Open X-Embodiment TFDS 格式，图像存为 PNG，包含逐步奖励（共 287.4 GiB）。</p>
+<p> - <strong>LeRobotDataset v3</strong>：状态和动作存为 Parquet，相机流存为 AV1 视频（共 25.9 GiB），不包含逐步奖励。</p>
+<ul><li>模型规模：参考基线为 π₀.₅（基于视觉-语言模型），14 个任务微调使用 3,500 条 LeRobot 轨迹（798,296 帧）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：90 个任务中，70 个任务可确定信息间隙，其中 <strong>28 个任务</strong>的信息间隙超过 16 步（调研中最宽的固定上下文窗口）。</li><li>参考基线 π₀.₅ 在 14 个任务（每任务 20 集）上平均成功率为 <strong>0.211 ± 0.044</strong>；其中 Long 时间跨度任务成功率仅 0.017，其余任务为 0.264。</li><li>均匀随机策略在全部 90 个任务上仅取得 4,500 集中 1 次成功，表明随机行动下界极低。</li><li>在 7 个具有离散选择的任务上，基线的 140 集中获得 33 次成功，与随机选择期望（35.3 次、标准差 5.1）相当，未显示明显的线索依赖选择证据。</li><li>外部比较（来自 μVLA 项目）：OpenVLA-OFT 加入 64-token 循环记忆后，5 个训练任务成功率从 0.42 升至 0.84，18 个未见任务从 0.07 升至 0.23。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.00638/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">TacDyn-WAM: Learning Implicit Tactile Dynamics in a Heterogeneous Visuo-Tactile World Action Model</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.00601/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">When Reasoning Helps Action: Monitoring and Steering Chain-of-Thought in Vision-Language-Action Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
