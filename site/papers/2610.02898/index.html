@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MixVLA: Adaptive Mixing of Non-Invariant Information for Generalizable Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对Vision-Language-Action（VLA）模型在分布外（OOD）观测偏移（如光照、视角、背景变化）下零样本泛化性能骤降的问题，现有方案要么依赖大规模多样化数据收集成本高昂，要么引入定制化模块通用性不足 提出模型无关的训练框架MixVLA，无需修改VLA原有架构或额外收集OOD数据，通过正则化而非丢弃非不变信息提升模型泛化能力 核心方法为自适应非不变信息混合（AMI），解耦表征中的不变（任务相关、跨环境稳定）与非不变（环境相关）成分，对非不变特征做随机混合后与不变特征融合，在鲁棒性和策略表达能力间取得平衡" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.02898">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.02898.webp" alt="MixVLA: Adaptive Mixing of Non-Invariant Information for Generalizable Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对Vision-Language-Action（VLA）模型在分布外（OOD）观测偏移（如光照、视角、背景变化）下零样本泛化性能骤降的问题，现有方案要么依赖大规模多样化数据收集成本高昂，要么引入定制化模块通用性不足</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">MixVLA: Adaptive Mixing of Non-Invariant Information for Generalizable Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.02898" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.02898" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.02898</span></div>
+            <p class="detail-summary">针对Vision-Language-Action（VLA）模型在分布外（OOD）观测偏移（如光照、视角、背景变化）下零样本泛化性能骤降的问题，现有方案要么依赖大规模多样化数据收集成本高昂，要么引入定制化模块通用性不足 提出模型无关的训练框架MixVLA，无需修改VLA原有架构或额外收集OOD数据，通过正则化而非丢弃非不变信息提升模型泛化能力 核心方法为自适应非不变信息混合（AMI），解耦表征中的不变（任务相关、跨环境稳定）与非不变（环境相关）成分，对非不变特征做随机混合后与不变特征融合，在鲁棒性和策略表达能力间取得平衡</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">5 分钟读完</span>
+              <span class="meta-pill">5 张阅读卡</span>
+              <span class="meta-pill">复旦大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对Vision-Language-Action（VLA）模型在分布外（OOD）观测偏移（如光照、视角、背景变化）下零样本泛化性能骤降的问题，现有方案要么依赖大规模多样化数据收集成本高昂，要么引入定制化模块通用性不足</p>
+  <ul class="reading-intro-points"><li>针对Vision-Language-Action（VLA）模型在分布外（OOD）观测偏移（如光照、视角、背景变化）下零样本泛化性能骤降的问题，现有方案要么依赖大规模多样化数据收集成本高昂，要么引入定制化模块通用性不足</li><li>提出模型无关的训练框架MixVLA，无需修改VLA原有架构或额外收集OOD数据，通过正则化而非丢弃非不变信息提升模型泛化能力</li><li>核心方法为自适应非不变信息混合（AMI），解耦表征中的不变（任务相关、跨环境稳定）与非不变（环境相关）成分，对非不变特征做随机混合后与不变特征融合，在鲁棒性和策略表达能力间取得平衡</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>复旦大学</strong></li><li><strong>上海人工智能实验室</strong></li><li><strong>哈尔滨工业大学（深圳）</strong></li><li><strong>西北工业大学</strong></li><li><strong>中国电信TeleAI</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对Vision-Language-Action（VLA）模型在分布外（OOD）观测偏移（如光照、视角、背景变化）下零样本泛化性能骤降的问题，现有方案要么依赖大规模多样化数据收集成本高昂，要么引入定制化模块通用性不足</li><li>提出模型无关的训练框架<strong>MixVLA</strong>，无需修改VLA原有架构或额外收集OOD数据，通过正则化而非丢弃非不变信息提升模型泛化能力</li><li>核心方法为自适应非不变信息混合（AMI），解耦表征中的不变（任务相关、跨环境稳定）与非不变（环境相关）成分，对非不变特征做随机混合后与不变特征融合，在鲁棒性和策略表达能力间取得平衡</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出通用的VLA泛化框架MixVLA，不依赖额外数据或架构修改，可适配不同VLA架构，提升模型在分布偏移下的零样本任务成功率</li><li>提出自适应非不变信息混合（AMI）方法：通过信息瓶颈（IB）学习不变表征，利用权重减法得到互补的非不变特征分支，再通过批次内配对、软混合（自适应归一化插值特征统计量）和硬混合（嵌入直接插值）两种策略正则化非不变特征，降低对特定环境特征的依赖</li><li>在<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong>仿真基准及真实Franka机器人任务上验证，MixVLA在7类分布偏移场景下平均成功率较基线最高提升6.6%，同时保持域内性能几乎不下降</li><li>提出Self-MixVLA轻量变体，仅需单次Invariant Net训练即可复用中间检查点得到非不变分支，消除独立训练标准策略的开销，在保持鲁棒性的同时降低训练成本</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用两阶段训练流程：第一阶段分别训练标准VLA（Normal Net）和基于信息瓶颈目标的Invariant Net，通过两网络的权重相减得到Non-Invariant Net，用于提取环境相关的非不变表征；第二阶段采用AMI对非不变表征做自适应混合，将混合后的非不变表征与不变表征拼接后，送入原始VLA的策略头完成动作预测</li><li>关键技术包括：1. 信息瓶颈用于学习压缩且任务充分的不变表征，避免过拟合环境特定特征；2. 权重算术解耦非不变特征分支，无需额外设计网络结构；3. 软混合通过插值特征统计量稳定特征分布，硬混合通过直接嵌入插值强化跨样本耦合，二者互补提升正则化效果</li><li>创新点为不修改VLA原有骨干和策略头接口，通过表征层面的正则化实现模型无关的泛化能力提升，避免了定制化模块的通用性限制</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真验证数据集：<strong>LIBERO</strong>（机器人操作基准）、<strong>LIBERO-Plus</strong>（带7类分布偏移的LIBERO扩展基准）、<strong>RoboTwin 2.0</strong>（带强领域随机化的双臂操作基准）</li><li>真实世界验证场景：Franka Panda机器人上的面包切片抓取放置任务，测试光照扰动下的策略鲁棒性</li><li>适配的VLA模型架构：<strong>OpenVLA-OFT</strong>（7B参数，基于Prismatic骨干，并行解码生成连续动作块）、<strong>π₀.5</strong>（基于流匹配的连续动作生成模型），验证框架的模型无关性</li><li>训练配置：Normal Net与Invariant Net各训练100K步，AMI阶段在LIBERO上训练1K步、RoboTwin上训练10K步，基于GPU集群完成训练与真实机器人部署验证</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.03079/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RIFAR: Reliability and Forgetting-Aware Replay for Continual Robot Learning</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.02840/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">PointWAM: 3D World Action Modeling for Dexterous Robotic Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
