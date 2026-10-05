@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>World-Calibrated Proposal-to-Action Flow for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 ProAct 框架，旨在解决基于流的视觉-语言-动作（VLA）模型在生成动作时使用任务无关的各向同性高斯源，导致忽略局部运动连续性和未来场景演变的问题。 通过引入“提议-校准-优化”（propose–calibrate–refine）流水线，使生成源本身具备可预测性，从而缩短动作传输路径并提升生成准确度。 核心思想是利用近期执行的动作作为软运动先验，结合前瞻性世界推理进行校准，构建一个以提议为中心的各向异性源，用于最终的动作生成。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.02323">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.02323.webp" alt="World-Calibrated Proposal-to-Action Flow for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 ProAct 框架，旨在解决基于流的视觉-语言-动作（VLA）模型在生成动作时使用任务无关的各向同性高斯源，导致忽略局部运动连续性和未来场景演变的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">World-Calibrated Proposal-to-Action Flow for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.02323" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.02323" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.02323</span></div>
+            <p class="detail-summary">论文提出 ProAct 框架，旨在解决基于流的视觉-语言-动作（VLA）模型在生成动作时使用任务无关的各向同性高斯源，导致忽略局部运动连续性和未来场景演变的问题。 通过引入“提议-校准-优化”（propose–calibrate–refine）流水线，使生成源本身具备可预测性，从而缩短动作传输路径并提升生成准确度。 核心思想是利用近期执行的动作作为软运动先验，结合前瞻性世界推理进行校准，构建一个以提议为中心的各向异性源，用于最终的动作生成。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">哈尔滨工业大学（深圳） (Harbin Institute of Technology, Shenzh…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 ProAct 框架，旨在解决基于流的视觉-语言-动作（VLA）模型在生成动作时使用任务无关的各向同性高斯源，导致忽略局部运动连续性和未来场景演变的问题。</p>
+  <ul class="reading-intro-points"><li>论文提出 ProAct 框架，旨在解决基于流的视觉-语言-动作（VLA）模型在生成动作时使用任务无关的各向同性高斯源，导致忽略局部运动连续性和未来场景演变的问题。</li><li>通过引入“提议-校准-优化”（propose–calibrate–refine）流水线，使生成源本身具备可预测性，从而缩短动作传输路径并提升生成准确度。</li><li>核心思想是利用近期执行的动作作为软运动先验，结合前瞻性世界推理进行校准，构建一个以提议为中心的各向异性源，用于最终的动作生成。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>哈尔滨工业大学（深圳）</strong> (Harbin Institute of Technology, Shenzhen)</li><li><strong>中兴通讯，移动网络和移动多媒体技术国家重点实验室</strong> (State Key Laboratory of Mobile Network and Mobile Multimedia Technology, ZTE)</li><li><strong>中山大学</strong> (Sun Yat-sen University)</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>ProAct</strong> 框架，旨在解决基于流的视觉-语言-动作（VLA）模型在生成动作时使用任务无关的各向同性高斯源，导致忽略局部运动连续性和未来场景演变的问题。</li><li>通过引入“提议-校准-优化”（propose–calibrate–refine）流水线，使生成源本身具备可预测性，从而缩短动作传输路径并提升生成准确度。</li><li>核心思想是利用近期执行的动作作为软运动先验，结合前瞻性世界推理进行校准，构建一个以提议为中心的各向异性源，用于最终的动作生成。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出“提议-校准-优化”视角，将局部运动连续性与未来感知动作生成相结合，为动作生成提供显式接口。</li><li>引入非对称的提议感知 <strong>World Expert</strong>，在独立锚定期望未来的同时利用运动辅助未来预测，并联合预测每步的优化幅度和几何形状。</li><li>用世界校准的、以提议为中心的源替换了基于流的 VLA 中的各向同性高斯源，且不改变其原有的传输参数化。</li><li>在广泛的仿真和真实世界基准测试中表现始终优于强基线，同时将去噪步骤减少高达 50%。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用 <strong>Propose-Calibrate-Refine</strong> 三阶段流水线，包含三个主要专家模块：</li><li><strong>Proposal Expert</strong>：通过动量外推近期动作并执行单步端点流匹配，生成场景感知的运动假设作为软先验，使用无参数可靠性权重的三层 KV 融合获取 VLM 上下文。</li><li><strong>World Expert</strong>：使用冻结的 <strong>V-JEPA 2</strong> 编码器预测任务一致的未来潜在状态，评估提议与未来的兼容性，输出每步的标量优化幅度和低秩几何形状。</li><li><strong>Action Expert</strong>：基于预测的幅度和几何构建各向异性、以提议为中心的协方差矩阵进行采样，并利用 VLA 原始的流参数化将样本传输为可执行动作。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准数据集：<strong>LIBERO</strong>（包含 Spatial, Object, Goal, Long 四个任务套件）、<strong>LIBERO-Plus</strong>（包含七种扰动维度的泛化测试）、<strong>RoboTwin 2.0</strong>（双臂长视界任务）。</li><li>真实世界评估平台：<strong>GALAXEA R1 Lite</strong> 和 <strong>AgileX Cobot Magic</strong>。</li><li>模型架构细节：Proposal Expert 使用 6 层 Transformer，VLM 上下文为 18 层（详细模型参数量与训练资源因文本截断未完整展示）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：在多种仿真基准和真实世界机器人操作任务中进行闭环评估。</li><li>主要指标：任务成功率、去噪步数、推理延迟和吞吐量。</li><li>关键结果：在 <strong>LIBERO</strong> 上平均成功率达 98.4%（超越基线 $\pi_{0.5}$ 1.5 个点）；在 <strong>LIBERO-Plus</strong> 平均成功率达 86.8%（基线为 73.6%）。</li><li>在 <strong>RoboTwin 2.0</strong> 零样本随机设置下平均成功率达 60.3%（远超基线 $\pi_{0.5}$ 的 28.6%）。</li><li>效率提升：减少 50% 去噪步数，推理延迟降低最高 25.8%，吞吐量提升最高 34.8%。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.02360/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SocialVLA: A Social Perception Gateway for Human-Reaction-Based Failure Detection and Recovery in VLA Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.02274/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Awomo-SimDataEngine: Agentic Simulation-ReadyWorld Generation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
