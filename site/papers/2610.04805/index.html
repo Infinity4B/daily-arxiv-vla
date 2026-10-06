@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ExStereo: Lifting 2D Vision-Language-Action Models to 3D with Explicit Stereo Representations - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 ExStereo 模块，旨在为预训练的 2D Vision-Language-Action（VLA）模型注入 3D 感知能力，解决现有 VLA 模型依赖单目 RGB 图像导致缺乏精确深度和几何信息的问题 通过立体图像对重建场景几何，渲染为多视角显式立体表示，使机器人策略能够基于 3D 场景信息生成动作 在仿真和真实双臂机器人平台上验证，证明显式立体表示比隐式表示更有效，且无需重新预训练基础策略" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.04805">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">ExStereo: Lifting 2D Vision-Language-Action Models to 3D with Explicit Stereo Representations</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">ExStereo: Lifting 2D Vision-Language-Action Models to 3D with Explicit Stereo Representations</h1>
+            <div class="detail-meta">2026-10-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.04805" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.04805" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.04805</span></div>
+            <p class="detail-summary">论文提出 ExStereo 模块，旨在为预训练的 2D Vision-Language-Action（VLA）模型注入 3D 感知能力，解决现有 VLA 模型依赖单目 RGB 图像导致缺乏精确深度和几何信息的问题 通过立体图像对重建场景几何，渲染为多视角显式立体表示，使机器人策略能够基于 3D 场景信息生成动作 在仿真和真实双臂机器人平台上验证，证明显式立体表示比隐式表示更有效，且无需重新预训练基础策略</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">南加州大学维特比工程学院（Viterbi School of Engineering, Univers…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 ExStereo 模块，旨在为预训练的 2D Vision-Language-Action（VLA）模型注入 3D 感知能力，解决现有 VLA 模型依赖单目 RGB 图像导致缺乏精确深度和几何信息的问题</p>
+  <ul class="reading-intro-points"><li>论文提出 ExStereo 模块，旨在为预训练的 2D Vision-Language-Action（VLA）模型注入 3D 感知能力，解决现有 VLA 模型依赖单目 RGB 图像导致缺乏精确深度和几何信息的问题</li><li>通过立体图像对重建场景几何，渲染为多视角显式立体表示，使机器人策略能够基于 3D 场景信息生成动作</li><li>在仿真和真实双臂机器人平台上验证，证明显式立体表示比隐式表示更有效，且无需重新预训练基础策略</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>南加州大学维特比工程学院</strong>（Viterbi School of Engineering, University of Southern California）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>ExStereo</strong> 模块，旨在为预训练的 2D Vision-Language-Action（VLA）模型注入 3D 感知能力，解决现有 VLA 模型依赖单目 RGB 图像导致缺乏精确深度和几何信息的问题</li><li>通过立体图像对重建场景几何，渲染为多视角显式立体表示，使机器人策略能够基于 3D 场景信息生成动作</li><li>在仿真和真实双臂机器人平台上验证，证明显式立体表示比隐式表示更有效，且无需重新预训练基础策略</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>ExStereo</strong> 模块，可将任意预训练 2D VLA 模型提升至 3D 感知，无需重新预训练基础策略，实现快速适配</li><li>证明<strong>显式立体表示</strong>（显式重建 3D 几何并渲染为多视角观测）在操作任务中优于隐式立体表示（如 StereoVLA 的 cost-volume 特征）</li><li>引入 <strong>mid-training</strong> 阶段和 <strong>masked autoencoding（MAE）</strong> 自监督目标，学习鲁棒的 3D 表示，提升对遮挡、 distractors 和传感器噪声的鲁棒性</li><li>在仿真 <strong>RoboTwin</strong> 基准的 10 个任务和真实世界 3 个任务上，验证方法显著优于 RGB、点云和立体基线</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>多视角观测渲染</strong>：使用预训练的 <strong>Fast-FoundationStereo</strong> 模型从立体图像对估计视差图，结合相机内参和基线计算度量深度，反投影生成 3D 点云；通过 RANSAC 检测桌面平面并 aligned to world frame；从四个正交视角（Top, Front, Left, Right）使用 z-buffering 渲染点云，每个视图 128×128 分辨率，包含深度、3D 坐标和有效性掩码；四个视图水平拼接为 128×512×5 的多视角观测</li><li><strong>多视角编码与 Action-Stereo Cross-Attention</strong>：使用 <strong>ViT</strong>（patch size 16×16）编码多视角观测，提取 256 个立体 token；提出 <strong>action-stereo cross-attention</strong> 机制，以 action tokens 为 query、stereo tokens 为 key/value，使动作生成模块能有选择地关注相关 3D 视觉特征，而不修改 VLM 的 prefix tokens 或权重</li><li><strong>两阶段训练</strong>：<strong>Mid-training</strong> 阶段在大型立体数据集上使用 MAE 目标（随机掩码多视角 patch 并重建）学习通用 3D 表示；<strong>Post-training</strong> 阶段在任务特定演示上使用 LoRA 微调，同时冻结立体模块防止过拟合</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真数据集</strong>：基于 <strong>RoboTwin</strong> 基准，mid-training 使用 7 个任务的 500 个 episodes（Click Bell, Handover Block, Move Can Pot 等），post-training 使用 100 个干净 episodes；评估使用 10 个未见过的任务（Lift Pot, Adjust Bottle, Open Laptop, Beat Block Hammer 等）</li><li><strong>真实世界数据集</strong>：收集 20 个公开 <strong>AgileX PiPER</strong> 数据集（3469 个 clip），使用 <strong>StereoEngine</strong> 生成立体图像对；post-training 收集 Stack Two Bowls（200 episodes）、Lift Glass Bottles（50 episodes）、Close Fridge Door（20 episodes）</li><li><strong>模型规模</strong>：基于 <strong>π₀.₅</strong> 和 <strong>SmolVLA</strong>，ViT 编码器输出 256 个维度为 d 的 token</li><li><strong>硬件平台</strong>：<strong>AgileX PiPER</strong> 双臂机器人，<strong>ZED Mini 2</strong> 立体相机，Meta Quest 2 用于遥操作数据收集</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：仿真使用 RoboTwin with domain randomization，真实世界使用 tabletop 双臂平台</li><li><strong>评估指标</strong>：任务成功率（%），每个任务 25 个未见过的 episodes（仿真），20 次试验（真实世界）</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 仿真：<strong>π₀.₅-ExStereo</strong> 平均成功率 <strong>76.4%</strong>，较基线 51.2% 提升 25.2%；<strong>SmolVLA-ExStereo</strong> 平均成功率 42.0%，较基线 18.7% 提升 23.3%</p>
+<p> - 真实世界：π₀.₅-ExStereo 达到 <strong>50/60（83.3%）</strong>，显著优于基线 16/60（26.7%）和 StereoVLA 的 11/60（18.3%）</p>
+<p> - 透明物体任务（Lift Glass Bottles）提升最显著：18/20 vs 基线 5/20 和 StereoVLA 4/20</p>
+<p> - 消融实验证明显式立体表示优于隐式表示，且 MAE 目标的 mid-training 阶段能进一步提升性能</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.04913/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">$R^2$-WAM: Repair-and-Reject Post-Training for World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.04681/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RoboIRS: Inference-Time Internal Representation Steering for Generalist Robot Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

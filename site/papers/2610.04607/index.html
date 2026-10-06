@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ForeAct3D: Policy-Grounded Future World Modeling for VLA Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对现有Vision-Language-Action（VLA）策略的未来预测与实际执行动作脱节、缺乏物理约束的问题，提出ForeAct3D框架，实现策略grounded的语义3D未来世界建模 通过建模场景的几何、语义结构及动作条件下的未来演化，解决机器人操纵中接触、物体运动等结果难以准确预测的痛点 目标是提升VLA策略的操纵性能，同时无需在推理时执行未来rollout即可直接生成动作" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.04607">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">ForeAct3D: Policy-Grounded Future World Modeling for VLA Policies</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">ForeAct3D: Policy-Grounded Future World Modeling for VLA Policies</h1>
+            <div class="detail-meta">2026-10-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.04607" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.04607" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.04607</span></div>
+            <p class="detail-summary">针对现有Vision-Language-Action（VLA）策略的未来预测与实际执行动作脱节、缺乏物理约束的问题，提出ForeAct3D框架，实现策略grounded的语义3D未来世界建模 通过建模场景的几何、语义结构及动作条件下的未来演化，解决机器人操纵中接触、物体运动等结果难以准确预测的痛点 目标是提升VLA策略的操纵性能，同时无需在推理时执行未来rollout即可直接生成动作</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of Illinois Urbana-Champaign：Zhe Tao</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对现有Vision-Language-Action（VLA）策略的未来预测与实际执行动作脱节、缺乏物理约束的问题，提出ForeAct3D框架，实现策略grounded的语义3D未来世界建模</p>
+  <ul class="reading-intro-points"><li>针对现有Vision-Language-Action（VLA）策略的未来预测与实际执行动作脱节、缺乏物理约束的问题，提出ForeAct3D框架，实现策略grounded的语义3D未来世界建模</li><li>通过建模场景的几何、语义结构及动作条件下的未来演化，解决机器人操纵中接触、物体运动等结果难以准确预测的痛点</li><li>目标是提升VLA策略的操纵性能，同时无需在推理时执行未来rollout即可直接生成动作</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Illinois Urbana-Champaign</strong>：Zhe Tao</li><li><strong>University of Illinois Chicago</strong>：Feiran Wang、Yan Yan</li><li><strong>Cisco</strong>：Gaowen Liu、Ramana Rao Kompella</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对现有Vision-Language-Action（VLA）策略的未来预测与实际执行动作脱节、缺乏物理约束的问题，提出<strong>ForeAct3D</strong>框架，实现策略grounded的语义3D未来世界建模</li><li>通过建模场景的几何、语义结构及动作条件下的未来演化，解决机器人操纵中接触、物体运动等结果难以准确预测的痛点</li><li>目标是提升VLA策略的操纵性能，同时无需在推理时执行未来rollout即可直接生成动作</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>ForeAct3D</strong>框架，将未来世界建模集成到VLA策略中，可同时重建当前语义3D场景状态、预测动作条件化的未来场景状态</li><li>设计物理一致性正则化模块，通过背景静态性、实例级刚性、末端执行器运动学三类约束，关联当前与未来场景状态的几何关系</li><li>在仿真和真实桌面操纵任务上验证方法有效性，通过消融实验证明语义3D监督、物理一致性、动作条件化三类组件的互补贡献，尤其证实动作条件化可大幅提升未来物体定位精度</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用6个可学习几何查询，从策略骨干网络的特征中解码深度、三分类语义掩码、相机位姿，构建包含深度、语义、位姿的语义3D场景表示</li><li>设计物理一致性闭合约束：背景静态性约束保证静态环境在当前和未来时间点深度一致，实例级刚性约束通过Kabsch对齐保证运动物体形状不变，末端执行器运动学约束将腕部相机位姿锚定到机器人运动学</li><li>未来预测查询额外条件化策略生成的动作块，通过交叉注意力融合场景特征与动作特征，将未来预测与策略实际planned的动作关联</li><li>创新点：首次在VLA策略中实现物理约束的语义3D未来状态预测，未来预测直接基于策略生成的动作而非独立条件，训练时用未来预测监督策略表示学习，推理时无需额外计算未来状态</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>LIBERO</strong>四类任务套件、<strong>CALVIN</strong> ABC→D长程语言条件操纵基准</li><li>真实世界数据集：AgileX平台3类桌面操纵任务（目标区域滞留、笔放马克杯、长程顺序操纵），每类任务收集50条演示</li><li>基础模型：基于<strong>StarVLA-OFT</strong> VLA策略，无需机器人预训练</li><li>训练资源：真实世界实验使用深度相机测量与<strong>SAM3</strong>分割模型提供几何与语义监督，具体硬件配置详见论文附录A.3</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境与基准：LIBERO四类任务套件（单模型全套件协议）、CALVIN无机器人预训练协议、真实桌面操纵任务（每类任务15次试验）</li><li>主要评估指标：任务成功率、平均rollout长度、场景/实例级Chamfer距离（CD）、平移误差、Recall@2cm、语义分割mIoU</li><li>关键实验结果：</li></ul>
+<p> - LIBERO上平均任务成功率达<strong>98.3%</strong>，为同协议下最高，超过基础策略1.7个百分点，在所有任务套件上均优于基线</p>
+<p> - CALVIN上平均任务长度为<strong>3.73</strong>，超过所有无机器人预训练的基线方法，较基础策略的2.94有明显提升</p>
+<p> - 真实世界任务平均成功率从基础策略的6.7%提升至<strong>37.8%</strong>，动作条件化可让所有到达目标区域的试次都保持物体在目标区域内</p>
+<p> - 消融实验显示语义3D预测、物理一致性、动作条件化三类组件贡献互补，动作条件化可将未来物体平移误差从2.59cm降至1.06cm，Recall@2cm从88.4%提升至94.0%</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.04616/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">PerturBot: Breaking Shortcut Priors in Vision-Language-Action Models with Perturbative Training</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.04391/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">AgenticTactileVLA: Contact-Guided Execution-Time Supervision for Generalizable Dexterous Manipulation without VLA Retraining</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
