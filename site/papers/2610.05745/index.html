@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beyond In-Distribution Preservation: Recovering Generalization in Quantized VLAs via Vulnerability-Oriented Tuning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文系统研究了后训练量化（PTQ）对 VLA（Vision-Language-Action）策略在环境扰动下泛化能力的影响，发现量化策略虽然在原始分布评估下表现几乎无损，但在光照、物体初始位姿等细微环境变化下会出现显著泛化退化（post-quantization generalization gap）。 通过动作差异（action discrepancy）分析，发现量化引起的偏差高度非均匀地分布在少量 rollout 状态上（近似对数正态分布），且教师指导在不同偏差状态下效果相反：在高偏差状态纠正可显著恢复泛化，而在低偏差状态纠正反而导致性能下降。 针对该问题，提出 PIVOT-Q（Policy-Induced Vulnerability-Oriented Tuning），一种脆弱性感知的 On-Policy Distillation（OPD）框架，通过选择性纠正学生 rollout 中脆弱状态来恢复量化策略的泛化能力。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.05745">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.05745.webp" alt="Beyond In-Distribution Preservation: Recovering Generalization in Quantized VLAs via Vulnerability-Oriented Tuning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文系统研究了后训练量化（PTQ）对 VLA（Vision-Language-Action）策略在环境扰动下泛化能力的影响，发现量化策略虽然在原始分布评估下表现几乎无损，但在光照、物体初始位姿等细微环境变化下会出现显著泛化退化（post-quantization generalization gap）。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Beyond In-Distribution Preservation: Recovering Generalization in Quantized VLAs via Vulnerability-Oriented Tuning</h1>
+            <div class="detail-meta">2026-10-05 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.05745" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.05745" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.05745</span></div>
+            <p class="detail-summary">本文系统研究了后训练量化（PTQ）对 VLA（Vision-Language-Action）策略在环境扰动下泛化能力的影响，发现量化策略虽然在原始分布评估下表现几乎无损，但在光照、物体初始位姿等细微环境变化下会出现显著泛化退化（post-quantization generalization gap）。 通过动作差异（action discrepancy）分析，发现量化引起的偏差高度非均匀地分布在少量 rollout 状态上（近似对数正态分布），且教师指导在不同偏差状态下效果相反：在高偏差状态纠正可显著恢复泛化，而在低偏差状态纠正反而导致性能下降。 针对该问题，提出 PIVOT-Q（Policy-Induced Vulnerability-Oriented Tuning），一种脆弱性感知的 On-Policy Distillation（OPD）框架，通过选择性纠正学生 rollout 中脆弱状态来恢复量化策略的泛化能力。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Soochow University（苏州大学）：Shen Ruan、Jin Wang、Siao Liu</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文系统研究了后训练量化（PTQ）对 VLA（Vision-Language-Action）策略在环境扰动下泛化能力的影响，发现量化策略虽然在原始分布评估下表现几乎无损，但在光照、物体初始位姿等细微环境变化下会出现显著泛化退化（post-quantization generalization gap）。</p>
+  <ul class="reading-intro-points"><li>本文系统研究了后训练量化（PTQ）对 VLA（Vision-Language-Action）策略在环境扰动下泛化能力的影响，发现量化策略虽然在原始分布评估下表现几乎无损，但在光照、物体初始位姿等细微环境变化下会出现显著泛化退化（post-quantization generalization gap）。</li><li>通过动作差异（action discrepancy）分析，发现量化引起的偏差高度非均匀地分布在少量 rollout 状态上（近似对数正态分布），且教师指导在不同偏差状态下效果相反：在高偏差状态纠正可显著恢复泛化，而在低偏差状态纠正反而导致性能下降。</li><li>针对该问题，提出 PIVOT-Q（Policy-Induced Vulnerability-Oriented Tuning），一种脆弱性感知的 On-Policy Distillation（OPD）框架，通过选择性纠正学生 rollout 中脆弱状态来恢复量化策略的泛化能力。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Soochow University</strong>（苏州大学）：Shen Ruan、Jin Wang、Siao Liu</li><li><strong>Independent Researcher</strong>：Wenchang Gao</li><li><strong>Shanghai Jiao Tong University</strong>（上海交通大学）：Zhoxizhuoma</li><li><strong>Yootta</strong>：Dongchun Ren</li><li><strong>RMIT University</strong>：Xin Zheng</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文系统研究了<strong>后训练量化（PTQ）对 VLA（Vision-Language-Action）策略在环境扰动下泛化能力的影响</strong>，发现量化策略虽然在原始分布评估下表现几乎无损，但在光照、物体初始位姿等细微环境变化下会出现显著泛化退化（post-quantization generalization gap）。</li><li>通过动作差异（action discrepancy）分析，发现量化引起的偏差<strong>高度非均匀地分布</strong>在少量 rollout 状态上（近似对数正态分布），且教师指导在不同偏差状态下效果相反：在高偏差状态纠正可显著恢复泛化，而在低偏差状态纠正反而导致性能下降。</li><li>针对该问题，提出 <strong>PIVOT-Q</strong>（Policy-Induced Vulnerability-Oriented Tuning），一种<strong>脆弱性感知的 On-Policy Distillation（OPD）框架</strong>，通过选择性纠正学生 rollout 中脆弱状态来恢复量化策略的泛化能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次对 VLA 量化后的环境泛化进行系统性研究，揭示了<strong>一致的量化后泛化差距</strong>以及动作差异的非均匀分布特征。</li><li>提出 <strong>PIVOT-Q</strong> 框架，通过<strong>学生控制的 on-policy rollouts</strong> 采集轨迹，利用<strong>折现累积差异</strong>（discounted accumulated discrepancy）识别脆弱状态，并采用<strong>分阶段平衡稀疏监督</strong>（phase-balanced sparse supervision）进行选择性蒸馏。</li><li>引入 <strong>Behavioral Anchor</strong> 机制，在原始分布参考状态上约束学生策略，防止针对性恢复导致已有行为的漂移和遗忘。</li><li>在 <strong>4 种模型-量化器组合</strong>（GR00T-N1.5/π0.5 配 QuantVLA、GR00T-N1.5 配 HoloQ-VLA、OpenVLA-OFT 配 QVLA）和 <strong>LIBERO-Plus 七种分布偏移</strong>下验证有效性，<strong>仅用全状态蒸馏 7.4% 的监督预算即全面超越 FSD</strong>。</li><li>发布了开源代码：github.com/ruanruan-andy/PIVOT-Q。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>学生控制的 On-Policy Rollouts</strong>：由量化学生 πQ 执行 rollout，在每步使用相同扩散噪声 ξt 同时获得学生与教师动作，确保轨迹遵循量化策略诱导的状态分布，同时隔离量化引入的行为偏差。</li><li><strong>脆弱性状态选择</strong>：定义动作差异 q_t = (1/D_a)‖a^Q_t − a^F_t‖²₂，在此基础上计算短视界 H 内的折现累积差异 r_t⁺ = Σ γ^(h−1) q_(t+h) / Σ γ^(h−1)；将轨迹分为 K 个连续阶段，结合当前差异与未来差异的分位数排名计算脆弱性得分 P_t，并施加<strong>最小时间间隔约束</strong>避免监督集中在狭窄时间窗口。</li><li><strong>脆弱性加权蒸馏</strong>：对选中状态按其脆弱性得分进行均值归一化和裁剪（clip），转化为有界相对权重后加权计算蒸馏损失 L_distill，使高脆弱状态获得更大优化权重。</li><li><strong>Behavioral Anchor</strong>：从原始训练数据中维护行为锚点库 B，随机采样锚点状态计算辅助锚点损失 L_anchor，防止策略过度偏向新环境导致遗忘；总损失为 L = L_distill + λ·L_anchor。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集</strong>：LIBERO 套件（原始分布）、<strong>LIBERO-Plus</strong>（七种受控分布偏移：相机视角、初始位姿、语言指令、光照、背景、噪声、布局；评估协议为 560 episode）。</li><li><strong>模型</strong>：GR00T-N1.5、π0.5（π 0.5）、OpenVLA-OFT。</li><li><strong>量化方法</strong>：QuantVLA（W4A8）、HoloQ-VLA（W4A4）、QVLA（Mixed-bit W-only）。</li><li><strong>PIVOT-Q 配置</strong>：每个 rollout 分为 K=4 个阶段，每阶段选 M=4 个脆弱状态，即每 episode 仅监督 \|I\|= KM = 16 个状态。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估基准</strong>：LIBERO-Plus 上的七种环境偏移，以任务成功率（%）为指标，报告 3 个独立种子的均值±标准差。</li><li><strong>量化后泛化差距</strong>：GR00T-N1.5 配 QuantVLA 从 82.1% 降至 67.0%；π0.5 配 QuantVLA 从 78.2% 降至 72.0%；GR00T-N1.5 配 HoloQ-VLA 从 82.0% 降至 69.1%（原始分布上量化仍保持约 97% 性能）。</li><li><strong>干预实验</strong>：在高差异状态替换教师动作可显著提升成功率（如 Lang 偏移 +16.2、Noise 偏移 +26.3），随机干预仅轻微提升，低差异状态干预无改善甚至下降，验证了"纠正正确的状态而非所有状态"的核心观点。</li><li><strong>主结果</strong>：PIVOT-Q 在全部 4 种模型-量化器设置下均优于对应量化策略，且<strong>平均成功率全面超越 FSD</strong>（如 HoloQ-VLA 设置中 PIVOT-Q 平均 78.3% vs FSD 78.0%；QuantVLA-GR00T 设置中 PIVOT-Q 平均 81.3% vs FSD 76.9%），而监督状态数仅为 FSD 的 7.4%（16 vs 约 200-233）。</li><li><strong>消融实验</strong>：验证了分阶段平衡稀疏分配、未来差异信号、Behavioral Anchor 各自对恢复效果和训练稳定性的贡献。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.05755/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Demonstration-Calibrated Port-Hamiltonian Retuning for Manipulation Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.05719/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">When to Switch: Reliable Action-Chunk Extension for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

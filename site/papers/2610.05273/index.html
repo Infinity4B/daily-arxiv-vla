@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>When and What to Prune? Stage-Aware Visual Token Pruning for Efficient VLA - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 SAPrune，一个无需训练的视觉 token 剪枝框架，用于加速 Vision-Language-Action (VLA) 模型的推理，尤其在机器人动作预测场景中减少大量视觉 token 带来的计算开销。 核心问题是：现有剪枝方法使用固定剪枝层（如预设层或均匀间隔层），但在 VLA 中早期层可能尚未确定哪些视觉区域与动作相关，早期剪枝会误删后续有用的 token；同时仅依赖注意力或特征多样性的保留策略均不足以支持激进剪枝。 论文从“何时剪枝”（pruning-layer selection）和“剪什么”（dual-path retention）两个角度设计方法，在极低 token 预算下保持任务成功率。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.05273">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">When and What to Prune? Stage-Aware Visual Token Pruning for Efficient VLA</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">When and What to Prune? Stage-Aware Visual Token Pruning for Efficient VLA</h1>
+            <div class="detail-meta">2026-10-04 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.05273" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.05273" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.05273</span></div>
+            <p class="detail-summary">论文提出 SAPrune，一个无需训练的视觉 token 剪枝框架，用于加速 Vision-Language-Action (VLA) 模型的推理，尤其在机器人动作预测场景中减少大量视觉 token 带来的计算开销。 核心问题是：现有剪枝方法使用固定剪枝层（如预设层或均匀间隔层），但在 VLA 中早期层可能尚未确定哪些视觉区域与动作相关，早期剪枝会误删后续有用的 token；同时仅依赖注意力或特征多样性的保留策略均不足以支持激进剪枝。 论文从“何时剪枝”（pruning-layer selection）和“剪什么”（dual-path retention）两个角度设计方法，在极低 token 预算下保持任务成功率。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of Macau（论文全部作者均来自澳门大学，其中 Li Li 为通讯作者）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 SAPrune，一个无需训练的视觉 token 剪枝框架，用于加速 Vision-Language-Action (VLA) 模型的推理，尤其在机器人动作预测场景中减少大量视觉 token 带来的计算开销。</p>
+  <ul class="reading-intro-points"><li>论文提出 SAPrune，一个无需训练的视觉 token 剪枝框架，用于加速 Vision-Language-Action (VLA) 模型的推理，尤其在机器人动作预测场景中减少大量视觉 token 带来的计算开销。</li><li>核心问题是：现有剪枝方法使用固定剪枝层（如预设层或均匀间隔层），但在 VLA 中早期层可能尚未确定哪些视觉区域与动作相关，早期剪枝会误删后续有用的 token；同时仅依赖注意力或特征多样性的保留策略均不足以支持激进剪枝。</li><li>论文从“何时剪枝”（pruning-layer selection）和“剪什么”（dual-path retention）两个角度设计方法，在极低 token 预算下保持任务成功率。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Macau</strong>（论文全部作者均来自澳门大学，其中 Li Li 为通讯作者）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>SAPrune</strong>，一个无需训练的视觉 token 剪枝框架，用于加速 <strong>Vision-Language-Action (VLA)</strong> 模型的推理，尤其在机器人动作预测场景中减少大量视觉 token 带来的计算开销。</li><li>核心问题是：现有剪枝方法使用固定剪枝层（如预设层或均匀间隔层），但在 VLA 中早期层可能尚未确定哪些视觉区域与动作相关，早期剪枝会误删后续有用的 token；同时仅依赖注意力或特征多样性的保留策略均不足以支持激进剪枝。</li><li>论文从“何时剪枝”（pruning-layer selection）和“剪什么”（dual-path retention）两个角度设计方法，在极低 token 预算下保持任务成功率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>训练无关、无需奖励/成功标签</strong> 的视觉 token 剪枝框架 <strong>SAPrune</strong>，通过离线校准集观察动作到视觉注意力的跨层动态来选择剪枝层。</li><li>设计 <strong>阶段感知的剪枝层选择算法</strong>：将 Transformer 层分为浅层、中层、深层三个相对深度区域，利用 top-κ 注意力质量、层间移动平均、分位数阈值和重分布事件检测，选取每个区域中最稳定的剪枝位置。</li><li>提出 <strong>Layer-Local Dual-Path Pruning</strong>（层内双路径保留机制）：<strong>attention-core path</strong> 保留高动作注意力的核心 token，<strong>functional-diversity path</strong> 基于行动与语言查询条件的功能签名选择互补 token，避免仅靠注意力塌缩到单一区域或仅靠视觉多样性保留无关 token。</li><li>引入 <strong>reliability-adaptive budget</strong>（可靠性自适应预算）：根据候选池的保留分数 \(P_l\) 与注意力集中度 \(A_l\) 动态分配注意力路径与覆盖路径的 token 数量。</li><li>在 <strong>LIBERO</strong>、<strong>SIMPLER</strong> 和真实机器人任务上验证，仅保留 <strong>32 个视觉 token</strong>（剪枝 87.5%），实现最高 <strong>1.718×</strong> 推理加速同时保持有竞争力的成功率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>剪枝层选择（When）</strong>：通过校准 rollout 记录每层 action-to-visual attention，计算 top-κ（默认 κ=0.125）注意力质量；对层间绝对差进行 3 点移动平均平滑，使用分位数阈值（\(q_s=0.4\), \(q_r=0.8\)）检测 plateau 起点与表注重分布事件；在浅/中/深三个区域分别选取<strong>最早 plateau 起点</strong>或<strong>最小局部平均变化层</strong>作为剪枝层。</li><li><strong>双路径剪枝（What）</strong>：在每个选定层，构建比最终预算更大的候选池 \(C_l\)（γ=1.75 倍预算），并构造注意力排序的 probe 集；通过 thin QR 分解计算保留分数 \(P_l\)，结合归一化熵得到集中度 \(A_l\)，共同决定注意力路径与覆盖路径的预算分配（\(λ_{\min}=0.1\), \(λ_{\max}=0.9\)）。</li><li><strong>注意力核心路径</strong>：直接保留候选池中 action-to-visual attention 排名最高的 \(K_l^{attn}\) 个 token。</li><li><strong>功能多样性路径</strong>：利用未被剪枝的文本 token（保留 top-6）与行动查询组成查询族，计算每个视觉 token 的查询条件功能签名；通过<strong>残差证据引导的贪心选择</strong>（与剩余证据对齐并抑制与已有 token 的冗余）填充 \(K_l^{cov}\) 个 token，最终合并两路径并填充至预算大小。</li><li>关键技术：查询条件功能签名替代纯特征空间多样性，能更直接反映 token 对当前动作-语言指令的功能响应；所有操作训练无关、无需额外训练模块。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>校准集：默认使用 <strong>LIBERO</strong>（30 条 rollout）；也验证了 <strong>SIMPLER</strong>、真实世界以及混合模拟-真实（40/270 条 rollout）的校准转移。</li><li>评估基准：<strong>LIBERO</strong>（Spatial/Object/Goal/Long 四类任务）、<strong>SIMPLER</strong>、真实机器人任务。</li><li>模型：<strong>OpenVLA</strong>（256 视觉 token）、<strong>OpenVLA-OFT</strong>（256 视觉 token）、<strong>π₀</strong>（pi-zero，256 视觉 token），以及附录中提及的 <strong>π₀.₅</strong> 模型。</li><li>训练资源：方法为训练无关，无需额外 GPU 训练；校准仅记录注意力统计，成本极低。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>在 <strong>LIBERO</strong> 上，与多个加速基线（FastV、DivPrune、SP-VLA、VLA-ADP、EfficientVLA(T-only)）对比，采用任务成功率（每类任务及平均）、延迟（ms）、加速比（×）和 FLOPs 比作为指标。</li><li><strong>OpenVLA</strong> 上：仅保留 32 token，平均成功率 <strong>74.0%</strong>（原始 74.9%），延迟 110.96 ms，加速 <strong>1.608×</strong>，FLOPs 比 39.5%，各分项成功率均优于或持平大多数剪枝基线。</li><li><strong>OpenVLA-OFT</strong> 上：仅保留 32 token，平均成功率 <strong>94.5%</strong>（原始 95.4%），延迟 60.30 ms，加速 <strong>1.718×</strong>，FLOPs 比 37.8%，为所有剪枝方法中最佳。</li><li><strong>π₀</strong> 上的结果在表格中展示（表 1），支持 SAPrune 在不同骨干上的通用性。</li><li>实验还覆盖 <strong>SIMPLER</strong> 与真实机器人环境，验证方法在跨环境、跨任务上的鲁棒性；附录提供了统一 32-token 预算下的受控对比、路由开销、注意力后端、端到端延迟、校准转移、LIBERO-Plus 鲁棒性以及不同最终剪枝比的性能分析。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.05418/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">EvoMem-VLA: State-Evolution Memory for Long-Horizon Robot Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.05230/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Vela: Scaling Vision-Language-Action Models with Adaptive Action Curve Parametrization</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

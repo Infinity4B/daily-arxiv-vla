@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How (and How Not) to Use Data Augmentation in VLA Post-Training - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文系统研究了视觉-语言-动作（VLA）模型在强化学习（RL）后训练中图像数据增强的最佳应用方式，旨在解决VLA模型在真实世界视觉分布偏移（OOD）下泛化能力不足的问题。 核心发现颠覆了既有认知：在PPO后训练中，只对 critic 模块应用增强（critic-only）能显著提升OOD成功率，而对 actor 模块应用增强会导致训练完全崩溃，这与传统卷积策略中&quot;增强actor有效&quot;的结论相反。 研究通过系统消融实验回答了三个关键问题：在哪里增强（actor vs. critic）、用什么增强（overlay vs. shift）、增强多强（overlay强度α），并给出了面向实践者的经验法则。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.05994">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.05994.webp" alt="How (and How Not) to Use Data Augmentation in VLA Post-Training" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文系统研究了视觉-语言-动作（VLA）模型在强化学习（RL）后训练中图像数据增强的最佳应用方式，旨在解决VLA模型在真实世界视觉分布偏移（OOD）下泛化能力不足的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">How (and How Not) to Use Data Augmentation in VLA Post-Training</h1>
+            <div class="detail-meta">2026-10-05 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.05994" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.05994" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.05994</span></div>
+            <p class="detail-summary">论文系统研究了视觉-语言-动作（VLA）模型在强化学习（RL）后训练中图像数据增强的最佳应用方式，旨在解决VLA模型在真实世界视觉分布偏移（OOD）下泛化能力不足的问题。 核心发现颠覆了既有认知：在PPO后训练中，只对 critic 模块应用增强（critic-only）能显著提升OOD成功率，而对 actor 模块应用增强会导致训练完全崩溃，这与传统卷积策略中&quot;增强actor有效&quot;的结论相反。 研究通过系统消融实验回答了三个关键问题：在哪里增强（actor vs. critic）、用什么增强（overlay vs. shift）、增强多强（overlay强度α），并给出了面向实践者的经验法则。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">TU Eindhoven（埃因霍温理工大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文系统研究了视觉-语言-动作（VLA）模型在强化学习（RL）后训练中图像数据增强的最佳应用方式，旨在解决VLA模型在真实世界视觉分布偏移（OOD）下泛化能力不足的问题。</p>
+  <ul class="reading-intro-points"><li>论文系统研究了视觉-语言-动作（VLA）模型在强化学习（RL）后训练中图像数据增强的最佳应用方式，旨在解决VLA模型在真实世界视觉分布偏移（OOD）下泛化能力不足的问题。</li><li>核心发现颠覆了既有认知：在PPO后训练中，只对 critic 模块应用增强（critic-only）能显著提升OOD成功率，而对 actor 模块应用增强会导致训练完全崩溃，这与传统卷积策略中&quot;增强actor有效&quot;的结论相反。</li><li>研究通过系统消融实验回答了三个关键问题：在哪里增强（actor vs. critic）、用什么增强（overlay vs. shift）、增强多强（overlay强度α），并给出了面向实践者的经验法则。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>TU Eindhoven（埃因霍温理工大学）</strong></li><li>作者为 <strong>Bram Grooten</strong> 和 <strong>Joaquin Vanschoren</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文系统研究了<strong>视觉-语言-动作（VLA）模型</strong>在<strong>强化学习（RL）后训练</strong>中图像数据增强的最佳应用方式，旨在解决VLA模型在真实世界视觉分布偏移（OOD）下泛化能力不足的问题。</li><li>核心发现颠覆了既有认知：在PPO后训练中，<strong>只对 critic 模块应用增强</strong>（critic-only）能显著提升OOD成功率，而<strong>对 actor 模块应用增强会导致训练完全崩溃</strong>，这与传统卷积策略中"增强actor有效"的结论相反。</li><li>研究通过系统消融实验回答了三个关键问题：<strong>在哪里增强</strong>（actor vs. critic）、<strong>用什么增强</strong>（overlay vs. shift）、<strong>增强多强</strong>（overlay强度α），并给出了面向实践者的经验法则。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>首次系统研究VLA后训练中的增强位置问题</strong>：填补了"增强注入位置"在VLA这一全新设定下的研究空白，发现critic-only增强对VLA最有效，与卷积策略的结论（augment both）形成鲜明对比。</li><li><strong>揭示actor增强导致训练崩溃的机理</strong>：增强后的actor产生过多坏动作，导致PPO的clip比例过高，训练在100个epoch内迅速崩溃（成功率降至接近0）。</li><li><strong>量化了critic-only增强的收益</strong>：在 <strong>π0.5</strong> 上OOD平均成功率从 <strong>73.9% 提升至 81.7%（+7.8点）</strong>，在 <strong>GR00T N1.5</strong> 上从 <strong>66.0% 提升至 76.0%（+10.0点）</strong>，且不牺牲分布内（IND）成功率。</li><li><strong>发现最佳增强类型是模型依赖的</strong>：overlay（外观扰动）对传感器噪声最有效，shift（几何扰动）对相机视角和布局最有效；π0.5偏好overlay，GR00T N1.5偏好shift，应针对模型最薄弱的OOD轴选择增强类型。</li><li><strong>提供了实践规则与机制解释</strong>：通过GAE优势估计的理论分析，解释了critic-only增强为何能间接改善actor策略（通过更鲁棒的价值函数塑造优势信号），并指出冻结骨干时此收益是下界。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>模型与训练框架</strong>：使用 <strong>PPO</strong> 算法在 <strong>RLinf</strong> 框架下对 VLA 进行后训练，采用 <strong>Flow-SDE</strong> 将流匹配动作头转化为可计算对数概率的随机策略（ODE转SDE），使PPO可直接优化。</li><li><strong>增强应用方式</strong>：所有增强仅在<strong>训练前向传播</strong>中应用，rollout和评估始终使用干净观测。图像增强作用于主相机和腕部相机两个视角，支持 <strong>random overlay</strong>（与ImageNet图像凸组合混合）和 <strong>random shift</strong>（随机平移裁剪）两种类型及其组合。</li><li><strong>模块级增强策略</strong>：利用actor和critic共享VLM骨干的特性，通过在batch维度拼接的方式用一次额外前向传播分别提供干净观测（给actor）和增强观测（给critic），实现critic-only增强。</li><li><strong>训练设置</strong>：基于LIBERO-Spatial的SFT checkpoint出发，训练300个epoch，每epoch采集512个episode（64个并行环境），单episode上限240步。冻结VLM骨干，仅训练action expert和新增的value head。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>训练基准</strong>：<strong>LIBERO-Spatial</strong>（10个桌面操作任务，共享物体、不同空间布局），每任务50个种子共500个评估episode。</li><li><strong>评估基准</strong>：<strong>LIBERO-Plus</strong>（5个视觉OOD轴：背景纹理、光照、物体布局、相机视角、传感器噪声，共 <strong>1662</strong> 个子任务），报告各轴成功率及未加权平均。</li><li><strong>模型</strong>：<strong>π0.5</strong>（PaliGemma风格VLM + 共享注意力栈的流匹配头）和 <strong>GR00T N1.5</strong>（Eagle VLM + 交叉注意力的扩散Transformer（DiT）动作头），均为多十亿参数级别。</li><li><strong>外部数据</strong>：<strong>ImageNet Winter21</strong> 数据集（19,167类）中每类10张图像构成overlay库，每张图像经随机resize/crop/flip扩大有效分布。</li><li><strong>计算资源</strong>：论文未明确列出GPU型号与数量，但指出训练成本高昂，采用"广度优先"策略（各类配置单次运行）而非重复种子。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估方法</strong>：对所有配置报告<strong>LIBERO-Spatial上的IND成功率</strong>和<strong>LIBERO-Plus上的OOD成功率</strong>（含5个视觉轴的细粒度报告）。对同一checkpoint重复评估两次测量噪声下限（π0.5为 <strong>0.06点</strong>，GR00T N1.5为 <strong>1.77点</strong>），确认所报差异远超噪声。</li><li><strong>模块消融结果</strong>：在π0.5上，actor+critic增强后OOD成功率降至 <strong>0.1%</strong>，actor-only增强降至 <strong>4.3%</strong>（100 epoch提前停止）；critic-only增强达到 <strong>81.7%</strong>，显著优于无增强基线（73.9%）。GR00T N1.5结果类似（critic-only为66.0%，actor相关配置全部崩溃）。</li><li><strong>增强类型比较</strong>：π0.5上overlay（81.7%）优于shift（78.9%）；GR00T N1.5上shift（76.0%）优于overlay（66.0%）。两种增强组合反而劣于最佳单一类型，说明过度扰动适得其反。</li><li><strong>增强强度扫描</strong>：overlay强度α从0.1到0.9的所有设置均优于无增强基线（OOD成功率76.6%-81.7%），<strong>α=0.5为最优峰值</strong>；即使α=0.9的极度噪声下仍有稳定提升，说明critic能从大量混合图像中提取恒定信号。</li></ul>
+
+<ul><li><strong>核心结论</strong>：VLA后训练中数据增强应<strong>只作用于critic、只在训练更新时使用</strong>；增强类型应匹配模型最弱的OOD轴；强度取中等值（α≈0.5）；此方法在两种结构差异显著的VLA模型上一致有效，且不损害分布内性能，可作为低风险默认配置。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.06078/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Do VLAs Understand and Adapt to the Objects They Handle, or Simply Replay Learned Behaviors?</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.05878/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">OGAM: Connecting Systematic Testing to Runtime Assurance through Object-Grounded Attention Monitoring for VLA Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

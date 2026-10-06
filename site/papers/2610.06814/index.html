@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TAPDreamer: Transferable Adversarial Patches for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 TAPDreamer，一种针对 World Action Models (WAMs) 的可迁移对抗补丁攻击方法。WAMs 通过视觉输入学习环境演化并生成控制动作，攻击者只需修改视觉输入中的局部区域即可干扰整个策略。 该攻击仅使用公开的视觉编码器（白盒访问）和来自单一源任务的 6 帧演示图像进行补丁优化，不需要目标策略查询、动作标签、任务奖励、模拟器或目标模型权重。 论文验证了跨40 个 LIBERO 任务和50 个 RoboTwin 任务的零成功率攻击效果，并揭示了补丁如何通过注意力机制将局部扰动扩散为分布式潜在表示偏移，进而破坏动作执行。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.06814">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.06814.webp" alt="TAPDreamer: Transferable Adversarial Patches for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 TAPDreamer，一种针对 World Action Models (WAMs) 的可迁移对抗补丁攻击方法。WAMs 通过视觉输入学习环境演化并生成控制动作，攻击者只需修改视觉输入中的局部区域即可干扰整个策略。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TAPDreamer: Transferable Adversarial Patches for World Action Models</h1>
+            <div class="detail-meta">2026-10-05 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.06814" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.06814" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.06814</span></div>
+            <p class="detail-summary">提出 TAPDreamer，一种针对 World Action Models (WAMs) 的可迁移对抗补丁攻击方法。WAMs 通过视觉输入学习环境演化并生成控制动作，攻击者只需修改视觉输入中的局部区域即可干扰整个策略。 该攻击仅使用公开的视觉编码器（白盒访问）和来自单一源任务的 6 帧演示图像进行补丁优化，不需要目标策略查询、动作标签、任务奖励、模拟器或目标模型权重。 论文验证了跨40 个 LIBERO 任务和50 个 RoboTwin 任务的零成功率攻击效果，并揭示了补丁如何通过注意力机制将局部扰动扩散为分布式潜在表示偏移，进而破坏动作执行。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of Washington（华盛顿大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 TAPDreamer，一种针对 World Action Models (WAMs) 的可迁移对抗补丁攻击方法。WAMs 通过视觉输入学习环境演化并生成控制动作，攻击者只需修改视觉输入中的局部区域即可干扰整个策略。</p>
+  <ul class="reading-intro-points"><li>提出 TAPDreamer，一种针对 World Action Models (WAMs) 的可迁移对抗补丁攻击方法。WAMs 通过视觉输入学习环境演化并生成控制动作，攻击者只需修改视觉输入中的局部区域即可干扰整个策略。</li><li>该攻击仅使用公开的视觉编码器（白盒访问）和来自单一源任务的 6 帧演示图像进行补丁优化，不需要目标策略查询、动作标签、任务奖励、模拟器或目标模型权重。</li><li>论文验证了跨40 个 LIBERO 任务和50 个 RoboTwin 任务的零成功率攻击效果，并揭示了补丁如何通过注意力机制将局部扰动扩散为分布式潜在表示偏移，进而破坏动作执行。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Washington</strong>（华盛顿大学）</li><li><strong>University of Georgia</strong>（佐治亚大学）</li><li><strong>Western Washington University</strong>（西华盛顿大学）</li><li><strong>King Abdulaziz City for Science and Technology</strong>（阿卜杜勒阿齐兹国王科技城）</li><li><strong>HUMAIN</strong> 实验室</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>TAPDreamer</strong>，一种针对 <strong>World Action Models (WAMs)</strong> 的<strong>可迁移对抗补丁攻击</strong>方法。WAMs 通过视觉输入学习环境演化并生成控制动作，攻击者只需修改视觉输入中的局部区域即可干扰整个策略。</li><li>该攻击仅使用<strong>公开的视觉编码器</strong>（白盒访问）和来自<strong>单一源任务的 6 帧演示图像</strong>进行补丁优化，<strong>不需要</strong>目标策略查询、动作标签、任务奖励、模拟器或目标模型权重。</li><li>论文验证了跨<strong>40 个 LIBERO 任务</strong>和<strong>50 个 RoboTwin 任务</strong>的零成功率攻击效果，并揭示了补丁如何通过注意力机制将局部扰动扩散为分布式潜在表示偏移，进而破坏动作执行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>TAPDreamer</strong>，一种仅通过公共视觉编码器优化、无需任何下游模型反馈的<strong>固定局部补丁攻击</strong>，补丁一经优化即冻结并跨任务、跨模型复用。</li><li>在 <strong>FastWAM</strong> 上，单个补丁（覆盖约 6.5% 输入）将 <strong>LIBERO</strong> 成功率从 97.65% 降至 <strong>0.00%</strong>，将 <strong>RoboTwin</strong> 成功率从 90.86% 降至 <strong>0.00%</strong>；匹配的随机补丁仍保留 81.45% 和 79.20% 的成功率。</li><li>冻结补丁可跨 WAM 架构迁移：<strong>DreamWAM-uncond</strong> 降至 1.45%，<strong>DreamWAM-joint</strong> 降至 1.00%，<strong>Motus</strong> 降至 10.60%，且无需针对目标模型重新优化。</li><li>机制分析发现：局部补丁通过<strong>注意力权重与值向量的协同变化</strong>（联合项 ΔAΔV）将扰动传播到整个瓶颈特征图，产生<strong>跨观测高度一致的共享表示偏移</strong>（模板余弦相似度达 0.981）。</li><li>行为分析将表示偏移与<strong>抓取失败和位姿干扰</strong>联系起来，并区分了持续视觉输入导致的即时命令异常与通过执行累积的物理后果。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>攻击目标函数为最大化干净编码器输出与补丁后编码器输出之间的<strong>平均 L1 距离</strong>，覆盖最终潜在表示的所有空间位置和通道：$\max_p \frac{1}{JN_Z}\sum_j \lVert E(T_p(x_j))-E(x_j)\rVert_1$。</li><li>使用 <strong>Adam 梯度上升</strong>优化补丁像素，共 <strong>500 步</strong>，学习率 <strong>0.02</strong>，补丁像素初始化为 $[-1,1]$ 均匀分布并投影回该范围。</li><li>补丁应用方式为 $T_p(x)=(1-M)\odot x + M\odot p$，固定二进制掩码 $M$，补丁内容、位置和面积在部署期间保持不变。</li><li>关键创新在于<strong>仅利用公共 VAE 编码器作为攻击代理</strong>：通过最大化整体潜在偏移，利用编码器内部的注意力传播路径让局部像素变化影响远超补丁范围的场景表示，并在不同观测间保持一致的扰动响应。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评估数据集：<strong>LIBERO</strong>（40 个任务，含 Spatial、Object、Goal、Long-horizon 四个套件）和 <strong>RoboTwin</strong>（50 个任务）。</li><li>目标模型：<strong>FastWAM</strong>（默认评估模型）、<strong>DreamWAM-uncond (DW-U)</strong>、<strong>DreamWAM-joint (DW-J)</strong>、<strong>Motus</strong>。</li><li>补丁配置：LIBERO 上为 224×448 画布中的 81×81 区域（覆盖 6.54%），RoboTwin 上覆盖 6.59%；优化用 6 帧来自单源任务的 LeRobot 演示图像。</li><li>评估规模：LIBERO 每任务 50 次试验，RoboTwin 每任务 100 次试验。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标：闭环<strong>任务成功率（Success Rate, SR）</strong>，定义为成功试验数除以总试验数。</li><li><strong>FastWAM 在 LIBERO 上</strong>：Clean 97.65% → TAPDreamer <strong>0.00%</strong>（随机补丁 81.45%）；四个套件（Spatial、Object、Goal、Long-horizon）全部降至 0.00%。</li><li><strong>FastWAM 在 RoboTwin 上</strong>：Clean 90.86% → TAPDreamer <strong>0.00%</strong>（随机补丁 79.20%）。</li><li><strong>跨模型迁移（LIBERO Overall）</strong>：DW-U 从 97.50% 降至 <strong>1.45%</strong>（随机 84.55%）；DW-J 从 97.70% 降至 <strong>1.00%</strong>（随机 86.10%）。</li><li><strong>跨模型迁移（RoboTwin）</strong>：Motus 从 86.62% 降至 <strong>10.60%</strong>（随机 82.40%）。</li><li><strong>机制验证</strong>：TAPDreamer 补丁在注意力输出和最终潜在表示中，补丁足迹之外的变化占比分别达 <strong>70.8%</strong> 和 <strong>79.4%</strong>（随机补丁仅 0.8% 和 1.3%）；恢复干净注意力权重或值可显著抑制扰动传播。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.06843/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Recursive Video In-Context Learning for Agentic Robot</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.06617/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RealtimeWAM: One-Step Asynchronous World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

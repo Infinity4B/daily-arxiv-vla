@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AgenticTactileVLA: Contact-Guided Execution-Time Supervision for Generalizable Dexterous Manipulation without VLA Retraining - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出AgenticTactileVLA执行时监督框架，将物体特定的物理抓取适配从VLA预测阶段转移到物理交互阶段，无需对固定VLA进行物体级重训练，解决VLA在灵巧操作中对训练外物体的抓取实现不可靠问题 针对的核心痛点是：兼容同一抓取策略的物体存在几何、顺性差异，VLA生成的策略可能在闭合时出现手指支撑不足、终端配置不合理、过度挤压易碎物体等问题，且闭合阶段视觉遮挡严重，无法仅靠视觉调整实现可靠抓取 核心目标是复用VLA的可迁移操作策略，通过执行时的接触引导适配提升固定VLA的物体级泛化能力" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.04391">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">AgenticTactileVLA: Contact-Guided Execution-Time Supervision for Generalizable Dexterous Manipulation without VLA Retraining</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">AgenticTactileVLA: Contact-Guided Execution-Time Supervision for Generalizable Dexterous Manipulation without VLA Retraining</h1>
+            <div class="detail-meta">2026-10-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.04391" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.04391" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.04391</span></div>
+            <p class="detail-summary">提出AgenticTactileVLA执行时监督框架，将物体特定的物理抓取适配从VLA预测阶段转移到物理交互阶段，无需对固定VLA进行物体级重训练，解决VLA在灵巧操作中对训练外物体的抓取实现不可靠问题 针对的核心痛点是：兼容同一抓取策略的物体存在几何、顺性差异，VLA生成的策略可能在闭合时出现手指支撑不足、终端配置不合理、过度挤压易碎物体等问题，且闭合阶段视觉遮挡严重，无法仅靠视觉调整实现可靠抓取 核心目标是复用VLA的可迁移操作策略，通过执行时的接触引导适配提升固定VLA的物体级泛化能力</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者主要来自Skolkovo Institute of Science and Technolog…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出AgenticTactileVLA执行时监督框架，将物体特定的物理抓取适配从VLA预测阶段转移到物理交互阶段，无需对固定VLA进行物体级重训练，解决VLA在灵巧操作中对训练外物体的抓取实现不可靠问题</p>
+  <ul class="reading-intro-points"><li>提出AgenticTactileVLA执行时监督框架，将物体特定的物理抓取适配从VLA预测阶段转移到物理交互阶段，无需对固定VLA进行物体级重训练，解决VLA在灵巧操作中对训练外物体的抓取实现不可靠问题</li><li>针对的核心痛点是：兼容同一抓取策略的物体存在几何、顺性差异，VLA生成的策略可能在闭合时出现手指支撑不足、终端配置不合理、过度挤压易碎物体等问题，且闭合阶段视觉遮挡严重，无法仅靠视觉调整实现可靠抓取</li><li>核心目标是复用VLA的可迁移操作策略，通过执行时的接触引导适配提升固定VLA的物体级泛化能力</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者主要来自<strong>Skolkovo Institute of Science and Technology（斯科尔科沃科学与技术学院）智能空间机器人实验室</strong>（俄罗斯莫斯科）</li><li>部分作者同时隶属于<strong>MWS R&D中心</strong>（俄罗斯莫斯科）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>AgenticTactileVLA</strong>执行时监督框架，将物体特定的物理抓取适配从VLA预测阶段转移到物理交互阶段，无需对固定VLA进行物体级重训练，解决VLA在灵巧操作中对训练外物体的抓取实现不可靠问题</li><li>针对的核心痛点是：兼容同一抓取策略的物体存在几何、顺性差异，VLA生成的策略可能在闭合时出现手指支撑不足、终端配置不合理、过度挤压易碎物体等问题，且闭合阶段视觉遮挡严重，无法仅靠视觉调整实现可靠抓取</li><li>核心目标是复用VLA的可迁移操作策略，通过执行时的接触引导适配提升固定VLA的物体级泛化能力</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出面向固定VLA的接触引导执行时监督器，支持选择性干预、单手指独立矫正、抓取接受/释放、策略 mediated 重试四类核心功能，无需修改底层VLA参数</li><li>设计仅依赖手指位置和电机effort信号的本体感觉接触估计与抓取判定机制，无需额外触觉传感器，同时支持语言关键词或视觉语言模型触发的标称/柔顺交互模式预选择</li><li>在真实硬件上完成系统性评估，包含匹配执行预算的基线对比、组件消融、位姿扰动测试、抓取保留诊断、易碎物体交互测试等实验，验证框架有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>架构上分离策略预测与物理执行：固定VLA（<strong>GR00T-N1.6-3B</strong>，基于遥操作演示微调，参数冻结）仅负责生成身体运动token和手部抓取目标，执行监督器作为独立分层监控物理实现过程，仅在必要时介入，不替换VLA的臂部运动策略</li><li>选择性干预机制：仅在VLA指令的抓取终端阶段评估本体感觉支撑证据，当至少3个监测手指的支撑证据不足时才触发干预，暂停身体参考推进，对未支撑手指独立向行程极限矫正，避免不必要的操作介入</li><li>本体感觉接触估计：通过指令-测量手指运动的失配程度、持续effort偏差两类信号检测接触，无需额外触觉硬件；矫正后根据支撑数量输出Formed/Crooked/Empty三类抓取判定，接受则保留矫正后的配置并释放身体 gate，拒绝则释放手部覆盖，将控制权返回VLA触发重试</li><li>交互模式预选择：通过语言关键词（如“gently”“fragile”）或<strong>Qwen2.5-VL-7B-Instruct</strong>视觉语言模型，在抓取闭合前选择标称位置控制或电流限制柔顺控制模式，避免易碎物体在闭合阶段被过度挤压</li><li>柔顺控制采用电流限制的PD控制器，通过限制电机输出力矩实现柔顺交互，避免初始高力度挤压损坏易碎物体</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>基础VLA <strong>GR00T-N1.6-3B</strong> 基于遥操作演示数据完成微调，评估阶段参数完全冻结</li><li>评估用的5个held-out测试物体（方块、鱼形物、酱油瓶、保温杯盖、护手霜管）未参与VLA训练、接触检测器标定及控制器开发；额外使用薄壁杯开展柔顺控制测试</li><li>硬件平台为<strong>Unitree G1人形机器人</strong>搭配<strong>BrainCo Revo2灵巧手</strong></li><li>论文未明确披露训练阶段使用的GPU/TPU等计算资源</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境为真实机器人硬件平台，基线包括基础VLA、无条件close-to-stall控制（每次终端抓取都延长手指闭合时间）、不同组件变体的监督器；统计检验采用双侧精确McNemar检验，多组对比使用Holm校正</li><li>主要评估指标为任务完成率、矫正episode数量、抓取保留率、交互模式选择准确率</li><li>关键实验结果：</li></ul>
+<p> - 主对比实验（75个匹配区块，每个held-out物体15次试验）中，监督器任务完成率达<strong>84.0%</strong>，显著高于基础VLA（61.3%）和无条件close-to-stall控制（72.0%），在所有5个held-out物体上均实现3-4次成功的提升，Holm校正后统计显著性p=0.001</p>
+<p> - 组件消融实验（100个匹配区块）显示，选择性干预可将矫正episode数量减少<strong>65.7%</strong>（46次 vs 134次），且无完成率损失；仅靠延长手指闭合无法完全解释性能增益</p>
+<p> - 位姿扰动测试（20mm水平平移、15°偏航变化）下，监督器的性能增益仍保持，相比基础VLA的提升幅度为22-28个百分点</p>
+<p> - 抓取保留审计显示，监督器接受判定的抓取在88.9%的held-out物体测试中可成功保留物体，但顺性物体存在25.6%的假拒绝问题，可通过策略mediated重试恢复</p>
+<p> - 柔顺模式选择测试中，基于语言指令或联合路由的模式选择可100%保留薄壁杯，与 always-compliant 控制效果相当，纯VLM路由因模式选择延迟出现1次杯子损坏</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.04607/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ForeAct3D: Policy-Grounded Future World Modeling for VLA Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.04303/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">What to Preserve in Recursive Computation: A Local Predictive Sufficiency Principle</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

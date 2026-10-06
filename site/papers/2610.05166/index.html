@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A Safe Action Is Not Enough: Feasible-Future Decoding for Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有视觉-语言-动作（VLA）策略的解码方法仅关注动作的局部安全性和策略似然度，忽略了动作对后续长期可行性的影响，存在可行性-似然度差距：单个动作局部安全且符合策略偏好，但可能使智能体陷入无法完成任务的“安全死胡同” 研究目标是在不重新训练基座VLA策略、不依赖在线轨迹rollout的前提下，通过部署时的解码修正，降低机器人的安全代价，同时保持接近基座策略的任务完成进度 核心思路是基于策略-环境联合轨迹律推导考虑未来可行性的动作选择规则，将动作的长期可行性纳入解码决策" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.05166">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4; --cover-muted: rgba(255, 247, 244, 0.82); --cover-chip: rgba(255, 247, 244, 0.16); --cover-stroke: rgba(255, 247, 244, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">A Safe Action Is Not Enough: Feasible-Future Decoding for Vision-Language-Action Policies</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">A Safe Action Is Not Enough: Feasible-Future Decoding for Vision-Language-Action Policies</h1>
+            <div class="detail-meta">2026-10-04 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.05166" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.05166" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.05166</span></div>
+            <p class="detail-summary">现有视觉-语言-动作（VLA）策略的解码方法仅关注动作的局部安全性和策略似然度，忽略了动作对后续长期可行性的影响，存在可行性-似然度差距：单个动作局部安全且符合策略偏好，但可能使智能体陷入无法完成任务的“安全死胡同” 研究目标是在不重新训练基座VLA策略、不依赖在线轨迹rollout的前提下，通过部署时的解码修正，降低机器人的安全代价，同时保持接近基座策略的任务完成进度 核心思路是基于策略-环境联合轨迹律推导考虑未来可行性的动作选择规则，将动作的长期可行性纳入解码决策</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Huawei Heisenberg Research Center</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有视觉-语言-动作（VLA）策略的解码方法仅关注动作的局部安全性和策略似然度，忽略了动作对后续长期可行性的影响，存在可行性-似然度差距：单个动作局部安全且符合策略偏好，但可能使智能体陷入无法完成任务的“安全死胡同”</p>
+  <ul class="reading-intro-points"><li>现有视觉-语言-动作（VLA）策略的解码方法仅关注动作的局部安全性和策略似然度，忽略了动作对后续长期可行性的影响，存在可行性-似然度差距：单个动作局部安全且符合策略偏好，但可能使智能体陷入无法完成任务的“安全死胡同”</li><li>研究目标是在不重新训练基座VLA策略、不依赖在线轨迹rollout的前提下，通过部署时的解码修正，降低机器人的安全代价，同时保持接近基座策略的任务完成进度</li><li>核心思路是基于策略-环境联合轨迹律推导考虑未来可行性的动作选择规则，将动作的长期可行性纳入解码决策</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Huawei Heisenberg Research Center</strong></li><li><strong>Huawei Noah’s Ark Lab</strong></li><li><strong>TU Berlin</strong></li><li><strong>UCL Center for AI</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有视觉-语言-动作（VLA）策略的解码方法仅关注动作的局部安全性和策略似然度，忽略了动作对后续长期可行性的影响，存在<strong>可行性-似然度差距</strong>：单个动作局部安全且符合策略偏好，但可能使智能体陷入无法完成任务的“安全死胡同”</li><li>研究目标是在不重新训练基座VLA策略、不依赖在线轨迹rollout的前提下，通过部署时的解码修正，降低机器人的安全代价，同时保持接近基座策略的任务完成进度</li><li>核心思路是基于策略-环境联合轨迹律推导考虑未来可行性的动作选择规则，将动作的长期可行性纳入解码决策</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>策略相对安全完成的精确下一块边际目标</strong>，定义“可行未来质量”量化动作对长期安全完成的影响，拆分为“支持（是否保留安全完成的可能性）”和“幅度（保留的加权安全完成质量）”两个维度，明确局部安全动作无法覆盖长期可行性的缺陷</li><li>构建<strong>选择性有限候选近似理论</strong>，明确干预、覆盖、支持、排序四个近似接口的误差来源，推导在部分支持条件下恢复最优可行候选的边界条件，为实用解码器提供理论保证</li><li>实现无训练的重排序框架<strong>VICS</strong>，包含通用版本VICS-G和符号支持版本VICS-S：在Safety-CHORES 6个场景下将累积安全成本降低1.9%-57.5%，同时保持接近基座策略的任务完成率和回合长度；进一步验证执行反馈和轨迹rollout扩展的有效性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>理论推导基于KL正则化控制框架，导出<strong>先验保持安全完成参考律</strong>，通过边缘化未来轨迹后缀得到下一动作边际，该边际结合策略先验、局部奖励-代价项和可行未来质量三项，精确反映动作对长期安全完成的影响</li><li><strong>VICS框架</strong>采用门控选择性干预机制：仅当基座策略采样的动作存在可行性风险时才触发重排序，避免不必要的计算开销；通用版本VICS-G结合策略似然度、局部风险预测和固定可行未来修正项对候选动作排序，无需额外训练；符号支持版本VICS-S在PickUp、ObjectNav等任务中引入任务特定的符号规则预过滤候选，再通过通用评分排序，进一步提升效率</li><li>理论层面分析四种近似接口的误差边界，给出恢复最优可行候选的充分条件；还可通过有限轨迹rollout扩展为VICS-R，利用仿真采样的未来轨迹提升评分准确性</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>核心评估数据集为<strong>Safety-CHORES</strong>，包含6个不同的机器人安全任务场景，覆盖导航、抓取等多种任务类型</li><li>额外在<strong>Fetch机器人安全对齐仿真环境</strong>中验证执行反馈机制和rollout扩展的效果</li><li>方法为<strong>训练免费（training-free）</strong>的重排序框架，无需重新训练基座VLA策略，VICS-G版本也不依赖在线轨迹rollout，仅需调用现有VLA策略的推理能力</li><li>部署无需额外训练算力，仅需常规机器人推理端的计算资源</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：Safety-CHORES 6个任务场景、Fetch仿真环境</li><li>核心评估指标：累积安全成本、任务成功率、平均回合长度</li><li>关键实验结果：</li></ul>
+<p> - 通用版本<strong>VICS-G</strong>在6个Safety-CHORES场景下将平均累积安全成本降低<strong>1.9%-57.5%</strong>，同时任务成功率仅偏离基座策略最多2.5个百分点，平均回合长度仅偏离0.82步，实现了安全性与任务进度的平衡</p>
+<p> - 执行反馈机制在动作扰动场景下仍能保持安全-任务完成的有利权衡，符合预设的成功标准</p>
+<p> - 带rollout扩展的<strong>VICS-R</strong>在Fetch环境中进一步提升安全任务成功率，同时进一步降低安全成本</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.05230/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Vela: Scaling Vision-Language-Action Models with Adaptive Action Curve Parametrization</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.05026/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">GeoBridge-VLA: Geometry-Aware Residual Adaptation for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

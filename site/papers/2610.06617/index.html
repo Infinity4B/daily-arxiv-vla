@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RealtimeWAM: One-Step Asynchronous World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文提出 RealtimeWAM，一种用于机器人操作的高效世界动作模型（WAM）变体，支持一步动作生成与异步推理，可后训练加速任意基于 Mixture-of-Transformers（MoT）的 WAM。 针对 MoT 架构 WAM 推理延迟的两个核心瓶颈：intra-expert iteration（动作专家多步去噪）和 inter-expert waiting（视频与动作专家顺序执行导致的等待），分别提出解决方案。 在 LIBERO、LIBERO-Plus、RoboTwin 2.0 等多个基准上，RealtimeWAM 实现近无损性能（平均准确率下降 &lt;1%），同时获得约 14~25× 的端到端推理加速。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.06617">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.06617.webp" alt="RealtimeWAM: One-Step Asynchronous World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文提出 RealtimeWAM，一种用于机器人操作的高效世界动作模型（WAM）变体，支持一步动作生成与异步推理，可后训练加速任意基于 Mixture-of-Transformers（MoT）的 WAM。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">RealtimeWAM: One-Step Asynchronous World Action Models</h1>
+            <div class="detail-meta">2026-10-05 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.06617" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.06617" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.06617</span></div>
+            <p class="detail-summary">本文提出 RealtimeWAM，一种用于机器人操作的高效世界动作模型（WAM）变体，支持一步动作生成与异步推理，可后训练加速任意基于 Mixture-of-Transformers（MoT）的 WAM。 针对 MoT 架构 WAM 推理延迟的两个核心瓶颈：intra-expert iteration（动作专家多步去噪）和 inter-expert waiting（视频与动作专家顺序执行导致的等待），分别提出解决方案。 在 LIBERO、LIBERO-Plus、RoboTwin 2.0 等多个基准上，RealtimeWAM 实现近无损性能（平均准确率下降 &lt;1%），同时获得约 14~25× 的端到端推理加速。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">南洋理工大学（Nanyang Technological University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文提出 RealtimeWAM，一种用于机器人操作的高效世界动作模型（WAM）变体，支持一步动作生成与异步推理，可后训练加速任意基于 Mixture-of-Transformers（MoT）的 WAM。</p>
+  <ul class="reading-intro-points"><li>本文提出 RealtimeWAM，一种用于机器人操作的高效世界动作模型（WAM）变体，支持一步动作生成与异步推理，可后训练加速任意基于 Mixture-of-Transformers（MoT）的 WAM。</li><li>针对 MoT 架构 WAM 推理延迟的两个核心瓶颈：intra-expert iteration（动作专家多步去噪）和 inter-expert waiting（视频与动作专家顺序执行导致的等待），分别提出解决方案。</li><li>在 LIBERO、LIBERO-Plus、RoboTwin 2.0 等多个基准上，RealtimeWAM 实现近无损性能（平均准确率下降 &lt;1%），同时获得约 14~25× 的端到端推理加速。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>南洋理工大学（Nanyang Technological University）</strong></li><li><strong>北京航空航天大学（Beihang University）</strong></li><li><strong>商汤科技（SenseTime）</strong></li><li><strong>大陆汽车新加坡（Continental Automotive Singapore）</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文提出 <strong>RealtimeWAM</strong>，一种用于机器人操作的高效世界动作模型（WAM）变体，支持<strong>一步动作生成</strong>与<strong>异步推理</strong>，可后训练加速任意基于 Mixture-of-Transformers（MoT）的 WAM。</li><li>针对 MoT 架构 WAM 推理延迟的两个核心瓶颈：<strong>intra-expert iteration</strong>（动作专家多步去噪）和 <strong>inter-expert waiting</strong>（视频与动作专家顺序执行导致的等待），分别提出解决方案。</li><li>在 <strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong> 等多个基准上，RealtimeWAM 实现近无损性能（平均准确率下降 <strong><1%</strong>），同时获得约 <strong>14~25×</strong> 的端到端推理加速。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Teacher-Anchored Consistency Distillation（TACD）</strong>，解决传统一致性蒸馏中的“局部-全局误差鸿沟”（local-global error gap）：仅约束局部一致性误差不能保证最终动作准确，TACD 引入冻结教师模型多步 rollout 终点作为显式锚点约束。</li><li>引入 <strong>Cross-Expert Wavefront Pipelining（CEWP）</strong>，将专家级粗粒度顺序执行转化为细粒度块级流水线，通过块级共享视频 KV 缓存并仅在动作注意力消费前同步，消除不必要的跨专家等待。</li><li>提出首个<strong>一步（one-step）动作生成</strong>且性能与多步 WAM 几乎持平的 WAM 变体，并支持任意 MoT 基础模型（如 Fast-WAM、Faster-WAM）的后训练加速。</li><li>理论证明：教师锚点约束可直接限制总终点误差，给出期望平方端点误差上界 $\mathbb{E}\\|\mathbf{e}_{\mathrm{total}}\\|_2^2 \le 2\mathcal{L}_{\mathrm{TA}}+2\mathbb{E}\\|\bm{\delta}\\|_2^2$。</li><li>实验全面验证：在 RoboTwin 2.0 上 RealtimeWAM 仅用 <strong>LoRA（rank-128）</strong> 微调即达到 90.84%~92.64% 成功率，几乎无精度损失；在 LIBERO 上达到 97.0%~99.0%，并保持对分布偏移（OOD）的鲁棒性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>基础架构</strong>：基于 MoT 的 WAM，视频专家（Video Expert）单次前向提取分块 KV 缓存 $z(o,l)=\{(K_i^v,V_i^v)\}_{i=1}^N$，动作专家（Action Expert）以该表示为条件生成动作分布 $p_\theta(a\|z(o,l))$。</li><li><strong>TACD 训练目标</strong>：总损失 $\mathcal{L}=\mathcal{L}_{\mathrm{CD}}+\lambda\mathcal{L}_{\mathrm{TA}}$，其中 $\mathcal{L}_{\mathrm{CD}}$ 是标准一致性蒸馏损失，$\mathcal{L}_{\mathrm{TA}}$ 最小化学生速度预测 $v_{\theta_S}(a_t,t)$ 与教师区间平均速度 $u_{\theta_T}(a_t,t)=(a_t-a_0^T)/t$ 的均方误差（教师端点 $a_0^T$ 由 K 步 rollout 获得，默认 K=10，$\lambda=0.2$）。</li><li><strong>CEWP 推理调度</strong>：将 Video Expert 与 Action Expert 分配至两个非阻塞 CUDA 流 $\mathcal{S}_v$ 和 $\mathcal{S}_a$；视频流在投影 $\mathcal{P}_i^v$ 后记录事件 $e_i$，继续执行注意力与剩余计算；动作流独立执行 $\mathcal{P}_i^a$，仅在 $\operatorname{Attn}_i^a$ 前等待 $e_i$，实现沿模型深度的交错波前推进。</li><li><strong>训练细节</strong>：冻结视频专家，仅用 LoRA（rank-128）微调动作专家；AdamW（lr=1e-4，wd=1e-2），EMA 衰减 0.995，共 30,000 迭代。</li><li><strong>创新点</strong>：在动作生成中引入“教师锚点”克服行为空间对误差的高敏感性；首次在 MoT-WAM 中实现块级跨专家异步执行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO</strong>：包含 Spatial、Object、Goal、Long 四个任务套件。</li><li><strong>LIBERO-Plus</strong>：七个扰动子集（Camera、Robot、Lang.、Light、Backg.、Noise、Layout），用于评估分布偏移鲁棒性。</li><li><strong>RoboTwin 2.0</strong>：多任务训练设置，50 个任务、2,500 个干净演示、25,000 个随机化演示；评估干净与随机化条件。</li><li><strong>其他</strong>：真实世界双臂衣物折叠任务（附录 F.6）。</li><li><strong>模型规模</strong>：基于 Fast-WAM 和 Faster-WAM 两种 MoT 架构；仅微调动作专家的 LoRA 参数（rank-128），不训练视频专家。</li><li><strong>训练资源</strong>：NVIDIA H100 GPU（推理）；未明确说明训练 GPU 数量。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估基准</strong>：RoboTwin 2.0（干净/随机）、LIBERO（四任务套件平均）、LIBERO-Plus（七个扰动子集），主要指标为任务成功率（%）。</li><li><strong>RoboTwin 2.0 结果</strong>：RealtimeWAM*（基于 Fast-WAM）成功率 90.84%，较 10 步 Fast-WAM（91.51%）仅降 0.67%；RealtimeWAM†（基于 Faster-WAM）成功率 92.64%，较 10 步 Faster-WAM（92.93%）仅降 0.29%，优于一步 Flash-WAM（81.41%）和 DMD*（88.22%）等基线。</li><li><strong>LIBERO 结果</strong>：RealtimeWAM* 整体成功率 97.0%，与 10 步 Fast-WAM（97.0%）持平；RealtimeWAM† 达 99.0%，超过 Faster-WAM（98.9%）；较直接单步 Fast-WAM（95.0%）提升 2.0%。</li><li><strong>LIBERO-Plus 结果</strong>：RealtimeWAM† 整体成功率 73.0%，仅比 Faster-WAM（73.6%）低 0.6%；在 Camera、Noise、Layout 子集上略有提升，说明一步蒸馏基本保持 OOD 鲁棒性。</li><li><strong>推理延迟</strong>：RealtimeWAM 单次调用约 <strong>12.2 ms</strong>（H100），较原始模型约 <strong>25×</strong> 加速；在多种 GPU 上（H100 等）均显著快于 30 Hz 控制频率，满足实时动作生成。</li><li><strong>消融实验</strong>：同时使用 $\mathcal{L}_{\mathrm{CD}}$ 与 $\mathcal{L}_{\mathrm{TA}}$ 且冻结视频专家时性能最佳（RoboTwin 整体 90.84%）；仅用一致性损失且微调双专家时整体 89.85%；增加教师 rollout 步数 K 可降低教师数值积分误差，默认 K=10。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.06814/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">TAPDreamer: Transferable Adversarial Patches for World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.06598/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SimForcing: Distilling Simulation Motion Priors into Real-Domain Robot World Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
