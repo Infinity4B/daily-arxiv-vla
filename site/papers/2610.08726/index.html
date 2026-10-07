@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EgoLAP: Learning from Egocentric Human Data through Language-Action Reasoning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="EgoLAP 是一个视觉-语言-动作（VLA）预训练框架，旨在通过语言-动作推理从大规模自我中心（egocentric）人类数据中学习可迁移的机器人操作技能。 核心洞察是：虽然人类的低层动作与机器人存在具身差异（embodiment gap），但两者的运动意图（motion intent）是共享的，可以通过语言化的动作链式推理（action chain-of-thought）来弥合人类与机器人之间的鸿沟。 论文要解决的问题是：如何将廉价、丰富的人类自我中心视频数据有效迁移到机器人控制上，避免直接使用具身特异的原始轨迹作为监督目标所带来的迁移失败问题。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.08726">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.08726.webp" alt="EgoLAP: Learning from Egocentric Human Data through Language-Action Reasoning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">EgoLAP 是一个视觉-语言-动作（VLA）预训练框架，旨在通过语言-动作推理从大规模自我中心（egocentric）人类数据中学习可迁移的机器人操作技能。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">EgoLAP: Learning from Egocentric Human Data through Language-Action Reasoning</h1>
+            <div class="detail-meta">2026-10-06 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.08726" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.08726" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.08726</span></div>
+            <p class="detail-summary">EgoLAP 是一个视觉-语言-动作（VLA）预训练框架，旨在通过语言-动作推理从大规模自我中心（egocentric）人类数据中学习可迁移的机器人操作技能。 核心洞察是：虽然人类的低层动作与机器人存在具身差异（embodiment gap），但两者的运动意图（motion intent）是共享的，可以通过语言化的动作链式推理（action chain-of-thought）来弥合人类与机器人之间的鸿沟。 论文要解决的问题是：如何将廉价、丰富的人类自我中心视频数据有效迁移到机器人控制上，避免直接使用具身特异的原始轨迹作为监督目标所带来的迁移失败问题。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Princeton University</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">EgoLAP 是一个视觉-语言-动作（VLA）预训练框架，旨在通过语言-动作推理从大规模自我中心（egocentric）人类数据中学习可迁移的机器人操作技能。</p>
+  <ul class="reading-intro-points"><li>EgoLAP 是一个视觉-语言-动作（VLA）预训练框架，旨在通过语言-动作推理从大规模自我中心（egocentric）人类数据中学习可迁移的机器人操作技能。</li><li>核心洞察是：虽然人类的低层动作与机器人存在具身差异（embodiment gap），但两者的运动意图（motion intent）是共享的，可以通过语言化的动作链式推理（action chain-of-thought）来弥合人类与机器人之间的鸿沟。</li><li>论文要解决的问题是：如何将廉价、丰富的人类自我中心视频数据有效迁移到机器人控制上，避免直接使用具身特异的原始轨迹作为监督目标所带来的迁移失败问题。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Princeton University</strong></li><li><strong>Toyota Research Institute</strong></li><li><strong>Physical Intelligence</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li><strong>EgoLAP</strong> 是一个视觉-语言-动作（VLA）预训练框架，旨在通过语言-动作推理从大规模自我中心（egocentric）人类数据中学习可迁移的机器人操作技能。</li><li>核心洞察是：虽然人类的低层动作与机器人存在具身差异（embodiment gap），但两者的<strong>运动意图（motion intent）</strong>是共享的，可以通过语言化的动作链式推理（action chain-of-thought）来弥合人类与机器人之间的鸿沟。</li><li>论文要解决的问题是：如何将廉价、丰富的人类自我中心视频数据有效迁移到机器人控制上，避免直接使用具身特异的原始轨迹作为监督目标所带来的迁移失败问题。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>EgoLAP</strong> 预训练框架，联合训练人类自我中心轨迹与机器人轨迹，通过共享的<strong>基于语言的动作链式推理</strong>实现跨具身迁移。</li><li>首次将<strong>运动级推理（motion-level reasoning）</strong>作为跨具身监督信号，捕捉场景几何、物理规律和物体可供性（affordance），解释"为什么"某个动作在当前物理状态下是合适的。</li><li>设计<strong>语言动作（language actions）</strong>表示：将一秒内的末端执行器/手部运动确定性序列化为结构化自然语言描述，无需手动标注或学习式动作标记器。</li><li>实验证明语言动作比非语言动作表示（FAST、OAT）能更有效地迁移人类经验，且运动级推理与语言动作之间存在<strong>互加强效应</strong>（mutually reinforcing）。</li><li>提出利用语言动作的可验证特性进行<strong>GRPO 强化学习后训练</strong>，实现下游任务自适应，同时保持推理时零文本生成开销。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用<strong>Mixture-of-Transformers（MoT）架构</strong>：以 <strong>PaliGemma-2B</strong> 视觉-语言骨干 + 300M 参数随机初始化的连续动作专家（action expert）。</li><li>动作专家通过<strong>流匹配（flow matching）</strong>目标在增量末端执行器位姿空间中预测 30 步动作块；动作损失梯度被阻断在 VLM 骨干之外（knowledge insulation）。</li><li>视觉骨干在人类与机器人数据上共同预测语言动作与运动级推理文本，将两种数据源的运动语义对齐到同一语言表征空间。</li><li>语言动作通过<strong>自我中心姿态规范化（egocentric canonicalization）</strong>将不同具身的坐标系与对应相机坐标系对齐，再用确定性语法序列化为自然语言。</li><li>运动级推理使用 <strong>Gemini 大语言模型</strong>（gemini-3.5-flash 用于 DROID，gemini-3.7-flash 用于 MECKA）离线标注，生成局部、物理聚焦的动作理由；训练时采用推理 dropout 和推理损失 dropout。</li><li>推理时仅运行动作专家输出连续控制指令，语言动作与推理仅作为训练监督，无需自回归生成。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>机器人数据：<strong>DROID</strong> 大规模野外机器人操作数据集；<strong>MECKA</strong> 双手机器人数据集。</li><li>人类数据：自我中心人类操作数据，包括 DROID 中的人类演示与 MECKA 中的人类轨迹对应数据。</li><li>模拟评估环境：基于 <strong>ABC（Scalable Behavior Cloning）</strong> 构建的双臂 YAM 仿真平台，共 <strong>14 个任务</strong>（涵盖抓取、放置、开放语言指令跟随、布料折叠）。</li><li>模型规模：<strong>PaliGemma-2B</strong> 视觉-语言骨干 + <strong>300M 参数</strong>动作专家。</li><li>训练资源：使用 <strong>Google Cloud TPU</strong>（TPU Research Cloud 提供），并获 <strong>Toyota Research Institute</strong> 资助支持。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>真实世界零样本评估</strong>：在定制双臂 YAM 机器人上测试 5 项任务（Simple Pick Place、Fold Pants、Handover & Place、Wipe Object、Complex Pick Place），每任务 10-12 次试验。</li><li><strong>EgoLAP 达到 80.1% 平均任务进度</strong>，相比最强替代动作表示（EgoFAST 的 35.2%）提升 <strong>2.3 倍（44.9 个百分点增益）</strong>。</li><li><strong>仿真零样本评估</strong>：14 任务共 1,400 次试验，EgoLAP 达到 <strong>38.3% 成功率</strong>，超过直接在仿真环境上训练的 <strong>ABC-VLA（21.4%）</strong> 达 <strong>1.8 倍</strong>。</li><li>添加人类数据将相同语言动作策略的仿真成功率从 <strong>7.2% 提升到 16.4%（2.3 倍）</strong>；运动级推理在加入人类数据后带来 <strong>+21.9 点</strong>增益，显著高于仅有机器人数据时的 <strong>+11.2 点</strong>。</li><li>运动级推理相比 ECoT 风格复合推理（子任务 + 目标框 + 视觉轨迹）表现更优：后者单独使用时仅 5.3% 成功率，反而低于无推理的语言动作（16.4%），叠加时封顶仅 14.4%。</li><li><strong>跨具身技能检索</strong>：加入推理后，机器人→人类检索 R@1 从 51% 提升至 <strong>76%（+25 点）</strong>，人类→机器人从 42% 提升至 <strong>63%（+21 点）</strong>，表明推理对齐了跨具身的技能结构。</li><li><strong>GRPO 强化学习</strong>：即使动作专家冻结，RL 后训练仍提升仿真成功率（最高 <strong>+19.4%</strong>），且推理预训练为 RL 提供更强的初始化。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2610.08640/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RIWANav: Recursive World-Action Models with Self-Improvement for Urban Navigation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

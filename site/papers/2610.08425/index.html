@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MIM-VLA: Learning Physical Interaction Representations from Gripper Motor Feedback - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 MIM-VLA，一种基于电机反馈（gripper motor feedback）的视觉-语言-动作（VLA）架构，将夹爪的电流、位置、速度及信号有效性编码为 128 维交互 token（τ），用于显式建模接触后的物理响应。 核心动机：现有 VLA 策略主要依赖视觉外观推断抓取动作，但外观无法完全决定物体接触后的物理反应；视觉相似的物体可能有不同硬度，仅靠关节位置无法区分自由闭合、接触、稳定握持与持续压缩。 方法不依赖额外触觉阵列、力/力矩传感器或标定力估计，直接利用智能夹爪已提供的电机遥测数据，且保持原有的位置控制接口。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.08425">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.08425.webp" alt="MIM-VLA: Learning Physical Interaction Representations from Gripper Motor Feedback" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 MIM-VLA，一种基于电机反馈（gripper motor feedback）的视觉-语言-动作（VLA）架构，将夹爪的电流、位置、速度及信号有效性编码为 128 维交互 token（τ），用于显式建模接触后的物理响应。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">MIM-VLA: Learning Physical Interaction Representations from Gripper Motor Feedback</h1>
+            <div class="detail-meta">2026-10-06 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.08425" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.08425" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.08425</span></div>
+            <p class="detail-summary">论文提出 MIM-VLA，一种基于电机反馈（gripper motor feedback）的视觉-语言-动作（VLA）架构，将夹爪的电流、位置、速度及信号有效性编码为 128 维交互 token（τ），用于显式建模接触后的物理响应。 核心动机：现有 VLA 策略主要依赖视觉外观推断抓取动作，但外观无法完全决定物体接触后的物理反应；视觉相似的物体可能有不同硬度，仅靠关节位置无法区分自由闭合、接触、稳定握持与持续压缩。 方法不依赖额外触觉阵列、力/力矩传感器或标定力估计，直接利用智能夹爪已提供的电机遥测数据，且保持原有的位置控制接口。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Gachon University（韩国嘉泉大学），School of Computing, iRAS…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 MIM-VLA，一种基于电机反馈（gripper motor feedback）的视觉-语言-动作（VLA）架构，将夹爪的电流、位置、速度及信号有效性编码为 128 维交互 token（τ），用于显式建模接触后的物理响应。</p>
+  <ul class="reading-intro-points"><li>论文提出 MIM-VLA，一种基于电机反馈（gripper motor feedback）的视觉-语言-动作（VLA）架构，将夹爪的电流、位置、速度及信号有效性编码为 128 维交互 token（τ），用于显式建模接触后的物理响应。</li><li>核心动机：现有 VLA 策略主要依赖视觉外观推断抓取动作，但外观无法完全决定物体接触后的物理反应；视觉相似的物体可能有不同硬度，仅靠关节位置无法区分自由闭合、接触、稳定握持与持续压缩。</li><li>方法不依赖额外触觉阵列、力/力矩传感器或标定力估计，直接利用智能夹爪已提供的电机遥测数据，且保持原有的位置控制接口。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Gachon University</strong>（韩国嘉泉大学），<strong>School of Computing, iRASC Lab.</strong>（Seongnam, Republic of Korea）</li><li>作者：Jaeyoung Lee*, Jiyeon Koo*, Taehwa Kim, Yerin Cha, Andrew Jaeyong Choi†（*共同一作，†通讯作者）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>MIM-VLA</strong>，一种基于电机反馈（gripper motor feedback）的视觉-语言-动作（VLA）架构，将夹爪的电流、位置、速度及信号有效性编码为 128 维交互 token（τ），用于显式建模接触后的物理响应。</li><li>核心动机：现有 VLA 策略主要依赖视觉外观推断抓取动作，但外观无法完全决定物体接触后的物理反应；视觉相似的物体可能有不同硬度，仅靠关节位置无法区分自由闭合、接触、稳定握持与持续压缩。</li><li>方法不依赖额外触觉阵列、力/力矩传感器或标定力估计，直接利用智能夹爪已提供的电机遥测数据，且保持原有的位置控制接口。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>纯电机交互表示（Motor Interaction Module, MIM）</strong>：基于时序夹爪遥测与人工审核的接触/相位标签进行预训练，无需标定力传感。</li><li>实现<strong>夹爪专用集成方式</strong>：仅条件化 SmolVLA 的夹爪动作通路，保留预训练视觉-语言主干、手臂通路和位置控制接口不变。</li><li>设计<strong>共享 token 接口</strong>，同时支持闭环夹爪自适应与高层证据条件化比较/解释（通过 Material Explain Module, MEM），并在三种互补的真实世界场景中验证。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>MIM 编码器</strong>：使用 GRU 对因果窗口内的夹爪位置、速度、电流、一阶差分、电机状态位、有效性掩码和时序信息进行编码，输出 128 维交互 token τ；故意保持"纯电机输入"以避免外观捷径。</li><li><strong>预训练监督</strong>：使用二元接触标签和五种交互相位标签（<strong>idle、closing、squeeze、hold、opening</strong>）进行辅助头监督；视频仅用于标注生成，不输入编码器。</li><li><strong>MEM 模块</strong>：每个候选物体的 MIM token 序列经 Temporal Summary Module（注意力/均值/最大/最后状态四路池化）生成摘要 token，供 selector VLM 比较并输出结构化选择、相对位置/电流响应及自然语言解释。</li><li><strong>SmolVLA 集成</strong>：冻结视觉-语言主干，新增专用夹爪专家（初始化为预训练动作专家），非对称注意力掩码允许交互 token 关注原始观测上下文但阻断反向路径；最终输出仍为位置命令而非电流/力命令。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>MIM 预训练集</strong>：360 个交互 episode，覆盖 18 个物体（每个 20 episode），包含人工审核的接触与相位标注。</li><li><strong>抓取策略训练集</strong>：197 个策略 episode，加上 43 个无接触基线和 3 个高力诊断负样本，共 243 episodes / 65,512 个因果样本（30 Hz，2 秒 200×12 电机历史窗口）。</li><li><strong>选择管线训练集</strong>：Experiments 1 & 2 共 1,200 个 probe–compare–select 训练 episode。</li><li><strong>硬件平台</strong>：6-DoF <strong>OMY F3M</strong> 从臂 + <strong>Dynamixel</strong> 双指夹爪 + 腕部 <strong>Intel RealSense D405</strong>；遥测通过 ROS 2 和 Zenoh 传输。</li><li><strong>训练资源</strong>：单张 <strong>RTX 5090</strong>，batch size 64；受控对比实验统一取 10,000 次更新后的检查点。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估设置</strong>：三个真实世界任务——实验1 跨外观硬度比较（7 对已见 + 3 对未见物体）、实验2 外观匹配物理消歧（3 对真实物体 vs 软复制品）、实验3 易碎物体轻柔抓取（8 个已见 + 3 个未见物体）；每对/每物体 20 次试验，每个策略均对比 <strong>vanilla SmolVLA</strong>、<strong>raw-current 基准</strong>及 <strong>TA-VLA-inspired 时序电流基准</strong>。</li><li><strong>材料选择准确率（13 对物体）</strong>：<strong>MIM-VLA 75.0%</strong>（195/260），vanilla SmolVLA 仅 48.8%，raw-current 仅 29.2%。</li><li><strong>未见过跨外观对</strong>：MIM-VLA 58.3% vs 35.0%（vanilla）vs 23.3%（raw-current）；外观匹配任务达到 68.3%。</li><li><strong>轻柔抓取变形指标（SAM 2 掩码面积减少率，越低越好）</strong>：已见可变形物体 14.2%（对比 SmolVLA-flow 31.4%、TA-VLA-inspired 24.0%）；未见可变形物体 12.5%（对比 28.0%、20.8%）。</li><li><strong>无损伤抓取成功率</strong>：已见可破损物体 50.0%（20/40），未见生鸡蛋 30.0%（6/20），显著优于基线（15.0% 和 5%）。</li><li><strong>消融研究</strong>：MEM 摘要 token 容量 K=4 在离线评估中取得最佳选择准确率（99.5%）、解释一致性（90.0%）和交换一致性（93.8%），为默认配置。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.08444/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ActTune: Action-Aware Precision and GPU Operating-Point Adaptation for Energy-Efficient Vision-Language-Action Inference</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.08220/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">VOMMI: Collecting and Leveraging Portable Demonstrations for Mobile Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
