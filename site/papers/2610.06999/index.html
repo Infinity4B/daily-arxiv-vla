@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ProactiveVLA: Augmenting Embodied Memory through Proactive Environment Exploration - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="核心目标是解决机器人部署到未知环境时，有限交互预算下的快速适配问题：现有融合推理Agent与冻结VLA的系统多通过重复练习目标任务实现适配，但仅能优化单一任务的执行方案，无法应对任务重定向、环境空间变化等新场景 ProactiveVLA的核心思路是让Agent在完成初始目标任务后，将剩余交互预算用于主动探索场景相关知识，整合成功、失败、恢复的全量经验到全局记忆中，在冻结VLA参数的前提下指导后续任务执行 该方法聚焦于获取可复用的环境知识而非单一任务的执行精化，以提升对任务和条件变化的泛化能力，降低对VLA调用量的依赖" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.06999">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.06999.webp" alt="ProactiveVLA: Augmenting Embodied Memory through Proactive Environment Exploration" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">核心目标是解决机器人部署到未知环境时，有限交互预算下的快速适配问题：现有融合推理Agent与冻结VLA的系统多通过重复练习目标任务实现适配，但仅能优化单一任务的执行方案，无法应对任务重定向、环境空间变化等新场景</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">ProactiveVLA: Augmenting Embodied Memory through Proactive Environment Exploration</h1>
+            <div class="detail-meta">2026-10-04 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.06999" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.06999" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.06999</span></div>
+            <p class="detail-summary">核心目标是解决机器人部署到未知环境时，有限交互预算下的快速适配问题：现有融合推理Agent与冻结VLA的系统多通过重复练习目标任务实现适配，但仅能优化单一任务的执行方案，无法应对任务重定向、环境空间变化等新场景 ProactiveVLA的核心思路是让Agent在完成初始目标任务后，将剩余交互预算用于主动探索场景相关知识，整合成功、失败、恢复的全量经验到全局记忆中，在冻结VLA参数的前提下指导后续任务执行 该方法聚焦于获取可复用的环境知识而非单一任务的执行精化，以提升对任务和条件变化的泛化能力，降低对VLA调用量的依赖</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Tsinghua University（作者Shizuo Tian、Yutong Li、Yunxin…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">核心目标是解决机器人部署到未知环境时，有限交互预算下的快速适配问题：现有融合推理Agent与冻结VLA的系统多通过重复练习目标任务实现适配，但仅能优化单一任务的执行方案，无法应对任务重定向、环境空间变化等新场景</p>
+  <ul class="reading-intro-points"><li>核心目标是解决机器人部署到未知环境时，有限交互预算下的快速适配问题：现有融合推理Agent与冻结VLA的系统多通过重复练习目标任务实现适配，但仅能优化单一任务的执行方案，无法应对任务重定向、环境空间变化等新场景</li><li>ProactiveVLA的核心思路是让Agent在完成初始目标任务后，将剩余交互预算用于主动探索场景相关知识，整合成功、失败、恢复的全量经验到全局记忆中，在冻结VLA参数的前提下指导后续任务执行</li><li>该方法聚焦于获取可复用的环境知识而非单一任务的执行精化，以提升对任务和条件变化的泛化能力，降低对VLA调用量的依赖</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Tsinghua University</strong>（作者Shizuo Tian、Yutong Li、Yunxin Liu、Yuanchun Li所属机构，Yuanchun Li为通讯作者）</li><li><strong>Tongji University</strong>（作者Yuebing Song所属机构）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>核心目标是解决机器人部署到未知环境时，有限交互预算下的快速适配问题：现有融合推理Agent与冻结VLA的系统多通过重复练习目标任务实现适配，但仅能优化单一任务的执行方案，无法应对任务重定向、环境空间变化等新场景</li><li>ProactiveVLA的核心思路是让Agent在完成初始目标任务后，将剩余交互预算用于主动探索场景相关知识，整合成功、失败、恢复的全量经验到全局记忆中，在冻结VLA参数的前提下指导后续任务执行</li><li>该方法聚焦于获取可复用的环境知识而非单一任务的执行精化，以提升对任务和条件变化的泛化能力，降低对VLA调用量的依赖</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次将部署时机器人适配问题定义为固定交互预算下的可复用环境知识获取问题，明确了知识复用性在跨任务、跨场景适配中的核心地位</li><li>提出了任务引导的三级主动探索框架：围绕物体可供性、状态改变交互、交互组合三个层级自研探索目标，结合视觉结果验证与标准化记忆管理流程，将原始交互经验整合为可复用的全局知识</li><li>在<strong>LIBERO-Pro</strong>和<strong>RoboCasa365 Composite-Seen</strong>两个基准上验证了方法的有效性，通过消融实验分析了初始任务引导、三级探索结构、记忆管理三个组件的贡献，证明主动探索获取的结构化知识是性能提升的关键</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>整体分为三个核心阶段：主动环境探索、记忆管理、记忆引导的任务执行，全程底层VLA参数保持冻结，无需对预训练模型进行微调</li><li>主动探索阶段：Agent首先尝试环境给定的目标任务，保留任务执行经验后，将剩余交互预算用于自研三级目标：①物体可供性（如抓取碗、打开柜门等原子交互，验证物体的可操作性）；②状态改变交互（如将碗放入抽屉等改变场景状态的操作，验证交互的效果）；③交互组合（如洗菜、冲水、装碗的多步序列，验证交互的组合逻辑）；独立视觉检查器评估每次探索的结果，保留所有成功、失败、不确定及恢复的交互记录</li><li>记忆管理阶段：首先无损归档所有交互记录到证据库，将轨迹原子化为经验单元；先在单个场景内归纳出物体级、动作级、组合级三类知识，再跨场景综合生成候选规则；由独立批评家对照原始证据和视觉评估结果审核规则，仅通过审核的规则进入全局记忆</li><li>记忆引导执行阶段：评估时将全局记忆与任务指令、当前观测共同注入Agent上下文，指导Agent分解任务、调用VLA等底层原语执行</li><li>创新点：首次提出面向部署时适配的三级主动探索结构，设计了包含独立证据审核的完整记忆管理流程，实现了无需修改冻结VLA参数的环境快速适配</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：<strong>LIBERO-Pro</strong>（LIBERO基准的扰动版本，包含空间/物体/目标三类可控扰动，共8个设置、80个任务，每个任务10次评估rollout）、<strong>RoboCasa365 Composite-Seen</strong>（包含16类多步厨房复合操作任务，每个任务5次评估rollout，单rollout交互预算为30个Agent turn）</li><li>模型基础：基于<strong>Harness VLA</strong>执行栈搭建，使用<strong>Codex</strong>作为高层规划Agent，底层VLA参数在适配和评估全程保持冻结，未对VLA本身进行微调</li><li>训练资源：论文未明确披露具体使用的GPU/TPU等硬件资源信息</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：LIBERO-Pro的8个扰动设置（指令重定向T、位置交换S两类扰动，分别对应空间、物体、目标三类变化）、RoboCasa365 Composite-Seen的16个多步家庭任务</li><li>对比基线：OpenVLA、π₀、π₀.₅、MolmoAct、NORA、X-VLA、AtomVLA、Cap-X、RATS、π_RLinf、Harness VLA</li><li>主要评估指标：任务成功率（%）</li><li>关键实验结果：</li></ul>
+<p> - LIBERO-Pro上整体成功率76.4%，超过最优基线Harness VLA的72.1%，8个设置中7个取得性能提升，目标重定向（Goal-T）设置下提升最大（88% vs 75%）</p>
+<p> - 有限VLA调用场景下优势显著：Goal-T设置最多允许1次VLA调用时，ProactiveVLA完成48%的评估实例，远高于Harness VLA的19%</p>
+<p> - RoboCasa365 Composite-Seen上整体成功率41.3%，超过Harness VLA的30.0%，在多步复合任务（如WashLettuce、SteamInMicrowave、StirVegetables等）上提升尤为明显</p>
+<p> - 消融实验显示，移除三级探索结构会导致性能大幅下降（整体成功率从71%降至42%），证明结构化探索内容的优先级高于单纯增加交互量</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.07127/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">PlaySuite: A Large-Scale Benchmark for Interactive Visual Intelligence</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.06965/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ACG-WAM: World-Action Modeling via Action-Conditioned Geometric Latent Prediction</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SMART: Zero-Shot Sim-to-Real Articulated Object Manipulation via Large-Scale Synthetic Pretraining - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对铰接物体操作任务中，现实世界高质量演示收集难度大、现有仿真合成数据覆盖铰接物体类别有限、通用合成管线未考虑部件级语义与铰接约束，难以规模化生成高质量演示的问题，提出了SMART大规模合成铰接物体操作演示系统。 核心包含针对铰接物体优化的SMART-Sim仿真平台、超大规模合成数据集SMART-Data，以及基于合成数据预训练的SMART-VLA模型，旨在实现铰接物体操作的零样本Sim-to-Real迁移。 论文验证了合成数据作为接触密集型铰接操作监督信号的有效性与可扩展性，为VLA模型在铰接物体操作任务上的训练提供了低成本、高规模的替代方案。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.07652">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.07652.webp" alt="SMART: Zero-Shot Sim-to-Real Articulated Object Manipulation via Large-Scale Synthetic Pretraining" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对铰接物体操作任务中，现实世界高质量演示收集难度大、现有仿真合成数据覆盖铰接物体类别有限、通用合成管线未考虑部件级语义与铰接约束，难以规模化生成高质量演示的问题，提出了SMART大规模合成铰接物体操作演示系统。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">SMART: Zero-Shot Sim-to-Real Articulated Object Manipulation via Large-Scale Synthetic Pretraining</h1>
+            <div class="detail-meta">2026-10-06 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.07652" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.07652" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.07652</span></div>
+            <p class="detail-summary">针对铰接物体操作任务中，现实世界高质量演示收集难度大、现有仿真合成数据覆盖铰接物体类别有限、通用合成管线未考虑部件级语义与铰接约束，难以规模化生成高质量演示的问题，提出了SMART大规模合成铰接物体操作演示系统。 核心包含针对铰接物体优化的SMART-Sim仿真平台、超大规模合成数据集SMART-Data，以及基于合成数据预训练的SMART-VLA模型，旨在实现铰接物体操作的零样本Sim-to-Real迁移。 论文验证了合成数据作为接触密集型铰接操作监督信号的有效性与可扩展性，为VLA模型在铰接物体操作任务上的训练提供了低成本、高规模的替代方案。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">中国电信人工智能研究院（Institute of Artificial Intelligence, C…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对铰接物体操作任务中，现实世界高质量演示收集难度大、现有仿真合成数据覆盖铰接物体类别有限、通用合成管线未考虑部件级语义与铰接约束，难以规模化生成高质量演示的问题，提出了SMART大规模合成铰接物体操作演示系统。</p>
+  <ul class="reading-intro-points"><li>针对铰接物体操作任务中，现实世界高质量演示收集难度大、现有仿真合成数据覆盖铰接物体类别有限、通用合成管线未考虑部件级语义与铰接约束，难以规模化生成高质量演示的问题，提出了SMART大规模合成铰接物体操作演示系统。</li><li>核心包含针对铰接物体优化的SMART-Sim仿真平台、超大规模合成数据集SMART-Data，以及基于合成数据预训练的SMART-VLA模型，旨在实现铰接物体操作的零样本Sim-to-Real迁移。</li><li>论文验证了合成数据作为接触密集型铰接操作监督信号的有效性与可扩展性，为VLA模型在铰接物体操作任务上的训练提供了低成本、高规模的替代方案。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>中国电信人工智能研究院（Institute of Artificial Intelligence, China Telecom）</li><li>慕尼黑工业大学（Technical University of Munich）</li><li>哈尔滨工业大学（Harbin Institute of Technology）</li><li>上海交通大学（Shanghai Jiao Tong University）</li><li>清华大学（Tsinghua University）</li><li>浙江大学（Zhejiang University）</li><li>Gamma Robotics (γ)</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对铰接物体操作任务中，现实世界高质量演示收集难度大、现有仿真合成数据覆盖铰接物体类别有限、通用合成管线未考虑部件级语义与铰接约束，难以规模化生成高质量演示的问题，提出了<strong>SMART</strong>大规模合成铰接物体操作演示系统。</li><li>核心包含针对铰接物体优化的<strong>SMART-Sim</strong>仿真平台、超大规模合成数据集<strong>SMART-Data</strong>，以及基于合成数据预训练的<strong>SMART-VLA</strong>模型，旨在实现铰接物体操作的零样本Sim-to-Real迁移。</li><li>论文验证了合成数据作为接触密集型铰接操作监督信号的有效性与可扩展性，为VLA模型在铰接物体操作任务上的训练提供了低成本、高规模的替代方案。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>SMART-Sim</strong>仿真平台，针对铰接物体特性设计专门的铰接感知方案，覆盖资产标注、运动生成、技能定义、域随机化全流程，可高效生成高质量铰接物体操作任务与演示。</li><li>开发智能体任务生成方法与分布式合成系统，构建<strong>SMART-Data</strong>大规模合成数据集，包含超100万条演示轨迹，覆盖5种机器人配置、23种操作技能、44种原子任务类型、2507个铰接物体，为铰接操作学习提供多样化监督信号。</li><li>通过仿真与真实世界实验验证，在SMART-Data上预训练的VLA模型可显著提升下游任务性能，且SMART-Sim合成的数据支持零样本Sim-to-Real策略迁移，性能随数据规模提升呈现正向扩展趋势，证明合成数据是接触密集型铰接操作的可扩展监督来源。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>SMART-Sim仿真平台</strong>：基于Isaac Lab构建，核心创新是铰接感知的全流程设计：</li></ul>
+<p> - 资产标注：针对铰接物体，通过VLM粗筛可操作部件、DINO-X定位部件、射线追踪恢复3D坐标，迭代生成动作帧，同时标注关节类型、运动范围、部件材质；针对刚体采用AnyGrasp生成抓取标注，同时用VLM生成物体类别与语言描述。</p>
+<p> - 运动生成：无碰撞空间采用cuRobo做GPU加速的批量轨迹优化与碰撞感知运动规划；接触交互场景下利用仿真特权信息（关节类型、位置、有效运动范围）作为显式约束构建轨迹优化问题，保证轨迹满足铰接约束，通过高并行能力过滤低质量轨迹。</p>
+<p> - 操作技能：将关节类型与操作语义整合为23种可复用的参数化技能，抽象低层运动原语，支持智能体组合生成复杂任务，每个技能针对不同运动模式与抓取方式定制约束与参数化方式，同时支持控制点随机扰动提升轨迹多样性。</p>
+<p> - 域随机化：针对铰接物体多部件结构设计部件级的空间、物理、视觉随机化，包括物体/机器人姿态、相机参数、部件摩擦/密度、关节刚度/阻尼、部件级材质纹理、光照等，在保留部件语义的前提下提升演示多样性。</p>
+<ul><li><strong>数据合成流程</strong>：</li></ul>
+<p> - 智能体任务生成：设计统一任务规范，通过LLM智能体将自然语言任务描述转换为可执行仿真配置，包括场景 grounding 与技能程序生成、仿真参数配置三个环节，可自动生成不同复杂度的铰接操作任务。</p>
+<p> - 分布式合成系统：采用调度器+三类Worker的架构，分别负责轨迹收集（最多500个环境并行，约每秒生成1.25条轨迹，保留成功轨迹并做早期重置过滤不稳定执行）、视觉渲染（确定性回放轨迹，多视角并行渲染）、数据集转换（转为LeRobot格式，做跨机器人配置的键映射与流式视频编码），通过解耦CPU与GPU密集型任务实现高可扩展性，96个Worker配合8张RTX 4090每日可生成约144小时数据。</p></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集名称：<strong>SMART-Data</strong>，已开源于Hugging Face：https://huggingface.co/datasets/TeleEmbodied/SMART-Data</li><li>数据集规模：总计超100万条演示轨迹，约5亿帧，总时长超4600小时；覆盖23种操作技能、44种原子任务类型、1122个场景、5种机器人配置、2507个铰接物体（88个功能类别）、9116个刚体物体（1071个类别），是当前同类数据集中铰接物体轨迹最多、覆盖范围最广的公开数据集。</li><li>训练资源：数据生成阶段采用96个Worker，搭配8张RTX 4090 GPU，每日可生成约144小时数据；VLA预训练基于PRTS架构，采用4B参数的Qwen3-VL作为VLM backbone，搭配基于扩散Transformer（DiT）的动作专家，通过两阶段训练（第一阶段在SMART-Data上做行为克隆预训练，第二阶段在下游benchmark上做微调）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真场景采用<strong>LIBERO</strong>与<strong>RoboCasa365</strong>两个通用操作benchmark，真实世界场景开展零样本Sim-to-Real实验与性能扩展实验。</li><li>主要评估指标：操作任务的<strong>成功率（Success Rate）</strong>，以及性能随预训练数据规模的扩展趋势。</li><li>关键实验结果：</li></ul>
+<p> - 仿真实验：在LIBERO benchmark上，<strong>SMART-VLA</strong>平均成功率达96.8%，比无第一阶段预训练的<strong>SMART-VLA(w/o S1)</strong>高2.1个百分点，匹配合成数据外、用真实数据预训练的π₀.5（96.9%）；对比用真实数据预训练的<strong>SMART-VLA(Real)</strong>（平均成功率97.8%），仅用合成数据预训练的SMART-VLA性能接近，进一步验证了合成数据的有效性。在任务分布与复杂度差异更大的RoboCasa365上，SMART-VLA平均成功率28.8%，比无预训练版本高8.8个百分点，超过所有基线（包括GR00T N1.5的23.9%、π₀.5的16.9%等），尽管基线均使用了真实世界数据预训练。</p>
+<p> - 真实世界实验：SMART-Sim合成的数据可实现铰接物体操作任务的<strong>零样本Sim-to-Real迁移</strong>，且模型性能随预训练数据规模提升呈现正向扩展趋势。</p>
+<p> - 消融实验：第一阶段预训练对性能提升有显著作用，尤其在复杂任务上的增益更明显。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.07696/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ESP: Energy-Score Policy for One-Step Multimodal Action Generation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.07594/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">BiGym 2.0: Benchmarking Learned and Agent-Developed Policies for Humanoid Household Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
