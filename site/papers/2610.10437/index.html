@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Q-Learning with Scalar Adjoint Matching - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究流策略（Flow Policy）的离线/离线到在线强化学习微调问题，目标是在不冻结预训练生成模型的前提下直接改进流模型本身。 现有伴随匹配（Adjoint Matching）方法虽然能理论上将价值信息从最终动作传播回每个流步骤，但每一步都需要向量–雅可比乘积（vector–Jacobian product），计算成本随流步数与模型规模增长。 论文发现批量平均速度雅可比矩阵集中在对角线上，据此推导出闭式标量伴随（Scalar Adjoint），并进一步引入针对策略生成动作的价值惩罚，提出新算法 SQAM。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.10437">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.10437.webp" alt="Q-Learning with Scalar Adjoint Matching" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文研究流策略（Flow Policy）的离线/离线到在线强化学习微调问题，目标是在不冻结预训练生成模型的前提下直接改进流模型本身。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Q-Learning with Scalar Adjoint Matching</h1>
+            <div class="detail-meta">2026-10-07 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.10437" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.10437" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.10437</span></div>
+            <p class="detail-summary">论文研究流策略（Flow Policy）的离线/离线到在线强化学习微调问题，目标是在不冻结预训练生成模型的前提下直接改进流模型本身。 现有伴随匹配（Adjoint Matching）方法虽然能理论上将价值信息从最终动作传播回每个流步骤，但每一步都需要向量–雅可比乘积（vector–Jacobian product），计算成本随流步数与模型规模增长。 论文发现批量平均速度雅可比矩阵集中在对角线上，据此推导出闭式标量伴随（Scalar Adjoint），并进一步引入针对策略生成动作的价值惩罚，提出新算法 SQAM。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">KAIST（韩国科学技术院）：Yonghoon Dong、Jaehyuk Kim、Jungwoo Pa…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文研究流策略（Flow Policy）的离线/离线到在线强化学习微调问题，目标是在不冻结预训练生成模型的前提下直接改进流模型本身。</p>
+  <ul class="reading-intro-points"><li>论文研究流策略（Flow Policy）的离线/离线到在线强化学习微调问题，目标是在不冻结预训练生成模型的前提下直接改进流模型本身。</li><li>现有伴随匹配（Adjoint Matching）方法虽然能理论上将价值信息从最终动作传播回每个流步骤，但每一步都需要向量–雅可比乘积（vector–Jacobian product），计算成本随流步数与模型规模增长。</li><li>论文发现批量平均速度雅可比矩阵集中在对角线上，据此推导出闭式标量伴随（Scalar Adjoint），并进一步引入针对策略生成动作的价值惩罚，提出新算法 SQAM。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>KAIST</strong>（韩国科学技术院）：Yonghoon Dong、Jaehyuk Kim、Jungwoo Park、Changyeon Kim、Jinwoo Shin</li><li><strong>RLWRLD</strong>：Minsung Yoon（同时隶属 KAIST 与 RLWRLD）</li><li>通讯作者：Yonghoon Dong 与 Jinwoo Shin（邮箱：{yonghoon.dong, jinwoos}@kaist.ac.kr）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文研究<strong>流策略（Flow Policy）</strong>的离线/离线到在线强化学习微调问题，目标是在不冻结预训练生成模型的前提下直接改进流模型本身。</li><li>现有<strong>伴随匹配（Adjoint Matching）</strong>方法虽然能理论上将价值信息从最终动作传播回每个流步骤，但每一步都需要<strong>向量–雅可比乘积（vector–Jacobian product）</strong>，计算成本随流步数与模型规模增长。</li><li>论文发现<strong>批量平均速度雅可比矩阵集中在对角线</strong>上，据此推导出<strong>闭式标量伴随（Scalar Adjoint）</strong>，并进一步引入针对策略生成动作的价值惩罚，提出新算法 <strong>SQAM</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>SQAM（Q-learning with Scalar Adjoint Matching）</strong>：用闭式标量伴随替代伴随匹配中每步的向量–雅可比乘积，显著降低计算开销。</li><li>发现速度雅可比矩阵在对角线集中的经验规律，并推导出在各向同性雅可比假设下 lean adjoint ODE 的闭式解（Proposition 1），即 <code>â_τ = -τ ∇_{X1} Q^π(s, X1)</code>。</li><li>揭示标量伴随下<strong>价值学习方案</strong>至关重要，并发现关键在于<strong>约束 critic 在策略自身生成动作处的价值</strong>，据此提出价值惩罚正则项（Equation 3）。</li><li>在 <strong>OGBench 50 个任务</strong>上，SQAM 综合成功率 <strong>75%</strong>（最强基线 TRQAM 为 68%）；在最难的四个 domain 上比最强基线提升 <strong>18–35 个百分点</strong>。</li><li>方法成功扩展至<strong>真实双机械臂机器人</strong>（RB-Y1 + Wuji Hand 2）上的<strong>视觉-语言-动作（VLA）大模型</strong>微调，三项任务均优于监督微调。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于<strong>流匹配（Flow Matching）</strong>与线性插值路径 <code>X_τ=(1-τ)X_0+τX_1</code> 训练速度场 <code>v_θ(s,X_τ,τ)</code>，动作通过积分 ODE 采样得到。</li><li>核心观察：预训练流策略的<strong>批量平均速度雅可比矩阵</strong>在对角线集中（Figure 2），因此近似 <code>J_τ = c_τ I</code> 并推导闭式标量伴随，只需在最终动作处计算一次 critic 梯度。</li><li>提出<strong>价值惩罚</strong>（value penalty）：<code>L_critic += c·(Q^π(s, sg(a_π)) - Q^π(s, a_data))</code>，在策略更新所用的策略生成动作处直接约束 critic 值。</li><li>默认采用 <strong>TRQAM 的路径空间 KL 信任域</strong>约束以保证训练稳定；未使用信任域的消融见附录 F.3。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>OGBench</strong> 基准：10 个 domain × 5 个任务 = <strong>50 个任务</strong>，使用基于奖励的 single-task 变体。</li><li>流策略先经过 <strong>300K 步行为克隆（BC）</strong>预训练，离线微调 <strong>1M 步</strong>，在线阶段至 <strong>1.5M 步</strong>。</li><li>操纵类 domain 使用 <strong>action-chunking</strong>，chunk size = <strong>5</strong>。</li><li>实验使用 <strong>8 个随机种子</strong>；真实机器人平台为 <strong>Rainbow Robotics RB-Y1</strong> 双臂机器人，配备两只 <strong>Wuji Hand 2</strong>（各 <strong>20-DoF</strong> 灵巧手）。</li><li>代码与博客已公开：github.com/yonghdong/sqam、yonghdong.github.io/blog/sqam。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>对比基线（7 种）：<strong>FQL</strong>、<strong>CGQL-L</strong>、<strong>DSRL</strong>、<strong>IFQL</strong>、<strong>QAM</strong>、<strong>QAM-E</strong>、<strong>TRQAM</strong>（后三种同属伴随匹配家族）。</li><li>主要评估指标：<strong>平均成功率（%）</strong>，离线阶段 1M 步时报告（8 seeds 均值 ± 标准差）。</li><li>最难四个 domain 的离线增益：<strong>antmaze-giant +21</strong>、<strong>humanoidmaze-large +18</strong>、<strong>cube-triple +22</strong>、<strong>cube-quadruple +35</strong>（SQAM 54% vs 最强基线 19%）。</li><li>50 任务总体：SQAM 达 <strong>75%</strong>，最强基线 TRQAM 为 <strong>68%</strong>；该优势在在线阶段同样保持。</li><li>真实机器人实验：SQAM 在全部三项操作任务上明显优于<strong>监督微调（SFT）</strong>，而残差微调方法（EXPO-FT 类）在相同设定下表现不佳。</li><li>消融实验表明：<strong>价值惩罚系数 c</strong> 与 <strong>KL 预算 ε_KL</strong> 对性能均有显著影响；只作用于数据集动作或动作距离的正则方法（如 IQL、ReBRAC）提升有限。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.10526/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Rephrase Before You Act: Characterizing and Mitigating Language Sensitivity in Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.10390/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Explicit Geometric Chain-of-Thought for Vision-Language-Action in Autonomous Driving</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

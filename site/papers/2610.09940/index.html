@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Juno: Taming Predictive Latents for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Juno 统一框架，围绕一个动作条件化的 JEPA（联合嵌入预测架构）构建，使其在 VLA（视觉-语言-动作）模型的预训练、策略学习与部署三个阶段均发挥关键作用。 解决三个核心失败点：预训练阶段表征与具体机器人控制不匹配、策略学习阶段预测目标干扰动作学习、部署阶段教师模型在分布偏移下失准。 在 SimplerEnv 上将平均成功率从基线 Qwen3GR00T 的 60.9% 提升至 68.5%，结合测试时自适应（Juno-TTT）进一步达到 72.7%；在真实机器人上，面对背景、高度和物体偏移时保持 70%–75% 成功率，而基线策略完全崩溃至 0%。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.09940">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.09940.webp" alt="Juno: Taming Predictive Latents for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 Juno 统一框架，围绕一个动作条件化的 JEPA（联合嵌入预测架构）构建，使其在 VLA（视觉-语言-动作）模型的预训练、策略学习与部署三个阶段均发挥关键作用。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Juno: Taming Predictive Latents for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-07 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.09940" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.09940" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.09940</span></div>
+            <p class="detail-summary">提出 Juno 统一框架，围绕一个动作条件化的 JEPA（联合嵌入预测架构）构建，使其在 VLA（视觉-语言-动作）模型的预训练、策略学习与部署三个阶段均发挥关键作用。 解决三个核心失败点：预训练阶段表征与具体机器人控制不匹配、策略学习阶段预测目标干扰动作学习、部署阶段教师模型在分布偏移下失准。 在 SimplerEnv 上将平均成功率从基线 Qwen3GR00T 的 60.9% 提升至 68.5%，结合测试时自适应（Juno-TTT）进一步达到 72.7%；在真实机器人上，面对背景、高度和物体偏移时保持 70%–75% 成功率，而基线策略完全崩溃至 0%。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of Science and Technology of China（中国科学技…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 Juno 统一框架，围绕一个动作条件化的 JEPA（联合嵌入预测架构）构建，使其在 VLA（视觉-语言-动作）模型的预训练、策略学习与部署三个阶段均发挥关键作用。</p>
+  <ul class="reading-intro-points"><li>提出 Juno 统一框架，围绕一个动作条件化的 JEPA（联合嵌入预测架构）构建，使其在 VLA（视觉-语言-动作）模型的预训练、策略学习与部署三个阶段均发挥关键作用。</li><li>解决三个核心失败点：预训练阶段表征与具体机器人控制不匹配、策略学习阶段预测目标干扰动作学习、部署阶段教师模型在分布偏移下失准。</li><li>在 SimplerEnv 上将平均成功率从基线 Qwen3GR00T 的 60.9% 提升至 68.5%，结合测试时自适应（Juno-TTT）进一步达到 72.7%；在真实机器人上，面对背景、高度和物体偏移时保持 70%–75% 成功率，而基线策略完全崩溃至 0%。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Science and Technology of China</strong>（中国科学技术大学）</li><li><strong>Eastern Institute of Technology, Ningbo</strong>（东方理工高等研究院，宁波）</li><li><strong>Hangzhou Dianzi University</strong>（杭州电子科技大学）</li><li><strong>ShanghaiTech University</strong>（上海科技大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Juno</strong> 统一框架，围绕一个动作条件化的 JEPA（联合嵌入预测架构）构建，使其在 VLA（视觉-语言-动作）模型的预训练、策略学习与部署三个阶段均发挥关键作用。</li><li>解决三个核心失败点：预训练阶段表征与具体机器人控制不匹配、策略学习阶段预测目标干扰动作学习、部署阶段教师模型在分布偏移下失准。</li><li>在 <strong>SimplerEnv</strong> 上将平均成功率从基线 <strong>Qwen3GR00T</strong> 的 60.9% 提升至 68.5%，结合测试时自适应（Juno-TTT）进一步达到 72.7%；在真实机器人上，面对背景、高度和物体偏移时保持 70%–75% 成功率，而基线策略完全崩溃至 0%。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>Control-Aligned Pretraining（控制对齐预训练）</strong>：提出动态 CLS 损失（Dynamic CLS Loss），将运动加权的 patch 动态转移到紧凑的全局状态 token，证明与具身控制和运动分布匹配的预测教师比单纯扩大预训练规模更重要。</li><li><strong>Decoupled Predictive Reasoning（解耦预测推理）</strong>：通过 patch 级融合将 JEPA 特征注入 VLA 感知，并利用具有独立变换参数的解耦推理分支蒸馏未来潜在状态，使预测计算支持动作生成而不重构 VLA 主干。</li><li><strong>Dynamics-First Test-Time Adaptation（动力学优先的测试时自适应）</strong>：利用所有部署轨迹（包括失败轨迹）进行世界模型自适应，冻结自适应后的教师，仅在验证成功的轨迹上通过 LoRA 适配器与可训练动作头重新对齐策略，无需专家修正或任务奖励。</li><li>核心洞察：失败动作不能作为策略学习目标，但其结果仍是对世界动力学的有效监督信号。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用 <strong>LeWM</strong> 作为动作条件化 JEPA 世界模型，使用 <strong>ViT-Tiny</strong> 配置（约 <strong>15M</strong> 参数），在像素级别于与策略学习相同的具身轨迹数据上训练。</li><li><strong>动态 CLS 损失</strong>：先以标准 JEPA 目标训练，冻结作为 patch 监督器；计算 patch token 变化量并做运动感知聚合（softmax 加权），以运动加权 patch 目标监督可训练编码器的 CLS 转移。</li><li><strong>Patch 级融合</strong>：将冻结 JEPA 编码器的当前帧 patch 特征经两层 MLP 投影至 VLA 隐藏维度，通过带门控残差连接的交叉注意力融入原生视觉 token。</li><li><strong>解耦推理分支</strong>：采用 <strong>Mixture-of-Transformers（MoT）</strong> 解码器块，视觉语言分支与预测推理分支共享因果注意力图但保持分离的非嵌入参数；追加 K 个可学习推理查询，与来自未来观测的冻结 JEPA CLS 目标一一对齐（余弦相似度 + SmoothL1 损失）。</li><li><strong>Juno-TTT 两阶段</strong>：阶段一在全部部署数据上全参数更新世界模型（编码器 + 预测器）；阶段二冻结自适应编码器，仅在验证成功轨迹上以 LoRA 适配器（动作头全可训练）和降低的学习率重新对齐策略。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>SimplerEnv</strong> 基准：基于 <strong>BridgeData V2</strong> 和 <strong>Fractal</strong> 数据集训练（WidowX 机器人）。</li><li><strong>RoboCasa-GR1 Tabletop Tasks</strong>：24 个任务的 GR1 具身多任务模型联合训练。</li><li><strong>真实机器人</strong>：<strong>AgileX Cobot Magic</strong> ALOHA 式主从平台（6-DoF PiPER 手臂），采集 60 条"将红方块放入蓝碗"的适配演示，每条指令在 3 个固定方块位置各 20 条。</li><li>基础 VLA 模型：<strong>Qwen3GR00T</strong>；JEPA 教师：<strong>LeWM</strong>（约 15M 参数，ViT-Tiny）。</li><li>训练采用冻结/可训练模块分区，测试时适应使用 LoRA 适配器与低学习率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>SimplerEnv 模拟</strong>：Juno 平均成功率 68.5%，较 Qwen3GR00T（60.9%）提升 +7.6 点，较最强先前方法 VLA-JEPA（57.3%）提升 +11.2 点；Juno-TTT 进一步提升至 72.7%。</li><li><strong>RoboCasa-GR1 模拟</strong>：24 个任务平均成功率 59.6%，较 Qwen3GR00T（47.8%）提升 +11.8 点，较最强基线 Qwen3OFT（48.8%）提升 +10.8 点；在 24 个任务中 21 个超越基线，16 个取得最高分。</li><li><strong>真实机器人（冻结策略）</strong>：域内成功率 100%（20/20），基线仅 40%；背景偏移下保留 75%，叠加高度及高度+物体偏移下保持 70%，基线在所有偏移条件下均为 0%（0/20）。</li><li><strong>测试时自适应（真实）</strong>：高斯观测噪声下成功率从 40% 恢复至 65%；动态光照下从 55% 提升至 70%。</li><li><strong>评估协议</strong>：RoboCasa 每任务 50 回合，SimplerEnv 平均 4 次评估运行，真实机器人每条件 20 次试验；所有结果报告任务成功率及未加权均值。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.09943/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Many Ways to Succeed: Diversity-Driven RL Fine-Tuning for VLA Generalization</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.09734/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ΔWAM: Distilling Action Tangent Fields into World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

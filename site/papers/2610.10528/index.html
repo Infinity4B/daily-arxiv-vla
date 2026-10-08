@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Long-WAM: Scaling the Context of World-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Long-WAM，一个用于扩展世界动作模型（World-Action Models, WAMs）上下文长度的模型-系统联合框架，目标是在实时机器人控制约束下实现长视觉历史的有效利用。 核心研究问题：实时机器人控制需要足够的视觉历史来推断物体运动与任务进度，但处理更多历史会延迟动作响应。论文探讨WAM 控制能力如何随视觉上下文扩展，以及如何在实时约束下保持这些增益。 核心发现：访问历史不等于使用历史——更长上下文的收益取决于视频基础模型是否经过自回归（AR）预训练。AR 预训练学习到的历史到未来的因果时间分解结构，在动作适配中得以保留，从而使模型具备利用历史的基础。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.10528">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.10528.webp" alt="Long-WAM: Scaling the Context of World-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 Long-WAM，一个用于扩展世界动作模型（World-Action Models, WAMs）上下文长度的模型-系统联合框架，目标是在实时机器人控制约束下实现长视觉历史的有效利用。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Long-WAM: Scaling the Context of World-Action Models</h1>
+            <div class="detail-meta">2026-10-07 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.10528" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.10528" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.10528</span></div>
+            <p class="detail-summary">论文提出 Long-WAM，一个用于扩展世界动作模型（World-Action Models, WAMs）上下文长度的模型-系统联合框架，目标是在实时机器人控制约束下实现长视觉历史的有效利用。 核心研究问题：实时机器人控制需要足够的视觉历史来推断物体运动与任务进度，但处理更多历史会延迟动作响应。论文探讨WAM 控制能力如何随视觉上下文扩展，以及如何在实时约束下保持这些增益。 核心发现：访问历史不等于使用历史——更长上下文的收益取决于视频基础模型是否经过自回归（AR）预训练。AR 预训练学习到的历史到未来的因果时间分解结构，在动作适配中得以保留，从而使模型具备利用历史的基础。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">NVIDIA（核心研究机构，代码仓库位于 NVlabs）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 Long-WAM，一个用于扩展世界动作模型（World-Action Models, WAMs）上下文长度的模型-系统联合框架，目标是在实时机器人控制约束下实现长视觉历史的有效利用。</p>
+  <ul class="reading-intro-points"><li>论文提出 Long-WAM，一个用于扩展世界动作模型（World-Action Models, WAMs）上下文长度的模型-系统联合框架，目标是在实时机器人控制约束下实现长视觉历史的有效利用。</li><li>核心研究问题：实时机器人控制需要足够的视觉历史来推断物体运动与任务进度，但处理更多历史会延迟动作响应。论文探讨WAM 控制能力如何随视觉上下文扩展，以及如何在实时约束下保持这些增益。</li><li>核心发现：访问历史不等于使用历史——更长上下文的收益取决于视频基础模型是否经过自回归（AR）预训练。AR 预训练学习到的历史到未来的因果时间分解结构，在动作适配中得以保留，从而使模型具备利用历史的基础。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>NVIDIA</strong>（核心研究机构，代码仓库位于 NVlabs）</li><li><strong>MIT</strong>（麻省理工学院）</li><li><strong>HKU</strong>（香港大学）</li><li><strong>UCSD</strong>（加州大学圣迭戈分校）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>Long-WAM</strong>，一个用于扩展<strong>世界动作模型（World-Action Models, WAMs）</strong>上下文长度的模型-系统联合框架，目标是在<strong>实时机器人控制约束</strong>下实现长视觉历史的有效利用。</li><li>核心研究问题：实时机器人控制需要足够的视觉历史来推断物体运动与任务进度，但处理更多历史会延迟动作响应。论文探讨<strong>WAM 控制能力如何随视觉上下文扩展</strong>，以及如何在实时约束下保持这些增益。</li><li>核心发现：<strong>访问历史不等于使用历史</strong>——更长上下文的收益取决于视频基础模型是否经过<strong>自回归（AR）预训练</strong>。AR 预训练学习到的历史到未来的因果时间分解结构，在动作适配中得以保留，从而使模型具备利用历史的基础。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>LongLive2.0-Robot</strong>：从 LongLive-2.0 的 16 秒 AR 检查点继续训练，在大约 <strong>10,000 窗口等效小时</strong>的机器人及第一视角视频（RoVid-X、AgiBot World、EgoDex、EgoVerse、VITRA）上进行无动作标签的 AR 视频预训练，支持跨多形态学习。</li><li>提出<strong>因果到因果的世界动作适配（Causal-to-Causal World-Action Adaptation）</strong>：采用 <strong>IDM（逆动力学建模）</strong> 策略，视频专家预测部分去噪的未来潜变量后，将其 KV 缓存提供给动作专家进行动作 chunk 去噪，保留 AR 预训练的历史-未来结构。</li><li>系统性验证<strong>上下文缩放</strong>的价值：在 RoboCasa GR-1 上，上下文从 0.0 秒扩展到 19.2 秒使成功率从 63.3% 提升至 78.7%；而双向预训练初始化在长上下文下无净增益，体现了 AR 预训练的关键作用。</li><li>构建<strong>实时边缘部署基础设施</strong>：通过异步执行、流式 VAE 编码、决策时 prefill、调用内 KV 重用、NVFP4 量化及设备特定内核调优，在 <strong>RTX 5090、DGX Spark、Jetson AGX Thor</strong> 上实现不牺牲未来预测的实时控制。</li><li>验证<strong>真实世界部署与分层规划</strong>：在 Unitree G1 上动态杯抓取达 90% 成功、动态叠杯达 95%；在 YAM 上长时程任务平均超过 40 秒、成功率 81.7%；与 GPT-6 Astra 规划器结合，在 RoboCasa365 上总体成功率从 31.4% 提升至 54.4%。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>AR 视频预训练</strong>：采用 LongLive-2.0 的序列并行 AR 训练方法，将长序列分片到多 GPU；使用<strong>教师强制（teacher-forcing）</strong>目标，块因果注意力从干净前缀并行监督每个带噪 chunk，并保留错误回收（error recycling）机制。</li><li><strong>因果耦合架构</strong>：视频查询只读取自身及更早的视觉块，从不读取动作 token；动作查询读取观察历史、部分去噪的未来帧以及整个带噪动作 chunk，形成不对称接口。推理时视频预测在噪声水平 σ★=0.9 处停止，未来潜变量不解码为像素，其 KV 缓存重用于整个动作去噪过程。</li><li><strong>纯异步执行</strong>：模型推理与机器人执行重叠，无需混合或前缀引导策略；在连续的视频预测条件下，连续动作块在重叠区间内趋于一致，在 RoboTwin 2.0 上保持接近同步执行的成功率。</li><li><strong>流式 VAE 编码</strong>：在机器人执行过程中增量编码到达的观测帧组，触发后仅编码剩余帧，避免全窗口编码的重复等待和累计空闲时间。</li><li><strong>边缘加速优化</strong>：视频专家线性层采用 W4A4 NVFP4 量化，动作计算保持 BF16；使用 CUDA Graph 重放、PyTorch 编译、共享输入量化、在线 softmax 合并独立 KV 缓冲区的联合注意力，以及设备特定的 GEMM 调优。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>预训练数据</strong>：RoVid-X、AgiBot World、EgoDex、EgoVerse、VITRA 五个机器人/第一视角视频数据集，总计约 <strong>10,000 窗口等效小时</strong>，视频序列最长 30 秒。</li><li><strong>训练资源</strong>：LongLive2.0-Robot 预训练约 <strong>30,720 GPU 小时</strong>，使用 64 块 <strong>NVIDIA H100 GPU</strong>；下游 WAM 训练使用 16 块 <strong>GB200 GPU</strong>。</li><li><strong>模型超参</strong>：WAM 训练使用 AdamW，峰值学习率 10⁻⁴，余弦衰减，5% 预热，BF16 精度，梯度裁剪 1.0。</li><li><strong>机器人平台</strong>：Unitree G1 人形机器人（动态操作）和 <strong>YAM 双臂操作平台</strong>（长时程任务）。</li><li><strong>部署硬件</strong>：NVIDIA GeForce RTX 5090、DGX Spark、Jetson AGX Thor。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>模拟基准</strong>：LIBERO（Spatial/Object/Goal/Long 四个子集）、RoboTwin 2.0（Clean/Randomized）、DOMINO、RoboCasa GR-1 Tabletop、RoboCasa365（组合任务）。</li><li><strong>LIBERO 结果</strong>：Long-WAM (IDM) 平均成功率 <strong>99.5%</strong>，LIBERO-Long 达 <strong>99.5%</strong>，超出 LingBot-VA 1.0 点和 Fast-WAM 4.3 点。</li><li><strong>RoboTwin 2.0 结果</strong>：平均成功率 <strong>94.4%</strong>（Clean 94.7%、Randomized 94.2%），超过 ABot-M0.5 0.3 点和 LingBot-VA 2.0 0.8 点。</li><li><strong>DOMINO 结果</strong>：动态数据微调后成功率 <strong>34.9%</strong>、操作分数 <strong>45.1</strong>，分别超过最强基线 Fast-WAM 15.0 点和 PUMA 10.1 点。</li><li><strong>RoboCasa GR-1 上下文缩放</strong>：上下文从 2.4 秒扩展到 19.2 秒，成功率从 63.3% 提升至 <strong>78.7%</strong>（+15.4 点），超过最强基线 Cosmos Policy 11.6 点；38.4 秒时降至 75.2%（因训练轨迹 80.4% 为 padding）。</li><li><strong>真实世界动态任务（Unitree G1）</strong>：传送带以 7.5 cm/s 移动时抓杯成功率 <strong>90%</strong>，动态叠杯 <strong>95%</strong>——π₀.₅ 和 Fast-WAM 在 20 次试验中成功率为 0。</li><li><strong>真实世界长时程任务（YAM）</strong>：任务平均时长超过 40 秒，成功率 <strong>81.7%</strong>。</li><li><strong>分层规划（RoboCasa365）</strong>：Long-WAM + GPT-6 Astra 总体成功率 <strong>54.4%</strong>（单独 Long-WAM 为 31.4%，规划器单独为 25.2%），在未见组合任务上达 35.0%；规划增强对 Long-WAM 的增益（+23.0 点）大于 π₀.₅（+13.6 点）。</li><li><strong>部署延迟</strong>：RTX 5090 上每个动作块（含未来视频潜变量预测）仅 <strong>107.4 ms</strong>，相比 BF16 eager 执行实现 3.3 倍加速；八倍历史长度使延迟增加 3.2 倍（至 341.0 ms）。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2610.10526/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Rephrase Before You Act: Characterizing and Mitigating Language Sensitivity in Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
