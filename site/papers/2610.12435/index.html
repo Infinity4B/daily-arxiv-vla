@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VioLA: Learning Generalist Humanoid Control Policies from Human Data - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 VioLA，一种通用人形机器人策略模型，通过预测身体和手部的运动潜变量（motion latents） 而非关节指令，来解决人形机器人全驱控制的难题。 核心目标是让策略无需针对任务微调，即可在真实机器人上零样本跟随语言指令完成移动和操作任务。 通过将人体运动与机器人运动映射到共享潜空间，使大量无关节标注的人体演示数据可直接用于监督策略训练，缓解人形机器人演示数据稀缺的问题。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.12435">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.12435.webp" alt="VioLA: Learning Generalist Humanoid Control Policies from Human Data" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 VioLA，一种通用人形机器人策略模型，通过预测身体和手部的运动潜变量（motion latents） 而非关节指令，来解决人形机器人全驱控制的难题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">VioLA: Learning Generalist Humanoid Control Policies from Human Data</h1>
+            <div class="detail-meta">2026-10-08 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.12435" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.12435" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.12435</span></div>
+            <p class="detail-summary">论文提出 VioLA，一种通用人形机器人策略模型，通过预测身体和手部的运动潜变量（motion latents） 而非关节指令，来解决人形机器人全驱控制的难题。 核心目标是让策略无需针对任务微调，即可在真实机器人上零样本跟随语言指令完成移动和操作任务。 通过将人体运动与机器人运动映射到共享潜空间，使大量无关节标注的人体演示数据可直接用于监督策略训练，缓解人形机器人演示数据稀缺的问题。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Vesoma（作者实习单位）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 VioLA，一种通用人形机器人策略模型，通过预测身体和手部的运动潜变量（motion latents） 而非关节指令，来解决人形机器人全驱控制的难题。</p>
+  <ul class="reading-intro-points"><li>论文提出 VioLA，一种通用人形机器人策略模型，通过预测身体和手部的运动潜变量（motion latents） 而非关节指令，来解决人形机器人全驱控制的难题。</li><li>核心目标是让策略无需针对任务微调，即可在真实机器人上零样本跟随语言指令完成移动和操作任务。</li><li>通过将人体运动与机器人运动映射到共享潜空间，使大量无关节标注的人体演示数据可直接用于监督策略训练，缓解人形机器人演示数据稀缺的问题。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Vesoma</strong>（作者实习单位）</li><li><strong>ETH Zürich</strong></li><li><strong>MPI-IS</strong>（马克斯·普朗克智能系统研究所）</li><li><strong>University of Tuebingen</strong></li><li><strong>ELLIS Institute</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>VioLA</strong>，一种通用人形机器人策略模型，通过预测<strong>身体和手部的运动潜变量（motion latents）</strong> 而非关节指令，来解决人形机器人全驱控制的难题。</li><li>核心目标是让策略无需针对任务微调，即可在真实机器人上<strong>零样本跟随语言指令</strong>完成移动和操作任务。</li><li>通过将人体运动与机器人运动映射到<strong>共享潜空间</strong>，使大量无关节标注的人体演示数据可直接用于监督策略训练，缓解人形机器人演示数据稀缺的问题。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>VioLA</strong>，一种预测身体与手部运动潜变量的通用人形策略，预训练的冻结控制器将潜变量转换为协调的关节命令，策略不再需要学习底层关节协调。</li><li>将人体演示数据转化为策略可用的动作标签，构建包含 <strong>1.406 亿帧</strong>（其中 93.2% 来自人类）的训练池，共计 781 小时数据。</li><li>在真实 <strong>Unitree G1</strong> 机器人上实现零样本运动与操作：<strong>移动任务成功率 100%</strong>，<strong>操作任务成功率 88.6%</strong>，无需任务级微调。</li><li>验证了方法在 <strong>VLA（GR00T N1.7、π₀.₅）</strong> 和 <strong>WAM（DiT4DiT）</strong> 三种不同骨干网络上的通用性。</li><li>证明了仅用人类演示训练的策略即可在真实机器人上执行移动任务（零样本成功率 40%）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>共享潜动作空间</strong>：采用 <strong>SONIC</strong> 预训练的身体运动编码器和控制器，另预训练手部编码器-解码器模块；人类和机器人运动编码器将运动映射到同一 64 维潜空间，身体与手部潜变量拼接为 128 维动作空间。</li><li><strong>人体演示监督</strong>：通过冻结的编码器将人体运动转换为动作目标，同时通过模拟器闭环跟踪生成机器人本体感觉状态，使人体数据与机器人数据格式统一。</li><li><strong>流匹配（Flow Matching）</strong> 目标：策略基于 GR00T N1.7 骨干，沿用其 flow-matching 目标预测连续潜变量坐标，而非量化码本索引。</li><li><strong>实时分块（Real-Time Chunking, RTC）</strong>：在运动潜空间中应用 RTC，让新预测的 chunk 条件于推理期间正在执行的潜变量，减少 chunk 切换时的运动不连续性（最大跳变从 0.332/0.455 降至 0.064/0.070）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>人类数据：<strong>EgoSuite</strong>（源自 <strong>EgoStandard</strong>），20,680 个片段，约 1.31 亿帧。</li><li>机器人数据：<strong>Humanoid Everyday</strong>、<strong>PSI</strong>、<strong>UnifoLM-WBT</strong>（均为真实 G1 演示）和 <strong>LeVERB</strong>（模拟 G1 演示）。</li><li>训练池总量：<strong>31,988 个片段，140,572,312 帧，约 781 小时</strong>。</li><li>模型规模：骨干为 <strong>GR00T N1.7-3B</strong>（3B 参数 VLM），对比骨干包括 <strong>π₀.₅</strong> 和 <strong>DiT4DiT</strong>（Cosmos-Predict2.5-2B）。</li><li>训练：150k 步人类数据预训练 + 50k 步五语料均匀采样；控制频率 50 Hz。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估平台：真实 <strong>Unitree G1</strong> 机器人，配备五指 <strong>Inspire 灵巧手</strong>，实验室新环境中不同物体实例。</li><li>任务：6 个移动/姿态任务（来自 LeVERB）+ 7 个操作任务（来自 Humanoid Everyday），每任务五次试验。</li><li><strong>零样本移动</strong>：VioLA 完成 30/30（100%）；<strong>GR00T N1.7</strong> 仅 5/30（16.7%）；<strong>Ψ₀</strong> 为 0/30。</li><li><strong>零样本操作</strong>：VioLA 完成 31/35（88.6%）；GR00T N1.7 为 0/35，Ψ₀ 为 3/35（8.6%）。</li><li>人体数据消融：human-only 训练达 40% 移动成功率；human-then-mixed 比 robot-only 在移动任务上高 20 个百分点（30/30 vs 24/30）。</li><li>骨干对比：GR00T 与 DiT4DiT 均达到移动 30/30，但 GR00T 操作表现远超其他（88.6% vs 45.7% 和 25.7%）；预测延迟分别为 <strong>160.2 ms（GR00T）</strong>、208.6 ms（π₀.₅）、248.5 ms（DiT4DiT）。</li><li>运动 token 分析：复杂任务可用少量运动 token 表示，如转椅执行平均仅需 60 个身体 token 和 31 个手部 token。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.12451/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VersaCamVLA: Camera-Configurable VLA Policies for Robotic Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.12407/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">LeWAM: A JEPA World Action Model with Diffusion-Steering-Based MPC</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

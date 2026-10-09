@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PLaW-VLA: Predictive Latent World Modeling for Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 PLaW-VLA（Predictive Latent World Modeling for Vision-Language-Action Policies），一种将预测性潜在世界建模与动作生成相结合的全新 VLA 框架。 核心问题：在长程操作中，如何选择“预测什么未来表征”以及“如何用预测结果条件化动作生成”，以避免重建与控制无关的视觉细节。 通过在预测导向的潜在空间（V-JEPA 2）中预测任务相关的未来状态，并直接条件化动作生成，显著提升了长程操作与分布外泛化能力。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.12285">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.12285.webp" alt="PLaW-VLA: Predictive Latent World Modeling for Vision-Language-Action Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 PLaW-VLA（Predictive Latent World Modeling for Vision-Language-Action Policies），一种将预测性潜在世界建模与动作生成相结合的全新 VLA 框架。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">PLaW-VLA: Predictive Latent World Modeling for Vision-Language-Action Policies</h1>
+            <div class="detail-meta">2026-10-08 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.12285" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.12285" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.12285</span></div>
+            <p class="detail-summary">提出 PLaW-VLA（Predictive Latent World Modeling for Vision-Language-Action Policies），一种将预测性潜在世界建模与动作生成相结合的全新 VLA 框架。 核心问题：在长程操作中，如何选择“预测什么未来表征”以及“如何用预测结果条件化动作生成”，以避免重建与控制无关的视觉细节。 通过在预测导向的潜在空间（V-JEPA 2）中预测任务相关的未来状态，并直接条件化动作生成，显著提升了长程操作与分布外泛化能力。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">吉林大学（Jilin University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 PLaW-VLA（Predictive Latent World Modeling for Vision-Language-Action Policies），一种将预测性潜在世界建模与动作生成相结合的全新 VLA 框架。</p>
+  <ul class="reading-intro-points"><li>提出 PLaW-VLA（Predictive Latent World Modeling for Vision-Language-Action Policies），一种将预测性潜在世界建模与动作生成相结合的全新 VLA 框架。</li><li>核心问题：在长程操作中，如何选择“预测什么未来表征”以及“如何用预测结果条件化动作生成”，以避免重建与控制无关的视觉细节。</li><li>通过在预测导向的潜在空间（V-JEPA 2）中预测任务相关的未来状态，并直接条件化动作生成，显著提升了长程操作与分布外泛化能力。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>吉林大学</strong>（Jilin University）</li><li><strong>Astribot</strong>（机器人公司）</li><li><strong>哈尔滨工业大学（深圳）</strong>（Harbin Institute of Technology, Shenzhen）</li><li><strong>香港理工大学</strong>（The Hong Kong Polytechnic University）</li><li><strong>东京大学</strong>（The University of Tokyo）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>PLaW-VLA</strong>（Predictive Latent World Modeling for Vision-Language-Action Policies），一种将预测性潜在世界建模与动作生成相结合的全新 VLA 框架。</li><li>核心问题：在长程操作中，如何选择“预测什么未来表征”以及“如何用预测结果条件化动作生成”，以避免重建与控制无关的视觉细节。</li><li>通过在预测导向的潜在空间（V-JEPA 2）中预测任务相关的未来状态，并直接条件化动作生成，显著提升了长程操作与分布外泛化能力。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出在<strong>预测训练的表征空间</strong>（V-JEPA 2，冻结）中建模未来状态，避免低层视觉重建，降低预测负担并减少无关误差传播。</li><li>设计<strong>Mixture-of-Transformers（MoT）架构</strong>，包含视觉语言专家、潜在世界模型专家和动作专家，通过结构化因果注意力实现信息流控制。</li><li>建立<strong>三阶段视频到机器人训练流程</strong>：Stage I 在无动作视频上预训练潜在世界模型，Stage II 在机器人轨迹上联合优化预测与动作，Stage III 进行任务/本体适配。</li><li>实现<strong>轻量并行未来预测</strong>：通过 K 个可学习 future queries 并行预测多步未来状态，推理延迟约为生成式世界-动作模型（Motus）的 <strong>1/19</strong>，同时保持相当策略性能。</li><li>在多个基准上取得领先：LIBERO 平均 97.4%、LIBERO-Plus 零样本 72.7%、RoboTwin Hard Horizon III 提升 11.8 个百分点。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>整体条件概率分解：$p(\phi_t \|o_t, c) \cdot p(\hat{z}_{>t} \|o_{\le t}, \phi_t) \cdot p(a_{\ge t} \|\phi_t, z_{t-H_o:t}, \hat{z}_{>t})$，分别对应 VLM、潜在世界模型和动作模型。</li><li><strong>VLM</strong> 基于 <strong>PaliGemma</strong>（3B），提供语言条件化的语义表征 $\phi_t$。</li><li><strong>潜在世界模型</strong>使用冻结的 <strong>V-JEPA 2</strong> 编码器提取历史 latent，通过 K 个可学习 queries 预测未来 latent，目标使用 stop-gradient 的 MSE 损失。</li><li><strong>动作模型</strong>采用 <strong>flow-matching</strong> 目标在连续动作块上训练（与 π0 一致），条件包含历史 latent 和预测未来 latent。</li><li>训练时采用<strong>随机丢弃预测分支</strong>（Bernoulli dropout），避免对预测上下文过度依赖；联合损失包含预测损失和动作生成损失。</li><li>因果跨专家注意力确保信息流从语义到预测再到动作单向传递，防止未来信息泄漏。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>LIBERO</strong>（1,693 条演示，覆盖 Spatial/Object/Goal/Long），<strong>LIBERO-Plus</strong>（7 种扰动类型的零样本评测），<strong>RoboTwin 2.0</strong>（50 个任务，2,500 条干净场景 + 25,000 条随机场景演示）。</li><li>真实世界评测：四类任务（Fold Towel、Pack Toy、Play Basketball、Organize Stationery），每任务 <strong>400 条演示</strong>，另含零样本变体。</li><li>模型规模：相比 π0.5 主干仅增加约 <strong>0.9B 参数</strong>；VLM 为 PaliGemma 3B，未来预测采用轻量 LWM。</li><li>训练资源：具体 GPU 数量未在正文给出；推理评估基于单张 <strong>H100</strong> 的延迟测量。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO</strong>：PLaW-VLA 平均成功率 <strong>97.4%</strong>，高于 π0.5（96.9%），其中 LIBERO-Long 从 92.4% 提升至 94.6%。</li><li><strong>LIBERO-Plus（零样本）</strong>：任务加权平均 <strong>72.7%</strong>，显著优于 π0（53.6%）、π0-Fast（61.6%）、OpenVLA-OFT（69.6%）、UniVLA（42.9%）、WorldVLA（25.0%）；在 Robot、Layout、Light、Background 扰动下均为最佳。</li><li><strong>RoboTwin</strong>：Easy 平均 85.6%，Hard 平均 83.2%；在 Hard Horizon III 上达到 <strong>79.2%</strong>，较 π0.5 提升 <strong>+11.8</strong> 个百分点。</li><li><strong>真实世界</strong>：PLaW-VLA 在四项任务上均优于 π0 和 π0.5，尤其在 Fold Towel 和 Pack Toy 上增益最大；零样本变体也保持较好性能。</li><li><strong>消融实验</strong>：去除世界模型导致 LIBERO-Plus 下降 7.21 pp；预测损失和未来条件化分别贡献 5.14 pp 和 2.89 pp；V-JEPA 2 优于 Cosmos VAE（+1.77 pp）；Stage I 和 Stage II 均显著提升泛化；推理时掩蔽全部未来状态使 LIBERO 下降 4.35 pp。</li><li><strong>推理效率</strong>：相比 π0.5 仅增加约 70 ms 延迟；对比生成式世界-动作模型 Motus，推理延迟约为其 <strong>1/19</strong>，同时 LIBERO 成功率更高。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.12369/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Embodied Turing Machines: Stateful Code for Robot Recursive Self-Improvement</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.12231/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Residual Modeling Closes the Regression and Generative Policy Gap in Robot Learning</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

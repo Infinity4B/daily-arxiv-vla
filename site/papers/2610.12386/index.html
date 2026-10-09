@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARC: A Reasoning Recipe for Robot Foundation Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Arc（一种推理配方），旨在通过正确的推理机制而非暴力扩展数据/模型来显著提升现有机器人基础模型（RFM）的零样本任务性能。 核心问题是：如何在不修改架构、不新增机器人数据、不进行 foundation-scale 训练的前提下，提升已有 RFM（如 π0.5 和 Cosmos3-Nano-Policy）的任务成功率。 论文表明，通过在现有演示数据上自动生成&quot;动作锚定的因果推理轨迹&quot;并微调预训练 RFM 使用这些轨迹，可获得前所未有的零样本性能提升。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.12386">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.12386.webp" alt="ARC: A Reasoning Recipe for Robot Foundation Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 Arc（一种推理配方），旨在通过正确的推理机制而非暴力扩展数据/模型来显著提升现有机器人基础模型（RFM）的零样本任务性能。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">ARC: A Reasoning Recipe for Robot Foundation Models</h1>
+            <div class="detail-meta">2026-10-08 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.12386" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.12386" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.12386</span></div>
+            <p class="detail-summary">论文提出 Arc（一种推理配方），旨在通过正确的推理机制而非暴力扩展数据/模型来显著提升现有机器人基础模型（RFM）的零样本任务性能。 核心问题是：如何在不修改架构、不新增机器人数据、不进行 foundation-scale 训练的前提下，提升已有 RFM（如 π0.5 和 Cosmos3-Nano-Policy）的任务成功率。 论文表明，通过在现有演示数据上自动生成&quot;动作锚定的因果推理轨迹&quot;并微调预训练 RFM 使用这些轨迹，可获得前所未有的零样本性能提升。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of Illinois Urbana-Champaign</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 Arc（一种推理配方），旨在通过正确的推理机制而非暴力扩展数据/模型来显著提升现有机器人基础模型（RFM）的零样本任务性能。</p>
+  <ul class="reading-intro-points"><li>论文提出 Arc（一种推理配方），旨在通过正确的推理机制而非暴力扩展数据/模型来显著提升现有机器人基础模型（RFM）的零样本任务性能。</li><li>核心问题是：如何在不修改架构、不新增机器人数据、不进行 foundation-scale 训练的前提下，提升已有 RFM（如 π0.5 和 Cosmos3-Nano-Policy）的任务成功率。</li><li>论文表明，通过在现有演示数据上自动生成&quot;动作锚定的因果推理轨迹&quot;并微调预训练 RFM 使用这些轨迹，可获得前所未有的零样本性能提升。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Illinois Urbana-Champaign</strong></li><li><strong>Stanford University</strong></li><li><strong>NVIDIA</strong></li><li><strong>University of Sydney</strong></li><li><strong>Proception</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>Arc</strong>（一种推理配方），旨在通过正确的推理机制而非暴力扩展数据/模型来显著提升现有机器人基础模型（RFM）的零样本任务性能。</li><li>核心问题是：如何在不修改架构、不新增机器人数据、不进行 foundation-scale 训练的前提下，提升已有 RFM（如 <strong>π0.5</strong> 和 <strong>Cosmos3-Nano-Policy</strong>）的任务成功率。</li><li>论文表明，通过在现有演示数据上自动生成"动作锚定的因果推理轨迹"并微调预训练 RFM 使用这些轨迹，可获得前所未有的零样本性能提升。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>动作锚定因果推理轨迹（action-grounded causal traces）</strong>作为机器人推理的中间表示，包含 State、Cause、Consequence、Effect、Action、Avoid、Completion 七个要素。</li><li>提出 <strong>Arc-Trace</strong>，一个可扩展的自动标注流水线，在不对 DROID 采集新数据的情况下，将其重标注为 <strong>Arc-Trace-DROID</strong>（约 75K 条轨迹、1.2M 帧）。</li><li>开发了将预训练 RFM 适配为使用推理轨迹进行控制的微调策略，针对 VLA（π0.5）和 WAM（Cosmos3-Nano-Policy）的架构分别定制（含反事实监督、轨迹监督等）。</li><li>在 <strong>Cosmos3-Nano-Policy</strong> 与 <strong>π0.5</strong> 上于仿真和真实机器人基准中验证 Arc，取得了被认为无需额外演示或基础级训练的最高增益。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>推理表示：对每个动作块生成自然语言形式的因果轨迹 rt = [State, Cause, Consequence, Effect, Action, Avoid, Completion]t，将"当前状态→为何该动作→预期效果"显式连接。</li><li>自动标注流水线：利用 VLM 从指令、视频和执行动作中提取结构，生成与动作块对齐的因果轨迹，无需人工逐帧标注。</li><li>VLA 微调（π0.5）：将轨迹编码为 token 附加到图像-指令上下文，联合微调 PaliGemma 骨干与 300M 动作专家，并引入 5% 反事实轨迹的负监督损失 Lcf 防止捷径学习。</li><li>WAM 微调（Cosmos3-Nano-Policy）：生成器在每层注意力中同时关注推理器 token 与视觉 token，联合优化预测损失与轨迹生成损失 Ltrace；因 8B 推理器已能区分冲突轨迹，不额外加反事实损失。</li><li>推理阶段：冻结微调后的模型，使用外部 VLM（默认 <strong>Qwen3.6-35B-A3B</strong>）按需刷新生成推理轨迹，控制环开销仅为 ~10ms。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>DROID</strong> 数据集（重标注为 <strong>Arc-Trace-DROID</strong>，约 75K 条轨迹、1.2M 动作对齐帧）。</li><li><strong>π0.5</strong>：VLA 模型，PaliGemma 骨干（SigLIP 视觉编码器 + Gemma 2B 语言模型），另含 300M 参数动作专家。</li><li><strong>Cosmos3-Nano-Policy</strong>：WAM 模型，含 8B 参数推理器与扩散生成器。</li><li>评估使用 DROID 具身平台，仿真与真实硬件均已覆盖。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>基准</strong>：<strong>RoboLab-120</strong>（vague/default/specific 三档指令）、<strong>MolmoSpaces</strong>、新构建的 <strong>RoboLab-Reasoning-50</strong> 及真实硬件 <strong>RoboLab-Reasoning-Hardware</strong>。</li><li><strong>RoboLab-120</strong>：π0.5+Arc 在 vague 档达 45.1%（+29.8 p.p.），Cosmos3-Nano+Arc 达 44.9%（+24.3 p.p.）；两模型在 default 与 specific 档亦分列前两名（最高 48.8% / 51.2%）。</li><li><strong>MolmoSpaces</strong>：Cosmos3-Nano+Arc 达 57.6%（+18.6 p.p.），π0.5+Arc 达 45.0%（+27.2 p.p.），均超过此前 SOTA。</li><li><strong>RoboLab-Reasoning-50</strong>：Cosmos3-Nano+Arc 达 61.0%（+50.0 p.p.），π0.5+Arc 达 57.0%（+46.8 p.p.）。</li><li><strong>真实硬件</strong>：π0.5+Arc 任务成功率 91.7%，较 π0.5 提升 82.2 p.p.；控制频率 15Hz，轨迹刷新约 1Hz。</li><li><strong>效率收益</strong>：Cosmos3-Nano-Policy 仅需 4.3× 更少的训练更新即可达到基线成功率；推理时 π0.5 与 Cosmos3-Nano 分别只需 10× 与 2× 更少的去噪步数即可匹配基线性能。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.12407/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">LeWAM: A JEPA World Action Model with Diffusion-Steering-Based MPC</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.12369/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Embodied Turing Machines: Stateful Code for Robot Recursive Self-Improvement</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
