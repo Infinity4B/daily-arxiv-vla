@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WARP-VLA: Wrist-Camera Adaptation for View-Robust Policy Execution in Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="现有Vision-Language-Action（VLA）模型对 wrist 相机配置变化极为敏感，微小 mounting 差异就会改变抓取相关的细粒度视觉线索，而现有方案依赖相机标定、额外视角合成模型或策略重训练，无法适配无标定的未知手腕相机配置 提出 WARP-VLA，一种无需相机外参的可插拔视角鲁棒VLA适配框架，在特征级别实现 wrist 相机视角的适配，预训练VLA策略无需微调即可适配不同手腕相机配置 在LIBERO/LIBERO-Plus仿真基准和真实机器人平台上验证了方法的有效性，实现了跨手腕相机配置的高成功率操作" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.11508">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.11508.webp" alt="WARP-VLA: Wrist-Camera Adaptation for View-Robust Policy Execution in Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">现有Vision-Language-Action（VLA）模型对 wrist 相机配置变化极为敏感，微小 mounting 差异就会改变抓取相关的细粒度视觉线索，而现有方案依赖相机标定、额外视角合成模型或策略重训练，无法适配无标定的未知手腕相机配置</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">WARP-VLA: Wrist-Camera Adaptation for View-Robust Policy Execution in Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-08 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.11508" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.11508" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.11508</span></div>
+            <p class="detail-summary">现有Vision-Language-Action（VLA）模型对 wrist 相机配置变化极为敏感，微小 mounting 差异就会改变抓取相关的细粒度视觉线索，而现有方案依赖相机标定、额外视角合成模型或策略重训练，无法适配无标定的未知手腕相机配置 提出 WARP-VLA，一种无需相机外参的可插拔视角鲁棒VLA适配框架，在特征级别实现 wrist 相机视角的适配，预训练VLA策略无需微调即可适配不同手腕相机配置 在LIBERO/LIBERO-Plus仿真基准和真实机器人平台上验证了方法的有效性，实现了跨手腕相机配置的高成功率操作</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Yonsei University（延世大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">现有Vision-Language-Action（VLA）模型对 wrist 相机配置变化极为敏感，微小 mounting 差异就会改变抓取相关的细粒度视觉线索，而现有方案依赖相机标定、额外视角合成模型或策略重训练，无法适配无标定的未知手腕相机配置</p>
+  <ul class="reading-intro-points"><li>现有Vision-Language-Action（VLA）模型对 wrist 相机配置变化极为敏感，微小 mounting 差异就会改变抓取相关的细粒度视觉线索，而现有方案依赖相机标定、额外视角合成模型或策略重训练，无法适配无标定的未知手腕相机配置</li><li>提出 WARP-VLA，一种无需相机外参的可插拔视角鲁棒VLA适配框架，在特征级别实现 wrist 相机视角的适配，预训练VLA策略无需微调即可适配不同手腕相机配置</li><li>在LIBERO/LIBERO-Plus仿真基准和真实机器人平台上验证了方法的有效性，实现了跨手腕相机配置的高成功率操作</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Yonsei University（延世大学）</strong></li><li><strong>Korea Electronics Technology Institute(KETI，韩国电子技术研究院)</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>现有Vision-Language-Action（VLA）模型对 wrist 相机配置变化极为敏感，微小 mounting 差异就会改变抓取相关的细粒度视觉线索，而现有方案依赖相机标定、额外视角合成模型或策略重训练，无法适配无标定的未知手腕相机配置</li><li>提出 <strong>WARP-VLA</strong>，一种无需相机外参的可插拔视角鲁棒VLA适配框架，在特征级别实现 wrist 相机视角的适配，预训练VLA策略无需微调即可适配不同手腕相机配置</li><li>在LIBERO/LIBERO-Plus仿真基准和真实机器人平台上验证了方法的有效性，实现了跨手腕相机配置的高成功率操作</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>构建了首个系统性的手腕相机视角鲁棒性评测基准，包含基于LIBERO构建的、涵盖多种手腕相机偏移配置的视角增强数据集</li><li>提出基于混合专家（MoE）架构的WARP-VLA适配框架，通过视图特定的专家变换和基于输入特征的路由机制，将扰动的手腕相机特征映射到规范特征空间，全程无需相机标定信息</li><li>实验证明WARP-VLA在仿真和真实机器人上均实现跨手腕相机配置的强鲁棒性，同时兼容π₀.₅、GR00T N1.7等多种主流VLA主干，且无需对预训练策略进行微调</li><li>在π₀.₅上，手腕相机扰动下的平均成功率从39.2%提升至78.3%，跨域LIBERO-Plus上平均成功率达56.5%，真实机器人扰动下平均成功率达48.7%</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用可插拔的适配器架构，插入预训练VLA的图像编码器和动作策略之间，不修改原始VLA的视觉编码器和策略主干，可直接适配不同VLA模型</li><li>引入<strong>伪规范特征锚点</strong>：通过对预训练策略微调数据集中的规范视角手腕相机特征做 averaging 得到，作为特征映射的稳定参考</li><li>专家设计采用<strong>低秩因子分解的交叉注意力Transformer</strong>：共享基础变换捕获通用的视角适配模式，每个专家添加专属的低秩残差参数（类似LoRA），轻量化实现视图特定的特征变换；共15个专家分为两组：13个平移专家对应径向距离和角度的13个偏移区域，2个倾斜专家覆盖倾斜范围</li><li>路由器基于<strong>空间token统计量</strong>（通道-wise均值、方差、空间一阶矩）构建输入表征，通过两层MLP预测专家权重，无需额外输入相机参数，实现输入依赖的专家组合</li><li>训练目标由专家重建损失（监督每个专家独立恢复规范特征）和路由监督损失（对齐路由权重与专家责任）组成，推理阶段仅依赖输入 wrist 特征，无需相机标定或训练时的姿态先验</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：仿真使用<strong>LIBERO</strong>和<strong>LIBERO-Plus</strong>基准，构建视角增强数据集时从2000条LIBERO演示（覆盖40个任务4个套件）出发，每个演示保留规范视角并重新渲染10种扰动手腕相机配置，扰动包括半圆形平移区域（r≤6cm，θ∈[0°,180°]）和倾斜范围（τ∈[0°,10°]）；真实机器人使用<strong>UFACTORY xArm6</strong>机械臂配<strong>Robotiq 2F-85</strong>夹爪，搭载2个RealSense D435作为Agent相机、1个RealSense D405作为手腕相机，通过3D打印制作了1个规范和9个扰动（平移2/4/6cm、倾斜3°/6°/9°，分别沿x/y轴平移）的相机支架</li><li>模型规模：适配器共享部分为8层ViT，隐藏维度2048，注意力模块256维4头；15个 routed 专家采用秩为16的低秩参数化；路由器为两层MLP，隐藏维度2048</li><li>训练资源：8块<strong>NVIDIA RTX PRO 6000 GPU</strong>，训练约30小时，共10000步，batch size 4096，学习率3×10⁻⁴，Adam优化器</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：仿真在LIBERO（域内）和LIBERO-Plus（跨域）上测试4种手腕相机条件（规范、小扰动、中扰动、大扰动）；真实机器人测试1个规范和3个扰动级别的手腕相机配置，每个配置下10个任务各测试5次</li><li>评估指标：任务成功率（二元成功判定）</li><li>关键实验结果：</li></ul>
+<p> - 域内LIBERO测试中，π₀.₅基线在规范视角下成功率95.2%，大扰动下仅6.1%，平均扰动下成功率39.2%；加入WARP-VLA后规范视角成功率98.2%，大扰动下58.8%，平均扰动下成功率78.3%，平均提升39.1个百分点</p>
+<p> - 跨域LIBERO-Plus测试中，WARP-VLA平均成功率56.5%，高于AnyCamVLA（54.7%）和KYC（30.1%），验证了适配器的跨域泛化能力</p>
+<p> - 真实机器人测试中，WARP-VLA规范视角下成功率80%，扰动下平均成功率48.7%，比π₀.₅（36.7%）和AnyCamVLA（40.7%）分别高12.0和8.0个百分点，定性结果也显示WARP-VLA能准确对齐夹爪与物体的位置，避免基线常见的抓取偏移问题</p>
+<p> - 消融实验验证了多专家设计和路由机制的必要性：去掉专家或路由器后性能均明显下降，说明视图特定的专家组合和输入依赖的路由是提升鲁棒性的关键</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.11771/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">PathTime-VLA: Path-Time Decoupling for Factorized Post-Training of Vision-Language-Action Policies</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.11480/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RoboAware: Learning to Coordinate Embodied Skills from Counterfactual Outcomes</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
