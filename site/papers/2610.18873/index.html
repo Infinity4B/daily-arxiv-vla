@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LoopWAM: Closed-Loop Generalist Policy Improvement from Deployment Rollouts - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 LoopWAM，一个闭环世界-动作模型，可直接从部署 rollout 的全质量谱（成功、次优、失败）中学习并改进通用机器人策略。 研究目标：解决仅扩展专家演示无法让通用策略从部署中持续改进，以及混合质量 rollout 中“模仿所有动作会强化坏行为、过滤失败会丢弃物理交互信息”的难题。 核心思路：让所有质量的轨迹按行为质量和观察到的转移贡献监督，并讓视频与动作 token 在并行去噪中双向交互，使学习到的后果直接参与动作生成。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.18873">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.18873.webp" alt="LoopWAM: Closed-Loop Generalist Policy Improvement from Deployment Rollouts" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 LoopWAM，一个闭环世界-动作模型，可直接从部署 rollout 的全质量谱（成功、次优、失败）中学习并改进通用机器人策略。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">LoopWAM: Closed-Loop Generalist Policy Improvement from Deployment Rollouts</h1>
+            <div class="detail-meta">2026-10-13 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.18873" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.18873" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.18873</span></div>
+            <p class="detail-summary">论文提出 LoopWAM，一个闭环世界-动作模型，可直接从部署 rollout 的全质量谱（成功、次优、失败）中学习并改进通用机器人策略。 研究目标：解决仅扩展专家演示无法让通用策略从部署中持续改进，以及混合质量 rollout 中“模仿所有动作会强化坏行为、过滤失败会丢弃物理交互信息”的难题。 核心思路：让所有质量的轨迹按行为质量和观察到的转移贡献监督，并讓视频与动作 token 在并行去噪中双向交互，使学习到的后果直接参与动作生成。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">清华大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 LoopWAM，一个闭环世界-动作模型，可直接从部署 rollout 的全质量谱（成功、次优、失败）中学习并改进通用机器人策略。</p>
+  <ul class="reading-intro-points"><li>论文提出 LoopWAM，一个闭环世界-动作模型，可直接从部署 rollout 的全质量谱（成功、次优、失败）中学习并改进通用机器人策略。</li><li>研究目标：解决仅扩展专家演示无法让通用策略从部署中持续改进，以及混合质量 rollout 中“模仿所有动作会强化坏行为、过滤失败会丢弃物理交互信息”的难题。</li><li>核心思路：让所有质量的轨迹按行为质量和观察到的转移贡献监督，并讓视频与动作 token 在并行去噪中双向交互，使学习到的后果直接参与动作生成。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>清华大学</strong></li><li><strong>Dexmal</strong></li><li><strong>Loopeva</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>LoopWAM</strong>，一个闭环世界-动作模型，可直接从部署 rollout 的全质量谱（成功、次优、失败）中学习并改进通用机器人策略。</li><li>研究目标：解决仅扩展专家演示无法让通用策略从部署中持续改进，以及混合质量 rollout 中“模仿所有动作会强化坏行为、过滤失败会丢弃物理交互信息”的难题。</li><li>核心思路：让所有质量的轨迹按行为质量和观察到的转移贡献监督，并讓视频与动作 token 在并行去噪中双向交互，使学习到的后果直接参与动作生成。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>LoopWAM</strong>，支持从部署 rollout 直接改进通用策略，并兼容来自自身和其他部署策略的经验。</li><li>设计 <strong>源相关噪声采样</strong>，在单一模型中统一行为学习与动作条件世界建模。</li><li>引入 <strong>质量引导</strong> 与 <strong>质量加权监督</strong>，保留全质量视频监督，同时调控动作模仿强度（失败轨迹 λ=0，专家 λ=1）。</li><li>通过 <strong>并行视频-动作去噪</strong> 和双向注意力，使世界预测特征直接参与动作生成，无需单独的后果评估阶段。</li><li>在真实与仿真基准上验证闭环自改进，并在多个任务上取得领先结果。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用 <strong>Mixture-of-Transformer</strong> 双流扩散 Transformer：视频分支初始化自 <strong>Wan2.2-TI2V-5B</strong>，动作 DiT 隐藏维度为 <strong>1024</strong>，使用流匹配训练。</li><li>视频和动作目标独立加噪，block attention mask 连接 observation、future video、action token，支持跨模态双向交互。</li><li><strong>源相关噪声采样</strong>：专家数据视频噪声服从 Beta(7,1)，动作噪声服从基础分布；rollout 数据视频噪声服从基础分布，动作噪声服从 Beta(1,7)，以增强动作条件世界建模。</li><li><strong>质量引导</strong>：将质量分数 q 作为指令后缀（如“Quality: q”）输入，部署时使用专家分数 q* 采样。</li><li><strong>质量加权监督</strong>：视频监督覆盖所有质量；动作损失按非递减权重 λ(q) 加权，失败轨迹不做动作模仿但保留世界模型梯度。</li><li><strong>闭环自改进</strong>：部署收集 rollouts，质量标注后与专家演示和累积 rollout 一起重训，迭代进行部署-训练循环。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboChallenge Table30-V2</strong>：真实机器人基准，包含 30 个桌面操作任务和 4 种本体（ALOHA、DOS-W1、ARX5、UR5）。</li><li><strong>RoboTwin 2.0</strong>：仿真双手机器人基准，包含 50 个任务；使用 2,500 条 clean 专家演示、25,000 条随机化专家演示，以及 22,500 条来自 <strong>LoopWAM</strong>、<strong>X-VLA</strong>、<strong>π0.5</strong> 的 rollout。</li><li><strong>RoboCasa365</strong>：仿真家庭操作基准，包含 50 个任务，采用 Human300 训练划分，训练数据含专家演示与 <strong>RLDX-1</strong> rollout。</li><li>模型资源：视频 backbone 初始化自 <strong>Wan2.2-TI2V-5B</strong>，动作 DiT 隐藏维度为 <strong>1024</strong>；总参数量与训练 GPU/TPU 资源在可见正文中未明确说明。</li><li>训练与评估使用不同随机种子以避免数据泄漏，多相机视图拼接为单图，动作和机器人状态按专家数据统计归一化。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：真实机器人 <strong>RoboChallenge Table30-V2</strong>，仿真基准 <strong>RoboTwin 2.0</strong> 与 <strong>RoboCasa365</strong>，另有真实衬衫折叠单任务后训练。</li><li>主要指标：成功率（SR, %）和 score；仿真中按 clean/randomized 或 Atomic/Composite/Unseen 等设置分别报告。</li><li><strong>RoboChallenge Table30-V2</strong>：三轮部署-训练将成功率从 <strong>23.67%</strong> 提升至 <strong>28.00%</strong>、<strong>37.67%</strong>、<strong>43.33%</strong>，提升 <strong>19.7 个百分点</strong>；最终 score 为 <strong>56.80</strong>，在比较方法中成功率和 score 均第一。</li><li><strong>RoboTwin 2.0</strong>：平均成功率 <strong>94.5%</strong>（clean 94.6%，randomized 94.4%），优于 <strong>AHA-WAM</strong> 1.7 个百分点，优于 <strong>LingBot-VA 2.0</strong> 0.9 个百分点。</li><li><strong>RoboCasa365</strong>：总体成功率 <strong>49.5%</strong>（Atomic-Seen 79.7%，Composite-Seen 50.3%，Composite-Unseen 14.9%），超过 <strong>ABot-M0.6</strong> 2.9 个百分点。</li><li><strong>衬衫折叠</strong>：两轮部署驱动改进将成功率从 <strong>13.20%</strong> 提升至 <strong>32.54%</strong> 和 <strong>55.56%</strong>，score 从 <strong>14.44</strong> 提升至 <strong>38.89</strong> 和 <strong>67.78</strong>。</li><li>消融实验表明：质量引导对混合质量 rollout 学习关键，即使粗粒度标注也有效，质量加权动作监督可进一步提升性能。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.18874/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ChunkAct: Action Chunking for Agentic Robotics</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.18869/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">What Matters in Quality-Aware VLA Pretraining: A Benchmark and Empirical Study</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

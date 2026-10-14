@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TRACE: Efficient Transfer Learning for Neural Whole-Body Control Across Humanoid Embodiments - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 TRACE，一个面向人形机器人行为基础模型（BFM）的高效跨本体迁移学习框架，在保留预训练运动表征的同时将反馈控制专门化到目标机器人。 解决的核心问题：将预训练全身控制器迁移到新本体时，存在运动学不匹配（关节布局、连杆几何、传感器/执行器数量差异）与动力学不匹配（质量分布、执行器与接触动力学差异），而从头为每个本体训练 BFM 代价过高。 目标是在极小的目标端训练预算下完成跨本体验证，并保持与预训练模型共享的运动指令接口，以支持遥操作与下游 VLA 策略。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.17999">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.17999.webp" alt="TRACE: Efficient Transfer Learning for Neural Whole-Body Control Across Humanoid Embodiments" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 TRACE，一个面向人形机器人行为基础模型（BFM）的高效跨本体迁移学习框架，在保留预训练运动表征的同时将反馈控制专门化到目标机器人。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TRACE: Efficient Transfer Learning for Neural Whole-Body Control Across Humanoid Embodiments</h1>
+            <div class="detail-meta">2026-10-13 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.17999" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.17999" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.17999</span></div>
+            <p class="detail-summary">提出 TRACE，一个面向人形机器人行为基础模型（BFM）的高效跨本体迁移学习框架，在保留预训练运动表征的同时将反馈控制专门化到目标机器人。 解决的核心问题：将预训练全身控制器迁移到新本体时，存在运动学不匹配（关节布局、连杆几何、传感器/执行器数量差异）与动力学不匹配（质量分布、执行器与接触动力学差异），而从头为每个本体训练 BFM 代价过高。 目标是在极小的目标端训练预算下完成跨本体验证，并保持与预训练模型共享的运动指令接口，以支持遥操作与下游 VLA 策略。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">The Hong Kong University of Science and Technology…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 TRACE，一个面向人形机器人行为基础模型（BFM）的高效跨本体迁移学习框架，在保留预训练运动表征的同时将反馈控制专门化到目标机器人。</p>
+  <ul class="reading-intro-points"><li>提出 TRACE，一个面向人形机器人行为基础模型（BFM）的高效跨本体迁移学习框架，在保留预训练运动表征的同时将反馈控制专门化到目标机器人。</li><li>解决的核心问题：将预训练全身控制器迁移到新本体时，存在运动学不匹配（关节布局、连杆几何、传感器/执行器数量差异）与动力学不匹配（质量分布、执行器与接触动力学差异），而从头为每个本体训练 BFM 代价过高。</li><li>目标是在极小的目标端训练预算下完成跨本体验证，并保持与预训练模型共享的运动指令接口，以支持遥操作与下游 VLA 策略。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>The Hong Kong University of Science and Technology (Guangzhou)</strong>（香港科技大学（广州））</li><li><strong>The Hong Kong University of Science and Technology</strong>（香港科技大学）</li><li>作者：<strong>Qingyu Lan</strong>、<strong>Zhihao Tian</strong>、<strong>Zifan Wang</strong>、<strong>Junwei Liang</strong>（通讯作者）</li><li>项目主页：<strong>https://bfm-trace.github.io</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>TRACE</strong>，一个面向人形机器人行为基础模型（<strong>BFM</strong>）的高效跨本体迁移学习框架，在保留预训练运动表征的同时将反馈控制专门化到目标机器人。</li><li>解决的核心问题：将预训练全身控制器迁移到新本体时，存在<strong>运动学不匹配</strong>（关节布局、连杆几何、传感器/执行器数量差异）与<strong>动力学不匹配</strong>（质量分布、执行器与接触动力学差异），而从头为每个本体训练 BFM 代价过高。</li><li>目标是在极小的目标端训练预算下完成跨本体验证，并保持与预训练模型共享的运动指令接口，以支持遥操作与下游 VLA 策略。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>TRACE</strong> 跨本体迁移框架，结合运动学与动态响应预对齐，以及两阶段低秩训练，解耦参考编码器蒸馏与控制优化。</li><li>引入<strong>定向运动数据筛选策略</strong>：在质量筛查后平衡运动类别，并提升指令特征空间中的分散度，在固定数据预算下提升跟踪成功率。</li><li>实现 <strong>SONIC</strong> 控制器从 <strong>Unitree G1</strong> 到差异显著的 <strong>Unitree H2</strong> 的低成本迁移，在 <strong>PHUMA</strong> 基准上取得 <strong>96.08%</strong> 跟踪成功率。</li><li>在实体 <strong>H2</strong> 上验证了高动态动作跟踪与 VR 全身遥操作演示采集，并将采集数据用于 <strong>VLA</strong> 策略后训练以实现自主任务执行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>四阶段框架</strong>：跨本体预适配（Stage 1）→ 运动数据集策划（Stage 2）→ 参数高效微调（Stage 3）→ 目标机器人部署（Stage 4）。</li><li><strong>运动学先验注入</strong>：将运动学先验注入参考、本体感知与动作投影层，由配对重定向姿态估计线性映射，并以基于雅可比的先验正则化（<code>M0 = (J_t^0)† D_{s→t} J_s^0</code>）；输入投影使用右乘、动作投影使用左乘。</li><li><strong>动作尺度对齐</strong>：定义 <code>P_act = S_t^{-1} M*_{s→t} S_s</code>，统一源与目标的归一化动作到物理关节偏移的换算。</li><li><strong>关节动力学对齐</strong>：基于源控制器的标称自然频率 <code>ω_n</code> 与阻尼比 <code>ζ</code>，用反射执行器惯量 <code>I_{t,j}</code> 与被动阻尼 <code>d_{t,j}</code> 初始化目标 PD 增益。</li><li><strong>数据策划</strong>：重定向与质量筛查（拒绝不连续、关节限位/速度越界、非预期碰撞、不合理加速度与抖动、接触异常）；十大类别帧预算均衡；基于冻结 SONIC 参考编码器 128 维片段描述符（时序均值与标准差）计算分散度分数 <code>s_i</code> 做指令空间选择。</li><li><strong>参数高效微调</strong>：在目标 Robot 参考编码器与控制解码器线性层插入 <strong>LoRA</strong>（<code>W_eff = W_b + (α/r_L) BA</code>，<code>r_L=32</code>），<code>A</code> 用 Kaiming 均匀初始化、<code>B=0</code>；源编码器（Robot/Human/Hybrid）与 <strong>FSQ</strong> 算子冻结。</li><li><strong>指令潜变量对齐</strong>：对目标与源 Robot 编码器的 FSQ 前潜变量 <code>z</code> 和量化 token <code>c</code> 施加 smooth-L1 蒸馏损失 <code>L_align</code>，防止指令语义漂移并保持多任务接口兼容。</li><li><strong>PPO 控制微调</strong>：按混合比例采样源参考分支与目标分支的量化 token 作为指令，PPO 更新控制解码器 LoRA 参数与动作采样方差，梯度在 token 输入处截断。</li><li><strong>两阶段课程</strong>：第一阶段在均衡分布上强化全局位置与末端执行器跟踪奖励以建立稳定跟踪；阶段切换时合并 LoRA 并重置零输出分支；第二阶段自适应优先采样失败频繁或误差大的运动片段，强化末端跟踪奖励并加入地形交互与鲁棒性正则。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>迁移适配集：从 <strong>BONES-SEED</strong> 中筛选的 <strong>10M</strong> 运动帧。</li><li>评估基准：<strong>PHUMA</strong> 基准，使用 <strong>67,953</strong> 条未参与 H2 适配训练的运动，参考动作分别重定向到各机器人。</li><li>预训练模型基线：<strong>SONIC</strong>（Unitree G1，原训练约 <strong>21,000 GPU 小时</strong>）。</li><li>训练配置：<strong>12,288</strong> 个并行环境、rollout 长度 <strong>24</strong> 步、batch size <strong>1,536</strong>，LoRA 秩 <strong>r_L = 32</strong>。</li><li>计算资源：单张 <strong>RTX PRO 6000</strong> GPU，约 <strong>8 小时</strong>完成迁移训练，GPU 小时成本不足从头训练 SONIC 的 <strong>0.1%</strong>。</li><li>下游 VLA 模型：在 <strong>GR00T-N1.7</strong> 上做后训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>收敛效率</strong>（前 3k 迭代，统一运动采样分布）：TRACE 在少量迭代内收敛并达到稳定 completion 与奖励水平；<strong>Direct Finetune</strong>（全参数微调）收敛显著更慢；<strong>Scratch</strong>（无预训练）在 3k 迭代预算内无法得到可用跟踪策略。</li><li><strong>PHUMA 运动跟踪</strong>：TRACE/H2 成功率 <strong>96.08%</strong>，与 SONIC/G1 的 <strong>97.59%</strong> 相差仅 <strong>1.51</strong> 个百分点；局部位置误差 <code>E_loc</code> 为 <strong>55.81 mm</strong>（H2）对比 <strong>27.81 mm</strong>（G1）；速度与加速度误差分别为 <strong>7.536</strong> 与 <strong>2.394</strong>（H2）。成功率阈值按身高比例缩放（G1: 0.250 m，H2: 0.3447 m，身高比 1.820/1.320）。</li><li><strong>消融结果</strong>：去掉预适配使 SR 从 <strong>96.08%</strong> 降至 <strong>87.29%</strong>、<code>E_loc</code> 升至 <strong>72.88 mm</strong>（三项消融中降幅最大）；去掉数据策略 SR 降至 <strong>93.80%</strong>、增加 2.28 个百分点；去掉两阶段课程 SR 降至 <strong>95.64%</strong>、<code>E_loc</code> 升至 <strong>62.47 mm</strong>。</li><li><strong>数据分布统计</strong>：增强筛选将特征标准差几何均值从 <strong>1.001</strong> 提升至 <strong>1.261</strong>，类别归一化熵从 <strong>0.789</strong> 提升至 <strong>0.976</strong>。</li><li><strong>两阶段课程（表 II）</strong>：相比单阶段基线，训练奖励提升 <strong>11.9%</strong>，根位置误差与全局足部误差分别降低 <strong>26.2%</strong> 与 <strong>25.9%</strong>，局部手部误差降低 <strong>9.7%</strong>，关节角误差降低 <strong>4.8%</strong>，critic 值损失降低 <strong>30.4%</strong>。</li><li><strong>实机与下游应用</strong>：在实体 H2 上完成下蹲、单膝跪、踢腿、单腿跳等动作，以及开门通过、玩具收纳、倒垃圾、搬椅子、踢足球等全身遥操作任务；5 项 VLA 任务各 20 次试验，成功率在 <strong>65%–90%</strong> 之间（物体搬移单臂 90%、双臂 75%，枕头拾取 80%，开门 65%，开垃圾桶 65%）。</li><li><strong>局限</strong>：验证仅覆盖单一本体对与单一预训练 BFM；未来将扩展到更多本体与开源 BFM，并探索无复用 critic 的高效适配以及引入 RGB、深度与触觉感知。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.18038/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Data-Free Continual Learning for World Action Model with Rectified Generative Replay</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.17983/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Breaking the Average: Overcoming Convergent Defaults in Robotic Manipulation via Diagnostic Chain-of-Thought and Structured Guidance</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

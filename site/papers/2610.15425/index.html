@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exploring the Limits of Combinatorial Generalization in Embodied Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文研究具身操作中 VLA（Vision-Language-Action）模型的组合泛化极限，即模型能否在没有完整组合演示的情况下，将已训练的原子技能重新组合为新的长程任务。 论文指出，直接 full-instruction route 在有限组合序列上会记忆序列模板，而非获得鲁棒的技能重组能力：在已覆盖组合上达到 40.0% ordered success，但在重组组合上平均仅 7.7%。 论文提出 HSE（Hierarchical Subtask Execution） 诊断框架和 RoboCombine 基准，并识别出 start state gap：下游子任务需要从上一子任务产生的 handoff state 启动，而非从规范原子起始状态启动。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.15425">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">Exploring the Limits of Combinatorial Generalization in Embodied Manipulation</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Exploring the Limits of Combinatorial Generalization in Embodied Manipulation</h1>
+            <div class="detail-meta">2026-10-11 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.15425" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.15425" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.15425</span></div>
+            <p class="detail-summary">本文研究具身操作中 VLA（Vision-Language-Action）模型的组合泛化极限，即模型能否在没有完整组合演示的情况下，将已训练的原子技能重新组合为新的长程任务。 论文指出，直接 full-instruction route 在有限组合序列上会记忆序列模板，而非获得鲁棒的技能重组能力：在已覆盖组合上达到 40.0% ordered success，但在重组组合上平均仅 7.7%。 论文提出 HSE（Hierarchical Subtask Execution） 诊断框架和 RoboCombine 基准，并识别出 start state gap：下游子任务需要从上一子任务产生的 handoff state 启动，而非从规范原子起始状态启动。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">AutoLab, School of Artificial Intelligence, Shangha…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文研究具身操作中 VLA（Vision-Language-Action）模型的组合泛化极限，即模型能否在没有完整组合演示的情况下，将已训练的原子技能重新组合为新的长程任务。</p>
+  <ul class="reading-intro-points"><li>本文研究具身操作中 VLA（Vision-Language-Action）模型的组合泛化极限，即模型能否在没有完整组合演示的情况下，将已训练的原子技能重新组合为新的长程任务。</li><li>论文指出，直接 full-instruction route 在有限组合序列上会记忆序列模板，而非获得鲁棒的技能重组能力：在已覆盖组合上达到 40.0% ordered success，但在重组组合上平均仅 7.7%。</li><li>论文提出 HSE（Hierarchical Subtask Execution） 诊断框架和 RoboCombine 基准，并识别出 start state gap：下游子任务需要从上一子任务产生的 handoff state 启动，而非从规范原子起始状态启动。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>AutoLab, School of Artificial Intelligence, Shanghai Jiao Tong University</strong>（上海交通大学人工智能学院 AutoLab）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文研究具身操作中 <strong>VLA（Vision-Language-Action）模型</strong>的组合泛化极限，即模型能否在没有完整组合演示的情况下，将已训练的原子技能重新组合为新的长程任务。</li><li>论文指出，直接 <strong>full-instruction route</strong> 在有限组合序列上会记忆序列模板，而非获得鲁棒的技能重组能力：在已覆盖组合上达到 <strong>40.0%</strong> ordered success，但在重组组合上平均仅 <strong>7.7%</strong>。</li><li>论文提出 <strong>HSE（Hierarchical Subtask Execution）</strong> 诊断框架和 <strong>RoboCombine</strong> 基准，并识别出 <strong>start state gap</strong>：下游子任务需要从上一子任务产生的 handoff state 启动，而非从规范原子起始状态启动。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Hierarchical Subtask Execution（HSE）</strong>：一种诊断执行框架，通过 planner、trigger、policy 的共享模块接口，将长程失败分解为子任务排序错误、边界时序错误和下游执行失败等可分离模式。</li><li>提出 <strong>RoboCombine</strong> 基准：专注于无组合训练轨迹的技能重组，训练仅使用孤立原子任务轨迹，评估未见有序组合，并提供 ordered success 与 transition conversion 等细粒度指标。</li><li>识别 <strong>start state gap</strong>：原子训练使用规范起始状态，而组合执行中下游子任务从 handoff states 启动，这一不匹配是原子技能无法自动转化为可靠顺序执行的关键瓶颈。</li><li>提出 <strong>Pose Robust Task Initialization（PRTI）</strong>：一种轻量级原子任务后训练策略，通过从成功原子轨迹的后期片段采样任务有效初始状态，扩展起始状态覆盖，同时保持 atomic-only 训练边界。</li><li>在仿真和真实机器人上验证：<strong>PRTI</strong> 显著提升组合执行成功率，且不需要任何组合技能训练轨迹。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>HSE 诊断框架</strong>：将组合命令分解为原子子任务队列，一次仅激活一个原子指令，当 handoff cue 触发时替换下一个子任务的条件指令；通过控制 subtask queue、handoff cue 和 atomic VLA model 三个因素，实现受控诊断。</li><li><strong>HSE 评估模式</strong>：包括 <strong>Pred</strong>（预测队列与预测 cue）、<strong>Ordered</strong>（真实队列与预测 cue）、<strong>Oracle</strong>（真实队列与真实 cue）和 <strong>Enhanced</strong>（真实队列与真实 cue，替换原子策略）。</li><li><strong>RoboCombine 构建</strong>：基于 RoboTwin 原子任务，训练限制为孤立原子轨迹，测试为两阶段有序组合；评估 ordered success、第一/第二子任务成功率和 transition conversion。</li><li><strong>PRTI 后训练</strong>：构建辅助池，从成功原子轨迹的后期片段中提取对象姿态、末端执行器姿态和接触配置；对每个目标技能采样任务有效子集，混合 canonical 原子轨迹与 PRTI 轨迹（1:1），仅以目标原子指令为条件进行后训练。</li><li><strong>创新点</strong>：将层级框架从“解决方案架构”转变为“测量接口”，并发现无需组合演示即可通过扩展原子起始状态覆盖来缓解 handoff 执行失败。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真实验基于 <strong>RoboCombine</strong>，其原子任务来自 <strong>RoboTwin</strong>；训练使用 <strong>50</strong> 个孤立原子任务轨迹，评估使用 <strong>19</strong> 个未见多阶段组合，每个组合 <strong>20</strong> 次 rollout，每个策略变体共 <strong>380</strong> 个 episode。</li><li>真实机器人评估：训练使用 <strong>16</strong> 个原子操作任务，测试使用 <strong>13</strong> 个多阶段组合任务，每个条目平均 <strong>5</strong> 次物理 rollout。</li><li>评估涉及的 VLA 模型包括 <strong>Motus</strong>、<strong>FastWAM</strong>、<strong>LingBot-VLA</strong> 和 <strong>π0.5</strong> 等。</li><li>原文未明确说明模型参数量及训练所用 GPU/TPU 等硬件资源。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境与基准</strong>：仿真使用 <strong>RoboCombine</strong> 与 <strong>oracle HSE</strong> 诊断轨道，真实机器人使用 <strong>Order HSE</strong> 模式在线触发 handoff；对比方法包括 <strong>Full-Inst FT</strong>、<strong>Random</strong>、<strong>Reset</strong>、<strong>Base</strong> 和 <strong>PRTI</strong>。</li><li><strong>主要评估指标</strong>：ordered success（<strong>SR_ord</strong>）、第一/第二子任务成功（<strong>SR_1</strong> / <strong>SR_2</strong>）以及 transition conversion（<strong>Conv_{1→2}</strong>）。</li><li><strong>全指令微调结果</strong>：在已覆盖组合集 A 上达到 <strong>40.0%</strong>，在部分重叠集 B 上 <strong>15.0%</strong>，在不相交集 C 上 <strong>4.4%</strong>，B 和 C 平均仅 <strong>7.7%</strong>，表明有限组合监督难以泛化到未见组合。</li><li><strong>HSE 诊断结果</strong>：Motus 在各执行模式下取得最高聚合 ordered success，<strong>Oracle-HSE 19.7%</strong>、<strong>Ordered-HSE 17.4%</strong>、<strong>Full-Inst 10.0%</strong>；第一子任务成功不能可靠转化为下游执行，且转换率具有 pair-specific 特征。</li><li><strong>PRTI 仿真结果</strong>：在 oracle HSE 下，<strong>PRTI 达到 18.16%</strong> ordered success，显著高于 <strong>Random 4.21%</strong>、<strong>Reset 9.47%</strong> 和 <strong>Base 2.63%</strong>；nonzero-task coverage 为 <strong>89.47%</strong>，transition conversion 为 <strong>39.88%</strong>。</li><li><strong>真实机器人结果</strong>：<strong>Oracle-HSE+PRTI</strong> 在多个物理多阶段任务上提升了 mean progress，例如任务 <strong>1-8-6</strong> 下达到 <strong>0.66</strong>，高于 <strong>Full-Inst-FT 0.62</strong>、<strong>Order-HSE 0.34</strong> 和 <strong>Oracle-HSE 0.44</strong>，表明仿真结论可迁移至真实执行。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.15585/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">StreamingWAM: Streaming World Action Modeling via Chunk-Wise Staircase Flow Matching</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.15337/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">CoLA: Multi-VLA Coordination via Learned Adapters</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

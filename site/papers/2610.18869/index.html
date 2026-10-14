@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What Matters in Quality-Aware VLA Pretraining: A Benchmark and Empirical Study - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究在 VLA（Vision-Language-Action）预训练阶段应如何使用示教数据质量信息，以提升目标任务微调后的性能。 人类示教中常存在犹豫、绕路等次优行为，论文系统比较了将质量信号注入预训练的三种方式：加权（weighting）、过滤（filtering）、条件化（conditioning）。 论文进一步考察奖励定义、标签粒度（chunk 级 vs. episode 级）、微调与推理协议及预训练数据规模等因素的交互影响，并指出不存在跨全部 VLA 通用的最优配置。 为支持受控比较，作者提出 AXIS-Bench 基准，基于众包仿真遥操作数据提供可复现的质量标签、可重放轨迹与真实世界验证流程。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.18869">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.18869.webp" alt="What Matters in Quality-Aware VLA Pretraining: A Benchmark and Empirical Study" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">研究在 VLA（Vision-Language-Action）预训练阶段应如何使用示教数据质量信息，以提升目标任务微调后的性能。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">What Matters in Quality-Aware VLA Pretraining: A Benchmark and Empirical Study</h1>
+            <div class="detail-meta">2026-10-13 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.18869" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.18869" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.18869</span></div>
+            <p class="detail-summary">研究在 VLA（Vision-Language-Action）预训练阶段应如何使用示教数据质量信息，以提升目标任务微调后的性能。 人类示教中常存在犹豫、绕路等次优行为，论文系统比较了将质量信号注入预训练的三种方式：加权（weighting）、过滤（filtering）、条件化（conditioning）。 论文进一步考察奖励定义、标签粒度（chunk 级 vs. episode 级）、微调与推理协议及预训练数据规模等因素的交互影响，并指出不存在跨全部 VLA 通用的最优配置。 为支持受控比较，作者提出 AXIS-Bench 基准，基于众包仿真遥操作数据提供可复现的质量标签、可重放轨迹与真实世界验证流程。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">12 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Georgia Institute of Technology（佐治亚理工学院）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">研究在 VLA（Vision-Language-Action）预训练阶段应如何使用示教数据质量信息，以提升目标任务微调后的性能。</p>
+  <ul class="reading-intro-points"><li>研究在 VLA（Vision-Language-Action）预训练阶段应如何使用示教数据质量信息，以提升目标任务微调后的性能。</li><li>人类示教中常存在犹豫、绕路等次优行为，论文系统比较了将质量信号注入预训练的三种方式：加权（weighting）、过滤（filtering）、条件化（conditioning）。</li><li>论文进一步考察奖励定义、标签粒度（chunk 级 vs. episode 级）、微调与推理协议及预训练数据规模等因素的交互影响，并指出不存在跨全部 VLA 通用的最优配置。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Georgia Institute of Technology</strong>（佐治亚理工学院）</li><li><strong>Axis Robotics</strong></li><li><strong>University of California, Riverside</strong>（加州大学河滨分校）</li><li><strong>Carnegie Mellon University</strong>（卡内基梅隆大学）</li><li><strong>University of California, Berkeley</strong>（加州大学伯克利分校）</li><li><strong>Texas A&M University</strong>（德州农工大学）</li><li><strong>National University of Singapore</strong>（新加坡国立大学）</li><li><strong>Rice University</strong>（莱斯大学）</li><li><strong>Nanyang Technological University</strong>（南洋理工大学）</li><li>通讯作者：<strong>Jiachen Li</strong>（jiachen_li@gatech.edu）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>研究在 <strong>VLA（Vision-Language-Action）预训练</strong>阶段应如何使用示教数据质量信息，以提升目标任务微调后的性能。</li><li>人类示教中常存在犹豫、绕路等次优行为，论文系统比较了将质量信号注入预训练的三种方式：<strong>加权（weighting）、过滤（filtering）、条件化（conditioning）</strong>。</li><li>论文进一步考察<strong>奖励定义</strong>、<strong>标签粒度</strong>（chunk 级 vs. episode 级）、<strong>微调与推理协议</strong>及<strong>预训练数据规模</strong>等因素的交互影响，并指出不存在跨全部 VLA 通用的最优配置。</li><li>为支持受控比较，作者提出 <strong>AXIS-Bench</strong> 基准，基于众包仿真遥操作数据提供可复现的质量标签、可重放轨迹与真实世界验证流程。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>开展<strong>质量感知 VLA 预训练的系统性实证研究</strong>，在匹配数据与训练预算下，跨三个基础策略比较质量定义、标签粒度、学习方法和适配协议之间的交互。</li><li>提出 <strong>AXIS-Bench</strong> 基准，提供共享人类示教数据、可配置的<strong>状态派生质量标签</strong>、标准化训练与评估协议，支持受控对比。</li><li>提供<strong>可重放仿真轨迹</strong>与真实世界工作空间对齐方案（re-rendering），使研究者可在自定义工作空间与目标任务上验证策略。</li><li>提出两种基于状态的进度奖励定义：<strong>object-centric reward</strong> 与 <strong>approach-aware reward</strong>，并验证其与人类判断的正相关性。</li><li>给出三条跨 VLA 的主要发现：approach-aware episode conditioning 提升平均成功率；conditioning 偏好 episode 标签而 filtering 偏好 chunk 标签；constant-tag 微调在两种推理模式下均提升平均成功率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>状态派生进度奖励</strong>：从仿真轨迹的状态中计算进度信号，其中 object-centric reward 为 <code>r_t = 0.8p_t + 0.2c_t</code>（融合物体进度与末端执行器接近度），approach-aware reward 则以<strong>首次持续接触</strong>为分界，将 approach 阶段与 manipulation 阶段分别打分。</li><li><strong>质量标签生成</strong>：在固定 <code>H=10</code> 帧窗口上计算奖励变化 <code>Δ_t</code>（chunk 级质量），并以 episode 内正向进度时间步占比 <code>P_e</code> 作为 episode 级质量，再按分位数离散化为 5 档标签 <code>q∈{1..5}</code>。</li><li><strong>三种质量注入方式</strong>：加权采用 AWR 风格权重 <code>w_t = min(exp(10Δ_t), 2)</code>；过滤保留质量 top-50% 时间步并重复数据以匹配更新次数；条件化在语言指令后追加 <code>Quality: q</code> 标签，并采用 tag dropout。</li><li><strong>适配协议</strong>：微调阶段比较 plain FT 与 constant-tag FT，推理阶段比较 untagged 与 tag-5 推理，形成对质量标签在适配期作用的系统分析。</li><li><strong>仿真到现实对齐</strong>：通过重新渲染保留原始动作与物体状态，仅改变观测（相机视角、桌面、背景），与目标真实工作空间对齐。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>预训练数据来自 <strong>AXIS</strong> 众包仿真遥操作数据集，共使用两套规模：<strong>5,000 条</strong>仿真示教（约 35.3 小时）用于仿真实验，<strong>19,250 条</strong>仿真示教（约 114.6 小时）用于真实世界实验。</li><li>目标任务微调使用 <strong>354 条</strong>示教（约 2.4 小时），覆盖 <strong>24 个桌面任务</strong>（containment、support placement、spatial relations、separation、short sequences）。</li><li>采用的三个 VLA 骨干：<strong>π0.5</strong>、<strong>SmolVLA</strong>、<strong>X-VLA</strong>。</li><li>动作空间为 DROID 兼容接口，含 7 维关节速度与 1 维夹爪指令，频率 <strong>15 Hz</strong>；观测含外部相机与腕部相机视图。</li><li>训练配置：π0.5 预训练 20,605 步（batch 64，lr 5e-5），微调 13,580 步（batch 32，lr 2.5e-5，EMA decay 0.999，LoRA + 可训练视觉编码器）；SmolVLA 与 X-VLA 使用 20,621 预训练步与 6,790 微调步（batch 64，lr 1e-4）。</li><li>真实世界平台为 <strong>Franka FR3</strong> + <strong>Robotiq 夹爪</strong> + <strong>ZED 2i</strong> 外部相机 + <strong>ZED Mini</strong> 腕部相机，20K 预训练步与 16K 微调步。</li><li>未在原文中明确给出 GPU/TPU 具体型号与数量等硬件资源细节。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真评估</strong>：24 个任务，每个配置在每任务相同的 <strong>50 个初始场景布局</strong>上评估，共 <strong>1,200 次试验</strong>；训练种子复现采用 π0.5 的 42/43/44 与 SmolVLA、X-VLA 的 0/1/2。</li><li><strong>主要指标</strong>：任务平均成功率（mean task success），并报告相对 plain BC 的相对提升（%）与 ±1 评估标准误。</li><li><strong>质量标签有效性</strong>：状态派生 episode 分数与人类判断正相关，Spearman ρ 为 <strong>0.612</strong>（object-centric）与 <strong>0.526</strong>（approach-aware）。</li><li><strong>核心发现 1</strong>：approach-aware episode conditioning 在三个 VLA 上均优于 plain BC，相对提升分别为 <strong>1.02%（π0.5）、73.77%（SmolVLA）、8.09%（X-VLA）</strong>。</li><li><strong>核心发现 2</strong>：conditioning 偏好 episode 标签（六个匹配设置中五个更优），filtering 偏好 chunk 标签（四个设置更优、一个持平、一个更差），且存在模型与奖励相关的反转。</li><li><strong>核心发现 3</strong>：conditioned 预训练后，constant-tag FT 在 tag-5 推理下分别较 plain FT 提升 <strong>0.25 / 5.00 / 2.17 pp</strong>（π0.5 / SmolVLA / X-VLA），在 untagged 推理下提升 <strong>0.83 / 0.67 / 4.00 pp</strong>。</li><li><strong>数据规模实验</strong>：条件化相对 BC 的优势依赖 VLA 与数据规模，SmolVLA 在 1K/2.5K/5K 均优于 BC（5K 时 8.83% vs. 5.08%），π0.5 仅在 5K 略优（58.00% vs. 57.42%）。</li><li><strong>真实世界结果</strong>：仿真预训练将 π0.5-base 成功率从 <strong>9.6% 提升至 31.7%</strong>（10 个任务中 9 个提升）；conditioning 达到 <strong>32.5%</strong>，较 plain BC 再提升 0.83 pp。</li><li><strong>失败对比基线</strong>：matched FT-only 控制在 π0.5、SmolVLA、X-VLA 上仅达 8.83%、2.50%、6.17%，说明纯微调不足以替代预训练。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.18873/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">LoopWAM: Closed-Loop Generalist Policy Improvement from Deployment Rollouts</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.18867/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">EmbodiedEvo: Self-improving Coding Agents for Physical Intelligence</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

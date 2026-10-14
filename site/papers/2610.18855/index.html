@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interaction Latents as Actions for Contact-Rich Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 ILA（Interaction Latents as Actions），将运动、接触与力施加的联合演化表示为可解码的交互隐变量，并作为策略的动作单元。 该方法旨在解决现有机器人策略主要将动作表示为运动轨迹、仅将触觉信号作为输入或辅助预测目标，而未将接触动力学显式编码进动作表示的问题。 通过共享的交互隐变量空间，ILA 统一支持动作生成、交互评估与离线策略改进，面向接触丰富的操作任务。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.18855">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.18855.webp" alt="Interaction Latents as Actions for Contact-Rich Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 ILA（Interaction Latents as Actions），将运动、接触与力施加的联合演化表示为可解码的交互隐变量，并作为策略的动作单元。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Interaction Latents as Actions for Contact-Rich Manipulation</h1>
+            <div class="detail-meta">2026-10-13 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.18855" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.18855" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.18855</span></div>
+            <p class="detail-summary">论文提出 ILA（Interaction Latents as Actions），将运动、接触与力施加的联合演化表示为可解码的交互隐变量，并作为策略的动作单元。 该方法旨在解决现有机器人策略主要将动作表示为运动轨迹、仅将触觉信号作为输入或辅助预测目标，而未将接触动力学显式编码进动作表示的问题。 通过共享的交互隐变量空间，ILA 统一支持动作生成、交互评估与离线策略改进，面向接触丰富的操作任务。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">NUS（新加坡国立大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 ILA（Interaction Latents as Actions），将运动、接触与力施加的联合演化表示为可解码的交互隐变量，并作为策略的动作单元。</p>
+  <ul class="reading-intro-points"><li>论文提出 ILA（Interaction Latents as Actions），将运动、接触与力施加的联合演化表示为可解码的交互隐变量，并作为策略的动作单元。</li><li>该方法旨在解决现有机器人策略主要将动作表示为运动轨迹、仅将触觉信号作为输入或辅助预测目标，而未将接触动力学显式编码进动作表示的问题。</li><li>通过共享的交互隐变量空间，ILA 统一支持动作生成、交互评估与离线策略改进，面向接触丰富的操作任务。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>NUS</strong>（新加坡国立大学）</li><li><strong>Anyverse Robotics</strong></li><li><strong>Open-Phoenix Team</strong></li><li><strong>BIT</strong>（北京理工大学）</li><li><strong>UCAS</strong>（中国科学院大学）</li><li><strong>FDU</strong>（复旦大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>ILA（Interaction Latents as Actions）</strong>，将运动、接触与力施加的联合演化表示为可解码的交互隐变量，并作为策略的动作单元。</li><li>该方法旨在解决现有机器人策略主要将动作表示为运动轨迹、仅将触觉信号作为输入或辅助预测目标，而未将接触动力学显式编码进动作表示的问题。</li><li>通过共享的交互隐变量空间，ILA 统一支持动作生成、交互评估与离线策略改进，面向接触丰富的操作任务。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>交互隐变量作为策略动作</strong>：学习可解码的动作表示，联合捕获运动、接触与力演化，并可作为 <strong>VLA</strong>、<strong>WAM</strong> 和 <strong>流匹配策略</strong> 的通用生成目标。</li><li>提出 <strong>交互空间中的评估与离线改进</strong>：利用专家演示定义触觉条件化的 <strong>专家一致性奖励</strong>，结合成功 rollout 的奖励加权学习与对失败交互的 <strong>观察兼容专家参考纠正</strong>。</li><li>实现 <strong>跨策略架构的真实世界验证</strong>：在四个接触丰富任务上验证 ILA 在三种策略家族中的一致增益，并进行运动—接触表示分析与专家引导的离线改进。</li><li>通过消融实验表明，将接触演化编码进动作目标优于仅使用触觉条件化，且同一隐空间可支持专家引导的离线改进。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>将时间对齐的动作序列与三维触觉形变场序列在视觉条件下联合编码为 <strong>交互隐变量</strong>，使用冻结的 <strong>DINOv2</strong> 提取多帧视觉特征，并构造 <strong>语义与动力学（S&D）tokens</strong>。</li><li>使用 <strong>时间条件化隐式解码器</strong> 从共享瓶颈中重建动作、触觉形变场和聚合形变，以保留运动、局部接触、整体力施加及其时间关系。</li><li>将学习到的隐变量作为 <strong>流匹配生成目标</strong>，支持 <strong>VLA</strong> 和 <strong>WAM</strong> 的后训练，也支持从零训练流匹配策略，并保留各架构原生的条件机制。</li><li>在推理时，预测隐变量经冻结动作解码器在固定 <strong>30 Hz</strong> 时间网格上解码为关节目标序列，保持原有执行接口。</li><li>离线改进阶段：从专家演示编码得到 <strong>触觉条件化专家参考模型</strong>，通过流匹配残差定义 <strong>专家一致性能量与奖励</strong>，对成功 rollout 进行 <strong>选择性强化</strong>，并对失败 rollout 使用 <strong>参考引导纠正</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用四个真实世界接触丰富操作任务：<strong>黄瓜削皮</strong>、<strong>煎蛋翻面</strong>、<strong>芹菜切割</strong>、<strong>盘子擦拭</strong>。</li><li>每个任务采集 <strong>150 条专家演示</strong> 用于策略训练。</li><li>实验平台为双臂 <strong>ARX X5</strong> 机器人，配备平行夹爪与指尖 <strong>Xense 触觉传感器</strong>；视觉输入来自 <strong>Intel RealSense D405</strong> 腕部相机与外部工作空间相机。</li><li>图像、触觉形变场与机器人本体感知以 <strong>30 Hz</strong> 同步。</li><li>VLA 主干使用 <strong>π0.5</strong>；WAM 对比方法包括 <strong>FastWAM-tac</strong> 与 <strong>DreamTac</strong>；流匹配策略从零训练。</li><li>论文片段未明确给出模型参数量与 GPU/TPU 等训练资源细节。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>每个任务进行 <strong>20 次试验</strong>；芹菜切割按每次切割计分，其他任务按每次试验计分。</li><li>主要指标包括 <strong>成功率（SR）</strong>、执行力代理误差 <strong>F_ext L1</strong>、开环预测的 <strong>F_pred L1</strong> 与 <strong>Tac. L1</strong>。</li><li>在 <strong>FM</strong>、<strong>VLA</strong>、<strong>WAM</strong> 三类策略家族中，ILA 相对触觉条件化直接动作基线分别平均提升 <strong>26.0</strong>、<strong>36.5</strong>、<strong>21.0</strong> 个百分点。</li><li>总体而言，ILA 在四个真实任务上相对触觉条件化直接动作基线平均提升 <strong>21.0–36.5</strong> 个百分点。</li><li>在 <strong>12</strong> 组对比中，ILA 有 <strong>11</strong> 组降低了 <strong>F_ext L1</strong>。</li><li>在黄瓜削皮任务上，离线改进将执行力代理误差降低 <strong>75%</strong>，同时将成功率从 <strong>75%</strong> 提升至 <strong>85%</strong>。</li><li>消融实验支持将触觉信息编码进动作表示、引入 <strong>S&D tokens</strong> 以及使用 <strong>隐式解码器</strong> 的必要性。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.18867/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">EmbodiedEvo: Self-improving Coding Agents for Physical Intelligence</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.18852/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ForceWAM: Decoupling Future and Response Learning from Demo and Play Data for Contact-Rich Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

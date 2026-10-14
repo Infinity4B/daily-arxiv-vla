@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AUGUstus: Autonomous Driving VLA Model with Unified Generation and Understanding - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 AUGUstus，一个自动驾驶 VLA（视觉-语言-动作）模型，旨在统一动作生成与语言理解，解决现有 VLA 模型在理解能力与低延迟控制之间难以兼顾的问题。 针对现有方法的三大局限：回归头方法延迟低但缺乏动作分布、难以进行 RL 后训练且未充分利用 VLM 知识；扩散/流匹配专家方法生成动作分布但未充分利用 VLM 空间理解，产生不安全、不可解释的动作；自回归解码方法充分利用理解能力但串行生成 CoT 与动作，延迟高难以部署。 核心目标：在保持低延迟部署的同时，让 CoT 理解真正服务于动作生成，避免 VLA 退化为单纯的视觉-动作（VA）模型。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.16985">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">AUGUstus: Autonomous Driving VLA Model with Unified Generation and Understanding</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">AUGUstus: Autonomous Driving VLA Model with Unified Generation and Understanding</h1>
+            <div class="detail-meta">2026-10-12 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.16985" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.16985" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.16985</span></div>
+            <p class="detail-summary">提出 AUGUstus，一个自动驾驶 VLA（视觉-语言-动作）模型，旨在统一动作生成与语言理解，解决现有 VLA 模型在理解能力与低延迟控制之间难以兼顾的问题。 针对现有方法的三大局限：回归头方法延迟低但缺乏动作分布、难以进行 RL 后训练且未充分利用 VLM 知识；扩散/流匹配专家方法生成动作分布但未充分利用 VLM 空间理解，产生不安全、不可解释的动作；自回归解码方法充分利用理解能力但串行生成 CoT 与动作，延迟高难以部署。 核心目标：在保持低延迟部署的同时，让 CoT 理解真正服务于动作生成，避免 VLA 退化为单纯的视觉-动作（VA）模型。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Peking University（北京大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 AUGUstus，一个自动驾驶 VLA（视觉-语言-动作）模型，旨在统一动作生成与语言理解，解决现有 VLA 模型在理解能力与低延迟控制之间难以兼顾的问题。</p>
+  <ul class="reading-intro-points"><li>提出 AUGUstus，一个自动驾驶 VLA（视觉-语言-动作）模型，旨在统一动作生成与语言理解，解决现有 VLA 模型在理解能力与低延迟控制之间难以兼顾的问题。</li><li>针对现有方法的三大局限：回归头方法延迟低但缺乏动作分布、难以进行 RL 后训练且未充分利用 VLM 知识；扩散/流匹配专家方法生成动作分布但未充分利用 VLM 空间理解，产生不安全、不可解释的动作；自回归解码方法充分利用理解能力但串行生成 CoT 与动作，延迟高难以部署。</li><li>核心目标：在保持低延迟部署的同时，让 CoT 理解真正服务于动作生成，避免 VLA 退化为单纯的视觉-动作（VA）模型。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Peking University</strong>（北京大学）</li><li><strong>XPeng Motors</strong>（小鹏汽车）</li><li><strong>Fudan University</strong>（复旦大学）</li><li>第一作者：<strong>Yuqi Ye</strong>（北京大学）；项目负责人：<strong>Caigao Jiang</strong>（小鹏汽车）；通讯作者：<strong>Wei Gao</strong>（北京大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>AUGUstus</strong>，一个自动驾驶 VLA（视觉-语言-动作）模型，旨在统一动作生成与语言理解，解决现有 VLA 模型在理解能力与低延迟控制之间难以兼顾的问题。</li><li>针对现有方法的三大局限：<strong>回归头</strong>方法延迟低但缺乏动作分布、难以进行 RL 后训练且未充分利用 VLM 知识；<strong>扩散/流匹配专家</strong>方法生成动作分布但未充分利用 VLM 空间理解，产生不安全、不可解释的动作；<strong>自回归解码</strong>方法充分利用理解能力但串行生成 CoT 与动作，延迟高难以部署。</li><li>核心目标：在保持低延迟部署的同时，让 CoT 理解真正服务于动作生成，避免 VLA 退化为单纯的视觉-动作（VA）模型。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>AUGUstus</strong>，在单一 transformer 中统一了基于扩散（流匹配）的动作生成与自回归的 CoT 理解；共享模型保留了 VLM 的空间理解能力以服务于动作生成，避免 VLA 退化为 VA 模型。</li><li>提出 <strong>AUGUstus-mode</strong>：一种"动作优先、CoT 其次"的排序方式，迫使模型学习对动作有益的 CoT，而推理时仅需输出动作，从而实现低延迟。</li><li>提出 <strong>AUGUstus-GRPO</strong>：一个统一的 GRPO 强化学习算法，联合优化连续动作与 CoT 流，将 <strong>JaT-GRPO</strong>（对连续动作分支使用闭式高斯重要性采样比与 KL 项）与 <strong>CoT-GRPO</strong>（对语言分支使用 token 级 GRPO）结合，推理流被奖励以服务规划。</li><li>在多个自动驾驶基准上取得 SOTA 性能，并验证了大规模训练、内部数据集验证与真车部署的实用性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>统一框架</strong>：输入驾驶上下文 c=(S, E, C, H)（相机视频、自车状态、路线命令、历史轨迹）；训练时同时接收带噪轨迹 x_t 与 teacher-forced 的 CoT 前缀 y_{<k}，预测干净轨迹估计 x̂₀ 和下一个 CoT token。</li><li><strong>注意力设计</strong>：上下文 token 为因果注意力；动作 token 组成双向块，可关注完整上下文与彼此；CoT token 为因果注意力并额外关注完整动作块；动作 token 不能关注 CoT token。</li><li><strong>x₀ 参数化</strong>：模型直接预测干净轨迹 x̂₀（而非速度），使 t=1 处单步 Euler 采样即可精确返回终点，支持少步与真正的单步策略。</li><li><strong>SFT 损失</strong>：结合流匹配损失（L1 重建）与 teacher-forced 的 CoT 似然（熵最小化）。</li><li><strong>CoT 设计</strong>：预测关键物体的包围盒与未来位置（预测型 CoT）比感知型或规划推理型 CoT 更有益于安全高效的动作。</li><li><strong>AUGUstus-GRPO</strong>：每次 rollout 产生成对的动作与 CoT，两流共享归一化的组相对优势 A_i；使用 JaT-GRPO 在 x₀ 参数化下对动作分支应用 GRPO（含闭式 log-ratio 与 KL），CoT-GRPO 用 token 级似然优化 CoT 分支。</li><li><strong>两阶段 RL</strong>：Stage I 以 PDMS 为规划奖励，鼓励激进推进与对齐基准目标；Stage II 以 R_end + R_safe 为规划奖励，在保留进度的同时细化终点精度与安全行为。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评估数据集：<strong>NAVSIMv1</strong>、<strong>NAVSIMv2</strong>（闭环）、<strong>nuScenes</strong>（开环）。</li><li>内部数据集：在小鹏自研内部数据集上训练，并在内部 <strong>1,000 km</strong> 数据集上评估。</li><li>训练资源：<strong>512 张 NVIDIA H800 GPU</strong>，训练约 <strong>两天</strong>。</li><li>真车部署：初步部署于真实车辆，实现 <strong>12 Hz</strong> 运行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：闭环 <strong>NAVSIM</strong> 与开环 <strong>nuScenes</strong>。</li><li>主要指标：<strong>PDMS</strong>、<strong>EPDMS</strong>、平均 L2 误差、平均碰撞率，以及 NC、DAC、EP、TTC、Comf. 等子指标。</li><li><strong>NAVSIMv1</strong>：AUGUstus（1 步去噪）达到 <strong>94.0 PDMS</strong>；3 步去噪达到 <strong>94.6 PDMS</strong>（NC 98.9、DAC 98.9、EP 91.9、TTC 97.1、Comf. 100.0），为当前 SOTA。</li><li><strong>NAVSIMv2</strong>：达到 <strong>90.7 EPDMS</strong>，为 SOTA。</li><li><strong>nuScenes</strong>：平均 L2 误差 <strong>0.27 m</strong>、平均碰撞率 <strong>0.05%</strong>，均为对比方法中最优。</li><li>关键结论：共享模型保留了 VLM 的空间理解能力，在改善动作生成的同时满足实时规划的延迟要求，且无需 scorer 模块。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.17141/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">MARS: Systematic Multi-Level Acceleration for World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.16969/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">UniLAP: A Unified Latent Action Policy for Cross-Embodiment Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
