@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ADAPT: Audio-Depth Action Planning with Transition-Aware Rewards for Lights-Out Industrial Navigation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究Lights-Out（无灯）工业环境下的无 RGB 导航问题，传统 VLA 模型依赖可见光观测，在关灯工厂中不可用。 提出使用空间音频（Spatial Audio）定位目标方向、深度（Depth）感知局部障碍几何的互补方案：音频指示&quot;去哪里&quot;，深度指示&quot;能否安全通过&quot;。 目标是训练一个可在无可见光环境下可靠导航的具身智能体，并系统评估其在递增声学干扰下的鲁棒性。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.15956">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff; --cover-muted: rgba(247, 251, 255, 0.82); --cover-chip: rgba(247, 251, 255, 0.16); --cover-stroke: rgba(247, 251, 255, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">ADAPT: Audio-Depth Action Planning with Transition-Aware Rewards for Lights-Out Industrial Navigation</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">ADAPT: Audio-Depth Action Planning with Transition-Aware Rewards for Lights-Out Industrial Navigation</h1>
+            <div class="detail-meta">2026-10-11 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.15956" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.15956" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.15956</span></div>
+            <p class="detail-summary">论文研究Lights-Out（无灯）工业环境下的无 RGB 导航问题，传统 VLA 模型依赖可见光观测，在关灯工厂中不可用。 提出使用空间音频（Spatial Audio）定位目标方向、深度（Depth）感知局部障碍几何的互补方案：音频指示&quot;去哪里&quot;，深度指示&quot;能否安全通过&quot;。 目标是训练一个可在无可见光环境下可靠导航的具身智能体，并系统评估其在递增声学干扰下的鲁棒性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">University of California, Irvine（Wenjun Huang、Pengf…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文研究Lights-Out（无灯）工业环境下的无 RGB 导航问题，传统 VLA 模型依赖可见光观测，在关灯工厂中不可用。</p>
+  <ul class="reading-intro-points"><li>论文研究Lights-Out（无灯）工业环境下的无 RGB 导航问题，传统 VLA 模型依赖可见光观测，在关灯工厂中不可用。</li><li>提出使用空间音频（Spatial Audio）定位目标方向、深度（Depth）感知局部障碍几何的互补方案：音频指示&quot;去哪里&quot;，深度指示&quot;能否安全通过&quot;。</li><li>目标是训练一个可在无可见光环境下可靠导航的具身智能体，并系统评估其在递增声学干扰下的鲁棒性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of California, Irvine</strong>（Wenjun Huang、Pengfei Zhang、Yutong Song、Hanning Chen、Shilong Li、Mohsen Imani）</li><li><strong>University of Pennsylvania</strong>（Shenghao Fu）</li><li><strong>Carnegie Mellon University</strong>（Yian Jin）</li><li><strong>Purdue University Northwest</strong>（Yang Ni）</li><li><strong>Michigan State University</strong>（Yifan Li、Yu Kong）</li><li><strong>Dartmouth College</strong>（Xingjian Diao）</li><li><strong>Independent Researcher</strong>（Lichi Li）</li><li><strong>University of California, Los Angeles</strong>（Jiarui Cui）</li><li><strong>University of Notre Dame</strong>（Tianyu Yang）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文研究<strong>Lights-Out（无灯）工业环境</strong>下的无 RGB 导航问题，传统 VLA 模型依赖可见光观测，在关灯工厂中不可用。</li><li>提出使用<strong>空间音频（Spatial Audio）</strong>定位目标方向、<strong>深度（Depth）</strong>感知局部障碍几何的互补方案：音频指示"去哪里"，深度指示"能否安全通过"。</li><li>目标是训练一个可在无可见光环境下可靠导航的具身智能体，并系统评估其在递增声学干扰下的鲁棒性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>DarkNav-Bench</strong>：基于 Unity 与 IndustryNav 扩展的无 RGB 工业导航基准，包含 <strong>24 个工业场景</strong>与四级递进声学难度（<strong>Clean ⊂ Prop ⊂ DN ⊂ LN</strong>）。</li><li>提出 <strong>ADAPT</strong> 框架：通过轻量级<strong>空间音频适配器（SAA，来自 SPUR）</strong>增强 LMM 的方向感知能力，并进行多模态动作监督微调，实现音频-深度联合推理。</li><li>提出 <strong>TARS（Transition-Aware Reward Shaping）</strong>：在位置–朝向图上定义姿态感知的最短动作势函数，弥补传统测地线奖励对原地旋转不敏感的缺陷。</li><li>设计<strong>骨干共享 Actor–Critic</strong> 与<strong>有界动作历史</strong>（最近 8 步动作）机制，无需额外记忆模块即可提供时序上下文。</li><li>实验证明 ADAPT 在已见与未见场景、全部声学难度下均超越训练型导航基线与零样本多模态模型。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用<strong>三阶段训练流程</strong>：① 空间音频适配（SAA）→ ② 多模态监督微调（SFT）→ ③ 基于 PPO 的闭环强化学习。</li><li><strong>SAA</strong>：在音频编码器上附加 SPUR 适配模块，并通过辅助方位角回归头（DoA）将音频表征锚定到声源方向，损失为 <strong>L_dir</strong>（Eq.10）。</li><li><strong>多模态 SFT</strong>：以专家轨迹（oracle 规划器）为监督，模型以文本形式预测离散动作，仅对动作 token 计算负对数似然损失 <strong>L_sft</strong>。</li><li><strong>TARS</strong>：定义势函数 <strong>Φ(s) = −N(s)</strong>，其中 N(s) 为从状态 s 到目标区域的最少可执行动作数（含前进与旋转），转移奖励为 <strong>r_TARS = γΦΦ(s_{t+1}) − Φ(s_t)</strong>（γΦ=1）。</li><li>总奖励 <strong>r_t = r_slack + r_TARS + 1_succ · r_succ</strong>，成功奖励按 <strong>SPL</strong> 加权，鼓励路径效率。</li><li><strong>有界动作历史</strong>：以纯文本形式拼接最近 8 步动作，不引入额外可训练参数；训练与推理使用同一接口。</li><li>动作空间为离散四元组：<strong>{a_fwd, a_left, a_right, a_stop}</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>DarkNav-Bench</strong>：共 <strong>24 个工业场景</strong>，其中 <strong>10 个 seen</strong>（含 1200 训练 + 300 测试 episode）与 <strong>14 个 unseen</strong>（仅 300 测试 episode）。</li><li>数据规模：<strong>12000 训练 episodes</strong>、<strong>3000 seen 测试 episodes</strong>、<strong>4200 unseen 测试 episodes</strong>。</li><li>声学噪声使用真实机器录音数据集 <strong>MIMII</strong> 构建扩散背景场，通过 SNR 控制干扰强度。</li><li>基础模型：<strong>Qwen2.5-Omni-7B</strong>。</li><li>训练硬件：<strong>NVIDIA H200 GPU</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：<strong>DarkNav-Bench</strong> 四个递进难度（<strong>Clean / Prop / DN / LN</strong>），分别测试已见与未见的工业场景。</li><li>评估指标：<strong>SR</strong>（成功率）、<strong>SPL</strong>（路径长度加权成功率）、<strong>SNA</strong>（动作数加权成功率）、<strong>FDG</strong>（最终距目标距离，越低越好）。</li><li>基线方法：训练型 <strong>MAGNet、SAVi、SoundSpaces</strong>；零样本 LMM 型 <strong>Qwen 2.5-Omni、Qwen 3-Omni</strong>（含 oracle 与非 oracle 两类）。</li><li>已见场景结果：<strong>Clean 下 SR 97.70%</strong>、<strong>LN 下 SR 67.40%</strong>，全面领先基线。</li><li>未见场景结果：<strong>Clean 下 SR 90.60%</strong>，<strong>LN 下仍保持 60.00%</strong>，显著优于最佳基线（MAGNet LN 仅 1.71%）。</li><li>消融实验（LN 设置）表明：<strong>SAA 与 TARS 互补增益明显</strong>，二者结合效果最佳；动作历史在无 TARS 时增益尤为突出。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.16160/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">FlowVLA: Enabling World Dynamics Understanding through Pluggable 3D Flow Learning</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.15794/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">$Δ$ Flow Matching for Robot Foundation Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StreamingWAM: Streaming World Action Modeling via Chunk-Wise Staircase Flow Matching - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 StreamingWAM，一种面向 World Action Models（WAMs） 的流式扩散（streaming diffusion）机器人控制框架，目标是同时解决 WAM 部署中的推理效率与动作连续性问题。 现有 WAM 采用非流式推理：每次重规划都从独立噪声出发、经多步去噪重新生成完整动作块，导致（1）推理延迟高、响应慢；（2）相邻动作块之间不连续，执行出现抖动与突变。 论文将分块（chunk-wise）流式去噪引入 WAM，使模型在每次重规划时仅用一次前向传播即可滚动更新持久化的动作计划缓冲区，在保持视频世界模型动态先验的同时实现低延迟、跨块连续的控制。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.15585">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4; --cover-muted: rgba(255, 247, 244, 0.82); --cover-chip: rgba(255, 247, 244, 0.16); --cover-stroke: rgba(255, 247, 244, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">StreamingWAM: Streaming World Action Modeling via Chunk-Wise Staircase Flow Matching</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">StreamingWAM: Streaming World Action Modeling via Chunk-Wise Staircase Flow Matching</h1>
+            <div class="detail-meta">2026-10-11 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.15585" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.15585" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.15585</span></div>
+            <p class="detail-summary">论文提出 StreamingWAM，一种面向 World Action Models（WAMs） 的流式扩散（streaming diffusion）机器人控制框架，目标是同时解决 WAM 部署中的推理效率与动作连续性问题。 现有 WAM 采用非流式推理：每次重规划都从独立噪声出发、经多步去噪重新生成完整动作块，导致（1）推理延迟高、响应慢；（2）相邻动作块之间不连续，执行出现抖动与突变。 论文将分块（chunk-wise）流式去噪引入 WAM，使模型在每次重规划时仅用一次前向传播即可滚动更新持久化的动作计划缓冲区，在保持视频世界模型动态先验的同时实现低延迟、跨块连续的控制。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">14 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">中国科学院大学（University of Chinese Academy of Sciences）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 StreamingWAM，一种面向 World Action Models（WAMs） 的流式扩散（streaming diffusion）机器人控制框架，目标是同时解决 WAM 部署中的推理效率与动作连续性问题。</p>
+  <ul class="reading-intro-points"><li>论文提出 StreamingWAM，一种面向 World Action Models（WAMs） 的流式扩散（streaming diffusion）机器人控制框架，目标是同时解决 WAM 部署中的推理效率与动作连续性问题。</li><li>现有 WAM 采用非流式推理：每次重规划都从独立噪声出发、经多步去噪重新生成完整动作块，导致（1）推理延迟高、响应慢；（2）相邻动作块之间不连续，执行出现抖动与突变。</li><li>论文将分块（chunk-wise）流式去噪引入 WAM，使模型在每次重规划时仅用一次前向传播即可滚动更新持久化的动作计划缓冲区，在保持视频世界模型动态先验的同时实现低延迟、跨块连续的控制。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>中国科学院大学</strong>（University of Chinese Academy of Sciences）</li><li><strong>北京中关村学院</strong>（Beijing Zhongguancun Academy）</li><li><strong>中国科学院自动化研究所</strong>（Institute of Automation, Chinese Academy of Sciences）</li><li><strong>中国科学技术大学</strong>（University of Science and Technology of China）</li><li><strong>南开大学</strong>（Nankai University）</li><li><strong>哈尔滨工业大学</strong>（Harbin Institute of Technology）</li><li><strong>宁波东方理工大学</strong>（Eastern Institute of Technology, Ningbo）</li><li>注：<strong>Shaojie Ren</strong> 与 <strong>Jingwen Sun</strong> 为共同第一作者，<strong>Wei Zou</strong> 与 <strong>Zhibo Chen</strong> 为通讯作者</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>StreamingWAM</strong>，一种面向 <strong>World Action Models（WAMs）</strong> 的流式扩散（streaming diffusion）机器人控制框架，目标是同时解决 WAM 部署中的推理效率与动作连续性问题。</li><li>现有 WAM 采用非流式推理：每次重规划都从独立噪声出发、经多步去噪重新生成完整动作块，导致（1）推理延迟高、响应慢；（2）相邻动作块之间不连续，执行出现抖动与突变。</li><li>论文将<strong>分块（chunk-wise）流式去噪</strong>引入 WAM，使模型在每次重规划时仅用一次前向传播即可滚动更新持久化的动作计划缓冲区，在保持视频世界模型动态先验的同时实现低延迟、跨块连续的控制。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>StreamingWAM</strong> 框架，集成 <strong>noise ladder（噪声阶梯）</strong> 实现分块流式动作预测、<strong>prefix rollout module（前缀滚动模块）</strong> 维持与已执行动作的连续性、以及 <strong>dense video-history memory（稠密视频历史记忆）</strong> 将历史视觉上下文引入动作预测，三者协同同时提升推理效率与执行连续性。</li><li>在 <strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong> 以及真实机器人静态/动态操作任务上系统验证，取得有竞争力的任务成功率，同时将稳态重规划延迟降至仿真 <strong>72.9 ms</strong>、真机 <strong>57.3 ms</strong>。</li><li>通过受控消融与静态/动态评测，分析各组件互补作用：噪声阶梯与前缀滚动提升跨调用动作连续性、降低对执行时域 <strong>K</strong> 的敏感度、支持低延迟重规划；干净动作前缀与稠密视频历史提供近期"动作–观测"上下文，支持时序一致执行与对物体运动的适应。</li><li>方法<strong>不引入额外可训练参数、也不额外需要训练数据</strong>，可直接在现有 WAM（MoT 架构）基础上改造。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>基础架构</strong>：基于 <strong>Mixture-of-Transformers（MoT）</strong> 的 WAM，包含独立的视频专家（video expert）与动作专家（action expert）分支，联合去噪动作块与未来视频片段。</li><li><strong>问题建模</strong>：将标准策略 \(\pi(o_t, l)\) 扩展为流式接口，每步输入最近 \(m\) 帧视觉观测、最近 \(P\) 步已执行动作前缀，以及上一次调用遗留的<strong>持久化计划缓冲区</strong> \(\mathcal{B}_t\)，输出下 \(K\) 步可执行动作及更新后的缓冲区。</li><li><strong>Noise Ladder（噪声阶梯）</strong>：将 \(H\) 个未来动作槽按宽度 \(K\) 分组为 \(C=\lceil H/K\rceil\) 个块，同一块共享一个噪声水平、越靠后的块噪声越大，并加入随机偏移 \(\delta\) 使模型适应滚动执行中的部分去噪状态；每次执行 \(K\) 步后整个计划前移一个块。</li><li><strong>Prefix Rollout Module</strong>：将 \(P\) 步干净、无噪的已执行动作作为条件前缀（非预测目标），训练时用真值动作填充，部署时用实际执行动作滚动填充，动作分支据此建模 \(p_\theta(a_{t:t+H-1}\mid z(o_{t-m+1:t},l), a_{t-P:t-1})\)。</li><li><strong>Dense Video-History Memory</strong>：以最近 \(m\) 帧观测作为稠密视觉历史，补充短时视觉动态，与前缀共同提升时序一致性。</li><li><strong>多宽度阶梯训练（Multi-width staircase training）</strong>：每个训练样本从候选集合 \(\mathcal{K}\) 中均匀采样执行宽度 \(K\) 并构造对应噪声剖面；保留一部分共享时间步的原始目标以维持多步去噪能力（用于每回合开始的热启动）。</li><li><strong>训练目标</strong>：视频与动作分支均采用加权流匹配（weighted flow matching），动作损失将位置相关的权重 \(w(\tau_j)\) 移入未来槽求和内部，总损失 \(\mathcal{L}=\mathcal{L}_{\mathrm{act}}+\lambda\mathcal{L}_{\mathrm{vid}}\)，实验中 \(\lambda=1\)。</li><li><strong>推理流程</strong>：稳态下每次规划仅做<strong>一次联合前向传播 + 一次 Euler 更新</strong>，最前块噪声归零并被执行为 \(a_{t:t+K-1}\)，剩余 \(H-K\) 个动作保留前移，尾部拼接新的噪声块；每回合开始时用 10 步流匹配采样器做一次<strong>热启动初始化</strong>并重新加噪。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真基准</strong>：<strong>LIBERO</strong>（四个 10 任务套件：object、spatial、libero-10、goal）、<strong>LIBERO-Plus</strong>（扩展至 <strong>10,030</strong> 个扰动评测实例，含相机视角、机器人初态、语言、光照、背景、噪声、布局等扰动类型）、<strong>RoboTwin 2.0</strong>（双臂操作基准，clean 与 domain-randomized 设置，任务特定训练使用 <strong>2,500</strong> 条干净示范）。</li><li><strong>真实机器人</strong>：<strong>Franka Research 3</strong> 机械臂 + <strong>Robotiq 2F-85</strong> 夹爪，两个外置 <strong>Intel RealSense D435i</strong> 相机 + 腕部 <strong>ZED Mini</strong> 相机（DROID 配置），控制回路 <strong>15 Hz</strong>，示范由 <strong>GELLO</strong> 关节空间遥操作采集；共 6 个评测任务（3 静态、3 动态）。</li><li><strong>模型规模</strong>：以 <strong>Wan2.2-TI2V-5B</strong> 为基础构建 WAM；动作专家骨干由预训练 video-DiT 权重经线性插值 + \(\alpha\)-scaling 初始化，动作专用编码器与输出头随机初始化。</li><li><strong>训练/部署资源</strong>：部署使用 <strong>RTX 5090</strong> 工作站；详细训练与推理配置见附录 A（原文正文未列出具体训练 GPU 数量与时长）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>对比基线</strong>：与 <strong>13</strong> 个竞争基线比较，涵盖 VLA 策略与 WAM，并按预训练是否使用具身数据分组（含 <strong>π0.5</strong>、<strong>GE-ACT</strong>、<strong>VLA-JEPA</strong>、<strong>X-VLA</strong>、<strong>OpenVLA-OFT</strong>、<strong>π0-Fast</strong>、<strong>π0</strong>、<strong>UniVLA</strong>、<strong>Faster-WAM</strong>、<strong>4D-WAM</strong>、<strong>Fast-WAM-Joint</strong>、<strong>WorldVLA</strong>、<strong>Fast-WAM</strong> 等）。</li><li><strong>评测指标</strong>：任务成功率（%）；Whack-a-Mole 用固定时间预算内的有效激活次数；<strong>TTFA</strong>（含缓冲区初始化的首次动作时间）与<strong>稳态重规划延迟</strong>分离报告；连续性指标包括每步位置变化、相对初始位姿的关节位移、离散加速度代理、边界–内部跳变比与 jerk。</li><li><strong>仿真主结果</strong>：<strong>LIBERO 98.7%</strong>、<strong>LIBERO-Plus 79.4%</strong>（无具身预训练 WAM 中最优），在分布偏移下比最接近的架构基线 <strong>Fast-WAM-Joint</strong> 高 <strong>10.6 个百分点</strong>（尤其相机视角与机器人初态扰动）；<strong>RoboTwin 2.0</strong> 达 <strong>84.2%</strong> clean、<strong>5.1%</strong> randomized（平均 44.7%），优于 Fast-WAM-Joint 的 80.3%/3.9%（平均 42.1%）。</li><li><strong>推理效率</strong>：稳态重规划延迟仿真 <strong>72.9 ms</strong>、真机 <strong>57.3 ms</strong>，相对标准 10 步 <strong>Fast-WAM-Joint</strong> 部署分别加速 <strong>5.2×</strong> 与 <strong>6.4×</strong>；真机单次更新 57.3 ms 落在 66.7 ms 控制预算内，而 Fast-WAM/FastWAM-Joint 10 步推理需 182.6 ms/368.6 ms，无法满足实时控制。</li><li><strong>动作连续性</strong>：LIBERO-Plus 上边界–内部跳变比从 <strong>1.840 降至 1.105</strong>，全局平移指令 jerk <strong>下降 59.0%</strong>；真机轨迹关节位移更平滑、离散加速度代理更低。</li><li><strong>真机结果</strong>：五个操作任务合计 <strong>168/250（67.2%</strong>，Wilson 95% CI [61.2, 72.7]），显著高于最强基线的 120/250（48.0%，[41.9, 54.2]）；两个动态任务领先（传送带交接 <strong>32/50</strong>、追车 <strong>20/50</strong>，基线最优为 15/50 与 8/50）；Whack-a-Mole 击打次数 <strong>424 vs 408</strong>。</li><li><strong>消融结论</strong>：噪声阶梯使执行时域 K 下性能曲线更平坦并整体提升；多宽度阶梯训练改善不同执行时域表现；稠密视觉历史提升成功率并减小不同执行时域间的方差；辅助训练选择主要影响精度而非时域鲁棒性；当执行宽度覆盖整个预测时域（K=H）时，流式优势消失。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.15625/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">1Step-WAM: Your World Action Model but Faster using 1-Step Action Generation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.15425/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Exploring the Limits of Combinatorial Generalization in Embodied Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
