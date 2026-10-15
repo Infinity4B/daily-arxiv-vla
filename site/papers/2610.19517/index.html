@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLRLA: Deployment-Time Adaptation of Vision-Language-Action Models through In-Context Reinforcement Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 VLRLA，一个为现有 Vision-Language-Action (VLA) 模型赋予上下文强化学习 (In-Context RL) 能力的通用框架，实现部署时的持续自适应。 核心问题是：传统预训练 VLA 策略缺少一种机制，无法在部署过程中通过累积的交互经验逐步自我改进；而在线深度强化学习或交互式模仿学习需要参数更新、大量人工采样和逐任务的超参调优，难以扩展。 目标是让 VLA 模型在参数完全冻结的前提下，通过历史观测、动作、奖励与终止信号组成的上下文记忆，逐步改进动作生成与任务成功率。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.19517">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">VLRLA: Deployment-Time Adaptation of Vision-Language-Action Models through In-Context Reinforcement Learning</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">VLRLA: Deployment-Time Adaptation of Vision-Language-Action Models through In-Context Reinforcement Learning</h1>
+            <div class="detail-meta">2026-10-14 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.19517" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.19517" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.19517</span></div>
+            <p class="detail-summary">论文提出 VLRLA，一个为现有 Vision-Language-Action (VLA) 模型赋予上下文强化学习 (In-Context RL) 能力的通用框架，实现部署时的持续自适应。 核心问题是：传统预训练 VLA 策略缺少一种机制，无法在部署过程中通过累积的交互经验逐步自我改进；而在线深度强化学习或交互式模仿学习需要参数更新、大量人工采样和逐任务的超参调优，难以扩展。 目标是让 VLA 模型在参数完全冻结的前提下，通过历史观测、动作、奖励与终止信号组成的上下文记忆，逐步改进动作生成与任务成功率。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">浙江大学 (Zhejiang University)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 VLRLA，一个为现有 Vision-Language-Action (VLA) 模型赋予上下文强化学习 (In-Context RL) 能力的通用框架，实现部署时的持续自适应。</p>
+  <ul class="reading-intro-points"><li>论文提出 VLRLA，一个为现有 Vision-Language-Action (VLA) 模型赋予上下文强化学习 (In-Context RL) 能力的通用框架，实现部署时的持续自适应。</li><li>核心问题是：传统预训练 VLA 策略缺少一种机制，无法在部署过程中通过累积的交互经验逐步自我改进；而在线深度强化学习或交互式模仿学习需要参数更新、大量人工采样和逐任务的超参调优，难以扩展。</li><li>目标是让 VLA 模型在参数完全冻结的前提下，通过历史观测、动作、奖励与终止信号组成的上下文记忆，逐步改进动作生成与任务成功率。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>浙江大学</strong> (Zhejiang University)</li><li><strong>西湖大学</strong> (Westlake University)</li><li>作者：<strong>Diyuan Shi</strong>、<strong>Yiqi Tang</strong>、<strong>Hongyin Zhang</strong>、<strong>You Wu</strong>、<strong>Donglin Wang</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>VLRLA</strong>，一个为现有 <strong>Vision-Language-Action (VLA)</strong> 模型赋予<strong>上下文强化学习 (In-Context RL)</strong> 能力的通用框架，实现部署时的持续自适应。</li><li>核心问题是：传统预训练 VLA 策略缺少一种机制，无法在部署过程中通过累积的交互经验逐步自我改进；而在线深度强化学习或交互式模仿学习需要参数更新、大量人工采样和逐任务的超参调优，难以扩展。</li><li>目标是让 VLA 模型在<strong>参数完全冻结</strong>的前提下，通过历史观测、动作、奖励与终止信号组成的上下文记忆，逐步改进动作生成与任务成功率。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次将 VLA 模型的<strong>部署时自适应</strong>形式化为<strong>上下文强化学习</strong>问题，利用累积交互与奖励反馈指导下一次决策，同时保持模型参数固定。</li><li>提出了一个<strong>通用框架</strong>，统一了学习历史构建策略与自适应模块的集成方式，支持多种数据构建方式、模型架构与部署任务。</li><li>设计了两种策略实例化：<strong>VLRLA-simp</strong>（冻结 VLM 编码器 + 可训练循环动作模块 RLA，确定性策略，面向仿真/简单任务）和 <strong>VLRLA-bridge</strong>（复用预训练编码器与随机动作专家，通过修改 KV 缓存的残差桥接模块自适应，面向真实世界/复杂任务）。</li><li>支持三种学习历史构建策略：<strong>Simulation RL</strong>、<strong>Human-in-the-Loop Curriculum</strong> 与 <strong>Hindsight Relabeling</strong>。</li><li>在仿真与真实机器人上进行了大量实验，证明 VLRLA 可跨多种预训练骨干网络实现自适应，并可泛化到未见任务。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于 <strong>Algorithm Distillation (AD)</strong> 思想，训练因果序列模型按顺序学习 RL 算法在历史中的行为演化，使模型在部署时能进行上下文 RL 而无需梯度更新。</li><li>采用类似 <strong>Transformer-XL</strong> 的<strong>循环记忆 (Recurrent Memory)</strong> 机制，结合局部窗口内的因果注意力与对早期窗口缓存表示的注意力，降低长序列（跨多个回合、数千 token）的显存与计算开销。</li><li><strong>VLRLA-simp</strong>：冻结 VLM 编码器提取前缀嵌入 $z_t^{\mathrm{emb}}$，由可训练 RLA（Transformer + 循环记忆 + MLP）输出确定性动作块，使用 <strong>MSE 重建损失</strong>训练。</li><li><strong>VLRLA-bridge</strong>：以 $\pi_{0.5}$ 为例，冻结 VLM 编码器与动作专家，可训练桥接模块根据历史交互生成与 KV 缓存同结构的残差 $\Delta z_t$，得到自适应缓存 $z_t'$；采用<strong>流匹配目标</strong>训练，梯度穿过冻结专家回传到桥接模块。</li><li>三种历史构建方法：在仿真中通过 PPO/GRPO 分多轮收集逐步提升的 on-policy 轨迹；人在回路课程从 0 到 1/3、2/3、3/3 逐步增加人工纠正比例；基于 <strong>HER</strong> 的语言指令重标记，将轨迹重新标注为不同指令下的成功经验。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>RoboTwin</strong>，覆盖 6 个已见任务与 6 个未见任务；仿真数据通过 <strong>RLinf</strong> 在线 RL 采集。</li><li>使用的 VLA 骨干/基础模型：<strong>π0.5 (Pi05)</strong>、<strong>LingBot-VLA (lingbotvla)</strong>、<strong>FastWAM (fastwam)</strong>。</li><li>真实世界任务：<strong>Fruit-Placement</strong>（约 80 条遥操作回合 + 3×20 条 HITL 纠正回合）与 <strong>Cross-Episode Memory Task</strong>。</li><li>训练资源：GRPO 基线训练使用 <strong>8 张 NVIDIA A100-80G GPU</strong> 以支持并行环境中的 on-policy 数据采集。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>仿真评估：在 <strong>RoboTwin</strong> 上使用 128 个随机化环境实例，计算平均成功率；上下文长度 $h=4$ 与 $h=8$；每项结果在 5 个随机种子下取平均。</li><li>对比方法：监督微调的 <strong>π0.5</strong>、RL 微调 <strong>GRPO</strong>、上下文自适应方法 <strong>RoboTTT</strong> 与 <strong>VLRLA-bridge</strong>。</li><li>关键结果：</li></ul>
+<p> - <strong>VLRLA-bridge</strong> 在全部 12 个任务上均优于 π0.5，整体平均成功率 <strong>63.4%</strong>（相比 π0.5 提升 <strong>+12.4 个百分点</strong>），超过 <strong>GRPO (60.0%)</strong> 与 <strong>RoboTTT (58.2%)</strong>。</p>
+<p> - 已见任务平均 <strong>66.2%</strong>（相比 π0.5 提升 <strong>+17.6%</strong>）；未见任务平均 <strong>60.6%</strong>（相比 π0.5 提升 <strong>+7.3%</strong>），接近 GRPO 水平。</p>
+<p> - <strong>VLRLA-simp</strong> 可在 <strong>π0.5</strong>、<strong>lingbotvla</strong>、<strong>fastwam</strong> 三种骨干上学习自适应，成功率随交互经验累积而上升。</p>
+<p> - 消融显示：无历史 (no history) 时成功率接近零；重复历史 (repeat history) 时无持续提升，证明交互历史及其持续累积的必要性。</p>
+<p> - 历史迁移实验表明，将一次 rollout 的历史迁移到同一任务的新 rollout 可将初始成功率从约 0.55 提升至约 0.7（adjust_bottle），从 0.65 提升至 0.85（place_empty_cup）。</p>
+<ul><li>真实世界结果：</li></ul>
+<p> - <strong>Fruit-Placement</strong>：随经验累积成功率稳步提升并超过 π0.5；苹果 <strong>+13.3%</strong>、杨桃 <strong>+26.7%</strong>、葡萄 <strong>+6.7%</strong>；在未见物体（红椒 + 金属锅）上同样持续优于 π0.5。</p>
+<p> - <strong>Cross-Episode Memory Task</strong>：在第一回合获得奖励反馈后，成功率明显上升，表明策略可利用跨回合奖励反馈调整后续盘子选择。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.19579/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Back on Track: Deployment-time Policy Improvement via World Model Planning</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.19495/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Robota-Embed: Unified VLA Embeddings for Robot In-Context Learning and Evolution</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

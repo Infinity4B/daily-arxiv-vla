@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coordi-pi: Coordination-Aware Dual-Hand Action Representation for Bimanual Dexterous Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究双臂灵巧操作（bimanual dexterous manipulation） 中的动作表示问题，目标是在视觉-语言-动作（VLA）模型框架下为双臂高自由度臂-手系统设计更合理的动作空间结构。 现有双臂 VLA 策略通常在每个控制时间步将右手与左手的臂-手动作直接拼接为单个动作向量，导致双手之间的交互关系隐含在同一向量中，双手身份与跨手结构未被显式表达。 论文提出 Coordi-π，将左右两侧臂-手动作拆分为独立动作 token 并组织成交错序列，同时显式编码手别身份与时间同步关系。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.19753">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.19753.webp" alt="Coordi-pi: Coordination-Aware Dual-Hand Action Representation for Bimanual Dexterous Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文研究双臂灵巧操作（bimanual dexterous manipulation） 中的动作表示问题，目标是在视觉-语言-动作（VLA）模型框架下为双臂高自由度臂-手系统设计更合理的动作空间结构。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Coordi-pi: Coordination-Aware Dual-Hand Action Representation for Bimanual Dexterous Manipulation</h1>
+            <div class="detail-meta">2026-10-14 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.19753" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.19753" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.19753</span></div>
+            <p class="detail-summary">论文研究双臂灵巧操作（bimanual dexterous manipulation） 中的动作表示问题，目标是在视觉-语言-动作（VLA）模型框架下为双臂高自由度臂-手系统设计更合理的动作空间结构。 现有双臂 VLA 策略通常在每个控制时间步将右手与左手的臂-手动作直接拼接为单个动作向量，导致双手之间的交互关系隐含在同一向量中，双手身份与跨手结构未被显式表达。 论文提出 Coordi-π，将左右两侧臂-手动作拆分为独立动作 token 并组织成交错序列，同时显式编码手别身份与时间同步关系。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">上海交通大学（Shanghai Jiao Tong University）：Yiming Meng、W…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文研究双臂灵巧操作（bimanual dexterous manipulation） 中的动作表示问题，目标是在视觉-语言-动作（VLA）模型框架下为双臂高自由度臂-手系统设计更合理的动作空间结构。</p>
+  <ul class="reading-intro-points"><li>论文研究双臂灵巧操作（bimanual dexterous manipulation） 中的动作表示问题，目标是在视觉-语言-动作（VLA）模型框架下为双臂高自由度臂-手系统设计更合理的动作空间结构。</li><li>现有双臂 VLA 策略通常在每个控制时间步将右手与左手的臂-手动作直接拼接为单个动作向量，导致双手之间的交互关系隐含在同一向量中，双手身份与跨手结构未被显式表达。</li><li>论文提出 Coordi-π，将左右两侧臂-手动作拆分为独立动作 token 并组织成交错序列，同时显式编码手别身份与时间同步关系。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>上海交通大学</strong>（Shanghai Jiao Tong University）：Yiming Meng、Weijie Shen、Jiayu Sun、Yao Mu</li><li><strong>香港大学</strong>（The University of Hong Kong）：Yanming Shao、Kunyang Lin、Ping Luo</li><li>标注说明：部分作者为共同第一作者（Equal contribution），并标注了共同通讯作者（Corresponding authors）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文研究<strong>双臂灵巧操作（bimanual dexterous manipulation）</strong> 中的动作表示问题，目标是在视觉-语言-动作（VLA）模型框架下为双臂高自由度臂-手系统设计更合理的动作空间结构。</li><li>现有双臂 VLA 策略通常在每个控制时间步将右手与左手的臂-手动作<strong>直接拼接</strong>为单个动作向量，导致双手之间的交互关系隐含在同一向量中，双手身份与跨手结构未被显式表达。</li><li>论文提出 <strong>Coordi-π</strong>，将左右两侧臂-手动作拆分为独立动作 token 并组织成交错序列，同时显式编码手别身份与时间同步关系。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Coordi-π</strong> 结构化动作表示框架：将左右两侧臂-手动作表示为独立 token 并按 <code>R₀, L₀, R₁, L₁, …, R_{H-1}, L_{H-1}</code> 交错排列，使双臂结构在动作序列中显式暴露，支持 token 级跨手交互。</li><li>引入<strong>可学习的手别嵌入（hand-identity embedding）</strong>，在共享动作格式与共享投影的前提下显式区分左右两侧动作 token。</li><li>提出<strong>序列位置–控制时间步分解式 RoPE（sequence–control-timestep factorized RoPE）</strong>，将位置编码拆分为序列位置子空间与控制时间步子空间，使同一控制步的左右动作共享时间坐标但保留各自序列位置，从而显式编码双手时间同步。</li><li>在 <strong>DexJoCo</strong> 五个双臂灵巧操作任务上取得 SOTA，<code>rand-obj</code> 平均成功率由 π₀.₅ 的 31.9% 提升至 51.3%，<code>rand-full</code> 由 18.3% 提升至 32.3%。</li><li>在<strong>四个真实世界双臂灵巧操作任务</strong>上一致优于 π₀.₅。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于 <strong>π₀.₅ VLA 架构</strong>构建，仅修改动作专家内部的动作表示，保留原 flow-matching 训练目标。</li><li><strong>交错动作表示</strong>：对 <code>h = 0,…,H-1</code>，令 <code>z_{2h} = a^R_{t+h}</code>、<code>z_{2h+1} = a^L_{t+h}</code>，H 步动作块由 <code>2H</code> 个单侧 token 表示，动作视野（horizon）不变。</li><li><strong>手别嵌入</strong>：<code>h_i = f_in(z_i) + e_{h(i)}</code>，其中 <code>h(i)=R</code> 当 <code>i mod 2 = 0</code>，否则为 <code>L</code>；<code>e_R</code> 与 <code>e_L</code> 为可学习向量，初始化为零，同侧所有 token 共享，输入/输出投影均共享。</li><li><strong>分解式 RoPE</strong>：为每个 token 定义序列坐标 <code>s_i = i</code> 与控制时间步坐标 <code>τ_i = ⌊i/2⌋</code>；查询/键向量按 <code>d_seq = d_ctrl = d_head/2</code> 均分子空间，分别以 <code>s_i</code> 与 <code>τ_i</code> 施加 RoPE；动作 token 间注意力使用分解 RoPE，涉及上下文 token 的注意力保留原始位置编码。</li><li><strong>关键动机</strong>：<code>R_h → L_h</code> 与 <code>L_h → R_{h+1}</code> 在序列上均为相邻对（<code>Δs = 1</code>），但时间关系不同（<code>Δτ = 0</code> 与 <code>Δτ = 1</code>），单一序列位置 RoPE 无法区分；分解 RoPE 使同一控制步的动作共享时间坐标，显式表达同步。</li><li><strong>推理与解码</strong>：将生成的单侧 token 去交错，按共享控制时间步配对重组为联合双臂命令 <code>â_{t+h} = [â^R_{t+h}; â^L_{t+h}]</code>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集/基准</strong>：<strong>DexJoCo</strong> 的全部五个双臂灵巧操作任务——<strong>Hanoi</strong>、<strong>Photograph</strong>、<strong>Unlock iPad</strong>、<strong>Assembly</strong>、<strong>Microwave</strong>。</li><li><strong>随机化设置</strong>：<code>rand-obj</code>（随机物体摆放与桌面高度）与更难的 <code>rand-full</code>（额外随机第三人称相机位姿、光照与桌面纹理）。</li><li><strong>真实世界任务</strong>：在真实双臂灵巧平台上评估 <strong>Photograph</strong>、<strong>Hanoi</strong>、<strong>Assembly</strong>、<strong>Microwave</strong> 四个任务。</li><li><strong>观测与动作空间</strong>：3 路 <strong>224×224</strong> RGB 视图、语言指令、<strong>46 维</strong>本体感知状态；动作视野 <strong>H = 30</strong>；单侧 <strong>22 维</strong>臂-手动作，每控制步 <strong>44 维</strong>双臂命令；Coordi-π 内部表示为 <strong>2H = 60</strong> 个单侧动作 token。</li><li><strong>训练资源</strong>：<strong>4 张 A100 GPU</strong>，训练 <strong>40k</strong> 次迭代，batch size <strong>32</strong>，固定训练随机种子 <strong>42</strong>。</li><li><strong>模型基础</strong>：以 <strong>π₀.₅</strong> 为基座 VLA，Coordi-π 与所有消融变体均使用同一基座。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估协议</strong>：遵循 DexJoCo 标准协议，每个「方法–任务–设置」组合使用三个评测种子（0、1、2），每种子 <strong>50</strong> 个回合，共 <strong>150</strong> 个评测回合；报告三种子平均成功率与样本标准差。ACT、DP-T、DP-C、GR00T N1.5、π₀.₅ 直接采用 DexJoCo 已发布结果，DP3 在同协议下复现。</li><li><strong>评估维度</strong>：性能、消融贡献、双臂协调性（超出任务完成的协调质量）、鲁棒性与真实世界表现。</li><li><strong>主要指标</strong>：任务成功率（Success Rate）；协调性指标 <strong>RCS</strong>（右侧协调分）、<strong>TCS</strong>（时间协调分）、<strong>BCS</strong>（双臂协调总分 Bimanual Coordination Score，0–100，越高越好）。</li><li><strong>主结果</strong>：<code>rand-obj</code> 下平均成功率 <strong>51.3%</strong>（DP-T 33.5%，π₀.₅ 31.9%），较 π₀.₅ 提升 <strong>19.4 个百分点</strong>，在五个任务上均为最优或并列最优；<code>rand-full</code> 下由 <strong>18.3%</strong> 提升至 <strong>32.3%</strong>。</li><li><strong>单任务增益</strong>：<strong>Hanoi</strong> 由 15.3% → <strong>48.7%</strong>，<strong>Unlock iPad</strong> 由 12.0% → <strong>52.0%</strong>（这两类任务需要互补手部角色与有序跨手交互）；<strong>Microwave</strong> 由 70.0% → <strong>76.7%</strong>（增益较小）；<strong>Assembly</strong> 仍普遍困难，Coordi-π 仅 7.3%，说明精确接触与插入是超出动作表示层面的瓶颈。</li><li><strong>消融结果</strong>（<code>rand-obj</code> 平均成功率，均基于交错表示）：仅交错 <strong>39.7</strong> → 加手别嵌入 <strong>42.4</strong> → 加分解 RoPE <strong>44.3</strong> → 完整 Coordi-π <strong>51.3</strong>，说明三项设计具有互补贡献。</li><li><strong>协调性结果</strong>：在 Hanoi、Photograph、Unlock iPad、Assembly 等任务上 Coordi-π 的 RCS/TCS/<strong>BCS</strong> 多数优于 π₀.₅ 与 DP3，例如 Hanoi BCS <strong>86.32</strong>、Photograph BCS <strong>74.58</strong>、Unlock iPad BCS <strong>75.80</strong>、Assembly BCS <strong>61.39</strong>，表明性能提升伴随双臂协调质量改善。</li><li><strong>真实世界</strong>：在四个真实双臂灵巧任务上 Coordi-π 一致优于 π₀.₅。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.19825/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">What Matters for World Modeling in Vision-Language-Action Models?</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.19746/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">One-shot Human Video-Guided Adaptation for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
