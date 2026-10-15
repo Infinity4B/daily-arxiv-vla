@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ObjDream: Guiding Vision-Language-Action Models with Object-Level Understanding and Future State Prediction - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 ObjDream，一个以对象级理解与未来对象状态预测为核心的 object-centric 视觉-语言-动作（VLA）框架，用于提升机器人操作的泛化能力。 针对的问题是：现有 VLA 模型大多沿用预训练视觉-语言骨干的图像级表示，缺乏细粒度对象理解，导致物体外观、空间布局、背景等分布偏移下鲁棒性下降。 核心思路是显式地分离持久对象身份（identity）与动态对象状态（state），并在训练阶段用动作条件下的未来对象状态作为辅助监督，推理时无需预测未来。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.20223">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.20223.webp" alt="ObjDream: Guiding Vision-Language-Action Models with Object-Level Understanding and Future State Prediction" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 ObjDream，一个以对象级理解与未来对象状态预测为核心的 object-centric 视觉-语言-动作（VLA）框架，用于提升机器人操作的泛化能力。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">ObjDream: Guiding Vision-Language-Action Models with Object-Level Understanding and Future State Prediction</h1>
+            <div class="detail-meta">2026-10-14 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.20223" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.20223" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.20223</span></div>
+            <p class="detail-summary">论文提出 ObjDream，一个以对象级理解与未来对象状态预测为核心的 object-centric 视觉-语言-动作（VLA）框架，用于提升机器人操作的泛化能力。 针对的问题是：现有 VLA 模型大多沿用预训练视觉-语言骨干的图像级表示，缺乏细粒度对象理解，导致物体外观、空间布局、背景等分布偏移下鲁棒性下降。 核心思路是显式地分离持久对象身份（identity）与动态对象状态（state），并在训练阶段用动作条件下的未来对象状态作为辅助监督，推理时无需预测未来。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">东南大学（Southeast University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 ObjDream，一个以对象级理解与未来对象状态预测为核心的 object-centric 视觉-语言-动作（VLA）框架，用于提升机器人操作的泛化能力。</p>
+  <ul class="reading-intro-points"><li>论文提出 ObjDream，一个以对象级理解与未来对象状态预测为核心的 object-centric 视觉-语言-动作（VLA）框架，用于提升机器人操作的泛化能力。</li><li>针对的问题是：现有 VLA 模型大多沿用预训练视觉-语言骨干的图像级表示，缺乏细粒度对象理解，导致物体外观、空间布局、背景等分布偏移下鲁棒性下降。</li><li>核心思路是显式地分离持久对象身份（identity）与动态对象状态（state），并在训练阶段用动作条件下的未来对象状态作为辅助监督，推理时无需预测未来。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>东南大学</strong>（Southeast University）</li><li><strong>上海创智学院</strong>（Shanghai Innovation Institute）</li><li><strong>上海交通大学</strong>（Shanghai Jiao Tong University）</li><li><strong>中国科学院自动化研究所</strong>（Institute of Automation, Chinese Academy of Sciences）</li><li>作者：<strong>Huailiang Ma</strong>、<strong>Yuxuan Li</strong>、<strong>Ziyi Zhao</strong>、<strong>Xinkai Wang</strong>、<strong>Mingyu Li</strong>、<strong>Xinyu Guo</strong>、<strong>Lifeng Zhu</strong>、<strong>Aiguo Song</strong>、<strong>Cewu Lu</strong>、<strong>Jianhua Sun</strong>（通讯作者）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>ObjDream</strong>，一个以<strong>对象级理解</strong>与<strong>未来对象状态预测</strong>为核心的 object-centric 视觉-语言-动作（<strong>VLA</strong>）框架，用于提升机器人操作的泛化能力。</li><li>针对的问题是：现有 VLA 模型大多沿用预训练视觉-语言骨干的<strong>图像级表示</strong>，缺乏细粒度对象理解，导致物体外观、空间布局、背景等分布偏移下鲁棒性下降。</li><li>核心思路是显式地分离<strong>持久对象身份（identity）</strong>与<strong>动态对象状态（state）</strong>，并在训练阶段用动作条件下的未来对象状态作为辅助监督，推理时无需预测未来。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>ObjDream</strong> 框架，引入<strong>时空对象编码器</strong>（spatio-temporal object encoder），通过独立通道显式表示持久对象身份与动态对象状态，并配合新颖的<strong>身份引导路由</strong>（identity-guided routing）机制将表示注入 VLM 隐空间。</li><li>提出<strong>动作条件下的对象级前向动力学模块</strong>（object-level forward dynamics module），在训练时预测紧凑的未来对象状态以提供直接的辅助监督，<strong>推理阶段无需未来状态预测</strong>。</li><li>额外建模<strong>对象间关系</strong>：从对象特征与成对几何关系（pairwise geometry）构建关系 token 与前瞻对象 token，为动作生成提供结构化上下文。</li><li>在 <strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong> 及真实机器人任务上验证了跨场景与环境扰动的竞争力。</li><li>通过消融实验分析了关键架构组件（对象接口、ObjRel、ObjDyn、因子化注入、身份路由）的各自贡献。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>VLA 策略建模</strong>：输入语言指令、多视角观测、本体状态与对象嵌入，输出动作块；动作分布由<strong>流匹配（flow-matching）动作专家</strong>参数化，采用 receding-horizon 方式执行。</li><li><strong>时空对象编码器</strong>：以因果图像窗口与缓存短语集为输入，用 <strong>Qwen3-VL-8B</strong> 在回合初始化时解析任务相关对象短语，用冻结的 <strong>CLIP</strong> 文本编码器与 <strong>DINOv2</strong> 提取语义/视觉参考，用冻结的 <strong>SAM2</strong> 图像骨干提取空间特征，经空间查询模块与时序编码输出对象槽 $u_{i,t}^{obj}=(e_i^{id}, e_{i,t}^{state}, \nu_{i,t})$。</li><li><strong>因子化对象注入</strong>：将身份分量与动态状态分量分别投影到 VLM 隐藏空间，拼接为对象 token；注意力键值仍由完整上下文化 token 计算。</li><li><strong>关系与前瞻 token</strong>：由对象特征池化与相对几何聚合得到关系 token，再由 top-$N_p$（=2）重要槽与关系上下文生成前瞻对象 token，构成对象块并插入多模态前缀与动作生成提示之间。</li><li><strong>身份引导路由</strong>：用缓存的恒等参考计算余弦匹配分 $b_{pi}^{\ell}$ 与头特定门控 $\eta_p^{\ell,m}$，作为加性偏置调制注意力 logits（式 9），不改变标准键值。</li><li><strong>对象级前向动力学</strong>：辅助头从有效槽的停止梯度特征预测动作块，构造位置感知动作嵌入与动作条件门控，解码当前状态并并行预测 $H_f$ 步未来几何、可见性与掩码（排除机器人槽位）。</li><li><strong>训练目标</strong>：编码器预训练损失含掩码、几何、可见性与区域-文本对比损失；VLA 训练使用 $w_{act}\mathcal{L}_{act}+\mathcal{L}_{cur}+\mathcal{L}_{fut}+\mathcal{L}_{prop}+\mathcal{L}_{gate}$，其中对象编码器保持冻结。</li><li><strong>三阶段训练流程</strong>：预训练对象编码器 → 冻结编码器联合优化 VLM/动作专家/策略侧对象模块 → 冻结 VLM 与对象模块仅精调动作专家。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评测基准：<strong>LIBERO</strong>（Spatial、Object、Goal、Long 四个套件）、<strong>LIBERO-Plus</strong>（7 种受控偏移：相机视角、机器人初始化、物体布局、语言、光照、背景、传感器噪声）、<strong>RoboTwin 2.0</strong> 固定 <strong>8 任务子集</strong>（adjust bottle、click bell、grab roller、move can pot、open microwave、place can basket、scan object、turn switch）、以及 <strong>4 个真实世界任务</strong>。</li><li>模型骨干：<strong>Qwen3-VL-4B</strong> VLM + 层级流匹配动作专家，遵循 <strong>StarVLA</strong> 训练配方；短语解析使用 <strong>Qwen3-VL-8B</strong>，另有冻结的 <strong>CLIP</strong>、<strong>DINOv2</strong>、<strong>SAM2</strong> 编码器。</li><li>GPU 资源：训练使用 <strong>8 张 NVIDIA H100</strong>，评测时策略推理使用 <strong>NVIDIA RTX 4090</strong>。</li><li>评测协议：每个 LIBERO 任务 50 个回合；LIBERO-Plus 用同一 checkpoint 零样本评测；RoboTwin 2.0 每任务 50 条干净示范训练、100 次 rollout 评测（Easy 与 Hard）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO / LIBERO-Plus</strong>：ObjDream 在 LIBERO 取得最高平均成功率 <strong>98.6%</strong>；在 LIBERO-Plus 上整体排名第二（<strong>84.4%</strong>），在语言（<strong>90.6%</strong>）、光照（<strong>98.4%</strong>）、背景（<strong>98.5%</strong>）扰动下最优，传感器噪声第二（<strong>88.6%</strong>）；相机视角与机器人初始化仍是主要挑战。</li><li><strong>RoboTwin 2.0</strong>：Easy 平均成功率 <strong>60.25%</strong>，Hard <strong>22.75%</strong>；相比 <strong>StarVLA</strong> 分别提升 <strong>12.87</strong> 和 <strong>15.62</strong> 个百分点，Hard 设置增益更大，grab roller、open microwave、click bell 改善明显。</li><li><strong>消融实验</strong>：完整模型在 LIBERO-Long 与 LIBERO-Plus 上分别比骨干基线高 <strong>2.0</strong> 与 <strong>3.2</strong> 个百分点；移除因子化注入、身份引导路由、ObjDyn、ObjRel 的 LIBERO-Plus 整体成功率分别降至 <strong>82.5%、82.6%、83.2%、84.1%</strong>，说明三者提供互补增益。</li><li><strong>真实世界实验</strong>：在 ID 与 OOD 设置下平均成功率分别为 <strong>74%</strong> 与 <strong>55%</strong>；相比 $\pi_{0.5}$ 在 ID 下高 <strong>8</strong> 个百分点，相比 <strong>ControlVLA</strong> 在 ID/OOD 下分别高 <strong>14</strong> 和 <strong>24</strong> 个百分点；OOD 下在两果放置与桌面清扫任务上领先最佳基线 <strong>10</strong> 个百分点。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.20351/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Human Demonstrations as Post-Training Data for Any Robot Body: Retargeting the Object, Not the Hand</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.20157/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Atomic-WAM: Execution-Grounded Atomic-Motion Reasoning for World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

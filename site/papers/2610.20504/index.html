@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Graph-Reweighted Behavior Cloning with Human Interventions for Precise Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对长时程精确操作任务中 VLA 模型后训练面临的混合质量数据问题，即成功演示和人类干预辅助的 rollout 仍可能包含绕路、犹豫、失败尝试和不完美恢复行为。 核心挑战是进行 chunk 级信用分配：动作块是否值得模仿，取决于其执行时对任务进度的推进程度，而非整条轨迹的最终结果。 提出 GR-BC（Graph-Reweighted Behavior Cloning），一个离线迭代后训练框架，通过构建任务条件下的目标可达性图并执行逆图搜索，量化每个动作块对减少最小剩余步数的贡献。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.20504">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.20504.webp" alt="Graph-Reweighted Behavior Cloning with Human Interventions for Precise Robotic Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对长时程精确操作任务中 VLA 模型后训练面临的混合质量数据问题，即成功演示和人类干预辅助的 rollout 仍可能包含绕路、犹豫、失败尝试和不完美恢复行为。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Graph-Reweighted Behavior Cloning with Human Interventions for Precise Robotic Manipulation</h1>
+            <div class="detail-meta">2026-10-14 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.20504" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.20504" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.20504</span></div>
+            <p class="detail-summary">论文针对长时程精确操作任务中 VLA 模型后训练面临的混合质量数据问题，即成功演示和人类干预辅助的 rollout 仍可能包含绕路、犹豫、失败尝试和不完美恢复行为。 核心挑战是进行 chunk 级信用分配：动作块是否值得模仿，取决于其执行时对任务进度的推进程度，而非整条轨迹的最终结果。 提出 GR-BC（Graph-Reweighted Behavior Cloning），一个离线迭代后训练框架，通过构建任务条件下的目标可达性图并执行逆图搜索，量化每个动作块对减少最小剩余步数的贡献。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">浙江大学 CAD &amp; CG 国家重点实验室</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对长时程精确操作任务中 VLA 模型后训练面临的混合质量数据问题，即成功演示和人类干预辅助的 rollout 仍可能包含绕路、犹豫、失败尝试和不完美恢复行为。</p>
+  <ul class="reading-intro-points"><li>论文针对长时程精确操作任务中 VLA 模型后训练面临的混合质量数据问题，即成功演示和人类干预辅助的 rollout 仍可能包含绕路、犹豫、失败尝试和不完美恢复行为。</li><li>核心挑战是进行 chunk 级信用分配：动作块是否值得模仿，取决于其执行时对任务进度的推进程度，而非整条轨迹的最终结果。</li><li>提出 GR-BC（Graph-Reweighted Behavior Cloning），一个离线迭代后训练框架，通过构建任务条件下的目标可达性图并执行逆图搜索，量化每个动作块对减少最小剩余步数的贡献。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>浙江大学</strong> CAD & CG 国家重点实验室</li><li><strong>中国电信人工智能研究院（TeleAI）</strong></li><li><strong>华南理工大学</strong></li><li><strong>中国科学技术大学</strong></li><li><strong>上海科技大学</strong></li><li><strong>清华大学</strong></li><li><strong>Gamma Robotics (γ)</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对长时程精确操作任务中 VLA 模型后训练面临的混合质量数据问题，即成功演示和人类干预辅助的 rollout 仍可能包含绕路、犹豫、失败尝试和不完美恢复行为。</li><li>核心挑战是进行 chunk 级信用分配：动作块是否值得模仿，取决于其执行时对任务进度的推进程度，而非整条轨迹的最终结果。</li><li>提出 <strong>GR-BC</strong>（Graph-Reweighted Behavior Cloning），一个离线迭代后训练框架，通过构建任务条件下的目标可达性图并执行逆图搜索，量化每个动作块对减少最小剩余步数的贡献。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Graph-Retrieved Progress（GRP）</strong>：一种非参数化进度估计方法，构建任务条件可达性图并检索到成功的最小剩余步数，无需奖励模型、critic、进度标签或 VLM 标注。</li><li>提出 <strong>Graph-Reweighted Behavior Cloning（GR-BC）</strong>：图重加权行为克隆目标，在保持标准监督 VLA 损失的同时，使用 GRP 对每个已执行的动作块进行重加权；这种基于后果的重加权能复用失败轨迹中的恢复段，同时抑制成功轨迹中的回退段。</li><li>提出 <strong>Iterative Offline Graph-Guided VLA Adaptation</strong>：在人在环的离线迭代训练中验证 GR-BC，通过用干预辅助的 rollout 更新可达性图并在后续训练轮次中复用，在多个 VLA backbone 的多个长时程精确操作任务上实现超过 90% 的成功率。</li><li>无需轨迹比较、进度标签、奖励模型、动作条件 critic 或进度预测器，且不改变 VLA 架构。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>目标可达性图构建</strong>：在累积离线数据集上构建任务条件的有向图，使用冻结的多视图 <strong>MCR</strong> 编码器提取节点特征，并严格保留终端和成功状态。</li><li><strong>时序边与相似边</strong>：时序边连接轨迹内连续节点（成本为 k 帧），跨轨迹相似边基于多视角共识、夹爪状态一致性和局部距离自适应建立，以桥接失败/干预轨迹与成功路径。</li><li><strong>逆路径搜索</strong>：引入虚拟目标汇点 <strong>g⋆</strong>，从所有成功终端节点以零成本边连接；在反向图上执行 <strong>Dijkstra</strong> 算法得到每个节点到成功的最小剩余成本 R_rec(v)，无路径节点赋无穷大并赋予零训练权重。</li><li><strong>稠密插值</strong>：将稀疏图节点的剩余步数线性插值到所有轨迹帧，得到稠密的进度势函数。</li><li><strong>后果调制优化</strong>：将剩余步数归一化为进度分数 p(s)，计算净进度 Δ_t 和回退深度 d_t，据此生成 step-wise 权重 w_t，满足稳定性条件则加权，否则置零以屏蔽次优梯度。</li><li><strong>迭代离线更新</strong>：每轮将新 rollout 追加到图中并重跑逆 Dijkstra 搜索刷新权重，将计算瓶颈从昂贵神经网络重训转移到高效图查询。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>四个真实世界长时程精确操作任务：<strong>Assembly Model</strong>、<strong>Graphics Card Assembly</strong> 等（原文被截断）。</li><li><strong>Assembly Model</strong> 任务配置：初始演示 215 条，平均 episode 长度 376 帧，动作块 horizon N = 30 帧，使用头部 + 左腕 + 右腕三个 RGB 视图。</li><li>硬件平台：7-DoF <strong>Flexiv Rizon 4s</strong> 机械臂、<strong>Robotiq 2F-85</strong> 平行夹爪、<strong>RealSense L515</strong> 头部相机、两个腕部 <strong>RealSense D405</strong>、一个侧面 <strong>RealSense D405</strong>、用于共享控制干预的 <strong>SpaceMouse</strong>。</li><li>动作空间 8 维，控制频率 30 Hz。</li><li>策略部署和在线推理运行在单张 <strong>NVIDIA GeForce RTX 5090</strong> GPU 上。</li><li>VLA backbone：主要使用 <strong>X-VLA</strong>，并评估 <strong>π0.5</strong> 和 <strong>SmolVLA</strong>。</li><li>编码器对比：<strong>R3M</strong>、<strong>MCR</strong> 和 <strong>V-JEPA2.1</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>进度估计评估</strong>：在混合质量轨迹上对比 <strong>ReWiND</strong>、<strong>SARM</strong>、<strong>Robo-Dopamine</strong>、<strong>RoboMeter</strong>，每个任务评估 30 条成功（SE）和 30 条失败（FE）episode。</li><li>评估指标：成功-失败进度差距 <strong>Δ_SF</strong>、偏差窗口检测率 <strong>ρ_dev</strong>、成功分类率 <strong>Class. SE</strong>、失败分类率 <strong>Class. FE</strong>。</li><li><strong>GRP 结果</strong>：Δ_SF = 0.97、ρ_dev = 0.92、Class. SE = 30/30、Class. FE = 30/30，显著优于所有基线（如 SARM Δ_SF = 0.24、ρ_dev = 0.48；RoboMeter Δ_SF = 0.159、ρ_dev = 0.69）。</li><li><strong>策略改进评估</strong>：在所有四个任务上取得最高最终成功率，多轮离线后训练后达到 <strong>91%</strong> 成功率，且改进更一致。</li><li>对比基线 <strong>DAgger</strong>、<strong>AWR</strong>、<strong>RA-BC</strong>：DAgger 均匀克隆自主错误和恢复动作，AWR 对不准确的动作价值估计敏感，RA-BC 受学习进度模型粒度限制。</li><li><strong>消融研究</strong>（Assembly Model 数据集）：仅时序边时失败可达率为 0.0%，无夹爪过滤时失败可达率为 97.8% 但零权重比例为 26.3%、失配边为 15.8%；完整方法失败可达率 98.3%、零权重比例 25.0%、失配边 0.0%。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.20604/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VITAL: From Visual Motion to Precise Action</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.20474/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">AdaRSI: On-Demand Recursive Self-Improvement for Embodied Agents</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

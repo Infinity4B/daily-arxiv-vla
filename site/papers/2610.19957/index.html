@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Complementary Future Token Pruning for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="世界动作模型（WAMs）联合预测未来视觉状态与机器人动作，但处理密集的未来帧 token 带来大量推理延迟，成为实际部署的关键瓶颈。 论文提出 CF-Prune，一个免训练（training-free）框架，可在预训练 WAM 中剪除未来帧 token，加速推理而无需重新训练。 核心洞察：未来视觉预测在 WAM 中主要作为动作生成的中间参考，无需保留高保真视频合成所需的全部视觉细节，因此大量未来帧 token 是冗余的。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.19957">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.19957.webp" alt="Complementary Future Token Pruning for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">世界动作模型（WAMs）联合预测未来视觉状态与机器人动作，但处理密集的未来帧 token 带来大量推理延迟，成为实际部署的关键瓶颈。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Complementary Future Token Pruning for World Action Models</h1>
+            <div class="detail-meta">2026-10-14 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.19957" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.19957" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.19957</span></div>
+            <p class="detail-summary">世界动作模型（WAMs）联合预测未来视觉状态与机器人动作，但处理密集的未来帧 token 带来大量推理延迟，成为实际部署的关键瓶颈。 论文提出 CF-Prune，一个免训练（training-free）框架，可在预训练 WAM 中剪除未来帧 token，加速推理而无需重新训练。 核心洞察：未来视觉预测在 WAM 中主要作为动作生成的中间参考，无需保留高保真视频合成所需的全部视觉细节，因此大量未来帧 token 是冗余的。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Seoul National University（首尔大学）：Baekseung Kim、Sohye…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">世界动作模型（WAMs）联合预测未来视觉状态与机器人动作，但处理密集的未来帧 token 带来大量推理延迟，成为实际部署的关键瓶颈。</p>
+  <ul class="reading-intro-points"><li>世界动作模型（WAMs）联合预测未来视觉状态与机器人动作，但处理密集的未来帧 token 带来大量推理延迟，成为实际部署的关键瓶颈。</li><li>论文提出 CF-Prune，一个免训练（training-free）框架，可在预训练 WAM 中剪除未来帧 token，加速推理而无需重新训练。</li><li>核心洞察：未来视觉预测在 WAM 中主要作为动作生成的中间参考，无需保留高保真视频合成所需的全部视觉细节，因此大量未来帧 token 是冗余的。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Seoul National University</strong>（首尔大学）：Baekseung Kim、Sohyeon Hong、Suhyun Jeon、Minkyu Kim、Seungyeon Kim、Nojun Kwak</li><li><strong>Korea Advanced Institute of Science & Technology (KAIST)</strong>：Junhoo Lee</li><li><strong>Dnotitia</strong>：Donghoon Han</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>世界动作模型（<strong>WAMs</strong>）联合预测未来视觉状态与机器人动作，但处理密集的未来帧 token 带来大量推理延迟，成为实际部署的关键瓶颈。</li><li>论文提出 <strong>CF-Prune</strong>，一个免训练（training-free）框架，可在预训练 WAM 中剪除未来帧 token，加速推理而无需重新训练。</li><li>核心洞察：未来视觉预测在 WAM 中主要作为动作生成的中间参考，无需保留高保真视频合成所需的全部视觉细节，因此大量未来帧 token 是冗余的。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>重新审视 WAM 中未来帧的辅助作用，从动作预测视角形式化 token 剪枝问题，揭示传统视频生成中未被考虑的冗余性。</li><li>提出 <strong>CF-Prune</strong>，无需额外训练，利用未来帧 token 相对于动作与指令 token 的信息集中度，在噪声初始潜变量阶段识别冗余 token。</li><li>设计基于熵的阶段识别机制，通过跨视角（腕部 vs 第三人称）与时间维度（早期 vs 后期动作）的注意力熵对比，识别精度敏感阶段并选择性放宽剪枝。</li><li>在 <strong>RoboLab</strong>、<strong>RoboCasa</strong> 仿真基准及真实世界操作任务上验证，在保持甚至提升操作性能的同时实现一致的推理加速。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>指令基础的空间先验</strong>：利用观测 token 到指令 token 的注意力，在初始去噪步识别与任务相关的空间区域（因动作和未来帧 token 此时噪声过大，观测 token 无扩散噪声，更适合作为空间先验）。</li><li><strong>基于动作的视觉相关性</strong>：计算动作 token 对视觉区域的注意力权重；腕部相机视角的未来帧使用逐帧 action-to-future 注意力，第三人称视角因背景固定则统一使用 action-to-observation 注意力。</li><li><strong>层选择</strong>：通过归一化注意力熵选择指令评分层（ℓ_inst=11）与动作评分层（ℓ_act=23），仅在首次策略查询时选择并固定，避免重复计算；熵在层间和任务间保持一致。</li><li><strong>空间平滑</strong>：将聚合注意力分数重塑为 2D 空间图，应用 5×5 高斯模糊，使相关性扩散到相邻 patch，鼓励空间连续的 token 选择。</li><li><strong>动作-指令互补选择</strong>：给定剪枝率 α，先按动作相关性保留 top (1-α)/2 的 token，再在剩余 token 中按指令相关性保留 (1-α)/2，融合两种互补信号。</li><li><strong>基于熵的阶段识别</strong>：定义熵对比分数 C = C_view + C_temp（视角与时间熵差），当 C > τ 时判定为精度阶段，禁用剪枝；否则为粗粒度阶段正常剪枝。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真基准</strong>：<strong>RoboLab</strong>（64 个 Simple、39 个 Moderate、17 个 Complex 操作任务，每任务 10 次 rollout）、<strong>RoboCasa</strong>（每类选一个代表任务，各 100 次 rollout）。</li><li><strong>真实世界任务</strong>：<strong>Franka Emika Panda</strong> 平台上的三个桌面操作任务（按下紧急按钮、方块拾取放置、方块堆叠），每任务 25 次 rollout。</li><li><strong>基础模型</strong>：<strong>Cosmos3</strong>（RoboLab 使用 <strong>Cosmos3-Nano-Policy-DROID</strong>，基于 <strong>DROID</strong> 数据集预训练，无需额外训练；RoboCasa 微调 Cosmos3-Nano 16,000 步，batch size 1,024；真实世界使用 <strong>LoRA</strong> 微调）。</li><li><strong>训练/推理资源</strong>：所有延迟测量在 <strong>NVIDIA RTX A6000</strong> GPU 上完成；真实世界每任务采集 60 条成功演示。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：RoboLab、RoboCasa 仿真基准及真实世界 Franka 机械臂任务。</li><li><strong>对比方法</strong>：Dense 基线、<strong>SpecPrune-VLA</strong>（适配 WAM，Obs-only 70% 与 Obs+future 25% 两种变体）、<strong>SP-VLA</strong>（同上两种变体）、<strong>Sparse VideoGen</strong>。</li><li><strong>主要指标</strong>：成功率（Success Rate）、粗粒度阶段加速、平均推理加速、FLOPs 减少。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - <strong>35% 剪枝</strong>：在三个平台上实现 <strong>1.19–1.27×</strong> 平均加速，同时成功率提升（RoboLab +1.3 个百分点，RoboCasa +4.0 个百分点，真实世界 +5.4 个百分点至 90.7%）。</p>
+<p> - <strong>50% 剪枝</strong>：在两个仿真基准上实现 <strong>1.29–1.33×</strong> 平均加速，总体成功率与 Dense 基线差距在 1.0 个百分点以内（RoboLab 35.7% vs 36.5%，RoboCasa 64.0% vs 65.0%）。</p>
+<p> - <strong>消融实验</strong>：动作-指令互补选择（35.3%）优于仅指令（34.0%）与仅动作（30.8%），且动作优先优于指令优先（34.3%）；阶段识别将成功率从 35.3% 提升至 37.8%，仅 31.4% 的调用被判定为精度阶段；高斯平滑将成功率从 36.0% 提升至 37.8%。</p>
+<p> - <strong>对比结果</strong>：仅观测 token 剪枝加速有限；扩展到未来帧会带来更大性能下降；Sparse VideoGen 因 profiling 开销导致速度甚至慢于 Dense 基线（0.97×）。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.20019/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">MorphAct: Robot Policies Morphing with the Worlds They Act In</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.19825/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">What Matters for World Modeling in Vision-Language-Action Models?</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

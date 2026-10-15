@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What Matters for World Modeling in Vision-Language-Action Models? - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文首次对 Vision-Language-Action 模型（VLAs）中的世界建模进行系统性、受控的实证研究，试图厘清不同世界表示、集成范式和策略骨干网络所带来收益的真正来源。 现有工作在世界表示（像素细节到语义潜变量）、集成方式（隐式对齐、显式条件化）和策略骨干上同时变化，导致性能提升的归因不清；论文通过统一框架分离这些因素。 围绕四个核心问题展开：世界表示是否存在通用最优解、集成范式的权衡、骨干泛化能力，以及不同任务条件下的综合性能。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.19825">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.19825.webp" alt="What Matters for World Modeling in Vision-Language-Action Models?" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文首次对 Vision-Language-Action 模型（VLAs）中的世界建模进行系统性、受控的实证研究，试图厘清不同世界表示、集成范式和策略骨干网络所带来收益的真正来源。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">What Matters for World Modeling in Vision-Language-Action Models?</h1>
+            <div class="detail-meta">2026-10-14 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.19825" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.19825" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.19825</span></div>
+            <p class="detail-summary">论文首次对 Vision-Language-Action 模型（VLAs）中的世界建模进行系统性、受控的实证研究，试图厘清不同世界表示、集成范式和策略骨干网络所带来收益的真正来源。 现有工作在世界表示（像素细节到语义潜变量）、集成方式（隐式对齐、显式条件化）和策略骨干上同时变化，导致性能提升的归因不清；论文通过统一框架分离这些因素。 围绕四个核心问题展开：世界表示是否存在通用最优解、集成范式的权衡、骨干泛化能力，以及不同任务条件下的综合性能。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">NLPR（模式识别国家重点实验室），中国科学院自动化研究所</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文首次对 Vision-Language-Action 模型（VLAs）中的世界建模进行系统性、受控的实证研究，试图厘清不同世界表示、集成范式和策略骨干网络所带来收益的真正来源。</p>
+  <ul class="reading-intro-points"><li>论文首次对 Vision-Language-Action 模型（VLAs）中的世界建模进行系统性、受控的实证研究，试图厘清不同世界表示、集成范式和策略骨干网络所带来收益的真正来源。</li><li>现有工作在世界表示（像素细节到语义潜变量）、集成方式（隐式对齐、显式条件化）和策略骨干上同时变化，导致性能提升的归因不清；论文通过统一框架分离这些因素。</li><li>围绕四个核心问题展开：世界表示是否存在通用最优解、集成范式的权衡、骨干泛化能力，以及不同任务条件下的综合性能。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>NLPR（模式识别国家重点实验室）</strong>，<strong>中国科学院自动化研究所</strong></li><li><strong>中国科学院大学人工智能学院</strong></li><li><strong>阿里巴巴集团（Alibaba Group）</strong></li><li><strong>FiveAges</strong></li><li>作者包括 Qisen Ma、Yixiang Chen、Yuan Xu、Peiyan Li、Jiabing Yang、Kai Wang、Jianhua Yang、Jianlou Si、Jun Huang、Jing Liu、Nianfeng Liu、Yan Huang、Liang Wang</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文首次对 <strong>Vision-Language-Action 模型（VLAs）中的世界建模</strong>进行系统性、受控的实证研究，试图厘清不同世界表示、集成范式和策略骨干网络所带来收益的真正来源。</li><li>现有工作在世界表示（像素细节到语义潜变量）、集成方式（隐式对齐、显式条件化）和策略骨干上同时变化，导致性能提升的归因不清；论文通过统一框架分离这些因素。</li><li>围绕四个核心问题展开：世界表示是否存在通用最优解、集成范式的权衡、骨干泛化能力，以及不同任务条件下的综合性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>将现有世界建模方法归纳为四种代表性范式：<strong>Implicit Future Alignment（WM-Align）</strong>、<strong>Explicit Future Query（WM-Query）</strong>、<strong>MoT Future Expert（WM-MoT）</strong>、<strong>External World Predictor（WM-Ext）</strong>，并在统一框架下逐一实例化。</li><li>在统一策略骨干与训练协议下，系统对比多种世界表示（像素、2D 语义、3D 几何、时空视频动态），揭示表示有效性依赖范式、而 <strong>2D 语义表示（DINOv3、SigLIP）</strong> 具有跨范式稳健增益。</li><li>跨 <strong>标准 VLM 骨干（Qwen3-VL-2B）</strong> 与 <strong>预训练机器人基础 VLA（π0.5）</strong> 评估范式泛化性，发现解耦设计对预训练 VLA 兼容性更好。</li><li>在域内、域外、长时程、动态、少样本及真实世界场景下进行全面评测，给出可操作的设计原则。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基础框架：以 <strong>Qwen3-VL-2B</strong> 为 VLM 骨干，搭配逐层 cross-DiT 动作专家，将带噪动作块投影为 K 个动作 token，通过跨注意力关注视觉与语言 token，并采用 <strong>flow-matching</strong> 目标联合训练。</li><li>统一世界监督：冻结编码器 <strong>E</strong> 从未来观测提取世界表示 z_{t:t+T}，各策略预测 ẑ_{t:t+T} 并以余弦相似度目标 L_world = 1 − cos(ẑ, z) 对齐，整体目标为 L = L_action + λ_world·L_world。</li><li><strong>WM-Align</strong>：无额外结构，用轻量 MLP 将中间层视觉 token 对齐未来表示，作为辅助表征学习目标；推理时丢弃预测器。</li><li><strong>WM-Query</strong>：在序列末尾加入可学习未来查询 token，动作专家跨注意力显式纳入查询 token，并用轻量解码器重建稠密未来特征；推理时丢弃解码器。</li><li><strong>WM-MoT</strong>：以独立 <strong>Future Expert</strong> 作为并行 Mixture-of-Transformers 流，与动作专家逐层交互，动作专家同时关注 VLM token 与未来专家中间隐状态。</li><li><strong>WM-Ext</strong>：使用独立多层 Transformer 作为外部世界预测器，用 <strong>AdaLN</strong> 由 VLM 的未来查询 token 调制，并将预测表示直接注入动作专家的跨注意力上下文。</li><li>创新点在于把"世界建模如何被条件化、如何与策略解耦"抽象为可控变量，实现公平的范式间比较。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评测基准：<strong>LIBERO</strong>（多任务操作）、<strong>LIBERO-Plus</strong>（域外鲁棒性）、<strong>RoboTwin 2.0</strong>（双臂、不同任务时程）、<strong>DOMINO</strong>（动态操作），以及真实机器人实验。</li><li>世界表示编码器：<strong>ImageVAE</strong>、<strong>WanVAE</strong>（像素级）、<strong>DINOv3</strong>、<strong>SigLIP</strong>（2D 语义）、<strong>VGGT</strong>（3D 空间几何）、<strong>V-JEPA 2.1</strong>（时空视频动态）。</li><li>策略骨干：<strong>Qwen3-VL-2B</strong> 作为主测试平台，<strong>π0.5</strong>（预训练基础 VLA）用于骨干泛化实验。</li><li>训练资源、参数量与部署成本的细节置于附录 <strong>A.6 Compute and Deployment Cost</strong>（所提供 HTML 中未展开具体数值）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估维度覆盖域内/域外分布、长时程、动态物体、少样本数据（25%、50%、100% 演示）以及真实世界设置，指标为成功率（%）。</li><li><strong>表示分析</strong>：无单一表示通用最优，排名随范式反转（V-JEPA 2.1 在 WM-MoT 上 OOD 增益最强但在 WM-Ext 上低于基线；VGGT 利于 WM-Align 却损害 WM-Ext）；<strong>DINOv3 与 SigLIP</strong> 在所有四种范式上均稳定提升 ID 与 OOD 平均表现，DINOv3 被选为默认表示。</li><li><strong>LIBERO / LIBERO-Plus</strong>：四种范式均优于纯动作基线；WM-Align 在 LIBERO 达 <strong>98.6%</strong>（↑1.9），WM-MoT 在 LIBERO-Plus 平均 <strong>76.2%</strong>（↑4.4）且七类扰动全面改善；语言扰动下解耦范式（WM-MoT/WM-Ext）无明显下降，而耦合范式最多降 2.9%。</li><li><strong>RoboTwin 2.0</strong>：Clean2Clean 下收益随任务时程增长，短/中/长任务分别提升 5.5–8.6%、7.4–12.8%、16.5–26.3%；Clean2Random 长时程提升 1.3–3.7%，而短任务多数范式略有下降（预测未来收益有限甚至引入噪声）。</li><li><strong>动态操作（DOMINO Level 1）</strong>：解耦设计更强，WM-MoT 达 <strong>15.5%</strong>、WM-Ext 达 <strong>15.1%</strong>，高于 WM-Query（13.5%）、WM-Align（11.9%）与动作基线（10.6%）。</li><li><strong>数据稀缺</strong>：WM-Ext 在 50% 数据时域内达 <strong>96.5%</strong>，WM-MoT 在 25% 数据时 OOD 达 <strong>62.4%</strong>；WM-Query 在低数据下退化明显。</li><li><strong>π0.5 兼容性</strong>：解耦设计迁移更佳，WM-Ext 域内增益最大（平均 71.7%，↑2.6），WM-MoT OOD 鲁棒性最强（平均 49.7%，↑3.3）；WM-Query 略低于基线，WM-Align 下降超过 5%（域内 ↓5.5，域外 ↓5.4）。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.19957/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Complementary Future Token Pruning for World Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.19753/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Coordi-pi: Coordination-Aware Dual-Hand Action Representation for Bimanual Dexterous Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

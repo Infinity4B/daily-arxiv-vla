@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SPECTRA-VLA: Base-Fine Hyperspectral Token Transfer at Frozen Vision-Language-Action Interfaces - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 SPECTRA-VLA，在不重训练视觉编码器与动作解码器的前提下，将高光谱（HSI）信息注入预训练 视觉-语言-动作（VLA） 模型，实现原生宽度的“光谱升级”。 核心问题：RGB 优化的 VLA 接口难以区分 RGB 相似但光谱不同的废弃物目标（SpectralWaste 中的跨类别物体具有相似真彩 RGB token 但光谱不同），而直接替换视觉表示会破坏预训练解码器所依赖的 token 结构。 研究目标是在冻结的编码器-解码器接口处，同时实现连续光谱增强与接收 token 内容保持（receiving-token preservation），并分别量化识别增益、解码器扰动与既有决策函数的可复用性。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.19651">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.19651.webp" alt="SPECTRA-VLA: Base-Fine Hyperspectral Token Transfer at Frozen Vision-Language-Action Interfaces" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 SPECTRA-VLA，在不重训练视觉编码器与动作解码器的前提下，将高光谱（HSI）信息注入预训练 视觉-语言-动作（VLA） 模型，实现原生宽度的“光谱升级”。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">SPECTRA-VLA: Base-Fine Hyperspectral Token Transfer at Frozen Vision-Language-Action Interfaces</h1>
+            <div class="detail-meta">2026-10-14 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.19651" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.19651" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.19651</span></div>
+            <p class="detail-summary">论文提出 SPECTRA-VLA，在不重训练视觉编码器与动作解码器的前提下，将高光谱（HSI）信息注入预训练 视觉-语言-动作（VLA） 模型，实现原生宽度的“光谱升级”。 核心问题：RGB 优化的 VLA 接口难以区分 RGB 相似但光谱不同的废弃物目标（SpectralWaste 中的跨类别物体具有相似真彩 RGB token 但光谱不同），而直接替换视觉表示会破坏预训练解码器所依赖的 token 结构。 研究目标是在冻结的编码器-解码器接口处，同时实现连续光谱增强与接收 token 内容保持（receiving-token preservation），并分别量化识别增益、解码器扰动与既有决策函数的可复用性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">12 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">National Yang Ming Chiao Tung University（台湾阳明交通大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 SPECTRA-VLA，在不重训练视觉编码器与动作解码器的前提下，将高光谱（HSI）信息注入预训练 视觉-语言-动作（VLA） 模型，实现原生宽度的“光谱升级”。</p>
+  <ul class="reading-intro-points"><li>论文提出 SPECTRA-VLA，在不重训练视觉编码器与动作解码器的前提下，将高光谱（HSI）信息注入预训练 视觉-语言-动作（VLA） 模型，实现原生宽度的“光谱升级”。</li><li>核心问题：RGB 优化的 VLA 接口难以区分 RGB 相似但光谱不同的废弃物目标（SpectralWaste 中的跨类别物体具有相似真彩 RGB token 但光谱不同），而直接替换视觉表示会破坏预训练解码器所依赖的 token 结构。</li><li>研究目标是在冻结的编码器-解码器接口处，同时实现连续光谱增强与接收 token 内容保持（receiving-token preservation），并分别量化识别增益、解码器扰动与既有决策函数的可复用性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>National Yang Ming Chiao Tung University</strong>（台湾阳明交通大学）</li><li>作者：<strong>Chih-Chung Hsu</strong>（chihchung@nycu.edu.tw）</li><li>论文致谢中披露使用 <strong>OpenAI Codex</strong> 与 <strong>ChatGPT</strong> 辅助实验实现与分析</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>SPECTRA-VLA</strong>，在不重训练视觉编码器与动作解码器的前提下，将高光谱（HSI）信息注入预训练 <strong>视觉-语言-动作（VLA）</strong> 模型，实现原生宽度的“光谱升级”。</li><li>核心问题：RGB 优化的 VLA 接口难以区分 RGB 相似但光谱不同的废弃物目标（SpectralWaste 中的跨类别物体具有相似真彩 RGB token 但光谱不同），而直接替换视觉表示会破坏预训练解码器所依赖的 token 结构。</li><li>研究目标是在冻结的编码器-解码器接口处，同时实现<strong>连续光谱增强</strong>与<strong>接收 token 内容保持</strong>（receiving-token preservation），并分别量化识别增益、解码器扰动与既有决策函数的可复用性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>保留接收 token 的光谱迁移</strong>：学习到的连续光谱残差通过每个 token 自身的归一化伪彩参考进入，保持预训练编码器、动作解码器与原生 token 宽度不变；在 <strong>86 个留出采集会话</strong>上类别平衡准确率（bAcc）从 <strong>0.812 提升至 0.883</strong>，配对会话增益 <strong>0.071 [0.050, 0.107]</strong>，第二个骨干网络复现该增益（<strong>0.812 → 0.914</strong>）。</li><li><strong>超越类别压缩的连续增强</strong>：在五组会话分组测试中，连续状态与后验类别码状态对类内光谱形状的恢复分别为 <strong>R² = 0.802 / 0.337</strong>；学习残差相对无标签映射也在类别 bAcc（<strong>0.865 / 0.773</strong>）与解码器 KL（<strong>0.048 / 0.062</strong>）上更优。</li><li><strong>光谱内容与组合方式的交互效应</strong>：在 86 个采集上，“自 token 相加”相对“池化替换”使冻结解码后的目标特异性恢复增量约翻倍（交互项 <strong>0.0171 [0.0121, 0.0228]</strong>）；图像不相交测试显示在相近识别率下，参考固定探针复用率 <strong>0.701 对 0.590</strong>。</li><li><strong>共同扰动预算下的校准收益</strong>：在相同位移允许量下，base-fine 以更小的扰动尾部达到与原投影消融相当的识别率，将“投影”带来的操作点收益与单纯识别增益分离。</li><li><strong>系统性消融与诊断</strong>：提供类别码/残差位置控制、类别匹配光谱交换、等位移校准、检查点与读出敏感性、骨干网络与失败案例分析等完整证据链。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>总体框架</strong>：冻结 VLA 的视觉骨干与动作解码器，仅在可视化 token 连接处训练一个轻量光谱分支与辅助头，推理时丢弃辅助头。</li><li><strong>伪彩参考与目标支撑</strong>：传感器覆盖 <strong>900–1700 nm</strong>，固定波段 <strong>[119, 60, 0]</strong> 通过冻结骨干与投影器得到后投影嵌入 <strong>Z^base ∈ R^{256×4096}</strong>；将目标掩码区域池化到 16×16 网格得到占用权重 <strong>m_it</strong>，经非仿射 LayerNorm 定义参考网格 <strong>G_it</strong> 与池化基态 <strong>B_i</strong>。</li><li><strong>光谱细残差</strong>：将目标的 120 个原始波段与 16 个 NMF 坐标拼接，经瓶颈映射（隐层宽度 r）得到 u_i；通过减去其在 <strong>B_i°</strong> 上的投影得到近似正交残差 <strong>D̃_i</strong>，再归一化并缩放到 <strong>ρ‖B_i°‖₂（ρ = 0.1）</strong> 得到 <strong>D_i</strong>。</li><li><strong>组合与注入</strong>：按式 (8) 将残差以掩码加权方式注入每个目标 token：<strong>Ĝ_it(q) = (1−m_it)G_it + m_it LN_ε(G_it + qD_i)</strong>（q > 0），q = 0 时严格退化为参考 G；非目标 token 保持不变。</li><li><strong>创新点</strong>：与“池化替换”不同，<strong>相加方式在注入分支与跳连分支中均使用 token 自身的参考</strong>；结合投影（定义基互补方向）、范数控制与验证集校准的注入尺度 q ∈ U(0,4) 共同约束执行扰动。</li><li><strong>训练目标</strong>：类别监督的加权交叉熵（共享头 h_c 分类参考态与采样尺度态、独立头 h_f 监督残差本身）+ 0.1 倍 T₀ 参考项 + 1e-4 残差平方均值惩罚；仅用类别标签监督适配器。</li><li><strong>执行状态选择</strong>：定义相对位移 d_i(q) 与验证均值 d̄_val(q)，在共同位移预算 b 下最大化验证效用 <strong>U = bAcc + 0.25·Pair</strong> 选择注入尺度；另有等均值校准与信息匹配校准变体。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>SpectralWaste</strong> 语料，原始划分 514/167/171（训练/验证/测试）源图像；取至少 100 像素的四连通目标分量得到 <strong>2,295 个物体</strong>，划分为 1,392/442/461；主评估采用留一会话的 <strong>86 个采集会话、2,291 个物体</strong>。</li><li><strong>类别</strong>：6 类运行性物体类别（film、basket、cardboard、video tape、filament、bag）；四状态代理由类别派生（cardboard→0；film/filament/bag→1；basket→2；video tape→3）。</li><li><strong>预处理</strong>：立方体从 <strong>224 波段线性重采样至 120 波段</strong>，图像缩放至 <strong>224²</strong>，保留原始物体均值光谱，不做逐图像辐射归一化；目标外像素置零。</li><li><strong>模型规模</strong>：以 <strong>OpenVLA（7B 参数）</strong> 为冻结骨干，另用 <strong>SpatialVLA</strong>（8,194 动作坐标）做第二骨干验证；视觉 token 为 <strong>256×4096</strong>；base-fine 与基条件直接映射器的隐层宽度为 64/32，映射器参数量 <strong>271,184 / 275,024</strong>。</li><li><strong>训练/推理环境</strong>：<strong>PyTorch 2.6.0、CUDA 12.4、Transformers 4.40.1</strong>，bfloat16、批大小 4、无 KV 缓存、缩放点积注意力；选择阶段 12 个内层训练 epoch，重拟合 60 epoch。文中未明确给出 GPU/TPU 的数量与型号。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估环境与基准</strong>：以 <strong>留一采集会话（leave-one-session-out）</strong> 为主估计量，86 个会话各评估一次；固定图像划分作为独立敏感性诊断。对照包括伪彩基线、<strong>高锚点直接替换</strong>（要求验证余弦 ≥ 0.94）、无正交化消融、光谱-only 重定向器、固定映射替换与池化替换。</li><li><strong>主要评估指标</strong>：池化 token 类别平衡准确率（类别 bAcc）、token 代理 bAcc、伪彩参考余弦、类内光谱恢复 <strong>R²</strong> 与夹角、四状态解码器 logit bAcc（<strong>refitted</strong> 与 <strong>reference-fixed / base-fixed FP</strong>）、参照态到改动态的 <strong>KL 散度</strong>、扰动 P95 尾部。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 跨会话识别：基线 <strong>0.812</strong> → SPECTRA-VLA <strong>0.883</strong>（+0.071 [0.050, 0.107]）；代理 bAcc <strong>0.860 → 0.916</strong>；高锚点直接替换仅 <strong>0.814</strong>（余弦 0.991），说明“参考相似度高”并不等于获得光谱增益。</p>
+<p> - 光谱内容：连续表示类内恢复 <strong>R² = 0.824</strong>，显著优于类别后验 <strong>0.374</strong> 与硬类别码 <strong>0.333</strong>（ΔR² = 0.450 [0.398, 0.504]）；留出会话上为 <strong>0.802 vs 0.337</strong>。</p>
+<p> - 组合方式：相同残差与尺度下，自 token 相加相对池化替换在冻结解码器 logit 上复用外部类别探针为 <strong>0.701 vs 0.590</strong>；类别匹配交换显示自 token 组合约使目标特异性恢复增量翻倍。</p>
+<p> - 解码器扰动：学习残差相对于无标签映射降低平均解码器 KL（<strong>0.048 vs 0.062</strong>）并提升类别 bAcc（<strong>0.865 vs 0.773</strong>）；等位移校准下 base-fine 与原投影消融识别率相当但扰动尾部更小。</p>
+<p> - 消融与稳健性：去除正交化的“无正交化”变体在部分单元格识别略高（<strong>0.893</strong>），但在共同位移预算下未获得同等扰动优势；召回在六类中的五类提升，仅 filament 从 0.859 微降至 0.848；逐会话删除均保留正向类别增益（0.068–0.078）；全光谱相对伪彩三波段优势为 <strong>0.886 vs 0.835</strong>（配对 CI [0.032, 0.075]）。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.19656/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Accelerating VLA Inference with Perturbation Informed Execution</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.19604/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ForceBench: Benchmarking Force Integration for Robotic Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
