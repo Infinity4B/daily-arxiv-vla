@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Multi-Teacher On-Policy Distillation for Flow-Based Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究如何将多个领域专精的基于流的视觉-语言-动作（VLA）策略整合进一个共享参数的单一学生模型中，实现跨领域能力合并。 指出基于流的 VLA 在策略蒸馏时存在两级分布失配：环境观测级（学生执行动作决定其看到的观测）与动作生成中间状态级（学生速度场决定其经过的流轨迹）。 提出两级在线策略蒸馏（Two-Level On-Policy Distillation）框架，在由学生诱导的环境上下文与学生生成的流状态上同时施加教师监督。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.21522">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.21522.webp" alt="Multi-Teacher On-Policy Distillation for Flow-Based Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文研究如何将多个领域专精的基于流的视觉-语言-动作（VLA）策略整合进一个共享参数的单一学生模型中，实现跨领域能力合并。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Multi-Teacher On-Policy Distillation for Flow-Based Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-15 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.21522" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.21522" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.21522</span></div>
+            <p class="detail-summary">论文研究如何将多个领域专精的基于流的视觉-语言-动作（VLA）策略整合进一个共享参数的单一学生模型中，实现跨领域能力合并。 指出基于流的 VLA 在策略蒸馏时存在两级分布失配：环境观测级（学生执行动作决定其看到的观测）与动作生成中间状态级（学生速度场决定其经过的流轨迹）。 提出两级在线策略蒸馏（Two-Level On-Policy Distillation）框架，在由学生诱导的环境上下文与学生生成的流状态上同时施加教师监督。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Lichao Ni（华为技术有限公司、清华大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文研究如何将多个领域专精的基于流的视觉-语言-动作（VLA）策略整合进一个共享参数的单一学生模型中，实现跨领域能力合并。</p>
+  <ul class="reading-intro-points"><li>论文研究如何将多个领域专精的基于流的视觉-语言-动作（VLA）策略整合进一个共享参数的单一学生模型中，实现跨领域能力合并。</li><li>指出基于流的 VLA 在策略蒸馏时存在两级分布失配：环境观测级（学生执行动作决定其看到的观测）与动作生成中间状态级（学生速度场决定其经过的流轨迹）。</li><li>提出两级在线策略蒸馏（Two-Level On-Policy Distillation）框架，在由学生诱导的环境上下文与学生生成的流状态上同时施加教师监督。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Lichao Ni</strong>（<strong>华为技术有限公司</strong>、<strong>清华大学</strong>）</li><li><strong>Yuhan Liu</strong>（<strong>华为技术有限公司</strong>）</li><li><strong>Pengfei Li</strong>（<strong>华为技术有限公司</strong>）</li><li><strong>Guanghuan Fang</strong>（<strong>华为技术有限公司</strong>）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文研究如何将多个领域专精的<strong>基于流的视觉-语言-动作（VLA）策略</strong>整合进一个共享参数的单一学生模型中，实现跨领域能力合并。</li><li>指出基于流的 VLA 在策略蒸馏时存在<strong>两级分布失配</strong>：环境观测级（学生执行动作决定其看到的观测）与动作生成中间状态级（学生速度场决定其经过的流轨迹）。</li><li>提出<strong>两级在线策略蒸馏（Two-Level On-Policy Distillation）</strong>框架，在由学生诱导的环境上下文与学生生成的流状态上同时施加教师监督。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>两级在线策略蒸馏框架</strong>，通过在被学生诱导的环境状态和动作生成状态上施加教师监督，整合领域专精的基于流的 VLA 模型。</li><li>在共享的 <strong>π0.5</strong> 学生模型上实现跨域能力整合，在 <strong>LIBERO</strong>、<strong>Meta-World</strong>、<strong>CALVIN</strong> 三个基准的所有聚合指标上超越 <strong>SFT 初始化</strong>、<strong>Action Loss OPD</strong> 与 <strong>Teacher-rollout SFT</strong>。</li><li>通过匹配对照实验刻画了<strong>监督目标（速度 vs. 端点动作）</strong>与<strong>联合输入来源（学生诱导 vs. 教师诱导）</strong>各自的作用。</li><li>学习曲线表明<strong>局部速度监督</strong>相比端点匹配具有持续优势，并给出套件级结果与领域权重对比，揭示迁移能力在任务间的分布规律。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>从<strong>联合 SFT 初始化</strong>的共享学生 π0.5 出发，冻结各领域专家教师（<strong>π_LIBERO</strong>、<strong>π_MetaWorld</strong>、<strong>π_CALVIN</strong>），教师仅用于训练阶段。</li><li><strong>环境级在线监督</strong>：固定当前学生快照 θ̄_r，在各领域执行学生策略采集上下文 c ~ d_k^π，成功与失败回合均保留，由对应领域教师提供监督标签。</li><li><strong>流状态级在线监督（Velocity Loss）</strong>：在学生生成的动作流轨迹中间状态 x ~ q_{θ̄_r,τ}(·\|c) 上查询领域教师，令学生速度场 v_θ 回归教师速度 v_k^T，即式 (2) 的 MSE 目标。</li><li>关键设计使用 <strong>stop-gradient（sg）</strong>：上下文、中间状态与教师目标在更新时均固定，梯度只作用于学生局部速度预测，不回传穿过采样轨迹或环境交互。</li><li>实现上对所有非终止求解器节点进行监督，并对选定时间步取平均；各领域损失先平均再加权，避免动作维度差异隐式影响领域权重。</li><li>训练循环为<strong>采集—标注—优化</strong>交替：每轮各领域采集相同回合数，累积加权领域损失梯度后执行一次 AdamW 更新，更新后的学生成为下一轮采集快照。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集/基准：<strong>LIBERO</strong>（<strong>Spatial</strong>、<strong>Object</strong>、<strong>Goal</strong>、<strong>LIBERO-10</strong> 共 40 个任务）、<strong>Meta-World MT50</strong>、<strong>CALVIN</strong>。</li><li>学生基础模型为 <strong>π0.5</strong>（pi05），由 LIBERO-40、Meta-World MT50、CALVIN A/B/C 演示数据联合微调得到 SFT 检查点（step 14,000）。</li><li>可训练参数：<strong>动作专家</strong>与 <strong>rank-64 语言 LoRA</strong>；<strong>视觉骨干网络冻结</strong>。</li><li>教师配置：LIBERO 使用 <strong>pi05_libero</strong>，Meta-World 使用 <strong>RLinf-Pi05-MetaWorld-RL-FlowSDE</strong>，CALVIN 使用 <strong>RLinf-Pi05-CALVIN-ABC-D-RL-FlowSDE</strong>。</li><li>动作接口设置：Meta-World 与 CALVIN 为 (H, m, N) = (5,5,5)；LIBERO Spatial 为 (10,5,3)，Object/Goal 为 (10,5,5)，LIBERO-10 为 (10,10,5)。</li><li>训练资源：<strong>4× NVIDIA H800（80 GB）</strong> 或 <strong>8× NVIDIA A100（40 GB）</strong>。</li><li>训练规模：每种方法报告前 80 次优化更新，每次更新每域 64 个回合，共采集 15,360 个回合；SFT 训练步数 30,000，每步 192 个动作窗口（每域 64）。</li><li>评估规模：每个检查点使用 2,000 个 LIBERO 回合、500 个 Meta-World 回合、1,000 个 CALVIN 序列；CALVIN 用场景 A/B/C 采集、场景 D 评估。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估基准：LIBERO（四套件平均成功率）、Meta-World MT50（等权任务成功率）、CALVIN（平均完成长度与 <strong>Len-5</strong> 成功率）。</li><li>主要对比方法：<strong>共享 SFT 初始化 π_θ₀</strong>、<strong>Action Loss OPD</strong>（学生环境采集 + 最终动作块匹配）、<strong>Teacher-rollout SFT</strong>（教师诱导环境与流状态 + 局部速度目标）。</li><li><strong>Velocity Loss OPD</strong> 在所有聚合指标上最优：<strong>LIBERO-40 75.70%</strong>、<strong>Meta-World MT50 60.6%</strong>、<strong>CALVIN 平均长度 4.362</strong>、<strong>CALVIN Len-5 72.9%</strong>。</li><li>相对 SFT 初始化，绝对成功率提升为 <strong>LIBERO-40 +22.55%</strong>、<strong>CALVIN 五指令序列 +33.4%</strong>（Len-5 由 39.5% → 72.9%）、<strong>Meta-World MT50 +22.6%</strong>。</li><li>相对 Action Loss OPD 与 Teacher-rollout SFT，绝对成功率提升为 <strong>LIBERO-40 6.4–9.5%</strong>、<strong>CALVIN 9.7–18.3%</strong>、<strong>Meta-World MT50 3.2–4.2%</strong>。</li><li>与 Action Loss OPD 相比：LIBERO +9.50 分、Meta-World +4.20 分、CALVIN 平均长度 +0.618 条指令，且在每个更新后评估点均占优。</li><li>与 Teacher-rollout SFT 相比：LIBERO +6.40 分、Meta-World +3.20 分、CALVIN 平均长度 +0.288 条指令；CALVIN Len-5 领先 9.70 分，而首条指令仅领先 0.90 分。</li><li>序列长度分析显示：<strong>更长的 CALVIN 序列获益更大</strong>（领先幅度从首指令的 3.4 分扩大到五指令的 18.3 分）；LIBERO-10 相对 Teacher-rollout SFT 提升 13.8 分，远高于其他三个套件的 1.6–5.8 分。</li><li>领域权重消融：主权重 (1/4, 1/4, 1/2) 在每个聚合领域指标上均优于等权 (1/3, 1/3, 1/3)，其中 LIBERO-10 高出 <strong>29.0 个百分点</strong>；等权则在 Spatial 与 Goal 上更好。</li><li>局限性：学生仍低于各领域专家（如 LIBERO-10 为 46.4% vs. 专家 97.0%），跨域动作语义（如夹爪坐标位置）不一致；混合来源变体因额外积分路径成本未被评估；每种方法仅单次训练运行评估。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.21798/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Cross-Embodiment Causal Transfer from Human Videos to Robot Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.21453/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">CarryOn: A Dual-Loop Harness for Personalized and Reliable Robot Assistance</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
