@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fast-VLA: You Only Think Once for Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对 VLA（视觉–语言–动作）策略普遍在每个动作块预测时重复运行数十亿参数骨干模型、导致控制回路推理成本高昂的问题，提出 Fast-VLA——&quot;You Only Think Once&quot;。 核心洞察：任务理解的变化速度远慢于机器人状态变化，因此任务上下文只需建立一次，而闭环控制需持续响应。 目标是在保持闭环操控性能的同时，将冻结的大模型移出重复控制回路，大幅降低摊销推理延迟与显存占用。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.21389">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.21389.webp" alt="Fast-VLA: You Only Think Once for Robot Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对 VLA（视觉–语言–动作）策略普遍在每个动作块预测时重复运行数十亿参数骨干模型、导致控制回路推理成本高昂的问题，提出 Fast-VLA——&quot;You Only Think Once&quot;。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Fast-VLA: You Only Think Once for Robot Manipulation</h1>
+            <div class="detail-meta">2026-10-15 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.21389" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.21389" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.21389</span></div>
+            <p class="detail-summary">针对 VLA（视觉–语言–动作）策略普遍在每个动作块预测时重复运行数十亿参数骨干模型、导致控制回路推理成本高昂的问题，提出 Fast-VLA——&quot;You Only Think Once&quot;。 核心洞察：任务理解的变化速度远慢于机器人状态变化，因此任务上下文只需建立一次，而闭环控制需持续响应。 目标是在保持闭环操控性能的同时，将冻结的大模型移出重复控制回路，大幅降低摊销推理延迟与显存占用。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">11 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">华为技术有限公司（Huawei Technologies Co., Ltd）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对 VLA（视觉–语言–动作）策略普遍在每个动作块预测时重复运行数十亿参数骨干模型、导致控制回路推理成本高昂的问题，提出 Fast-VLA——&quot;You Only Think Once&quot;。</p>
+  <ul class="reading-intro-points"><li>针对 VLA（视觉–语言–动作）策略普遍在每个动作块预测时重复运行数十亿参数骨干模型、导致控制回路推理成本高昂的问题，提出 Fast-VLA——&quot;You Only Think Once&quot;。</li><li>核心洞察：任务理解的变化速度远慢于机器人状态变化，因此任务上下文只需建立一次，而闭环控制需持续响应。</li><li>目标是在保持闭环操控性能的同时，将冻结的大模型移出重复控制回路，大幅降低摊销推理延迟与显存占用。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>华为技术有限公司</strong>（Huawei Technologies Co., Ltd）</li><li><strong>华为中央研究院</strong>（Huawei Central Research Institute）</li><li>作者：Kehong Gong、Guanli Hou、Xiaoxu Zheng、Qi Wang、Mingxi Xu、Anbang Zhai、Xiaoyu He、Mingyuan Zhang、Michael Bi Mi</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对 VLA（视觉–语言–动作）策略普遍在每个动作块预测时重复运行数十亿参数骨干模型、导致控制回路推理成本高昂的问题，提出 <strong>Fast-VLA</strong>——"You Only Think Once"。</li><li>核心洞察：任务理解的变化速度远慢于机器人状态变化，因此任务上下文只需建立一次，而闭环控制需持续响应。</li><li>目标是在保持闭环操控性能的同时，将冻结的大模型移出重复控制回路，大幅降低摊销推理延迟与显存占用。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>回合级（episode-level）VLA 架构</strong>：将一次性的任务理解表示为固定的多层 KV 记忆，使冻结的 <strong>4B VLM</strong> 只做一次预填充后退出控制回路。</li><li>设计<strong>在线 actor</strong>：融合可学习查询与实时视觉、本体感知反馈生成动作查询，跨 VLM 深度检索任务上下文，在单次前向中预测整个动作块。</li><li>在 <strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong> 和 <strong>LIBERO-Plus</strong> 上验证该解耦设计能保持有竞争力的闭环性能，同时将 RoboTwin 摊销推理开销降低 <strong>10.9–17.1 倍</strong>。</li><li>通过受控的记忆替换干预实验，验证 actor 确实依赖与当前回合匹配的任务记忆。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>阶段一（任务记忆构建）</strong>：给定指令 <code>L</code> 与初始多视角图像 <code>I₀</code>，冻结的 <strong>DM0.5 4B VLM</strong> 执行一次预填充，保留全部 <strong>34 层 Transformer</strong> 的 key/value 张量构成任务记忆 <code>M₀</code>。</li><li><strong>阶段二（在线 actor）</strong>：由视觉编码器、查询融合、动作解码器和动作头组成；输入当前视角、本体状态及可选的短视觉历史。</li><li><strong>查询融合（Query Fusion）</strong>：为每个未来时间步 <code>τ</code>（0–49）与机械臂 <code>a</code>（左/右）初始化可学习时间嵌入与臂嵌入之和，再与各臂 7 维状态投影、腕部视角 CLS token 融合，经门控残差 MLP 生成动作查询。</li><li><strong>动作解码（Action Decoding）</strong>：4 层解码器，每层含 Self 注意力（协调双臂与未来时间步）、Cross-Visual 注意力（读取当前与历史视觉 token）、Cross-Memory 注意力（检索固定任务记忆）与 FFN。</li><li><strong>KV 记忆适配器</strong>：每层解码器学习对 34 个记忆层的权重分数并经 softmax 归一化，通过 RoPE 对齐后加权混合 key/value，再用分组查询交叉注意力读取。</li><li><strong>动作头</strong>：线性头一次预测 <code>50×14</code> 的双臂绝对关节指令块，无需迭代去噪；单臂 LIBERO 使用 <code>10×7</code> 动作块且不使用视觉历史。</li><li><strong>训练</strong>：仅训练在线 actor（含 DINOv2 初始化的视觉编码器），损失为归一化动作上的 <strong>ℓ₁ 损失</strong>；VLM 保持冻结，其 KV 缓存离线预计算并复用。</li><li><strong>推理成本</strong>：每回合一次 VLM 预填充 + 每个动作块一次 actor 调用，摊销延迟为 <code>(T_prefill + ⌈H/K⌉·T_actor)/H</code>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>RoboTwin 2.0</strong>（50 任务，Clean + Randomized）、<strong>LIBERO</strong>（4 个套件共 40 任务）、<strong>LIBERO-Plus</strong>（10,030 个扰动实例）。</li><li><strong>模型规模</strong>：任务记忆基座为冻结的 <strong>4B DM0.5 VLM</strong>（34 层）；在线 actor 的视觉编码器基于 <strong>DINOv2</strong> 初始化并微调，动作解码器与动作头从头训练。</li><li><strong>训练配置</strong>：学习率 <code>3×10⁻⁴</code>，AdamW + 余弦调度；RoboTwin 批大小 256、200,000 步、约 <strong>150</strong> 加速器小时；LIBERO 批大小 32、30,000 步、约 <strong>5</strong> 加速器小时。</li><li><strong>显存</strong>：RoboTwin 预填充峰值 <strong>12.11 GiB</strong>，VLM 卸载后在线常驻 <strong>1.22 GiB</strong>；LIBERO 预填充峰值 <strong>11.74 GiB</strong>，在线常驻 <strong>0.86 GiB</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评测协议</strong>：RoboTwin 2.0 每任务 100 回合（共 10,000 次 rollout）；标准 LIBERO 每任务 50 个初始状态（共 2,000 次 rollout）；LIBERO-Plus 全部 10,030 个扰动实例。所有推理成本在与基线<strong>相同硬件</strong>上按统一协议测量。</li><li><strong>主要指标</strong>：成功率（Clean / Randomized / Standard / Plus）、每块时延（ms/chunk）、摊销每步时延（ms/step）、在线常驻显存（GiB）。</li><li><strong>RoboTwin 2.0</strong>：Clean <strong>92.46%</strong>、Randomized <strong>92.40%</strong>（均值 92.43%）；每块 <strong>44.87 ms</strong>、摊销 <strong>1.437 ms/step</strong>；相比 DM0.5、Faster-WAM (HUST)、Fast-WAM 加速 <strong>10.9–17.1 倍</strong>（DM0.5 低 1.02 个百分点但快 11.2 倍；Fast-WAM 高 0.60 个百分点且快 17.1 倍）。</li><li><strong>LIBERO / LIBERO-Plus</strong>：标准 LIBERO <strong>95.95%</strong>、LIBERO-Plus <strong>79.11%</strong>；每块 <strong>34.25 ms</strong>、摊销 <strong>3.975 ms/step</strong>；较 Faster-WAM (Noah) 与 Faster-WAM (HUST) 在 LIBERO-Plus 上分别高 4.11 与 5.54 个百分点，且快 3.1 倍与 21.2 倍。</li><li><strong>记忆替换实验</strong>：交换语言片段降至 35.18%/29.66%；换用同任务其他回合记忆仅 6.26%/8.36%；交换初始视图片段崩至 2.64%/2.62%；换成不同任务记忆仅 0.62%/0.52% —— 证明 actor 依赖与回合匹配的任务记忆。</li><li><strong>记忆构建消融</strong>：无任务记忆 69.90%/53.69%；仅文本 token KV 93.20%/73.84%；仅最后一层 94.70%/73.70%；完整 34 层最优 95.95%/79.11%。</li><li><strong>在线输入消融</strong>：无腕部视觉降至 65.60%/33.49%，仅头部视角 70.80%/30.80%，仅腕部 87.10%/68.72%，无本体状态 94.30%/72.41%，完整输入最优 —— 腕部视觉是闭环反馈的关键来源。</li><li><strong>记忆刷新频率</strong>：每动作块刷新仅使标准 LIBERO +1.80 点、LIBERO-Plus −1.23 点，但 VLM 调用增加 <strong>17.37 倍</strong>、摊销时间增至 12.391 ms/step（3.12 倍），验证"每回合仅构建一次"是效率与性能的良好折中。</li><li><strong>任务时长分析</strong>：按步数预算划分的短（S）/中（M）/长（L）任务成功率分别为 <strong>94.00% / 90.27% / 90.25%</strong>，说明长时程任务中复用一次性记忆依然有效。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.21434/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Policy-Aligned Predictive Verification for Adaptive VLA Action-Chunk Execution</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.21362/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">LTM: Latent Transition Based In-Context Memory for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Policy-Aligned Predictive Verification for Adaptive VLA Action-Chunk Execution - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对 VLA（视觉-语言-动作）策略的动作分块（action chunking）执行问题，研究在每次生成动作序列后应执行多长前缀（执行视野，execution horizon）才能兼顾推理效率与任务成功率。 现有自适应方法依赖 生成稳定性（generation stability） 或 预测一致性（prediction agreement） 来决定执行长度，但这些信号无法判断执行某前缀后策略是否仍能成功完成任务（例如图 1 中抓取失败却信号仍然很高）。 论文提出 proposal validity（提案有效性） 概念与 PAV（Policy-Aligned Predictive Verifier，策略对齐预测验证器），在执行前预测候选动作前缀的后果并评估其与成功续接的兼容性。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.21434">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.21434.webp" alt="Policy-Aligned Predictive Verification for Adaptive VLA Action-Chunk Execution" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对 VLA（视觉-语言-动作）策略的动作分块（action chunking）执行问题，研究在每次生成动作序列后应执行多长前缀（执行视野，execution horizon）才能兼顾推理效率与任务成功率。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Policy-Aligned Predictive Verification for Adaptive VLA Action-Chunk Execution</h1>
+            <div class="detail-meta">2026-10-15 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.21434" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.21434" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.21434</span></div>
+            <p class="detail-summary">论文针对 VLA（视觉-语言-动作）策略的动作分块（action chunking）执行问题，研究在每次生成动作序列后应执行多长前缀（执行视野，execution horizon）才能兼顾推理效率与任务成功率。 现有自适应方法依赖 生成稳定性（generation stability） 或 预测一致性（prediction agreement） 来决定执行长度，但这些信号无法判断执行某前缀后策略是否仍能成功完成任务（例如图 1 中抓取失败却信号仍然很高）。 论文提出 proposal validity（提案有效性） 概念与 PAV（Policy-Aligned Predictive Verifier，策略对齐预测验证器），在执行前预测候选动作前缀的后果并评估其与成功续接的兼容性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">10 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">首尔大学（Seoul National University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对 VLA（视觉-语言-动作）策略的动作分块（action chunking）执行问题，研究在每次生成动作序列后应执行多长前缀（执行视野，execution horizon）才能兼顾推理效率与任务成功率。</p>
+  <ul class="reading-intro-points"><li>论文针对 VLA（视觉-语言-动作）策略的动作分块（action chunking）执行问题，研究在每次生成动作序列后应执行多长前缀（执行视野，execution horizon）才能兼顾推理效率与任务成功率。</li><li>现有自适应方法依赖 生成稳定性（generation stability） 或 预测一致性（prediction agreement） 来决定执行长度，但这些信号无法判断执行某前缀后策略是否仍能成功完成任务（例如图 1 中抓取失败却信号仍然很高）。</li><li>论文提出 proposal validity（提案有效性） 概念与 PAV（Policy-Aligned Predictive Verifier，策略对齐预测验证器），在执行前预测候选动作前缀的后果并评估其与成功续接的兼容性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>首尔大学（Seoul National University）</strong></li><li><strong>KAIST</strong></li><li><strong>Dnotitia</strong></li><li>作者：<strong>Minkyu Kim</strong>、<strong>Junhoo Lee</strong>、<strong>Seungyeon Kim</strong>、<strong>Suhyun Jeon</strong>、<strong>Baekseung Kim</strong>、<strong>Donghoon Han</strong>、<strong>Nojun Kwak</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对 <strong>VLA（视觉-语言-动作）策略</strong>的动作分块（action chunking）执行问题，研究在每次生成动作序列后应执行多长前缀（执行视野，execution horizon）才能兼顾推理效率与任务成功率。</li><li>现有自适应方法依赖 <strong>生成稳定性（generation stability）</strong> 或 <strong>预测一致性（prediction agreement）</strong> 来决定执行长度，但这些信号无法判断执行某前缀后策略是否仍能成功完成任务（例如图 1 中抓取失败却信号仍然很高）。</li><li>论文提出 <strong>proposal validity（提案有效性）</strong> 概念与 <strong>PAV（Policy-Aligned Predictive Verifier，策略对齐预测验证器）</strong>，在执行前预测候选动作前缀的后果并评估其与成功续接的兼容性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>proposal validity</strong>：定义为执行候选前缀后策略仍能成功完成任务的概率，将执行视野选择转化为对前缀有效性的概率评估。</li><li>提出 <strong>PAV（策略对齐预测验证器）</strong>：在 VLA 的<strong>任务条件内部表征空间</strong>中预测动作前缀引起的未来状态，用预测能力去*评估*已有动作提案，而非生成新动作。</li><li>设计<strong>两级学习框架</strong>：预测器 <strong>f_θ</strong> 在策略表征空间做动作条件未来预测，验证器 <strong>q_φ</strong> 估计局部有效性并累乘为前缀分数。</li><li>引入<strong>轨迹级生存监督 + 定位先验（localization prior）</strong>：仅用终端任务成败（成功/失败 rollout）监督潜变量式的局部有效性，并惩罚失效 rollout 中大面积降低分值，从而把失败归因集中到少数扩展步骤。</li><li>提出<strong>执行视野选择规则</strong>：对累乘有效性做长度归一化，按升序检查候选前缀并在分数低于阈值 <strong>β</strong> 时停止延伸。</li><li>首次将<strong>前缀条件未来预测</strong>与<strong>提案有效性估计</strong>结合用于自适应动作分块执行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>动作分块执行建模</strong>：策略 π 根据观测 o_t 与指令 ℓ 生成长度 H 的动作块 A_t，选择执行视野 h 后执行前缀 A_t^{1:h}，随后重新观测并重规划（式 1）。</li><li><strong>有效性分解</strong>：由于有效轨迹集合前缀封闭，V_t(h) = V_t(h-1) × 条件兼容概率（式 6），通过对未来策略表征 z_{t+h} 边缘化，将问题拆为<strong>预测（prediction）</strong>与<strong>验证（verification）</strong>两部分（式 7）。</li><li><strong>策略空间预测</strong>：预测器预测 ẑ_{t+h\|t} = f_θ(z_t, A_t^{1:h})，目标为真实未来表征 z_{t+h} = E_π(o_{t+h}, ℓ)（式 8），采用<strong>余弦距离</strong>对齐。</li><li><strong>动作敏感性约束</strong>：构造动作交换样本 Ã_t^{1:h}（数据集 D_swap），要求真实前缀预测比交换前缀更接近目标，并使用<strong>边际 m</strong> 的 hinge 损失（式 9）。</li><li><strong>验证器与累乘</strong>：q_t(h) = q_φ(ẑ_{t+h\|t})，前缀分数 Ŝ_t(h) = ∏ q_t(j)（式 10）。</li><li><strong>轨迹级监督</strong>：成功 rollout 用 −(1/n_τ)log Ŝ_τ，失败 rollout 用 −log(1−Ŝ_τ)（式 11）；失败样本额外加入 <strong>Σ(1−q_i)</strong> 定位正则（式 12）。</li><li><strong>联合优化</strong>：联合最小化 L_pred(θ) + L_ver(θ, φ)，使预测表征既忠实于执行后果又利于验证。</li><li><strong>推理时决策</strong>：对 Ŝ_t(h) 做平方根长度归一化得 S̄_t(h)，按升序检查并在首个低于阈值 β 处截断（式 13）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>策略模型</strong>：<strong>π₀</strong> 与 <strong>π₀.₅</strong> 两个基于流的 VLA 策略。</li><li><strong>仿真基准</strong>：<strong>LIBERO</strong>（Spatial、Object、Goal、Long 四个套件，不含 LIBERO-90）；<strong>RoboTwin 2.0</strong>（全部 50 个双臂操作任务）。</li><li><strong>真实世界任务</strong>：<strong>Press Button</strong>、<strong>Stack Cubes</strong>、<strong>Place Cube in Tray</strong>（任务微调的 π₀.₅，H=50）。</li><li><strong>动作块长度设置</strong>：π₀ 使用 H=50；π₀.₅ 使用默认 H=10 及微调 H=50 检查点；RoboTwin 2.0 上 π₀.₅ 使用默认 H=32。</li><li><strong>训练数据</strong>：以随机采样视野收集 rollout，并平衡成功/失败样本；每个策略配置与基准共享一个验证器，评估轨迹排除在训练之外。</li><li><strong>训练资源</strong>：所给 HTML 片段中被截断，未给出具体 GPU/TPU 型号与数量（详见附录 A）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：任务成功率（仿真每任务 50 次试验，真实世界每任务 30 次）、每回合平均 VLA 查询次数（每次动作块生成计为一次查询）、所选视野分布、验证器计算时间开销。</li><li><strong>LIBERO 结果（表 1）</strong>：</li></ul>
+<p> - <strong>π₀（H=50）</strong>：PAV 平均成功率 <strong>94.30%</strong>、<strong>12.3 次查询</strong>，优于固定视野 h=5（92.10%、34.6 次查询）与 AutoHorizon（94.05%、10.6 次查询）。</p>
+<p> - <strong>π₀.₅（H=10）</strong>：PAV 平均 <strong>98.10%</strong>、16.8 次查询，高于 h=5 的 96.80%（32.3 次查询）。</p>
+<p> - <strong>π₀.₅（H=50）</strong>：PAV 平均 <strong>94.65%</strong>，比 h=5（87.15%）<strong>提升 7.50 个百分点</strong>，同时查询次数<strong>减少 63.3%</strong>。</p>
+<ul><li><strong>RoboTwin 2.0 结果（表 2）</strong>：PAV 在 Selected 16 任务上成功率 <strong>54.13%</strong>（59.8 次查询），All 50 任务上 <strong>58.64%</strong>（58.5 次查询），显著优于固定视野 h=32（35.38%/43.64%）和 DVAC（41.6%）。</li><li><strong>表征空间消融（表 3）</strong>：平均成功率为 <strong>Direct 84.55%</strong>、<strong>DINOv2 87.00%</strong>、<strong>PAV 94.65%</strong>；平均查询为 22.3、22.2、<strong>14.0</strong>，表明在<strong>策略内部表征空间</strong>预测优于直接验证或通用视觉特征预测。</li><li><strong>附加分析</strong>：通过预测测试验证动作敏感性；消融覆盖未来预测、策略对齐及各项损失项贡献；附录另含接受阈值扫描、长度归一化影响与动作交换敏感性分析。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.21453/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">CarryOn: A Dual-Loop Harness for Personalized and Reliable Robot Assistance</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.21389/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Fast-VLA: You Only Think Once for Robot Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
