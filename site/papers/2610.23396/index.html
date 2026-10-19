@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AWAM: Active Trajectory-Conditioned View Imagination for Robust Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 AWAM（Active World-Action Model，主动世界-动作模型），针对开放世界条件下机器人操作面临的感知瓶颈：杂乱、遮挡和视角变化会掩盖动作所需的空间关系 核心思想是引入“虚拟主动感知”范式：模型主动规划在哪里观察、并想象沿规划轨迹会看到什么，再进行操作执行，而无需物理移动相机 预测的任务相关虚拟相机轨迹作为几何条件化世界模型的结构化查询，生成可复用的空间先验，压缩为固定记忆后通过交叉注意力与实时观测融合，用于扩散式动作预测" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.23396">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.23396.webp" alt="AWAM: Active Trajectory-Conditioned View Imagination for Robust Robot Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 AWAM（Active World-Action Model，主动世界-动作模型），针对开放世界条件下机器人操作面临的感知瓶颈：杂乱、遮挡和视角变化会掩盖动作所需的空间关系</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">AWAM: Active Trajectory-Conditioned View Imagination for Robust Robot Manipulation</h1>
+            <div class="detail-meta">2026-10-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.23396" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.23396" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.23396</span></div>
+            <p class="detail-summary">论文提出 AWAM（Active World-Action Model，主动世界-动作模型），针对开放世界条件下机器人操作面临的感知瓶颈：杂乱、遮挡和视角变化会掩盖动作所需的空间关系 核心思想是引入“虚拟主动感知”范式：模型主动规划在哪里观察、并想象沿规划轨迹会看到什么，再进行操作执行，而无需物理移动相机 预测的任务相关虚拟相机轨迹作为几何条件化世界模型的结构化查询，生成可复用的空间先验，压缩为固定记忆后通过交叉注意力与实时观测融合，用于扩散式动作预测</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">复旦大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 AWAM（Active World-Action Model，主动世界-动作模型），针对开放世界条件下机器人操作面临的感知瓶颈：杂乱、遮挡和视角变化会掩盖动作所需的空间关系</p>
+  <ul class="reading-intro-points"><li>论文提出 AWAM（Active World-Action Model，主动世界-动作模型），针对开放世界条件下机器人操作面临的感知瓶颈：杂乱、遮挡和视角变化会掩盖动作所需的空间关系</li><li>核心思想是引入“虚拟主动感知”范式：模型主动规划在哪里观察、并想象沿规划轨迹会看到什么，再进行操作执行，而无需物理移动相机</li><li>预测的任务相关虚拟相机轨迹作为几何条件化世界模型的结构化查询，生成可复用的空间先验，压缩为固定记忆后通过交叉注意力与实时观测融合，用于扩散式动作预测</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>复旦大学</strong></li><li><strong>上海创新研究院</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>AWAM</strong>（Active World-Action Model，主动世界-动作模型），针对开放世界条件下机器人操作面临的感知瓶颈：杂乱、遮挡和视角变化会掩盖动作所需的空间关系</li><li>核心思想是引入“虚拟主动感知”范式：模型主动规划在哪里观察、并想象沿规划轨迹会看到什么，再进行操作执行，而无需物理移动相机</li><li>预测的任务相关虚拟相机轨迹作为几何条件化世界模型的结构化查询，生成可复用的空间先验，压缩为固定记忆后通过交叉注意力与实时观测融合，用于扩散式动作预测</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>轨迹条件化的虚拟主动感知范式</strong>：用连续的任务导向虚拟查询序列替代孤立视角选择或物理执行的视角获取</li><li>提出 <strong>AWAM</strong> 架构：将预测的观测轨迹转化为几何一致的多视角表征，并压缩为持久世界记忆，作为部分可观测条件下操作的可复用空间先验</li><li>在三个仿真基准（<strong>LIBERO-Occ</strong>、<strong>LIBERO-Plus</strong>、<strong>RLBench-OG Occlusion1</strong>）和真实机器人操作上进行广泛评估，验证在遮挡和分布偏移下的强鲁棒性</li><li>通过消融实验证实学习式相机轨迹预测（-5.7pp）和预测性记忆（-11.5pp）的关键作用</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>任务条件化虚拟视角规划</strong>：以演示的腕部相机路径作为代理监督，将相对位姿离散化为轨迹 token，用 Transformer 自回归预测轨迹序列，推理时保留少量代表性虚拟视角</li><li><strong>几何条件化世界记忆</strong>：将初始 RGB-D 反投影为彩色点云并沿预测路径渲染，采用 <strong>WorldStereo</strong> 作为几何条件化世界模型填补未观测区域，提取中间几何条件化预测特征（而非生成的 RGB 视频），通过视角内聚合与视角间注意力压缩为固定大小 token 记忆</li><li><strong>记忆条件化闭环控制</strong>：每个控制步将实时视觉 token 与缓存世界记忆做残差交叉注意力融合，条件扩散 Transformer 生成短时程动作块；记忆每个 episode 构建一次并贯穿全程复用</li><li>创新点：将世界建模用作“主动感知”机制（询问去哪里看、会看到什么），而非预测机器人动作导致的未来场景；记忆构建与动作预测分离，避免训练-测试不匹配</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>LIBERO-Occ</strong>（2,000 个实例，每套件 500 次 rollout）、<strong>RLBench-OG Occlusion1</strong>（10 个重遮挡任务）、<strong>LIBERO-Plus</strong>（10,030 个实例，含相机、初始状态、语言、光照、背景、噪声、布局等扰动）</li><li>真实平台：<strong>ARCHER-Y6</strong> 机械臂 + <strong>GP-100</strong> 夹爪，场景级和腕部 <strong>Intel RealSense D435</strong> 相机，100 条原始演示数据，每任务 30 次试验</li><li>关键模型组件：<strong>WorldStereo</strong>（几何条件化世界模型）、Transformer 轨迹预测器、条件扩散 Transformer 动作策略</li><li>虚拟视角预算 K∈{7,14,21,28}，在 K=21 时饱和</li><li>论文原文未明确说明训练 GPU/TPU 资源与模型参数量</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO-Occ</strong>：平均成功率 <strong>75.9%</strong>（Spatial 84.6%、Object 93.2%、Goal 84.8%、Long 41.0%），超过 <strong>π₀</strong>（70.0%）、<strong>Fast-WAM</strong>（73.0%）、<strong>VIM</strong>（74.0%）、<strong>Motus</strong>（67.4%）</li><li><strong>RLBench-OG Occlusion1</strong>：平均成功率 <strong>76.5±1.1%</strong>（最优），平均排名 2.05，优于 <strong>TVVE</strong>（75.0%）、<strong>ARP</strong>（73.0%）、<strong>RVT2</strong>（72.8%）、<strong>Diffusion Policy</strong>（27.4%）；五个任务达 100% 成功，water plants 达 94.7%</li><li><strong>LIBERO-Plus</strong>：实例加权成功率 <strong>62.4%</strong>，超过 π₀（53.6%）、Fast-WAM（48.2%）、Motus（44.0%）；在相机视角（53.4%）、机器人状态（48.9%）、物体布局（73.0%）等几何扰动下优势最明显</li><li><strong>真实机器人</strong>：三项遮挡/杂乱任务总体成功率 <strong>94.4%</strong>（85/90），显著高于 π₀（73.3%）、<strong>Motus</strong>（81.1%）、<strong>Fast-WAM</strong>（80.0%）</li><li>消融结果（LIBERO-Occ）：仅用实时观测 64.4%（-11.5pp）；仅轨迹条件化 67.3%（-8.6pp）；球面采样视角替代学习轨迹 70.2%（-5.7pp）；仅几何扭曲无生成 69.0%（-6.9pp）</li><li>虚拟视角预算敏感性：K=7/14/21/28 对应 72.4%/74.8%/75.9%/76.0%，对 K 的精确取值不敏感；LIBERO-Occ 平均空洞率 39.29%（峰值 74.47%），去噪预测仍能恢复关键物体布局</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.23566/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Enhancing Visual Task-Redirection Attacks on Vision-Language-Action Models via Closed-Loop Optimization</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.23378/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Look Before You Act: Bridging Active Perception and Vision-Language-Action Models via Observation-Aligned Data Adaptation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GRASP: Global-Local Representation Alignment and Spatial-Physical Grounding for Bimanual Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出面向精细双臂机器人操作的训练阶段先验注入框架 GRASP，解决联合空间动作回归中损失与任务成功不一致的问题。 针对两个核心问题：关节空间损耗忽略关节误差经运动链传播后的不等物理后果；视觉条件缺乏对手-物交互区域的显式关注。 通过可微前向运动学的物理基础流匹配损失和全局-局部查询蒸馏，在保持推理时为标准关节空间流策略的前提下提升操作精度与鲁棒性。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.23123">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.23123.webp" alt="GRASP: Global-Local Representation Alignment and Spatial-Physical Grounding for Bimanual Robotic Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出面向精细双臂机器人操作的训练阶段先验注入框架 GRASP，解决联合空间动作回归中损失与任务成功不一致的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GRASP: Global-Local Representation Alignment and Spatial-Physical Grounding for Bimanual Robotic Manipulation</h1>
+            <div class="detail-meta">2026-10-16 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.23123" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.23123" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.23123</span></div>
+            <p class="detail-summary">提出面向精细双臂机器人操作的训练阶段先验注入框架 GRASP，解决联合空间动作回归中损失与任务成功不一致的问题。 针对两个核心问题：关节空间损耗忽略关节误差经运动链传播后的不等物理后果；视觉条件缺乏对手-物交互区域的显式关注。 通过可微前向运动学的物理基础流匹配损失和全局-局部查询蒸馏，在保持推理时为标准关节空间流策略的前提下提升操作精度与鲁棒性。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">COWARobot Co. Ltd, China</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出面向精细双臂机器人操作的训练阶段先验注入框架 GRASP，解决联合空间动作回归中损失与任务成功不一致的问题。</p>
+  <ul class="reading-intro-points"><li>提出面向精细双臂机器人操作的训练阶段先验注入框架 GRASP，解决联合空间动作回归中损失与任务成功不一致的问题。</li><li>针对两个核心问题：关节空间损耗忽略关节误差经运动链传播后的不等物理后果；视觉条件缺乏对手-物交互区域的显式关注。</li><li>通过可微前向运动学的物理基础流匹配损失和全局-局部查询蒸馏，在保持推理时为标准关节空间流策略的前提下提升操作精度与鲁棒性。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>COWARobot Co. Ltd, China</strong></li><li><strong>The Hong Kong Polytechnic University, Hong Kong SAR, China</strong></li><li><strong>Tongji University, Shanghai, China</strong></li><li><strong>Shanghai Jiao Tong University, Shanghai, China</strong></li><li><strong>National University of Singapore, Singapore</strong></li><li><strong>The Chinese University of Hong Kong, Hong Kong SAR, China</strong></li><li><strong>Northeastern University, Shenyang, China</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出面向精细双臂机器人操作的训练阶段先验注入框架 <strong>GRASP</strong>，解决联合空间动作回归中损失与任务成功不一致的问题。</li><li>针对两个核心问题：关节空间损耗忽略关节误差经运动链传播后的不等物理后果；视觉条件缺乏对手-物交互区域的显式关注。</li><li>通过可微前向运动学的物理基础流匹配损失和全局-局部查询蒸馏，在保持推理时为标准关节空间流策略的前提下提升操作精度与鲁棒性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>物理基础的流匹配损失</strong>：将每个噪声级别的隐式干净动作估计通过可微前向运动学映射到任务空间，同时约束 <strong>TCP 位姿</strong>和<strong>臂间相对位姿</strong>，并采用有界噪声级加权补偿梯度衰减。</li><li>引入 <strong>全局预测查询组</strong>（由冻结 <strong>DINOv3</strong> 教师蒸馏未来帧特征）和 <strong>局部交互查询</strong>（由 <strong>Grounding DINO</strong> 检测框引导的注意力级蒸馏），显式引导模型关注手-物交互区域。</li><li>在 <strong>RoboTwin 2.0</strong> 仿真基准上，完整模型在清洁设置下较 <strong>π0.5-SFT</strong> 基线提升 <strong>15.1 个百分点</strong>成功率；仅查询变体在域随机化下提升 <strong>29.0 个百分点</strong>。</li><li>在四个真实世界长时程双臂任务上，平均成功率较基线提升 <strong>14.2 个百分点</strong>，其中西瓜汁制作任务从 <strong>56.7% 提升至 83.3%</strong>。</li><li>物理空间监督降低 TCP 位置误差（均值从 <strong>5.3mm 降至 4.6mm</strong>），解耦全局-局部查询在随机化场景和未见语言指令下显著提升鲁棒性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于预训练 <strong>π0.5</strong> 骨干，训练时联合优化 <strong>流匹配损失</strong>、<strong>几何损失</strong>（TCP + 相对位姿）和<strong>全局/局部蒸馏损失</strong>。</li><li><strong>可微运动学流匹配监督</strong>：从噪声动作中解析地估计干净动作 <math><mover><mi>a</mi><mo>^</mo></mover><msub></msub></math>，通过可微 FK 映射到任务空间，计算位置误差 L2 范数和旋转 geodesic 误差，并采用 <math><mi>w</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>min</mi><mo>(</mo><msub><mi>w</mi><mi>max</mi></msub><mo>,</mo><mn>1</mn><mo>/</mo><mo>(</mo><msup><mi>t</mi><mn>2</mn></msup><mo>+</mo><mi>δ</mi><mo>)</mo><mo>)</mo></math> 补偿梯度衰减，以及线性预热几何权重。</li><li><strong>全局-局部查询蒸馏</strong>：全局查询组 <math><msub><mi>Q</mi><mi>G</mi></msub></math> 通过分组采样潜在变量，利用 <strong>Perceiver</strong> 结构预测未来帧的 <strong>DINOv3</strong> 特征；局部查询 <math><msub><mi>Q</mi><mi>P</mi></msub></math> 由任务状态条件化，通过 <strong>Grounding DINO</strong> 检测框构建目标注意力，使用 <strong>KL 散度注意力蒸馏</strong>和特征回归损失。</li><li>推理时移除所有教师模型和辅助监督，仅保留学习到的查询通路和标准关节空间流匹配头，不增加部署成本。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真数据集：<strong>RoboTwin 2.0</strong> 基准，<strong>50 个双臂操作任务</strong>，每个任务 <strong>50 个干净演示</strong>，采用 <strong>Aloha AgileX</strong> 双臂具身。</li><li>真实机器人数据：<strong>PiPER-X</strong> 双臂机器人，<strong>三个 Intel RealSense D435i</strong> 摄像头，仅使用 RGB，推理频率 <strong>30 Hz</strong>，每个任务约 <strong>150 个演示</strong>。</li><li>模型规模：基于预训练 <strong>π0.5</strong> 骨干（参数规模未明确报告）；教师模型 <strong>DINOv3 ViT-L/16</strong> 特征维度 <strong>1024</strong>，patch 数 <strong>196</strong>；全局查询组 <strong>K_G=8</strong>，采样潜在变量 <strong>N_R=576</strong>，局部查询槽数 S（固定于实验，数值未在摘要中给出）。</li><li>训练资源：论文未明确列出 GPU/TPU 型号或数量；仿真训练使用 batch size <strong>256</strong>，训练步数 <strong>20000</strong>，几何权重预热步数 <strong>2000</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：模拟（<strong>RoboTwin 2.0</strong> 清洁与随机化两种条件，每任务 100 集）和真实机器人（四个长时程任务，每种方法 5 个随机种子，每个 checkpoint 30 次试验）。</li><li>主要评估指标：<strong>成功率（Success Rate）</strong>、<strong>TCP 位置误差（均值/最大，毫米）</strong>、任务完成所需的整段成功率。</li><li>模拟结果：完整模型清洁场景成功率 <strong>79.22%</strong>（基线 64.13%），随机化场景 <strong>52.84%</strong>（基线 36.15%）；仅查询变体随机化成功率 <strong>65.15%</strong>；几何监督单独将 TCP 均值误差从 <strong>5.3mm 降至 4.6mm</strong>，最大值从 <strong>7.7mm 降至 6.8mm</strong>。</li><li>真实机器人结果：完整模型在所有四个任务上取得最高成功率，相较 <strong>π0.5-SFT</strong> 基线平均提升 <strong>14.2 个百分点</strong>；西瓜汁制作任务从 <strong>56.7% 提升至 83.3%</strong>；消融变体（几何监督、全局+局部查询）也分别获得一致增益。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.23271/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">NestedVLA: Learning to Consolidate and Generate Skills for Vision-Language-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.23053/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Unifying Embodied Foundation Models via a Model-to-Policy Formulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
