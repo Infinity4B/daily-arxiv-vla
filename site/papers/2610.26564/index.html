@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PrismWAM: Decoupling State Representations in World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 PrismWAM，用于解耦世界动作模型（WAM）中的状态表示，将“世界如何看起来”的语义上下文与“世界如何响应动作”的物理状态分离。 现有 WAM 依赖预训练视频潜变量，导致外观、纹理等语义信息与占用、姿态等物理信息纠缠，限制了动作生成的效率与泛化。 论文将具身任务分解为 语义规划 → 物理推演 → 可执行动作 的流程，仅使用初始 RGB 观测与深度数据，在不依赖具身动作预训练的情况下实现强操作性能。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.26564">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.26564.webp" alt="PrismWAM: Decoupling State Representations in World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 PrismWAM，用于解耦世界动作模型（WAM）中的状态表示，将“世界如何看起来”的语义上下文与“世界如何响应动作”的物理状态分离。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">PrismWAM: Decoupling State Representations in World Action Models</h1>
+            <div class="detail-meta">2026-10-19 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.26564" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.26564" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.26564</span></div>
+            <p class="detail-summary">论文提出 PrismWAM，用于解耦世界动作模型（WAM）中的状态表示，将“世界如何看起来”的语义上下文与“世界如何响应动作”的物理状态分离。 现有 WAM 依赖预训练视频潜变量，导致外观、纹理等语义信息与占用、姿态等物理信息纠缠，限制了动作生成的效率与泛化。 论文将具身任务分解为 语义规划 → 物理推演 → 可执行动作 的流程，仅使用初始 RGB 观测与深度数据，在不依赖具身动作预训练的情况下实现强操作性能。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">清华大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 PrismWAM，用于解耦世界动作模型（WAM）中的状态表示，将“世界如何看起来”的语义上下文与“世界如何响应动作”的物理状态分离。</p>
+  <ul class="reading-intro-points"><li>论文提出 PrismWAM，用于解耦世界动作模型（WAM）中的状态表示，将“世界如何看起来”的语义上下文与“世界如何响应动作”的物理状态分离。</li><li>现有 WAM 依赖预训练视频潜变量，导致外观、纹理等语义信息与占用、姿态等物理信息纠缠，限制了动作生成的效率与泛化。</li><li>论文将具身任务分解为 语义规划 → 物理推演 → 可执行动作 的流程，仅使用初始 RGB 观测与深度数据，在不依赖具身动作预训练的情况下实现强操作性能。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>清华大学</strong></li><li><strong>NVIDIA</strong></li><li>作者标注中注明有同等贡献与通讯作者</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>PrismWAM</strong>，用于解耦世界动作模型（WAM）中的状态表示，将“世界如何看起来”的语义上下文与“世界如何响应动作”的物理状态分离。</li><li>现有 WAM 依赖预训练视频潜变量，导致外观、纹理等语义信息与占用、姿态等物理信息纠缠，限制了动作生成的效率与泛化。</li><li>论文将具身任务分解为 <strong>语义规划 → 物理推演 → 可执行动作</strong> 的流程，仅使用初始 RGB 观测与深度数据，在不依赖具身动作预训练的情况下实现强操作性能。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>提出 WAM 状态表示解耦原则</strong>：识别视频潜变量中语义与物理纠缠是现有 WAM 的关键局限，主张将语义上下文与物理状态分离建模。</li><li><strong>设计高效且有效的 WAM 架构</strong>：采用 Mixture-of-Transformers（MoT），通过 RGB 语义规划器引导深度物理推演，并结合稠密深度监督与稀疏 RGB 目标监督，实现快速推理。</li><li><strong>在无具身动作预训练条件下取得领先表现</strong>：在精度操作与泛化任务上显著超越多种 VLA/WAM 基线，证明合理架构设计可以比大规模动作预训练提供更数据高效的路径。</li><li><strong>展现跨基准与真实世界鲁棒性</strong>：在 RoboTwin、LIBERO 系列、RoboDojo 等五个仿真基准及真实世界操作中验证，并对真实感深度损坏具有稳健性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>总体框架</strong>：将任务分解为 <strong>语义规划（Semantic Planning）→ 物理推演（Physical Rollout）→ 可执行动作（Executable Action）</strong>，而不是用单一视频潜变量作为状态。</li><li><strong>表示选择</strong>：RGB 流通过预测单一未来目标帧学习任务语义；深度流预测稠密未来深度序列以建模物理状态演化；动作塔从深度推演特征生成连续动作。</li><li><strong>架构设计</strong>：基于预训练视频模型 <strong>WAN</strong>，采用 <strong>Mixture-of-Transformers（MoT）</strong> 架构；RGB 与深度流共享视觉块，动作块独立参数化。</li><li><strong>链式注意力（Chain Attention）</strong>：控制跨模态信息流，动作塔仅通过深度推演特征间接获取语义上下文，不直接访问 RGB 或未来 RGB，从而强化语义与物理的角色解耦。</li><li><strong>训练策略</strong>：深度 VAE 使用约 2300 小时深度数据预训练；策略训练分两阶段，先进行深度预测适配，再联合优化 RGB 目标预测、稠密深度预测与动作预测的流匹配目标。</li><li><strong>推理过程</strong>：缓存初始 RGB 特征作为语义引导，不生成未来 RGB；深度潜变量与动作块从高斯噪声联合去噪，直接输出动作，无需解码深度图。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真基准</strong>：RoboTwin-C2R、LIBERO、LIBERO-Plus、LIBERO-Pro、RoboDojo，覆盖分布内操作和分布外迁移。</li><li><strong>深度预训练数据</strong>：约 <strong>2,300 小时</strong>深度数据，用于深度 VAE 预训练。</li><li><strong>模型基础</strong>：以预训练视频模型 <strong>WAN</strong> 为骨干；RGB 与深度 VAE、T5 在策略训练中保持冻结。</li><li><strong>模型变体</strong>：提供标准版 <strong>PrismWAM</strong> 和扩大版 <strong>PrismWAM</strong>*（论文中用于部分最强结果）。</li><li><strong>训练资源</strong>：原文未明确披露 GPU/TPU 数量及具体模型参数量。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboTwin-C2R</strong>：PrismWAM* 平均成功率 <strong>83.67%</strong>（Clean 91.84% / Random 75.50%），远超 FastWAM（39.85%）和 OpenWAM-α（69.05%）；不依赖动作预训练的 PrismWAM 在随机场景下比 starVLA 高 50.00 pp，比 FastWAM 高 51.26 pp。</li><li><strong>RoboDojo</strong>：PrismWAM* 总分 <strong>36.23</strong>，成功率 <strong>29.30%</strong>；在 Precision 任务上比 OpenWAM-α 高 <strong>21.37 pp</strong>，体现精度操作优势。</li><li><strong>LIBERO 系列</strong>：LIBERO 总体成功率 <strong>99.35%</strong>，LIBERO-Plus 总体 <strong>79.44%</strong>，LIBERO-Pro 总体 <strong>54.48%</strong>；在布局扰动、光照变化、物体属性改变等迁移任务上优于 FastWAM 和 OpenWAM-α。</li><li><strong>鲁棒性分析</strong>：在真实感深度损坏（Metric Jitter、Edge Missing、Patch Hole）下，最强损坏级别下平均性能仅下降 <strong>2.45 pp</strong>，表明对深度噪声与缺失具有较强稳健性。</li><li><strong>消融实验</strong>：移除 RGB 或深度流均降低性能；允许 RGB 直接到动作或深度访问未来 RGB 会削弱泛化；完整设计取得最佳 Clean/Random 平均。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.26584/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">HAF-VLA: Hierarchical Action Flow Framework for Humanoid Vision-Language-Action Control</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.26487/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SPAR: Structural Pruning and Action Recovery for Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
