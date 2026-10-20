@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PICA-WAM: Visual Perturbation Invariance via Cross-Appearance Self-Alignment in World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对世界动作模型对任务无关视觉扰动（如光照、纹理、背景等外观变化）过于脆弱的问题，指出传统 WAM 训练存在目标缺口：视频预测目标鼓励表征保留外观信息，而动作生成目标未显式强制对无关外观的不变性 现有方法存在局限：数据增强仅独立监督每个观测，不要求扰动与正常观测产生一致的动作表征；外部表征对齐（如 DINOv3、V-JEPA 等语义编码器）无法保证跨外观的一致性 提出 PICA-WAM，一种自监督训练框架，将扰动不变性建模为辅助的跨外观自对齐任务，在四个强 WAM 上验证了仿真与真实机器人的鲁棒性提升" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.26813">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.26813.webp" alt="PICA-WAM: Visual Perturbation Invariance via Cross-Appearance Self-Alignment in World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对世界动作模型对任务无关视觉扰动（如光照、纹理、背景等外观变化）过于脆弱的问题，指出传统 WAM 训练存在目标缺口：视频预测目标鼓励表征保留外观信息，而动作生成目标未显式强制对无关外观的不变性</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">PICA-WAM: Visual Perturbation Invariance via Cross-Appearance Self-Alignment in World Action Models</h1>
+            <div class="detail-meta">2026-10-19 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.26813" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.26813" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.26813</span></div>
+            <p class="detail-summary">论文针对世界动作模型对任务无关视觉扰动（如光照、纹理、背景等外观变化）过于脆弱的问题，指出传统 WAM 训练存在目标缺口：视频预测目标鼓励表征保留外观信息，而动作生成目标未显式强制对无关外观的不变性 现有方法存在局限：数据增强仅独立监督每个观测，不要求扰动与正常观测产生一致的动作表征；外部表征对齐（如 DINOv3、V-JEPA 等语义编码器）无法保证跨外观的一致性 提出 PICA-WAM，一种自监督训练框架，将扰动不变性建模为辅助的跨外观自对齐任务，在四个强 WAM 上验证了仿真与真实机器人的鲁棒性提升</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">上海交通大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对世界动作模型对任务无关视觉扰动（如光照、纹理、背景等外观变化）过于脆弱的问题，指出传统 WAM 训练存在目标缺口：视频预测目标鼓励表征保留外观信息，而动作生成目标未显式强制对无关外观的不变性</p>
+  <ul class="reading-intro-points"><li>论文针对世界动作模型对任务无关视觉扰动（如光照、纹理、背景等外观变化）过于脆弱的问题，指出传统 WAM 训练存在目标缺口：视频预测目标鼓励表征保留外观信息，而动作生成目标未显式强制对无关外观的不变性</li><li>现有方法存在局限：数据增强仅独立监督每个观测，不要求扰动与正常观测产生一致的动作表征；外部表征对齐（如 DINOv3、V-JEPA 等语义编码器）无法保证跨外观的一致性</li><li>提出 PICA-WAM，一种自监督训练框架，将扰动不变性建模为辅助的跨外观自对齐任务，在四个强 WAM 上验证了仿真与真实机器人的鲁棒性提升</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>上海交通大学</strong></li><li><strong>上海人工智能实验室</strong></li><li><strong>复旦大学</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对<strong>世界动作模型</strong>对任务无关视觉扰动（如光照、纹理、背景等外观变化）过于脆弱的问题，指出传统 WAM 训练存在目标缺口：视频预测目标鼓励表征保留外观信息，而动作生成目标未显式强制对无关外观的不变性</li><li>现有方法存在局限：<strong>数据增强</strong>仅独立监督每个观测，不要求扰动与正常观测产生一致的动作表征；<strong>外部表征对齐</strong>（如 DINOv3、V-JEPA 等语义编码器）无法保证跨外观的一致性</li><li>提出 <strong>PICA-WAM</strong>，一种自监督训练框架，将扰动不变性建模为辅助的跨外观自对齐任务，在四个强 WAM 上验证了仿真与真实机器人的鲁棒性提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>PICA-WAM</strong> 自监督训练框架：将扰动观测的动作表征对齐到由 <strong>EMA 教师</strong>从标称观测计算的更深、更干净的目标，无需外部编码器、额外数据和推理时计算</li><li>设计<strong>配对诊断协议</strong>，追踪视觉扰动从逐层特征到执行动作的传播路径，证明仅靠数据增强在深层视频层（21–25 层）仍保留外观敏感性并泄漏至动作，而 PICA-WAM 同时降低两者</li><li>在 <strong>RoboTwin 2.0 Clean-to-Random</strong>、<strong>LIBERO-Plus</strong>、<strong>EBench</strong> 和真实机器人操作上，跨四个强 WAM 骨干（含/不含具身预训练）取得一致的鲁棒性提升，同时保持分布内性能</li><li>推理时丢弃教师与投影头，不改变 WAM 架构、参数量和采样流程，可应用于任何分层骨干的 WAM</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于双流 WAM 架构：视频流由预训练视频扩散 Transformer 初始化，与动作流通过联合注意力逐层耦合，以 <strong>flow-matching</strong> 目标联合训练（L_gen = L_video + L_action）</li><li><strong>跨外观自对齐</strong>：学生（在线模型 θ）读取扰动观测，其浅层（第 m 层）动作表征经轻量 MLP 投影头 g_ψ 映射；<strong>EMA 教师</strong> φ 读取同一任务状态的标称观测（更低噪声水平 σ−δ），提供更深层（第 n 层，n>m）的目标表征</li><li>对齐损失为逐动作 token 的负余弦相似度（带 stop-gradient），总损失为 L = L_gen(z′, a) + λ·L_align</li><li>对对跨越三个“间隙”：<strong>外观间隙</strong>（提供不变性信号）、<strong>噪声水平间隙</strong>与<strong>层间隙</strong>（使教师目标强于学生自身表征）</li><li>仅对动作流施加对齐（消融显示优于对齐视频流或双流），通过联合注意力间接塑造视频表征；教师前向可在第 n 层提前停止以节省计算</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>RoboTwin 2.0 Clean-to-Random</strong>（50 个双臂任务、每任务 50 条干净演示，100 episodes/任务）、<strong>LIBERO-Plus</strong>（10,030 个扰动任务、7 个扰动维度）、<strong>EBench</strong>（26 个任务，含移动操作与灵巧桌面操作）、<strong>LIBERO</strong> 四个套件</li><li>应用的四个骨干：<strong>Fast-WAM</strong>（无具身预训练）、<strong>LingBot-VA</strong>、<strong>InternW0-Δ</strong>、<strong>OpenWAM-α</strong>（均具具身预训练）</li><li>在 LIBERO 上构建三个受控 Fast-WAM 变体用于诊断：<strong>Baseline</strong>（标称片段训练）、<strong>+Aug</strong>（扰动片段训练）、<strong>PICA-WAM</strong>（+Aug 基础上加对齐项）</li><li>真实世界实验基于 <strong>OpenWAM-α</strong> 在真实机器人上评估（论文 HTML 截断，具体 GPU/训练资源细节未在可见部分给出）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>诊断协议在 LIBERO-Plus 配对观测上测量视频/动作敏感性（第 8 层）与末端执行器轨迹漂移：PICA-WAM 将未见扰动族的轨迹漂移从 Baseline 的 16.42 mm 降至 <strong>6.21 mm</strong>（降低 62%），动作敏感性从 0.486 降至 <strong>0.075</strong></li><li>层带干预显示 +Aug 在 21–25 层保留 Baseline 84% 的动作泄漏，而 <strong>PICA-WAM 降至 35%</strong></li><li><strong>RoboTwin 2.0 Clean-to-Random</strong>：基于 InternW0-Δ 的 PICA-WAM 达 <strong>74.7%</strong>（Random）/ 90.7%（Clean），平均 82.7%，为所有方法最佳；无具身预训练组中基于 Fast-WAM 的 PICA-WAM 达 63.8%（Random 从基线 1.9% 提升至 39.6%）</li><li><strong>LIBERO-Plus</strong>：基于 InternW0-Δ 达 <strong>93.3%</strong>；基于 Fast-WAM 平均 85.2%（Baselines 51.5–81.3），在 Robot、Noise、Camera 等维度大幅领先</li><li><strong>EBench</strong>：基于 OpenWAM-α 达 <strong>61.4%</strong>，为对比方法最佳</li><li>真实机器人上视觉扰动下成功率提升，且降低视频特征对外观敏感性及其向动作的传播，包括训练中未见的扰动族</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.26855/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Ropedia W0: Scaling Loco-Manipulation World Models across Embodiments with Human Experience</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.26765/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HandsOn: A Large-Scale Simulation Benchmark for Generalizable Dexterous Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
