@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FIT-MAC: A Closed-Loop Multi-Agent Framework for Robust Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型在任务条件偏离标称设置（如物体位置、指令变化）时可靠性大幅下降的问题，提出 FIT-MAC 推理时控制框架。 现有 VLA 策略缺乏显式的运行时机制来区分不同类型的失败（目标绑定错误 vs. 局部执行失败）并选择相应的恢复策略。 FIT-MAC 通过多智能体闭环控制，在推理阶段提升预训练 VLA 策略的鲁棒性，无需修改底层模型参数。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.28109">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.28109.webp" alt="FIT-MAC: A Closed-Loop Multi-Agent Framework for Robust Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对视觉-语言-动作（VLA）模型在任务条件偏离标称设置（如物体位置、指令变化）时可靠性大幅下降的问题，提出 FIT-MAC 推理时控制框架。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FIT-MAC: A Closed-Loop Multi-Agent Framework for Robust Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-20 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.28109" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.28109" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.28109</span></div>
+            <p class="detail-summary">针对视觉-语言-动作（VLA）模型在任务条件偏离标称设置（如物体位置、指令变化）时可靠性大幅下降的问题，提出 FIT-MAC 推理时控制框架。 现有 VLA 策略缺乏显式的运行时机制来区分不同类型的失败（目标绑定错误 vs. 局部执行失败）并选择相应的恢复策略。 FIT-MAC 通过多智能体闭环控制，在推理阶段提升预训练 VLA 策略的鲁棒性，无需修改底层模型参数。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者来自多个中国高校和研究机构：</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对视觉-语言-动作（VLA）模型在任务条件偏离标称设置（如物体位置、指令变化）时可靠性大幅下降的问题，提出 FIT-MAC 推理时控制框架。</p>
+  <ul class="reading-intro-points"><li>针对视觉-语言-动作（VLA）模型在任务条件偏离标称设置（如物体位置、指令变化）时可靠性大幅下降的问题，提出 FIT-MAC 推理时控制框架。</li><li>现有 VLA 策略缺乏显式的运行时机制来区分不同类型的失败（目标绑定错误 vs. 局部执行失败）并选择相应的恢复策略。</li><li>FIT-MAC 通过多智能体闭环控制，在推理阶段提升预训练 VLA 策略的鲁棒性，无需修改底层模型参数。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者来自多个中国高校和研究机构：</li></ul>
+<p> - <strong>Lanzhou University</strong>（兰州大学）</p>
+<p> - <strong>Northwest Normal University</strong>（西北师范大学）</p>
+<p> - <strong>Sun Yat-sen University</strong>（中山大学）</p>
+<p> - <strong>Zhejiang University</strong>（浙江大学）</p>
+<p> - <strong>Beijing Institute of Technology</strong>（北京理工大学）</p></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对视觉-语言-动作（VLA）模型在任务条件偏离标称设置（如物体位置、指令变化）时可靠性大幅下降的问题，提出 <strong>FIT-MAC</strong> 推理时控制框架。</li><li>现有 VLA 策略缺乏显式的运行时机制来区分不同类型的失败（目标绑定错误 vs. 局部执行失败）并选择相应的恢复策略。</li><li>FIT-MAC 通过多智能体闭环控制，在推理阶段提升预训练 VLA 策略的鲁棒性，无需修改底层模型参数。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>FIT-MAC</strong>，一个失败感知的闭环多智能体控制框架，通过共享执行状态协调任务解析、视觉接地、执行监控和恢复。</li><li>引入运行时验证与纠正机制，能够区分目标绑定错误与局部执行失败，并分别采用目标重绑定和有界局部恢复（抓取/放置）进行针对性干预。</li><li>在 <strong>LIBERO-PRO</strong> 基准上达到最先进成功率，并跨多个 VLA 骨干（<strong>OpenVLA</strong>, <strong>π₀</strong>, <strong>π₀.₅</strong>）一致提升鲁棒性。</li><li>通过消融研究验证各组件（目标纠正、执行纠正、硬抓取、硬放置）的贡献。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>FIT-MAC 由四个专门代理组成，共享执行状态：</li></ul>
+<p> - <strong>Planner Agent</strong>：将语言指令解析为结构化任务规范，提取目标对象、空间关系、参考物体及子任务序列。</p>
+<p> - <strong>Grounder Agent</strong>：利用 <strong>Grounding DINO</strong> 和 VLM 解析器将任务规范映射到当前观测中的物体实例，并构造接地提示供 VLA 使用；结合几何距离评分（考虑语义兼容性）确定目标锁定。</p>
+<p> - <strong>Verifier Agent</strong>：监控目标接近、夹爪闭合、物体运动、目的地接近及释放后稳定性；通过距离减小量和位移阈值检测停滞或超时，并给出失败诊断（目标失败、抓取失败、放置失败）。</p>
+<p> - <strong>Correction Agent</strong>：根据诊断路由干预：目标失败触发 Grounder 重绑定并更新接地提示；执行失败激活有界局部控制器（基于航点追踪的平移恢复），同时保持预训练 VLA 为默认动作生成器。</p>
+<ul><li>干预由运行时证据触发，不影响标称执行，使得框架具有选择性和可解释性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>LIBERO-Object</strong> 和 <strong>LIBERO-Spatial</strong> 数据集，遵循 <strong>LIBERO-PRO</strong> 扰动协议。</li><li>评估五种扰动类型：<strong>位置（Pos）</strong>、<strong>任务指令（Task）</strong>、<strong>环境（Env）</strong>、<strong>物体身份（Obj）</strong>、<strong>语义绑定（Sem）</strong>。</li><li>集成并评估了三种 VLA 骨干：<strong>OpenVLA</strong>、<strong>π₀</strong>、<strong>π₀.₅</strong>（所有骨干参数冻结，不做微调）。</li><li>框架本身不训练新参数，为纯推理时控制层；未提及大规模训练资源。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标包括 <strong>成功率（SR）</strong>、<strong>干预率（IR）</strong>、<strong>恢复成功率（RSR）</strong>。</li><li>在 <strong>LIBERO-PRO</strong> 的十个扰动设置中，FIT-MAC 在八个设置上达到最先进 SR，平均 SR 达 <strong>78.7%</strong>，比 OpenVLA 高出 <strong>32.8%</strong>。</li><li>跨骨干泛化：在 LIBERO-Object 上平均 SR 提升 <strong>22.4%–46.2%</strong>，在 LIBERO-Spatial 上提升 <strong>16.6%–19.4%</strong>。</li><li>消融实验表明执行纠正贡献最大（移除后平均 SR 从 78.7% 降至 54.7%），目标纠正、硬抓取、硬放置也各有增益。</li><li>超参数敏感性分析显示框架对多数参数稳健，执行视野从 1 增至 2 可显著提升性能。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.28122/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">De-Diffusing WAMs: Action-Sufficient Direct Prediction for Robot Control</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.28019/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">PACT-VLA: Speculative Action-Chunk Verification with Pre-Commit Observations</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
