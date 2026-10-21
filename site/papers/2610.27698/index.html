@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VLA-Retain: Benchmarking Cross-Dimension Effects of Vision Tuning in VLAs - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 VLA-Retain 基准，系统评估视觉语言动作（VLA）模型在目标域视觉微调后，对其他扰动维度的鲁棒性保持能力。 现有鲁棒性基准只评估未微调模型，目标适配研究只报告目标域收益，忽略了对非目标条件的跨维度影响；本文填补这一空白。 通过在 Camera-view 或 Sensor-noise 数据上微调五个开源 VLA 模型，并与各自基座模型在 10,030 个 LIBERO-Plus 测试 episode 上配对比较，揭示目标微调并非局部、其目标增益不能预测非目标保留。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.27698">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.27698.webp" alt="VLA-Retain: Benchmarking Cross-Dimension Effects of Vision Tuning in VLAs" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 VLA-Retain 基准，系统评估视觉语言动作（VLA）模型在目标域视觉微调后，对其他扰动维度的鲁棒性保持能力。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">VLA-Retain: Benchmarking Cross-Dimension Effects of Vision Tuning in VLAs</h1>
+            <div class="detail-meta">2026-10-20 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.27698" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.27698" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.27698</span></div>
+            <p class="detail-summary">论文提出 VLA-Retain 基准，系统评估视觉语言动作（VLA）模型在目标域视觉微调后，对其他扰动维度的鲁棒性保持能力。 现有鲁棒性基准只评估未微调模型，目标适配研究只报告目标域收益，忽略了对非目标条件的跨维度影响；本文填补这一空白。 通过在 Camera-view 或 Sensor-noise 数据上微调五个开源 VLA 模型，并与各自基座模型在 10,030 个 LIBERO-Plus 测试 episode 上配对比较，揭示目标微调并非局部、其目标增益不能预测非目标保留。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Borui Xu、Han Chen、Bingsheng He：National University…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 VLA-Retain 基准，系统评估视觉语言动作（VLA）模型在目标域视觉微调后，对其他扰动维度的鲁棒性保持能力。</p>
+  <ul class="reading-intro-points"><li>论文提出 VLA-Retain 基准，系统评估视觉语言动作（VLA）模型在目标域视觉微调后，对其他扰动维度的鲁棒性保持能力。</li><li>现有鲁棒性基准只评估未微调模型，目标适配研究只报告目标域收益，忽略了对非目标条件的跨维度影响；本文填补这一空白。</li><li>通过在 Camera-view 或 Sensor-noise 数据上微调五个开源 VLA 模型，并与各自基座模型在 10,030 个 LIBERO-Plus 测试 episode 上配对比较，揭示目标微调并非局部、其目标增益不能预测非目标保留。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Borui Xu</strong>、<strong>Han Chen</strong>、<strong>Bingsheng He</strong>：<strong>National University of Singapore（新加坡国立大学）</strong></li><li><strong>Ming Wu</strong>、<strong>Jason Zeng</strong>、<strong>Michael Heinrich</strong>：<strong>0G Labs</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>VLA-Retain</strong> 基准，系统评估视觉语言动作（VLA）模型在<strong>目标域视觉微调</strong>后，对其他扰动维度的鲁棒性保持能力。</li><li>现有鲁棒性基准只评估未微调模型，目标适配研究只报告目标域收益，忽略了对非目标条件的跨维度影响；本文填补这一空白。</li><li>通过在 <strong>Camera-view</strong> 或 <strong>Sensor-noise</strong> 数据上微调五个开源 VLA 模型，并与各自基座模型在 <strong>10,030</strong> 个 <strong>LIBERO-Plus</strong> 测试 episode 上配对比较，揭示目标微调并非局部、其目标增益不能预测非目标保留。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>VLA-Retain</strong> 配对基准，按七个扰动维度分离目标增益与非目标保留，并定义目标增益、平均非目标增益、最差非目标增益和 episode 加权整体增益四类指标。</li><li>实证发现<strong>目标视觉微调并非局部</strong>：10 个模型–域配置中 8 个平均非目标增益为负，语言与物体布局维度在 9/10 配置中下降。</li><li>证明非目标回归<strong>不能仅由源域遗忘解释</strong>；扣除原始 LIBERO 任务变化后，每个 Camera-view 微调模型和 4/5 个 Sensor-noise 微调模型仍然至少在一个非目标维度上退化。</li><li>证明更广泛的训练覆盖提升整体增益但不能消除维度级回归；<strong>Mixed 训练</strong>下所有模型整体增益更高，但每个模型仍然至少在一个维度上下降。</li><li>系统比较调优范围、<strong>WiSE-FT</strong> 权重插值和 <strong>DELTA-style</strong> 特征保持，发现<strong>调优策略具有模型依赖性</strong>：DELTA-style 对 <strong>X-VLA</strong> 显著改善，但对 <strong>OpenVLA-OFT</strong> 严重恶化。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>将 VLA 分解为视觉模块 \(f_\theta\)（视觉骨干 + 连接器）与下游模块 \(g_\phi\)，目标视觉微调仅更新 \(\theta\) 而冻结 \(\phi\)。</li><li>定义配对变化向量 \(\Delta_{m,c,d}=S^{tuned}_{m,c,d}-S^{base}_{m,d}\)（百分比点），通过目标、平均非目标、最差非目标、episode 加权整体增益四种指标总结。</li><li>默认采用 <strong>Dual LoRA</strong>：对视觉骨干和连接器应用 rank-32 LoRA，冻结多模态骨干与动作模块；保持各模型官方学习率调度与归一化。</li><li>采用四类控制：原始 LIBERO 对照、配对 cluster bootstrap 置信区间、检查点与训练种子分析；训练数据覆盖与调优策略作为变量。</li><li>策略变体包括 <strong>backbone-only / connector-only LoRA</strong>、<strong>WiSE-FT</strong> 权重插值（\(\alpha=0.75\)）和 <strong>DELTA-style</strong> 特征保持正则。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>LIBERO-Plus</strong> 训练子集（<strong>Camera-view</strong>、<strong>Sensor-noise</strong>）和完整 <strong>Mixed</strong> 训练集，以及独立评估集 <strong>10,030</strong> 个 episode，覆盖七个扰动维度。</li><li>五个开源 VLA 模型：<strong>OpenVLA-OFT</strong>、<strong>π₀.₅</strong>、<strong>InternVLA-A1.5</strong>、<strong>NORA-1.5</strong>、<strong>X-VLA</strong>；视觉模块参数占比从 <strong>10.64%</strong> 到 <strong>41.26%</strong>。</li><li>训练配置：AdamW、BF16、有效 batch size 32、12,000 优化步；LoRA rank 32、\(\alpha=16\)、dropout 0；具体 GPU 数量未在提供文本中明确列出。</li><li>仿真与评估环境：<strong>LIBERO simulator</strong>、robosuite 1.4.1、MuJoCo、<strong>vla-evaluation-harness</strong>。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标采用百分比点变化（pp）：target gain、mean off-target gain、worst off-target gain、episode-weighted overall gain。</li><li><strong>Camera-view 微调代表性结果</strong>：<strong>X-VLA</strong> 目标 +69.4、非目标均值 -4.6、最差 -10.7、整体 +7.0；<strong>OpenVLA-OFT</strong> 目标 +39.3、非目标 +1.4、最差 -2.8、整体 +7.5；<strong>NORA-1.5</strong> 目标 +28.7、非目标 -10.1、整体 -3.7。</li><li><strong>Sensor-noise 微调</strong>中仍有 4/5 模型平均非目标增益为负；<strong>InternVLA-A1.5</strong> 在两种目标域下整体增益均为负。</li><li>95% cluster bootstrap 置信区间显示：Camera-view 下 <strong>NORA-1.5</strong> 非目标收益 [-13.9, -6.7]、<strong>X-VLA</strong> [-7.4, -2.1]、<strong>OpenVLA-OFT</strong> [+0.2, +2.8]。</li><li><strong>DELTA-style</strong> 使 X-VLA 非目标均值从 -4.6 升至 +1.2，整体从 +7.0 升至 +10.9；但使 OpenVLA-OFT 非目标从 +1.4 降至 -23.1，整体降至 -16.6。</li><li><strong>WiSE-FT</strong> 权重插值在降低目标增益的同时改善保留：X-VLA 目标 +69.4→+59.8，非目标 -4.6→0.0，整体 +7.0→+9.4。</li><li><strong>Mixed 训练</strong>对五个模型的整体增益均高于任一目标特定设置（最高 <strong>X-VLA +13.6</strong>），但每个模型仍然至少在一个维度上退化。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.27861/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RoboCasa-Shift: Stage-Aware Robustness Evaluation of Vision-Language-Action Policies in Long-Horizon Household Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.27657/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">PLaCA: Learning Patch-Level Future Latent Change for Action Generation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
