@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GeoMem-VLA: Internalizing 3D Scene Understanding into Temporal Memory for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 GeoMem-VLA，一种将 3D 场景理解内部化到时序记忆中的视觉-语言-动作（VLA）框架，用于机器人操作。 解决现有 VLA 模型依赖当前 2D 观察、缺乏对历史空间信息的持续利用和精确 3D 推理能力的问题。 核心思想是学习紧凑的、任务相关的几何抽象（GeoPlan tokens），并将其作为时序记忆持续更新，从而在动作生成时无需显式重建 3D 场景。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.29866">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.29866.webp" alt="GeoMem-VLA: Internalizing 3D Scene Understanding into Temporal Memory for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 GeoMem-VLA，一种将 3D 场景理解内部化到时序记忆中的视觉-语言-动作（VLA）框架，用于机器人操作。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GeoMem-VLA: Internalizing 3D Scene Understanding into Temporal Memory for Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-21 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.29866" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.29866" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.29866</span></div>
+            <p class="detail-summary">提出 GeoMem-VLA，一种将 3D 场景理解内部化到时序记忆中的视觉-语言-动作（VLA）框架，用于机器人操作。 解决现有 VLA 模型依赖当前 2D 观察、缺乏对历史空间信息的持续利用和精确 3D 推理能力的问题。 核心思想是学习紧凑的、任务相关的几何抽象（GeoPlan tokens），并将其作为时序记忆持续更新，从而在动作生成时无需显式重建 3D 场景。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">BUAA（北京航空航天大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 GeoMem-VLA，一种将 3D 场景理解内部化到时序记忆中的视觉-语言-动作（VLA）框架，用于机器人操作。</p>
+  <ul class="reading-intro-points"><li>提出 GeoMem-VLA，一种将 3D 场景理解内部化到时序记忆中的视觉-语言-动作（VLA）框架，用于机器人操作。</li><li>解决现有 VLA 模型依赖当前 2D 观察、缺乏对历史空间信息的持续利用和精确 3D 推理能力的问题。</li><li>核心思想是学习紧凑的、任务相关的几何抽象（GeoPlan tokens），并将其作为时序记忆持续更新，从而在动作生成时无需显式重建 3D 场景。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>BUAA</strong>（北京航空航天大学）</li><li><strong>RUC</strong>（中国人民大学）</li><li><strong>USTC</strong>（中国科学技术大学）</li><li><strong>CUHK(SZ)</strong>（香港中文大学（深圳））</li><li><strong>FDU</strong>（复旦大学）</li><li><strong>X-Humanoid</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>GeoMem-VLA</strong>，一种将 3D 场景理解内部化到时序记忆中的视觉-语言-动作（VLA）框架，用于机器人操作。</li><li>解决现有 VLA 模型依赖当前 2D 观察、缺乏对历史空间信息的持续利用和精确 3D 推理能力的问题。</li><li>核心思想是学习紧凑的、任务相关的几何抽象（GeoPlan tokens），并将其作为时序记忆持续更新，从而在动作生成时无需显式重建 3D 场景。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>几何监督空间表示</strong>：通过可学习的 GeoPlan tokens，在辅助流匹配目标下预测当前场景点图和未来末端执行器轨迹，在不直接对齐视觉嵌入与教师特征的情况下将 3D 监督内部化。</li><li><strong>几何感知事件记忆</strong>：将几何表示与观察表征结合，采用因果时序检索和基于相似度的记忆压缩，形成事件级关键记忆，使历史空间信息在长程任务中得以保留和利用。</li><li><strong>跨平台评估验证</strong>：在 LIBERO、RoboTwin 2.0 及两个真实机器人平台上验证方法在空间和时序任务中的有效性，取得领先结果。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>基于 <strong>StarVLA</strong> 框架，以 <strong>Qwen3-VL-4B</strong> 为骨干，使用 <strong>GR00T 风格</strong> 的流匹配动作专家生成连续动作块。</li><li>引入 <strong>GeoPlan tokens</strong>（可学习标记），其最终层隐藏状态经投影后用于辅助几何流匹配任务：预测当前场景的点图（由冻结的 <strong>VGGT</strong> 教师提供监督）和未来末端执行器轨迹（由演示数据提供）。</li><li>训练时联合优化动作流匹配损失与几何损失；推理时移除几何教师与重建头，仅使用学到的几何 tokens。</li><li>设计 <strong>几何感知时序记忆</strong>：分别维护观察记忆和几何记忆，通过因果检索（使用当前 tokens 查询历史）和自适应门控融合，结合基于余弦相似度的相邻条目合并，实现事件级记忆压缩，保持时序因果关系。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用的数据集：<strong>LIBERO</strong>（含 Spatial、Object、Goal、Long 四个 10 任务套件）、<strong>RoboTwin 2.0</strong>（50 个双手任务，Clean 和 Randomized 设置）、自采集的 5 个真实世界任务（每任务 60 条演示）。</li><li>模型规模：骨干为 <strong>Qwen3-VL-4B</strong>（约 4B 参数），动作专家为条件扩散 Transformer，GeoPlan 标记数量及几何工作维度未明确给出。</li><li>训练资源：论文未提及具体 GPU/TPU 型号和数量，但描述了使用冻结 VGGT 教师及流程匹配训练。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：<strong>LIBERO</strong> 模拟基准（50 次试验/任务）、<strong>RoboTwin 2.0</strong> 模拟基准（100 次试验/任务/设置）、两个真实机器人平台（<strong>Astribot S1</strong> 和 <strong>AgileX Cobot Magic 2</strong>，每任务 10 次独立闭环测试）。</li><li>主要评估指标：任务成功率（%）。</li><li>关键实验结果：</li></ul>
+<p> - <strong>LIBERO</strong> 平均成功率 <strong>98.9%</strong>（Spatial 99.6%、Object 99.8%、Goal 99.6%、Long 96.6%），超过 Spatial Forcing、3DThinkVLA 等基线。</p>
+<p> - <strong>RoboTwin 2.0</strong>：Clean 设置 <strong>91.10%</strong>，Randomized 设置 <strong>91.24%</strong>，平均 <strong>91.17%</strong>，优于 HyVLA-0.5、StarVLA-GR00T 等。</p>
+<p> - 消融研究：去除 GeoPlan 分支或时序记忆均导致成功率下降（如 LIBERO 平均降至 97.9% 和 98.2%，RoboTwin 平均降至 89.71% 和 90.18%）。</p>
+<p> - 真实世界 5 个任务平均成功率 <strong>78.0%</strong>（具体任务如拾取站立棍 90%、转移杯 70%、分离文件袋 100%、拾取立方体 80%、覆盖找苹果 80%）。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.29915/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">CausalAlign: Causal Alignment of Video Generation Models for Consistent Ego-Motion</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.29730/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Post-hoc Epistemic Uncertainty for Vision-Language-Action Policies</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
