@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>When One Step Is Enough: An Empirical Study of Euler Integration in Flow-Matching Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究核心问题：流匹配（flow matching）视觉-语言-动作（VLA）机器人策略在推理时是否需要多步欧拉积分，还是单步（1-step）就足够。 通过大规模实证研究，对六个流匹配 VLA 模型在多个仿真与真实世界基准上进行配对比较（1步 vs 参考步数）。 主要发现：对于训练充分、容量足够的大模型，单步动作生成与多步采样成功率几乎等效，无需额外训练、蒸馏或辅助目标即可实现低延迟部署。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.30735">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.30735.webp" alt="When One Step Is Enough: An Empirical Study of Euler Integration in Flow-Matching Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">研究核心问题：流匹配（flow matching）视觉-语言-动作（VLA）机器人策略在推理时是否需要多步欧拉积分，还是单步（1-step）就足够。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">When One Step Is Enough: An Empirical Study of Euler Integration in Flow-Matching Policies</h1>
+            <div class="detail-meta">2026-10-22 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.30735" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.30735" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.30735</span></div>
+            <p class="detail-summary">研究核心问题：流匹配（flow matching）视觉-语言-动作（VLA）机器人策略在推理时是否需要多步欧拉积分，还是单步（1-step）就足够。 通过大规模实证研究，对六个流匹配 VLA 模型在多个仿真与真实世界基准上进行配对比较（1步 vs 参考步数）。 主要发现：对于训练充分、容量足够的大模型，单步动作生成与多步采样成功率几乎等效，无需额外训练、蒸馏或辅助目标即可实现低延迟部署。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Araya Inc., Tokyo（所有作者隶属）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">研究核心问题：流匹配（flow matching）视觉-语言-动作（VLA）机器人策略在推理时是否需要多步欧拉积分，还是单步（1-step）就足够。</p>
+  <ul class="reading-intro-points"><li>研究核心问题：流匹配（flow matching）视觉-语言-动作（VLA）机器人策略在推理时是否需要多步欧拉积分，还是单步（1-step）就足够。</li><li>通过大规模实证研究，对六个流匹配 VLA 模型在多个仿真与真实世界基准上进行配对比较（1步 vs 参考步数）。</li><li>主要发现：对于训练充分、容量足够的大模型，单步动作生成与多步采样成功率几乎等效，无需额外训练、蒸馏或辅助目标即可实现低延迟部署。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Araya Inc., Tokyo</strong>（所有作者隶属）</li><li>作者：<strong>Shivakanth Sujit</strong>、<strong>Luca Nunziante</strong>、<strong>Rousslan Fernand Julien Dossa</strong>、<strong>Kai Arulkumaran</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>研究核心问题：流匹配（flow matching）视觉-语言-动作（VLA）机器人策略在推理时是否需要多步欧拉积分，还是单步（1-step）就足够。</li><li>通过大规模实证研究，对六个流匹配 VLA 模型在多个仿真与真实世界基准上进行配对比较（1步 vs 参考步数）。</li><li>主要发现：对于训练充分、容量足够的大模型，单步动作生成与多步采样成功率几乎等效，无需额外训练、蒸馏或辅助目标即可实现低延迟部署。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>首次系统性地对六个流匹配 VLA 模型（450M–4.7B 参数）进行单步 vs 多步推理的配对消融实验，覆盖多个仿真和真实世界基准。</li><li>证明步数等效性是模型规模、VLM 预训练和训练成熟度的函数：大模型（≥1B）在多数短程任务上单步与多步统计等效；小模型和长时序任务仍存在差距。</li><li>发现多步欧拉积分并不总是带来优势，性能差距方向因模型和任务而异；单步推理在成功率高的大模型上几乎无成本。</li><li>提供推理延迟对比，单步可将控制频率提升 <strong>1.6×–4.8×</strong>；并通过轨迹平滑度与多样性分析揭示单步推理对行为多样性的影响。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用配对比较协议：同一策略分别以参考步数和单步进行推理，仿真中使用匹配初始种子，真实世界中进行配对 A/B 测试，并固定噪声种子。</li><li>使用 <strong>TOST</strong>（双单侧 t 检验）判断成功率差异是否落在等效边界（δ=3 pp）内；真实世界结果辅以 <strong>McNemar 检验</strong> 分析配对差异。</li><li>评估六个流匹配 VLA（SmolVLA、FLOWER、X-VLA、π0.5、LAP、XR-0）及一个从头训练的 DiT 基线，模型均使用官方发布 checkpoint，无修改。</li><li>在仿真中，对 LIBERO、LIBERO+、CALVIN ABC→D、RoboTwin 2.0 进行大规模评估（每任务 50–100 次试验）；真实世界使用 Franka 机械臂完成四个厨房任务，共 4800 次 rollout。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>仿真基准</strong>：LIBERO（SGO 与 LIBERO-10）、LIBERO+（SGO 与 10）、CALVIN ABC→D、RoboTwin 2.0（clean 与 randomised）。</li><li><strong>真实世界基准</strong>：自制 Franka 厨房套件，包含四个任务（spoon to drawer、open drawer、open oven、close oven）。</li><li><strong>模型规模</strong>：DiT（211M）、SmolVLA（450M）、X-VLA（900M）、FLOWER（947M）、π0.5（3.3B）、LAP（3.3B）、XR-0（4.7B）。</li><li><strong>训练与推理硬件</strong>：单张 A100 GPU 用于延迟测量；大规模仿真 rollout 和真实世界实验使用内部集群与 Franka Emika Panda 机械臂。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>等效性测试</strong>：在 36 个仿真测试单元中，23 个显示统计等效，4 个多步更好，2 个单步更好，7 个不确定。大模型（π0.5、LAP、XR-0）在所有 LIBERO 短程套件上等效。</li><li><strong>长时序任务</strong>：CALVIN ABC→D 上，大模型（XR-0）等效；小模型（FLOWER、X-VLA）出现显著差距。LIBERO-10 上，只有 LAP 显示单步显著更好；其余大模型等效。</li><li><strong>真实世界结果</strong>：汇总差距均在 ±3.8 pp 内，McNemar 检验仅 3/24 个模型-任务单元存在显著差异，且方向不一致，表明多步无系统性优势。</li><li><strong>推理延迟</strong>：单步推理将动作生成延迟降低 <strong>1.6×–4.8×</strong>，取决于动作头相对 VLM 的比例（例如 SmolVLA 降低 4.8×，π0.5 降低 1.6×）。</li><li><strong>轨迹平滑度</strong>：对成功配对轨迹的 jerk RMS 分析显示，1B 以上模型单步轨迹略更平滑，小模型（DiT、FLOWER）多步更平滑。</li><li><strong>轨迹多样性</strong>：在 D3IL Avoiding 多模态任务上，单步推理保持或提高成功率，但显著降低行为多样性（熵下降，成功策略数减少，如 π0.5 从 19 种降至 8 种）。</li><li><strong>消融实验</strong>：随机初始化的 π0.5 从头训练时，步数差距在训练中逐渐缩小，但始终偏向单步；带 VLM 预训练的模型更快达到步数等效。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.30814/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">DRILL: Training World Models to Improve Policies, Not Predict Pixels</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.30732/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SmolVLA-MoE: Sparse Mixture-of-Experts for Efficient Multi-Task Robotic Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
