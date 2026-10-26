@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Retiming Robot Demonstrations with a Learned Speed Prior - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对机器人演示速度受遥操作者影响、同一任务速度不一致、策略继承操作者节奏的问题 提出从大规模演示数据中学习 速度先验（Speed Prior）：根据任务指令、运动路径和腕部相机图像预测路径上执行速度的分布，并用分位数生成统一时钟对演示进行重计时 将机器人遥操作演示重计时到手持演示的节奏，再微调视觉-语言-动作策略，实现更快更平滑的机器人执行" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.32676">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.32676.webp" alt="Retiming Robot Demonstrations with a Learned Speed Prior" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对机器人演示速度受遥操作者影响、同一任务速度不一致、策略继承操作者节奏的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Retiming Robot Demonstrations with a Learned Speed Prior</h1>
+            <div class="detail-meta">2026-10-23 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.32676" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.32676" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.32676</span></div>
+            <p class="detail-summary">论文针对机器人演示速度受遥操作者影响、同一任务速度不一致、策略继承操作者节奏的问题 提出从大规模演示数据中学习 速度先验（Speed Prior）：根据任务指令、运动路径和腕部相机图像预测路径上执行速度的分布，并用分位数生成统一时钟对演示进行重计时 将机器人遥操作演示重计时到手持演示的节奏，再微调视觉-语言-动作策略，实现更快更平滑的机器人执行</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">6 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者均来自 首尔国立大学（Seoul National University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对机器人演示速度受遥操作者影响、同一任务速度不一致、策略继承操作者节奏的问题</p>
+  <ul class="reading-intro-points"><li>论文针对机器人演示速度受遥操作者影响、同一任务速度不一致、策略继承操作者节奏的问题</li><li>提出从大规模演示数据中学习 速度先验（Speed Prior）：根据任务指令、运动路径和腕部相机图像预测路径上执行速度的分布，并用分位数生成统一时钟对演示进行重计时</li><li>将机器人遥操作演示重计时到手持演示的节奏，再微调视觉-语言-动作策略，实现更快更平滑的机器人执行</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者均来自 <strong>首尔国立大学（Seoul National University）</strong></li><li>部分作者标注为共同贡献（Equal contribution）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对机器人演示速度受遥操作者影响、同一任务速度不一致、策略继承操作者节奏的问题</li><li>提出从大规模演示数据中学习 <strong>速度先验（Speed Prior）</strong>：根据任务指令、运动路径和腕部相机图像预测路径上执行速度的分布，并用分位数生成统一时钟对演示进行重计时</li><li>将机器人遥操作演示重计时到手持演示的节奏，再微调视觉-语言-动作策略，实现更快更平滑的机器人执行</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出可跨任务复用的 <strong>速度先验</strong>，一次训练即可覆盖语料库中所有任务，避免为每个新任务重新拟合、标注或预定义速度</li><li>设计基于 Transformer 的速度分布预测模型，输出速度分布而非单一值，支持通过分位数灵活控制节奏</li><li>结合分类器自由引导思想，解决源/目标域图像差异，实现从源演示到目标演示节奏的迁移</li><li>提出与策略配套的实时最优控制执行层，在机器人动力学约束下跟踪预测动作块，保证块切换时位置、速度、加速度连续</li><li>在 RoboLab 仿真和真实 Franka 机器人上验证，较均匀加速或仅用快速演示训练的策略成功率更高、抖动更低、速度更快</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>将每条演示按弧长重采样为间隔 2 cm 的节点，构建包含位置、旋转、夹爪开合和腕部图像的路径窗口</li><li>速度先验为 Transformer，输入指令 token、17 个图像/节点 token 和 16 个查询 token，预测每个区间臂和夹爪的对数速度分类分布（256 个 bin）</li><li>训练时以 0.5 概率丢弃图像，重计时时融合源标签带图像 logits 与目标/源标签无图像 logits 之差，再取分位数生成时钟</li><li>用中位时钟重计时演示微调 <strong>π0.5</strong> 策略，并额外预测高分量数的“节奏通道”作为动作维度，部署时可按节奏通道加速</li><li>执行端包含 Draft（最小 Jerk 路径按节奏计时）、Splice（在限速下尽早按时接入）、Smooth（限速内最小 Jerk 二次规划）三步规划器，与 1 kHz 扭矩控制器配合</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>训练速度先验：<strong>DROID</strong> 遥操作演示和 <strong>FastUMI-100K</strong> 手持演示</li><li>真实机器人实验：使用 <strong>YUBI gripper</strong> 收集的手持演示；机器人平台为 <strong>Franka Research 3</strong></li><li>仿真基准：<strong>RoboLab</strong> 的 120 个任务</li><li>策略基座：<strong>π0.5</strong> DROID 策略；速度先验为从零训练的 Transformer，冻结的指令/图像编码器来自已有模型</li><li>训练资源方面原文未明确列出 GPU/TPU 数量</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>RoboLab 120 任务：用学习时钟微调的策略比同倍速均匀加速的策略成功率更高，在 2.4 倍加速下 Jerk 降低 52%</li><li>仅用最快 DROID 片段训练的策略，尽管片段节奏是平均的 1.5 倍，实际只比全量策略快 1.07 倍，说明筛选快速数据不能替代速度先验</li><li>真实机器人叠杯：本方法 3.50 秒 vs 默认 6.02 秒，且 30 次试验成功 29 次；仅用最快四分之一数据训练的策略成功 9/30；SAIL 基线 14.71 秒、成功率 0.40，本方法快 4.2 倍且成功率超过其两倍</li><li>使用所提控制器替代关节 PD 控制后，即使原始节奏策略折叠毛巾成功率从 13% 提升到 97%</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.32888/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">When Human Corrections Travel: Safety in Federated VLA Adaptation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.32431/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">When to Stop Penalizing Actions? Martingale GRPO for VLA Reinforcement Learning</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

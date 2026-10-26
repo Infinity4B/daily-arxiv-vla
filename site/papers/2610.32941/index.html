@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>If at First You Don&#x27;t Succeed, Backtrack: Lightweight Recovery for Frozen VLAs - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对 Vision-Language-Action (VLA) 模型在机器人操作中因自身动作进入训练分布外状态而失败、且难以恢复的问题。 提出 Backtrack，一种轻量级失败检测与恢复机制，无需恢复演示、策略重训练或额外的推理模型。 通过一个小型失败预测头读取冻结 VLA 的已有内部表示，估计当前 episode 失败概率；当概率超过阈值时，控制器暂停策略、回溯机械臂最近的运动轨迹，并将控制权交还给未修改的策略重试。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.32941">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.32941.webp" alt="If at First You Don&#x27;t Succeed, Backtrack: Lightweight Recovery for Frozen VLAs" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对 Vision-Language-Action (VLA) 模型在机器人操作中因自身动作进入训练分布外状态而失败、且难以恢复的问题。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">If at First You Don&#x27;t Succeed, Backtrack: Lightweight Recovery for Frozen VLAs</h1>
+            <div class="detail-meta">2026-10-23 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.32941" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.32941" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.32941</span></div>
+            <p class="detail-summary">论文针对 Vision-Language-Action (VLA) 模型在机器人操作中因自身动作进入训练分布外状态而失败、且难以恢复的问题。 提出 Backtrack，一种轻量级失败检测与恢复机制，无需恢复演示、策略重训练或额外的推理模型。 通过一个小型失败预测头读取冻结 VLA 的已有内部表示，估计当前 episode 失败概率；当概率超过阈值时，控制器暂停策略、回溯机械臂最近的运动轨迹，并将控制权交还给未修改的策略重试。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Thomas Landeg — Stanford University、ETH Zurich</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对 Vision-Language-Action (VLA) 模型在机器人操作中因自身动作进入训练分布外状态而失败、且难以恢复的问题。</p>
+  <ul class="reading-intro-points"><li>论文针对 Vision-Language-Action (VLA) 模型在机器人操作中因自身动作进入训练分布外状态而失败、且难以恢复的问题。</li><li>提出 Backtrack，一种轻量级失败检测与恢复机制，无需恢复演示、策略重训练或额外的推理模型。</li><li>通过一个小型失败预测头读取冻结 VLA 的已有内部表示，估计当前 episode 失败概率；当概率超过阈值时，控制器暂停策略、回溯机械臂最近的运动轨迹，并将控制权交还给未修改的策略重试。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Thomas Landeg</strong> — <strong>Stanford University</strong>、<strong>ETH Zurich</strong></li><li><strong>Thierry Tambe</strong> — <strong>Stanford University</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对 <strong>Vision-Language-Action (VLA)</strong> 模型在机器人操作中因自身动作进入训练分布外状态而失败、且难以恢复的问题。</li><li>提出 <strong>Backtrack</strong>，一种轻量级失败检测与恢复机制，无需恢复演示、策略重训练或额外的推理模型。</li><li>通过一个小型失败预测头读取冻结 VLA 的已有内部表示，估计当前 episode 失败概率；当概率超过阈值时，控制器暂停策略、回溯机械臂最近的运动轨迹，并将控制权交还给未修改的策略重试。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Backtrack</strong>：轻量级失败检测与恢复机制，仅增加策略参数量的 <strong>0.48%–0.88%</strong>。</li><li>失败预测头仅需冻结策略的 rollout 结果标签即可训练，复用 VLA 前向过程中已计算的特征，无需额外前向传播。</li><li>使用任务无关的回溯控制器：记录实际执行的动作增量并反向回放，使机械臂返回之前配置附近，无需学习恢复策略或收集恢复演示。</li><li>在 <strong>LIBERO</strong> 上验证三个 VLA（<strong>SmolVLA</strong>、<strong>π0.5</strong>、<strong>π0-FAST</strong>），覆盖流匹配动作专家与自回归动作生成两种架构；在 <strong>LIBERO-Long</strong> 上失败率降低 <strong>19%–48%</strong>。</li><li>在 <strong>MetaWorld</strong> 上验证跨基准迁移性：SmolVLA 的全部 12 个控制器配置均优于无辅助策略。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>失败预测头（FPH）</strong>：由多注意力池化（MAP）层和三层前馈网络（FFN）组成，输出当前 episode 失败概率；特征可选 <strong>pre</strong>（VLM 输入前缀嵌入）、<strong>post</strong>（VLM 输出表示）或 <strong>post_expert</strong>（post 拼接动作专家隐藏状态）。</li><li><strong>训练</strong>：在冻结策略的 rollout 上训练，每个帧由所在 episode 的最终成败标记；跨四个 LIBERO 套件均衡采样八个 (suite, label) 单元，以平衡套件间失败分布差异。</li><li><strong>回溯控制器</strong>：当失败概率超过阈值 \(t\) 时触发；固定模式回溯固定步数 \(s\)，自适应模式回溯直到概率低于重启阈值 \(a\)，并受最小/最大步数、冷却期 \(\mathit{cd}\) 和每 episode 最大回溯次数 \(K\) 约束。</li><li><strong>回放内容</strong>：记录并回放 <strong>实际实现的运动增量</strong>（而非策略命令的动作），以避免回溯未发生的动作；机械臂返回是近似的，因执行动力学和场景变化而存在误差。</li><li>主实验配置示例：SmolVLA 自适应回溯 \(t=0.97, a=0.2, 50-150\) 步；π0.5 固定回溯 \(t=0.99, s=50\)；π0-FAST 自适应回溯 \(t=0.90, a=0.3, 25-100\) 步；三者均用冷却 50、回溯上限 3。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>数据集：<strong>LIBERO</strong>（四个十任务套件：Spatial、Object、Goal、Long）和 <strong>MetaWorld</strong>（50 个任务，不同模拟器与机械臂）。</li><li>模型规模：<strong>SmolVLA</strong> 450.0M 参数、<strong>π0-FAST</strong> 3450.0M 参数、<strong>π0.5</strong> 3616.8M 参数。</li><li>失败预测头参数量：SmolVLA 3.97M（0.88%）、π0-FAST 17.35M（0.50%）、π0.5 17.35M（0.48%）。</li><li>训练数据规模：各策略 rollout 池为 7,953–20,000 episodes，每头采样 100,000 帧训练/验证。</li><li>计算资源：使用 <strong>Stanford University</strong> 的 <strong>Marlowe GPU</strong> 计算集群（Stanford HAI 与 Stanford Research Computing 支持）。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估协议：主要使用 LIBERO 五个种子 × 每任务 50 episodes；步骤预算为 LeRobot 默认限制的两倍（Spatial/Object 560、Goal 600、Long 1040），控制组与处理组共用相同预算；报告百分比点提升及 95% 置信区间。</li><li>主要指标：成功率提升（uplift，pp）、失败率相对降低（recovery rate）、失败检测的 AUROC、触发率等。</li><li><strong>LIBERO-Long</strong> 结果：SmolVLA 失败率降低 <strong>19.0%</strong>（成功率 +7.40 pp），π0.5 降低 <strong>30.3%</strong>（+1.60 pp），π0-FAST 降低 <strong>48.2%</strong>（+7.08 pp），所有置信区间均排除零。</li><li>聚合 LIBERO 四套件：SmolVLA 失败率降低 <strong>20.3%</strong>（+3.40 pp），π0.5 降低 <strong>26.2%</strong>（+0.79 pp），π0-FAST 降低 <strong>19.6%</strong>（+1.70 pp）。</li><li><strong>MetaWorld</strong> 结果：SmolVLA 控制成功率 72.32%，12 个控制器配置均提升，提升范围 <strong>+2.44 至 +5.20 pp</strong>；最佳配置达到 77.52% 成功率和 18.8% 恢复率。</li><li>失败检测：10,000 个 Backtrack episodes 中，无触发时成功率 99.71%（SmolVLA）、99.99%（π0.5）、99.94%（π0-FAST）；π0.5 头部离线 AUROC 达 0.977，阈值 0.99 时可检测 80% 失败并仅产生 2.0% 假警率。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.32971/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RobustRLlib: A Unified Library and Benchmark for Robust Reinforcement Learning Algorithms</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.32888/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">When Human Corrections Travel: Safety in Federated VLA Adaptation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
