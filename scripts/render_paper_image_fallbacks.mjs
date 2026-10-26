@@ -55,11 +55,38 @@ async function pickElement(page) {
   return null;
 }
 
+// 部分 arXiv HTML 页面会让渲染主线程永久卡死，locator/boundingBox 等调用没有超时会一直挂起，
+// 因此每个 URL 使用独立页面，并用硬超时兜底。
+const URL_DEADLINE_MS = 90000;
+
+function withDeadline(promise, ms, label) {
+  let timer;
+  const deadline = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, deadline]).finally(() => clearTimeout(timer));
+}
+
+async function captureFromUrl(page, url, item) {
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+  await page.waitForTimeout(1500);
+
+  const picked = await pickElement(page);
+  if (!picked) {
+    return null;
+  }
+
+  await fs.mkdir(path.dirname(item.output_path), { recursive: true });
+  await picked.element.screenshot({ path: item.output_path, type: "png" });
+  return picked;
+}
+
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({
+const context = await browser.newContext({
   viewport: { width: 1440, height: 1600 },
   deviceScaleFactor: 2,
 });
+context.setDefaultTimeout(20000);
 
 const results = [];
 
@@ -76,17 +103,12 @@ for (const item of queue) {
   };
 
   for (const url of candidateUrls(item)) {
+    const page = await context.newPage();
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
-      await page.waitForTimeout(1500);
-
-      const picked = await pickElement(page);
+      const picked = await withDeadline(captureFromUrl(page, url, item), URL_DEADLINE_MS, url);
       if (!picked) {
         continue;
       }
-
-      await fs.mkdir(path.dirname(item.output_path), { recursive: true });
-      await picked.element.screenshot({ path: item.output_path, type: "png" });
 
       result.ok = true;
       result.used_url = url;
@@ -96,6 +118,8 @@ for (const item of queue) {
       break;
     } catch (error) {
       result.error = String(error);
+    } finally {
+      await withDeadline(page.close({ runBeforeUnload: false }), 10000, "page.close").catch(() => {});
     }
   }
 
@@ -107,8 +131,10 @@ for (const item of queue) {
   }
 }
 
-await browser.close();
 await fs.writeFile(resultPath, JSON.stringify(results, null, 2), "utf8");
 
 const successCount = results.filter((item) => item.ok).length;
 console.log(`fallback results: ${successCount}/${results.length}`);
+
+await withDeadline(browser.close(), 15000, "browser.close").catch(() => {});
+process.exit(0);
