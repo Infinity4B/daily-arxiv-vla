@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TRIAGE: Efficient Vision-Language-Action Inference Needs Both Reuse and Pruning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对 VLA（视觉-语言-动作）模型在移动机械臂、人形机器人等搭载的嵌入式板卡（如 NVIDIA Jetson）上运行时，语言骨干网络的 prefill 延迟随每步数百个视觉 token 急剧增长、难以满足实时控制的问题 指出现有免训练加速方法对未重算的 token 只采用单一策略（全部剪枝或全部复用），必然牺牲精度或浪费算力：剪枝丢弃缓存仍然准确的 token，复用则持续服务已过期的 KV 缓存 通过 token 级诊断实验提出核心发现：非重算 token 应复用还是剪枝取决于其 drift（自缓存计算以来浅层 value 的相对变化量），与重要性无关——drift 低于阈值 0.3 时复用不劣于剪枝，超过 0.5 时复用产生最高 4.4 倍于剪枝的动作误差" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.34519">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.34519.webp" alt="TRIAGE: Efficient Vision-Language-Action Inference Needs Both Reuse and Pruning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对 VLA（视觉-语言-动作）模型在移动机械臂、人形机器人等搭载的嵌入式板卡（如 NVIDIA Jetson）上运行时，语言骨干网络的 prefill 延迟随每步数百个视觉 token 急剧增长、难以满足实时控制的问题</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TRIAGE: Efficient Vision-Language-Action Inference Needs Both Reuse and Pruning</h1>
+            <div class="detail-meta">2026-10-25 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.34519" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.34519" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.34519</span></div>
+            <p class="detail-summary">针对 VLA（视觉-语言-动作）模型在移动机械臂、人形机器人等搭载的嵌入式板卡（如 NVIDIA Jetson）上运行时，语言骨干网络的 prefill 延迟随每步数百个视觉 token 急剧增长、难以满足实时控制的问题 指出现有免训练加速方法对未重算的 token 只采用单一策略（全部剪枝或全部复用），必然牺牲精度或浪费算力：剪枝丢弃缓存仍然准确的 token，复用则持续服务已过期的 KV 缓存 通过 token 级诊断实验提出核心发现：非重算 token 应复用还是剪枝取决于其 drift（自缓存计算以来浅层 value 的相对变化量），与重要性无关——drift 低于阈值 0.3 时复用不劣于剪枝，超过 0.5 时复用产生最高 4.4 倍于剪枝的动作误差</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">首尔国立大学（Seoul National University）：Sooyoung Kwon、Kyu…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对 VLA（视觉-语言-动作）模型在移动机械臂、人形机器人等搭载的嵌入式板卡（如 NVIDIA Jetson）上运行时，语言骨干网络的 prefill 延迟随每步数百个视觉 token 急剧增长、难以满足实时控制的问题</p>
+  <ul class="reading-intro-points"><li>针对 VLA（视觉-语言-动作）模型在移动机械臂、人形机器人等搭载的嵌入式板卡（如 NVIDIA Jetson）上运行时，语言骨干网络的 prefill 延迟随每步数百个视觉 token 急剧增长、难以满足实时控制的问题</li><li>指出现有免训练加速方法对未重算的 token 只采用单一策略（全部剪枝或全部复用），必然牺牲精度或浪费算力：剪枝丢弃缓存仍然准确的 token，复用则持续服务已过期的 KV 缓存</li><li>通过 token 级诊断实验提出核心发现：非重算 token 应复用还是剪枝取决于其 drift（自缓存计算以来浅层 value 的相对变化量），与重要性无关——drift 低于阈值 0.3 时复用不劣于剪枝，超过 0.5 时复用产生最高 4.4 倍于剪枝的动作误差</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>首尔国立大学</strong>（Seoul National University）：Sooyoung Kwon、Kyunghan Lee（通讯作者），电子与计算机工程系</li><li><strong>卡内基梅隆大学</strong>（Carnegie Mellon University）：Carlee Joe-Wong，电子与计算机工程系</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对 <strong>VLA（视觉-语言-动作）模型</strong>在移动机械臂、人形机器人等搭载的嵌入式板卡（如 NVIDIA Jetson）上运行时，语言骨干网络的 prefill 延迟随每步数百个视觉 token 急剧增长、难以满足实时控制的问题</li><li>指出现有免训练加速方法对未重算的 token 只采用<strong>单一策略</strong>（全部剪枝或全部复用），必然牺牲精度或浪费算力：剪枝丢弃缓存仍然准确的 token，复用则持续服务已过期的 KV 缓存</li><li>通过 token 级诊断实验提出核心发现：非重算 token 应复用还是剪枝取决于其 <strong>drift</strong>（自缓存计算以来浅层 value 的相对变化量），与重要性无关——drift 低于阈值 0.3 时复用不劣于剪枝，超过 0.5 时复用产生最高 4.4 倍于剪枝的动作误差</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>Token 级诊断</strong>：通过受控实验证明非重算 token 该复用还是剪枝取决于其 drift（而非 token 重要性），证明 prune-only 与 reuse-only 方法均非最优</li><li><strong>TRIAGE 框架</strong>：提出三集合划分结构（重算/复用/剪枝），基于重要性与缓存有效性为每个 token 分配归宿，prune-only 与 reuse-only 是其两个极端特例</li><li><strong>固定重算预算机制</strong>：每步固定重算 B 个 token，预算 B 直接决定 prefill 延迟，使每步延迟有界（p99 仅高于均值 4%）</li><li>实验表明 TRIAGE 在两个骨干网络与两个基准上平均成功率保持在全量重算 3 pp 以内，Jetson AGX Orin 上 prefill 延迟最多降低 48%</li><li>在极小预算下优势显著：仅重算 7% 视觉 token 时，在 LIBERO-Object 上以 75.8% 成功率领先最强基线 24.4 pp</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Drift 信号</strong>：定义 drift 为 token 在浅层（第 2 层）attention value 相对上次重算时的相对变化，因浅层对所有 token 每步都计算，该信号零额外开销；诊断实验标定阈值 δ=0.3，低于该值复用不劣于剪枝</li><li><strong>缓存有效性判定</strong>：缓存有效需同时满足已缓存、drift < δ、缓存年龄 ≤ T（T=10），决定非重算 token 复用还是剪枝</li><li><strong>重要性评估</strong>：采用浅层 attention 结合 SAFE-Pruner 的深层显著性预测（通过 patch 对应关系将首帧记忆迁移到当前帧），重要集合取 top B+κ 个 token</li><li><strong>三层预算分配</strong>：固定重算预算 B 依次分配给——维护（刷新最旧缓存）、强制重算（缓存失效的重要 token 优先）、可选刷新（缓存有效但变化快的重要 token）；其余 token 仅凭有效性决定复用或剪枝</li><li><strong>延迟可控</strong>：重算集合大小恒为 B，故 B 直接设定 prefill 延迟，部署时按控制环延迟目标选取</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>基准：<strong>LIBERO</strong> 四个套件（Spatial/Object/Goal/Long，各 500 回合）、<strong>SimplerEnv</strong> Google Robot（Move Near、Pick Coke Can）</li><li>骨干模型：<strong>OpenVLA-7B</strong>（256 视觉 token，自回归解码动作）、<strong>OpenVLA-OFT</strong>（双相机 512 视觉 token，单次前向预测 8 步动作块）</li><li>硬件：延迟实测于 <strong>NVIDIA Jetson AGX Orin</strong> 与 RTX 3090（bf16 精度），每套件 250 次查询回放同一观测流</li><li>基线：VLA-Cache、VLA-Pruner、SAFE-Pruner、SpecPrune-VLA（均为免训练方法）</li><li>关键超参数：δ=0.3、T=10、μ=0.06、λ=1、κ=70；B=88（OpenVLA）/163（OFT）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标：成功率、解析 prefill FLOPs、Jetson AGX Orin 与 RTX 3090 上的 prefill/E2E/p99 延迟</li><li>LIBERO：TRIAGE 平均成功率 73.7%（OpenVLA）与 95.8%（OFT），均在全量重算 3 pp 以内，且在所有设置中位于成功率-延迟 Pareto 前沿</li><li>极小预算优势：LIBERO-Object 上仅重算 11% 视觉 token 时保持在全量重算 3 pp 内，7%（B=18）时达 75.8%，领先最强基线 VLA-Pruner 24.4 pp</li><li>延迟收益：Jetson 上 prefill 延迟最多降低 48%（OFT 为全量重算的 0.52 倍），并在所有设置中 p99 延迟最低；p99 仅高于均值 4%，而 SAFE-Pruner 达 1.6 倍</li><li>SimplerEnv 迁移性：无需重新调参即达 54.5%（全量重算 54.8%），领先 SpecPrune-VLA 与 VLA-Pruner 4.2 与 6.1 pp</li><li>局限性：超参数为经验设定而非理论推导；drift 阈值随骨干网络、任务与场景速度变化，需部署时自适应校准；未来可结合光流或运动向量在骨干运行前区分静态/动态区域</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.34593/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">What Does World Modeling Actually Improve in Robot Action Learning?</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.34356/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">RynnVLA-Latent: Scaling Robotic Manipulation Foundation Models with 3D-Grounded Latent Actions</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Variational Cognitive Memory Abstraction for Long-Horizon Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对长时程（long-horizon）视觉-语言-动作（VLA）模型在机器人操作中长期记忆建模不足的问题，提出 CogMemory 框架。 现有早期融合架构缺乏显式长期历史保持，中间融合架构仅依赖隐式时序聚合，均易造成早期关键信号稀释；显式记忆库又存在冗余检索、噪声敏感和架构耦合等缺陷。 CogMemory 通过选择性状态空间编码、多槽时序抽象和变分信息压缩，将长历史压缩为紧凑潜在记忆，并在动作生成时动态检索与融合相关历史信息。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.34251">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.34251.webp" alt="Variational Cognitive Memory Abstraction for Long-Horizon Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对长时程（long-horizon）视觉-语言-动作（VLA）模型在机器人操作中长期记忆建模不足的问题，提出 CogMemory 框架。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Variational Cognitive Memory Abstraction for Long-Horizon Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-25 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.34251" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.34251" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.34251</span></div>
+            <p class="detail-summary">论文针对长时程（long-horizon）视觉-语言-动作（VLA）模型在机器人操作中长期记忆建模不足的问题，提出 CogMemory 框架。 现有早期融合架构缺乏显式长期历史保持，中间融合架构仅依赖隐式时序聚合，均易造成早期关键信号稀释；显式记忆库又存在冗余检索、噪声敏感和架构耦合等缺陷。 CogMemory 通过选择性状态空间编码、多槽时序抽象和变分信息压缩，将长历史压缩为紧凑潜在记忆，并在动作生成时动态检索与融合相关历史信息。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">四川大学计算机学院（College of Computer Science, Sichuan Univ…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对长时程（long-horizon）视觉-语言-动作（VLA）模型在机器人操作中长期记忆建模不足的问题，提出 CogMemory 框架。</p>
+  <ul class="reading-intro-points"><li>论文针对长时程（long-horizon）视觉-语言-动作（VLA）模型在机器人操作中长期记忆建模不足的问题，提出 CogMemory 框架。</li><li>现有早期融合架构缺乏显式长期历史保持，中间融合架构仅依赖隐式时序聚合，均易造成早期关键信号稀释；显式记忆库又存在冗余检索、噪声敏感和架构耦合等缺陷。</li><li>CogMemory 通过选择性状态空间编码、多槽时序抽象和变分信息压缩，将长历史压缩为紧凑潜在记忆，并在动作生成时动态检索与融合相关历史信息。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>四川大学计算机学院</strong>（College of Computer Science, Sichuan University）及 <strong>机器学习与工业智能教育部工程研究中心</strong>，中国成都（作者：Xinyu Liu, Chenwei Tang, Chengyang Zhang, Qingyu Zeng, Wei Ju, Jiancheng Lv）</li><li>**新加坡科技研究局（A*STAR）高性能计算研究院**（Institute of High Performance Computing, A*STAR），新加坡（作者：Daiying Tian, Ruyang Han, Liangli Zhen）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对<strong>长时程（long-horizon）视觉-语言-动作（VLA）模型</strong>在机器人操作中长期记忆建模不足的问题，提出 <strong>CogMemory</strong> 框架。</li><li>现有早期融合架构缺乏显式长期历史保持，中间融合架构仅依赖隐式时序聚合，均易造成早期关键信号稀释；显式记忆库又存在冗余检索、噪声敏感和架构耦合等缺陷。</li><li>CogMemory 通过选择性状态空间编码、多槽时序抽象和变分信息压缩，将长历史压缩为紧凑潜在记忆，并在动作生成时动态检索与融合相关历史信息。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>CogMemory</strong>：轻量级变分记忆抽象框架，通过选择性状态空间模型（SSM）和变分信息压缩（VIC）将长时程交互历史压缩为紧凑潜在槽，保留任务相关线索并滤除冗余和噪声。</li><li>设计即插即用的记忆检索机制：基于动态交叉注意力与门控融合，策略可按需查询记忆槽并自适应融合历史上下文；模块与骨干解耦，可同时适配早期融合和中间融合 VLA 架构。</li><li>大量实验验证 <strong>CogMemory</strong> 在多个 VLA 骨干上一致且显著提升长时程操作性能，仅增加 <strong>3.45M 参数</strong>，保持轻量性和架构灵活性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>记忆抽象</strong>：对 VLA 骨干输出的多模态序列 X，先用选择性状态空间模型（SSM）进行长程时序编码，通过输入依赖的状态转移矩阵累积历史信息。</li><li><strong>多槽时序抽象</strong>：通过多头池化将时序特征聚合为 K 个记忆槽（slot assignment logits + 归一化加权聚合），不同槽可专注不同交互阶段、子目标或操作模式。</li><li><strong>变分信息压缩（VIC）</strong>：将每个记忆槽建模为高斯潜在分布，使用重参数化采样，并施加 KL 正则化以保持潜在空间紧凑、去冗余；最终投影得到 M ∈ R^{K×D}。</li><li><strong>记忆引导动作生成</strong>：动作解码器通过交叉注意力检索相关记忆，并用门控残差融合自适应整合记忆到动作表示；训练目标为 VLA 原始动作损失与 KL 正则项之和 L = L_action + λ L_KL。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用两个长时程机器人操作基准：<strong>LIBERO</strong>（130 个语言条件任务，5 个套件：Spatial、Object、Goal、Long-10、Long-90）和 <strong>CALVIN</strong>（34 个操作原语、380+ 语言标注，评估 D→D 和 ABC→D 两种设置）。</li><li>评估覆盖两种骨干：早期融合的 <strong>3B PaliGemma（π0.5 风格）</strong> 和中间融合的 <strong>0.77B Florence-2-L（FLOWER 风格）</strong>。</li><li><strong>CogMemory 模块仅新增 3.45M 参数</strong>；训练使用 <strong>8 块 NVIDIA L20X GPU</strong>，30k 优化步，<strong>AdamW</strong> 优化器，全局批量大小 256，轨迹采样频率 10 Hz。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>LIBERO</strong>：CogMemory 平均成功率达 <strong>97.6%</strong>，在 Long-10 达 <strong>97.1%</strong>、Long-90 达 <strong>96.9%</strong>，显著超过已有记忆增强方法；同时在 Spatial、Object、Goal 上保持高性能，证明长时程能力提升不牺牲单任务能力。</li><li><strong>CALVIN D→D</strong>：CogMemory 将 PaliGemma 骨干的平均完成链长从 <strong>2.84 提升到 3.27</strong>，Florence-2-L 骨干从 <strong>4.35 提升到 4.42</strong>；LH-5 分别提升 32.4→44.9 和 74.9→78.1。</li><li><strong>CALVIN ABC→D</strong>：PaliGemma 平均链长从 <strong>2.38 提升到 2.92</strong>，Florence-2-L 从 <strong>4.44 提升到 4.64</strong>，表明在未见环境迁移下仍保持增益。</li><li><strong>消融实验</strong>：移除记忆模块使长链任务成功率显著下降（LH-5 降幅超 11%）；移除 VIC 造成最大长时程退化；移除门控机制也降低性能；记忆槽数 <strong>K=8</strong> 取得最佳性能，K=4 和 K=16 表现次之。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.34356/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RynnVLA-Latent: Scaling Robotic Manipulation Foundation Models with 3D-Grounded Latent Actions</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.34186/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HuGe: Scaling Humanoid Generalist Vision-Language-Action Models with Egocentric Experience</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

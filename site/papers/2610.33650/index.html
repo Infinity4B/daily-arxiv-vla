@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TAD: Distilling Vision-Language-Action Policies from Teacher Trajectories Alone - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 TAD（Trajectory-only Adversarial Distillation），一种仅利用教师轨迹特征库（而非教师动作评分）进行在线蒸馏的方法，用于改进视觉-语言-动作（VLA）策略。 解决的核心问题：在线蒸馏通常依赖教师动作分数，但推理接口可能不暴露这些分数；TAD 将固定的教师关节位置特征库转化为自适应反馈，通过判别器提供奖励，使学生在无在线教师查询和任务奖励的情况下进行策略优化。 在 ManiSkill PutOnPlateInScene25Main 任务上，TAD 将 OpenVLA-OFT (7B) 的 success-once 从 26.2% 提升至 76.6%，success-at-end 从 20.3% 提升至 58.6%。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.33650">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef; --cover-muted: rgba(255, 248, 239, 0.82); --cover-chip: rgba(255, 248, 239, 0.16); --cover-stroke: rgba(255, 248, 239, 0.26)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">TAD: Distilling Vision-Language-Action Policies from Teacher Trajectories Alone</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">TAD: Distilling Vision-Language-Action Policies from Teacher Trajectories Alone</h1>
+            <div class="detail-meta">2026-10-24 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.33650" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.33650" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.33650</span></div>
+            <p class="detail-summary">论文提出 TAD（Trajectory-only Adversarial Distillation），一种仅利用教师轨迹特征库（而非教师动作评分）进行在线蒸馏的方法，用于改进视觉-语言-动作（VLA）策略。 解决的核心问题：在线蒸馏通常依赖教师动作分数，但推理接口可能不暴露这些分数；TAD 将固定的教师关节位置特征库转化为自适应反馈，通过判别器提供奖励，使学生在无在线教师查询和任务奖励的情况下进行策略优化。 在 ManiSkill PutOnPlateInScene25Main 任务上，TAD 将 OpenVLA-OFT (7B) 的 success-once 从 26.2% 提升至 76.6%，success-at-end 从 20.3% 提升至 58.6%。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Yun Zhu：Independent Researcher, China</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 TAD（Trajectory-only Adversarial Distillation），一种仅利用教师轨迹特征库（而非教师动作评分）进行在线蒸馏的方法，用于改进视觉-语言-动作（VLA）策略。</p>
+  <ul class="reading-intro-points"><li>论文提出 TAD（Trajectory-only Adversarial Distillation），一种仅利用教师轨迹特征库（而非教师动作评分）进行在线蒸馏的方法，用于改进视觉-语言-动作（VLA）策略。</li><li>解决的核心问题：在线蒸馏通常依赖教师动作分数，但推理接口可能不暴露这些分数；TAD 将固定的教师关节位置特征库转化为自适应反馈，通过判别器提供奖励，使学生在无在线教师查询和任务奖励的情况下进行策略优化。</li><li>在 ManiSkill PutOnPlateInScene25Main 任务上，TAD 将 OpenVLA-OFT (7B) 的 success-once 从 26.2% 提升至 76.6%，success-at-end 从 20.3% 提升至 58.6%。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Yun Zhu</strong>：Independent Researcher, China</li><li><strong>Da Wang</strong>：School of Computer and Information Technology, <strong>Shanxi University</strong>, Taiyuan, China</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>TAD（Trajectory-only Adversarial Distillation）</strong>，一种仅利用教师轨迹特征库（而非教师动作评分）进行在线蒸馏的方法，用于改进视觉-语言-动作（VLA）策略。</li><li>解决的核心问题：在线蒸馏通常依赖教师动作分数，但推理接口可能不暴露这些分数；TAD 将固定的教师关节位置特征库转化为自适应反馈，通过判别器提供奖励，使学生在无在线教师查询和任务奖励的情况下进行策略优化。</li><li>在 <strong>ManiSkill PutOnPlateInScene25Main</strong> 任务上，TAD 将 <strong>OpenVLA-OFT (7B)</strong> 的 success-once 从 26.2% 提升至 76.6%，success-at-end 从 20.3% 提升至 58.6%。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出一种仅依赖轨迹的在线蒸馏方法，结合固定教师特征库、判别器奖励和组相对策略优化，实现大型 VLA 的在线改进。</li><li>通过系统的训练诊断和消融实验，区分判别器分类质量、采样轨迹表现和确定性策略评估，揭示了仅凭判别准确率不足以保证策略提升。</li><li>与白盒 <strong>OPD（On-Policy Distillation）</strong> 进行量化对比，明确报告了 TAD 相对 OPD 的性能差距以及所需的学生交互预算和优化批次通过数（5 倍交互预算、12.5 倍批次通过数）。</li><li>展示了固定教师特征库在无教师评分条件下仍能支撑显著在线提升，证明了受限教师访问设置的可行性。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>固定教师轨迹库：一次性收集教师轨迹，提取 <strong>qpos8</strong>（8 维关节位置）特征并归一化，形成固定特征库。</li><li>判别器与奖励：使用 ReLU MLP <code>[256,256]</code> 判别器区分教师特征与学生特征，采用带标签平滑的二元交叉熵训练；将判别器输出转换为 <strong>AIRL 风格 logit 奖励</strong> <code>r_t = log D - log(1-D)</code>，提供逐块奖励。</li><li>策略更新：采用 <strong>PPO 风格裁剪目标</strong>，将轨迹内奖励求和后做组相对归一化得到优势估计，仅对视觉-语言输入的动作 token 进行优化；判别器回放保留最近 4 批学生特征，学生策略使用 LoRA 微调。</li><li>关键技术：使用固定特征库匹配边际分布而非完整轨迹，判别器与学生策略并行更新，不依赖环境任务奖励。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>ManiSkill3</strong> 环境中的 <strong>PutOnPlateInScene25Main-v3</strong> 任务（Bridge 风格抓取放置任务，WidowX 机械臂，随机场景）。</li><li>学生模型：<strong>OpenVLA-OFT (7B)</strong>，使用 LoRA 微调；教师模型为同架构但经 GRPO RL 训练的版本（本地评估 success-once 93.8%）。</li><li>训练系统：<strong>RLinf</strong> 分布式框架（Ray 调度、FSDP actor、Hydra 配置）；教师特征库包含 12,800 个特征样本，来自 5 次外层迭代，每次 64 并行环境 × 4 轮收集，每轮 80 步，动作块长度 8。</li><li>学生交互：每外层迭代 256 条轨迹（64 环境 × 4 轮），共 300 次外层迭代用于最佳 TAD 运行。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：ManiSkill3 <strong>PutOnPlateInScene25Main-v3</strong>，使用 256 条轨迹进行确定性贪婪解码评估。</li><li>主要指标：<strong>success-once</strong>（任一时刻成功）和 <strong>success-at-end</strong>（终止时成功）。</li><li>关键实验结果：</li></ul>
+<p> - <strong>TAD（最佳四 epoch 延续）</strong>：success-once <strong>76.6%</strong>，success-at-end <strong>58.6%</strong>。</p>
+<p> - <strong>基线 TAD（step-150）</strong>：68.8% / 46.5%；基线 step-280：66.4% / 44.1%。</p>
+<p> - <strong>白盒 OPD（step-60）</strong>：81.6% / 59.4%。</p>
+<p> - 最佳 TAD 相比 OPD 在 success-once 上差距 5.0 个百分点，在 success-at-end 上差距 0.8 个百分点。</p>
+<p> - TAD 最佳运行使用 <strong>5 倍</strong> 学生轨迹交互预算（300 vs 60 外层迭代）和 <strong>12.5 倍</strong> 完整 rollout 优化批次通过数。</p>
+<p> - 教师（RL 后）性能：93.8% / 77.3%。</p></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.33658/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Power-of-Two Leaky Integrate-and-Fire Neurons for Event-Driven Vision-Language-Action Inference</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.33486/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Learning Dexterous Manipulation: Hands, Simulators, Training, and Evaluation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
