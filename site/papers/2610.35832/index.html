@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profiling a Frontier Agent with EBench: From Direct Control to Harness with Policy - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="本文以 GPT-6-Astra（前沿多模态大语言模型，MLLM）为核心构建机器人操控智能体，在 EBench 诊断式操控基准上系统评估其能力边界 研究两种智能体配置：直接控制（智能体直接生成末端执行器 waypoint 指令）与 Harness with Policy（智能体可调用后训练的 VLA 或 WAM 策略执行动作） 回答两个核心问题：(1) 直接控制下智能体在哪些任务上超越或落后于后训练策略、受何限制；(2) 调用后训练策略如何弥补直接控制的不足，以及会引入哪些新的失败模式" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.35832">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.35832.webp" alt="Profiling a Frontier Agent with EBench: From Direct Control to Harness with Policy" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">本文以 GPT-6-Astra（前沿多模态大语言模型，MLLM）为核心构建机器人操控智能体，在 EBench 诊断式操控基准上系统评估其能力边界</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Profiling a Frontier Agent with EBench: From Direct Control to Harness with Policy</h1>
+            <div class="detail-meta">2026-10-26 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.35832" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.35832" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.35832</span></div>
+            <p class="detail-summary">本文以 GPT-6-Astra（前沿多模态大语言模型，MLLM）为核心构建机器人操控智能体，在 EBench 诊断式操控基准上系统评估其能力边界 研究两种智能体配置：直接控制（智能体直接生成末端执行器 waypoint 指令）与 Harness with Policy（智能体可调用后训练的 VLA 或 WAM 策略执行动作） 回答两个核心问题：(1) 直接控制下智能体在哪些任务上超越或落后于后训练策略、受何限制；(2) 调用后训练策略如何弥补直接控制的不足，以及会引入哪些新的失败模式</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">上海人工智能实验室</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">本文以 GPT-6-Astra（前沿多模态大语言模型，MLLM）为核心构建机器人操控智能体，在 EBench 诊断式操控基准上系统评估其能力边界</p>
+  <ul class="reading-intro-points"><li>本文以 GPT-6-Astra（前沿多模态大语言模型，MLLM）为核心构建机器人操控智能体，在 EBench 诊断式操控基准上系统评估其能力边界</li><li>研究两种智能体配置：直接控制（智能体直接生成末端执行器 waypoint 指令）与 Harness with Policy（智能体可调用后训练的 VLA 或 WAM 策略执行动作）</li><li>回答两个核心问题：(1) 直接控制下智能体在哪些任务上超越或落后于后训练策略、受何限制；(2) 调用后训练策略如何弥补直接控制的不足，以及会引入哪些新的失败模式</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>上海人工智能实验室</strong></li><li><strong>上海交通大学</strong></li><li><strong>复旦大学</strong></li><li><strong>浙江大学</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>本文以 <strong>GPT-6-Astra</strong>（前沿多模态大语言模型，MLLM）为核心构建机器人操控智能体，在 <strong>EBench</strong> 诊断式操控基准上系统评估其能力边界</li><li>研究两种智能体配置：<strong>直接控制</strong>（智能体直接生成末端执行器 waypoint 指令）与 <strong>Harness with Policy</strong>（智能体可调用后训练的 VLA 或 WAM 策略执行动作）</li><li>回答两个核心问题：(1) 直接控制下智能体在哪些任务上超越或落后于后训练策略、受何限制；(2) 调用后训练策略如何弥补直接控制的不足，以及会引入哪些新的失败模式</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>配对评估框架</strong>：在与后训练策略完全相同的观测协议下（仅 RGB 相机与本体感知状态），在全部 510 个 EBench 测试回合上对直接控制与 Harness with Policy 两种配置进行评估，并与 8 个后训练 VLA/WAM 策略逐回合配对比较</li><li><strong>直接控制下的能力边界刻画</strong>：仅使用单条标注演示（single-shot ICL）、无参数更新，定位智能体领先或落后于 8 个后训练策略的任务类型，并将失败回溯至具体机制（接触几何推断、延迟反馈、双臂协调、未确认的任务完成声明）</li><li><strong>Harness with Policy 分析与设计启示</strong>：逐任务对比 harness 与其各组件，定位性能差距来源（策略调用不当、子目标传递缺失、恢复控制后抓取保持失败），为未来智能体 harness 设计提供方向</li><li><strong>揭示互补性</strong>：证明前沿 MLLM 智能体在短时程任务和泛化维度上领先，而后训练策略在长时程、桌面和高精度接触任务上占优，二者结合可提升整体成功率并大幅降低 token 成本</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>智能体形式化</strong>：智能体 = MLLM 核心 F + 智能体 harness H = (p_H, O_H, T_H)，其中 prompt、观测接口和工具集构成闭环策略 π_A，无需机器人特定后训练</li><li><strong>直接控制</strong>：harness 仅暴露 EEF waypoint 接口（EEF/底座/夹爪指令），智能体自生成全部运动指令，指令被插值为动作块在仿真器中执行</li><li><strong>Harness with Policy</strong>：动作集扩展为 A_EEF ∪ A_pol，智能体可调用冻结的后训练策略（指定 1–300 物理步的步数上限），策略在固定任务指令下自主执行后返回更新观测</li><li><strong>观测协议</strong>：三个 RGB 相机（俯视 + 左/右手腕）与本体感知状态，无深度图、相机标定、真值物体位姿或奖励信号</li><li><strong>单次上下文学习（ICL）</strong>：由独立的 GPT-6-Astra 实例预先检查一条训练轨迹，选取 10–18 个关键帧生成详细任务描述，作为任务的上下文演示</li><li><strong>后训练策略对比</strong>：VLA π0.5 与 WAM <strong>InternW0-Δ</strong> 作为可调用策略，均在 EBench 公开的 6,600 条演示上训练</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>EBench</strong> 基准：基于 <strong>GenManip</strong> 和 <strong>Isaac Sim</strong> 构建，使用 <strong>ARX Lift 2</strong> 双臂移动机器人</li><li>26 个任务、9 类场景（家庭、零售、工业），覆盖 19 个移动任务与 7 个桌面任务、11 个短时程与 15 个长时程、14/8/4 个低/中/高精度任务</li><li>510 个测试回合、468 个不同场景，涵盖 Object、Background、Instruction、Mix 四个泛化维度</li><li>后训练策略训练数据：<strong>6,600</strong> 条涵盖 26 个任务的域内演示</li><li>智能体本身无需训练（仅推理，使用高推理强度的 GPT-6-Astra）；每回合物理步上限 1,500–5,000 步（30 Hz）</li><li>提供 ICL 演示标注、token 成本与 API 等效开销分析（附录 C.3）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：官方任务成功率（SR）与阶段完成分数，26 个任务等权平均</li><li><strong>直接控制总体性能</strong>：SR 46.7%、分数 0.654，在排行榜上排名第三，仅次于两个 WAM（<strong>OpenWAM-α</strong> 55.3%、<strong>InternW0-Δ</strong> 49.2%），超过 Qwen-RobotManip（45.6%）和 π0.5（41.4%）等六个后训练策略</li><li><strong>能力轮廓</strong>：短时程任务第一（SR 73.2%）；移动任务第二（56.6%）；长时程任务骤降至 27.3%、桌面任务 20.0%、高精度接触任务仅 11.3%</li><li><strong>泛化鲁棒性</strong>：四个泛化维度上 SR 保持在 44.2%–50.8%（波动仅 6.6 个百分点，为所有对比方法中最小）；在 Mix 维度上以 46.2% SR 排名第一，而后训练策略在 Mix 下均达到最低 SR</li><li><strong>失败机制</strong>：273 个失败回合中 229 个因步数上限终止；单 waypoint 块中位执行 48 步导致反馈延迟；高精度任务 SR 仅 11.3%（Peg in hole 20%、Tighten nut 10%）；平均失败回合消耗 5.45M tokens（约为成功回合的 3 倍），长时程任务单次成功成本达 20.6M tokens（约为短时程的 9 倍）</li><li><strong>Harness with Policy 结果</strong>：调用 π0.5 后 SR 升至 53.0%，调用 <strong>InternW0-Δ</strong> 升至 <strong>56.0%</strong>（分数 0.744，为表 1 中最优），每次成功的 token 成本降低超过一半</li><li><strong>残余差距</strong>：高精度接触任务仍无法解决；智能体与策略协调松散——策略在自身单独也难成功时被过度调用、策略只遵循固定指令而非智能体子目标、智能体恢复控制后常使已建立抓取失去维护导致掉物增多</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.35850/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">OSWAM: An Effective World Action Model with One-Step Action Generation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.35817/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Pretraining Knows What, Simulation Teaches How: Compositional Generalization in a Sim-Trained Robot Agent</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

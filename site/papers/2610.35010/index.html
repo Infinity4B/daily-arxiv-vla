@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JevVLA: Jev-Inspired Energy-Based Adaptation for Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出JevVLA，一个受 Jev 结构化概率决策接口启发的轻量级基于能量（energy-based）的 VLA 策略适配框架，用于在冻结预训练策略的情况下改进动作决策 解决的核心问题：语义上合理的动作不保证在特定场景中成功执行，而全参数微调成本高昂；论文探索如何用轻量级适配同时改进离散候选选择和连续动作控制两种决策形式 统一机制：同一可学习的标量能量函数，其函数值用于比较离散候选动作，其动作梯度用于纠正连续动作或引导动作生成" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.35010">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.35010.webp" alt="JevVLA: Jev-Inspired Energy-Based Adaptation for Vision-Language-Action Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出JevVLA，一个受 Jev 结构化概率决策接口启发的轻量级基于能量（energy-based）的 VLA 策略适配框架，用于在冻结预训练策略的情况下改进动作决策</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">JevVLA: Jev-Inspired Energy-Based Adaptation for Vision-Language-Action Policies</h1>
+            <div class="detail-meta">2026-10-26 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.35010" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.35010" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.35010</span></div>
+            <p class="detail-summary">提出JevVLA，一个受 Jev 结构化概率决策接口启发的轻量级基于能量（energy-based）的 VLA 策略适配框架，用于在冻结预训练策略的情况下改进动作决策 解决的核心问题：语义上合理的动作不保证在特定场景中成功执行，而全参数微调成本高昂；论文探索如何用轻量级适配同时改进离散候选选择和连续动作控制两种决策形式 统一机制：同一可学习的标量能量函数，其函数值用于比较离散候选动作，其动作梯度用于纠正连续动作或引导动作生成</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">浙江大学 计算机科学与技术学院（Wei Wang、Wenqiao Zhang、Jun Xiao、Yue…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出JevVLA，一个受 Jev 结构化概率决策接口启发的轻量级基于能量（energy-based）的 VLA 策略适配框架，用于在冻结预训练策略的情况下改进动作决策</p>
+  <ul class="reading-intro-points"><li>提出JevVLA，一个受 Jev 结构化概率决策接口启发的轻量级基于能量（energy-based）的 VLA 策略适配框架，用于在冻结预训练策略的情况下改进动作决策</li><li>解决的核心问题：语义上合理的动作不保证在特定场景中成功执行，而全参数微调成本高昂；论文探索如何用轻量级适配同时改进离散候选选择和连续动作控制两种决策形式</li><li>统一机制：同一可学习的标量能量函数，其函数值用于比较离散候选动作，其动作梯度用于纠正连续动作或引导动作生成</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>浙江大学</strong> 计算机科学与技术学院（Wei Wang、Wenqiao Zhang、Jun Xiao、Yueting Zhuang 等）</li><li><strong>康奈尔大学</strong>（Cornell University，Zheqi Lv）</li><li><strong>Universal Ubiquitous AI Co., Ltd.</strong>（Zheng Dong）</li><li><strong>杭州深度机器人</strong>（Hangzhou DEEP Robotics Technology Co., Ltd.，Yingjie Niu、Chao Li）</li><li><strong>新加坡国立大学</strong>（National University of Singapore，Jiaqi Zhu）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出JevVLA，一个受 Jev 结构化概率决策接口启发的<strong>轻量级基于能量（energy-based）的 VLA 策略适配框架</strong>，用于在冻结预训练策略的情况下改进动作决策</li><li>解决的核心问题：语义上合理的动作不保证在特定场景中成功执行，而全参数微调成本高昂；论文探索如何用轻量级适配同时改进<strong>离散候选选择</strong>和<strong>连续动作控制</strong>两种决策形式</li><li>统一机制：同一可学习的标量能量函数，其<strong>函数值</strong>用于比较离散候选动作，其<strong>动作梯度</strong>用于纠正连续动作或引导动作生成</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li><strong>一个动作偏好核心服务两种 VLA 接口</strong>：条件标量能量的值用于对离散动作候选排序，其梯度用于纠正连续动作并引导生成，共享同一可训练架构</li><li><strong>Jev 启发的结构化动作决策</strong>：将候选动作及其相对偏好显式化，将动作提议（基础策略）与动作评估（适配器）分离，连接到概率比较与可执行的选择规则</li><li><strong>跨五个机器人操作基准的评估</strong>：约 8 万参数的独立训练适配器在所有基准的留出测试集上均超过匹配的基础策略对照，提供了跨接口的通用架构证据</li><li>在保留基础策略原生动作接口的同时实现适配（基础策略完全冻结）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>采用<strong>条件二次势能 + 非线性标量残差</strong>参数化能量函数：固定上下文编码器（输出 128 维）与动作编码器（32 维）连接冻结策略与适配器，二次势能（对角项 + 低秩耦合项）提供上下文相关的恢复方向，线性项定位偏好区域，残差网络捕获二次势能无法表达的非线性偏好</li><li>训练信号根据可用反馈灵活构造：<strong>执行分支结果</strong>（成对 softplus 损失）、<strong>专家纠正</strong>或<strong>演示距离偏好</strong>（交叉熵损失）转化为排序信号；动作梯度通过以偏好动作为中心的局部高斯目标（去噪得分匹配 DSM 风格）或多分支偏好加权高斯混合目标学习</li><li>推理时两种用法：有限候选集上按能量差与边距执行最大得分候选（可选择融合基础策略先验）；连续动作上沿负能量梯度做有界纠正或引导冻结生成器的欧拉积分步</li><li>关键创新：排序与纠正共享同一套标量参数，单一可训练决策核心支持两种动作接口</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>五个机器人操作基准：<strong>MetaWorld MT50</strong>（50 任务 × 50 例）、<strong>VIMA L1</strong>（13 任务族 × 100 例）、<strong>LanguageTable</strong>（5 指令族 × 50 例）、<strong>LIBERO Plus</strong>（10,030 个变体）、<strong>CLIPort</strong>（18 变体 × 100 例）</li><li>基础策略：<strong>VIMA-200M</strong>、<strong>CLIPort</strong>、LanguageTable 的语言条件行为克隆策略、MetaWorld 和 LIBERO 各自的 <strong>π₀.₅</strong> 检查点</li><li>适配器规模极小：能量核心<strong>79,817 个可训练参数</strong>（约 8 万），核心宽度 128、秩 8，各基准独立训练权重，编码器冻结</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估在留出测试集上进行，指标为任务成功率（100S/N）及百分点（pp）变化，每个成功率基于五个评估种子的平均</li><li>总体结果（相对 Direct 基线）：<strong>MetaWorld MT50</strong> 75.84% → 77.12%（+1.28 pp）、<strong>VIMA</strong> 84.77% → 87.08%（+2.31 pp）、<strong>LanguageTable</strong> 78.00% → 79.60%（+1.60 pp）、<strong>LIBERO Plus</strong> 78.63% → 80.15%（+1.52 pp）、<strong>CLIPort</strong> 34.22% → 35.50%（+1.28 pp）</li><li>任务级分析显示收益分布不均：VIMA 上 <code>twist</code> 任务从 24% 升至 56%，MetaWorld 的 basketball 从 28% 升至 70%，但也存在个别任务下降（如背景纹理扰动 -1.95 pp）</li><li>LIBERO Plus 七个扰动类别中六个提升，相机视角变化增益最大（+3.56 pp）</li><li>消融实验证明：学习的上下文偏好选择（35.50%）优于均匀随机（34.22%）、最小动作范数（32.89%）和最近邻规则（33.33%），能量结构的二次项、低秩耦合和残差项均有贡献</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.35044/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">DriveUniTok: A Unified Multimodal Tokenizer for Driving World-Action Models</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.34837/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Beyond Behaviour: A Stimulus-Response Safety Evaluation of Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
