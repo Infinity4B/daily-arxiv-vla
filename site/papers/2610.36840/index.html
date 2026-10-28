@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trace-WAM: Learning to Act via 3D Motion Prediction for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Trace-WAM，将未来 3D 运动预测作为辅助目标，增强世界动作模型（World Action Models, WAMs）的视频-动作表征学习 核心问题：成功的操作主要取决于机器人和任务相关物体如何随时间演化，而未来 RGB 视频预测还必须重建整个场景的外观和背景，浪费了模型容量 Trace-WAM 通过辅助监督时间点对应关系（image-plane displacement）和深度变化（depth change），直接描述操作中的交互动力学和空间变化" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.36840">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.36840.webp" alt="Trace-WAM: Learning to Act via 3D Motion Prediction for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 Trace-WAM，将未来 3D 运动预测作为辅助目标，增强世界动作模型（World Action Models, WAMs）的视频-动作表征学习</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Trace-WAM: Learning to Act via 3D Motion Prediction for World Action Models</h1>
+            <div class="detail-meta">2026-10-27 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.36840" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.36840" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.36840</span></div>
+            <p class="detail-summary">论文提出 Trace-WAM，将未来 3D 运动预测作为辅助目标，增强世界动作模型（World Action Models, WAMs）的视频-动作表征学习 核心问题：成功的操作主要取决于机器人和任务相关物体如何随时间演化，而未来 RGB 视频预测还必须重建整个场景的外观和背景，浪费了模型容量 Trace-WAM 通过辅助监督时间点对应关系（image-plane displacement）和深度变化（depth change），直接描述操作中的交互动力学和空间变化</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">香港理工大学（The Hong Kong Polytechnic University）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 Trace-WAM，将未来 3D 运动预测作为辅助目标，增强世界动作模型（World Action Models, WAMs）的视频-动作表征学习</p>
+  <ul class="reading-intro-points"><li>论文提出 Trace-WAM，将未来 3D 运动预测作为辅助目标，增强世界动作模型（World Action Models, WAMs）的视频-动作表征学习</li><li>核心问题：成功的操作主要取决于机器人和任务相关物体如何随时间演化，而未来 RGB 视频预测还必须重建整个场景的外观和背景，浪费了模型容量</li><li>Trace-WAM 通过辅助监督时间点对应关系（image-plane displacement）和深度变化（depth change），直接描述操作中的交互动力学和空间变化</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>香港理工大学</strong>（The Hong Kong Polytechnic University）</li><li><strong>阿里巴巴高德</strong>（Amap, Alibaba Group）</li><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>中国科学院自动化研究所</strong>（NLPR, CASIA）</li><li><strong>北京科技大学</strong>（University of Science and Technology Beijing）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>Trace-WAM</strong>，将未来 3D 运动预测作为辅助目标，增强世界动作模型（<strong>World Action Models, WAMs</strong>）的视频-动作表征学习</li><li>核心问题：成功的操作主要取决于机器人和任务相关物体如何随时间演化，而未来 RGB 视频预测还必须重建整个场景的外观和背景，浪费了模型容量</li><li>Trace-WAM 通过辅助监督时间点对应关系（image-plane displacement）和深度变化（depth change），直接描述操作中的交互动力学和空间变化</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Trace-WAM</strong>，在三分支架构中联合学习未来视频预测、未来 3D 运动预测和动作生成</li><li>未来 3D 运动作为视频-动作表征学习的辅助监督信号，推理时无需进行未来视频或运动预测，保持当前观测策略路径（单次视觉前向传播 + 动作去噪）</li><li>采用 <strong>Tri-MoT</strong>（三支路 Mixture-of-Transformer）架构，通过结构化注意力掩码联合训练视频、运动和动作专家</li><li>在三个操作基准（RoboCasa-GR1、LIBERO、LIBERO-Plus）上展现了强大的分布内性能和分布外泛化能力，在少量演示和分布偏移场景下相比 Fast-WAM 增益尤为明显</li><li>真实机器人（Piper 平台）实验在三个物理任务上验证了一致的性能提升</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>3D 运动表示</strong>：在当前主相机图像上放置固定网格锚点（20×20 网格，Q=400），预测未来 32 步轨迹，运动目标结合图像平面位移 (u,v) 与相对初始位置的深度变化 d；所有轨迹统一在参考相机坐标系下表达以补偿相机运动</li><li><strong>B 样条表示</strong>：每条运动序列用 K=10 个三次 B 样条控制点拟合，提供紧凑的预测目标；实验表明其比逐步原始位移预测更精确且更利于任务成功</li><li><strong>Tri-MoT 架构</strong>：三个参数独立的 Transformer 专家（视频、运动、动作）通过结构化注意力掩码交互——当前视频 token 只互相注意，未来视频、运动和动作 token 注意自身组和当前视频组</li><li><strong>训练目标</strong>：使用流匹配（Flow Matching）联合训练三个专家；运动损失分离移动/静态锚点的误差平衡（FM-split），并添加静态运动惩罚（Smooth-L1）抑制静态锚点的残余运动</li><li><strong>推理路径</strong>：动作专家不消费预测轨迹，推理时仅需一次视觉前向传播 + 动作去噪，不依赖未来视频或运动预测分支</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>基准数据集</strong>：<strong>RoboCasa-GR1</strong>（24 个桌面重排与关节物体操作任务，全量 24,000 条轨迹）、<strong>LIBERO</strong>（Spatial/Object/Goal/Long 四个任务套件）、<strong>LIBERO-Plus</strong>（7 种扰动类型的零样本迁移评估）</li><li><strong>视频骨干</strong>：预训练 <strong>Wan2.2-5B</strong>（VAE 冻结），动作和运动专家隐藏维度 1,024；动作与运动时域均为 32</li><li><strong>训练资源</strong>：LIBERO 和 RoboCasa-GR1 few-shot 使用 <strong>16 块 NVIDIA H20 GPU</strong>（全局 batch 128，26,000 步）；RoboCasa-GR1 全量数据使用 <strong>32 块 H20 GPU</strong>（全局 batch 1,024，50,000 步）</li><li><strong>真实世界实验</strong>：Piper 机械臂 + 两个 Intel RealSense D435i 相机，每任务 50 条演示，20 次测试</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboCasa-GR1</strong>：few-shot 成功率 <strong>63.6%</strong>、全量数据 <strong>80.3%</strong>，分别超过 Fast-WAM 18.8 和 5.7 个百分点；few-shot OOD 泛化平均成功率 <strong>58.6%</strong>，超过 DIAL、Fast-WAM、Joint-WAM 达 12.4、16.3、8.6 个百分点</li><li><strong>LIBERO</strong>：四个任务套件平均成功率 <strong>98.7%</strong>（Fast-WAM 为 97.6%，Joint-WAM 为 98.5%），其中 Goal 套件达 99.2%（最优）</li><li><strong>LIBERO-Plus 零样本</strong>：平均成功率 <strong>84.5%</strong>，超过 Fast-WAM 18.3 个百分点、Joint-WAM 5.8 个百分点，在全部 7 种扰动上均优于 Fast-WAM（Robot 和 Background 扰动分别达 87.4% 和 76.1%）</li><li><strong>消融实验</strong>：移动/静态锚点平衡（FM-split）和静态运动惩罚分别贡献 4.1 和 0.9 个百分点；深度分量带来 2.1 点增益；B 样条目标比原始运动高 1.1 点，且预测精度更高（32 步时图像平面 ADE 1.43 像素、深度 MAE 2.768 mm）</li><li><strong>真实世界</strong>：三个物理任务平均成功率 <strong>85.0%</strong>（Fast-WAM 为 63.3%），其中 "Place and Close Drawer" 从 55.0% 提升至 <strong>95.0%</strong></li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.37091/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">GAWM: A Compact Latent World-Action Model for Multi-Task Robot Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.36823/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">TAPESTRY: A Single Backbone for Video Generation and Robot Control</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
