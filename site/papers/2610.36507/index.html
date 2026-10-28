@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GRAFT: Geometry-Aware Residual Adaptation for Foundation Trackers - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对人形机器人行为基础模型（BFM）的局限性：其在平地运动数据上训练，缺乏根据局部地形调整落脚点、摆动高度和接触时机的机制 现有地形感知方案需要对跟踪器进行重训练或微调并与感知耦合，成本高且会损害可复用的运动先验 提出 GRAFT：在完全冻结的行为跟踪器上叠加几何感知的残差适配框架，仅对下半身执行目标添加地形条件修正，保持 BFM 参数与运动参考接口不变" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.36507">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.36507.webp" alt="GRAFT: Geometry-Aware Residual Adaptation for Foundation Trackers" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文针对人形机器人行为基础模型（BFM）的局限性：其在平地运动数据上训练，缺乏根据局部地形调整落脚点、摆动高度和接触时机的机制</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">GRAFT: Geometry-Aware Residual Adaptation for Foundation Trackers</h1>
+            <div class="detail-meta">2026-10-27 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.36507" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.36507" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.36507</span></div>
+            <p class="detail-summary">论文针对人形机器人行为基础模型（BFM）的局限性：其在平地运动数据上训练，缺乏根据局部地形调整落脚点、摆动高度和接触时机的机制 现有地形感知方案需要对跟踪器进行重训练或微调并与感知耦合，成本高且会损害可复用的运动先验 提出 GRAFT：在完全冻结的行为跟踪器上叠加几何感知的残差适配框架，仅对下半身执行目标添加地形条件修正，保持 BFM 参数与运动参考接口不变</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Xiaomi Robotics Lab（小米机器人实验室）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文针对人形机器人行为基础模型（BFM）的局限性：其在平地运动数据上训练，缺乏根据局部地形调整落脚点、摆动高度和接触时机的机制</p>
+  <ul class="reading-intro-points"><li>论文针对人形机器人行为基础模型（BFM）的局限性：其在平地运动数据上训练，缺乏根据局部地形调整落脚点、摆动高度和接触时机的机制</li><li>现有地形感知方案需要对跟踪器进行重训练或微调并与感知耦合，成本高且会损害可复用的运动先验</li><li>提出 GRAFT：在完全冻结的行为跟踪器上叠加几何感知的残差适配框架，仅对下半身执行目标添加地形条件修正，保持 BFM 参数与运动参考接口不变</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Xiaomi Robotics Lab</strong>（小米机器人实验室）</li><li><strong>HKUST(Guangzhou)</strong>（香港科技大学（广州））</li><li>通讯作者：<strong>Diyun Xiang</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文针对人形机器人行为基础模型（<strong>BFM</strong>）的局限性：其在平地运动数据上训练，缺乏根据局部地形调整落脚点、摆动高度和接触时机的机制</li><li>现有地形感知方案需要对跟踪器进行重训练或微调并与感知耦合，成本高且会损害可复用的运动先验</li><li>提出 <strong>GRAFT</strong>：在完全冻结的行为跟踪器上叠加几何感知的残差适配框架，仅对下半身执行目标添加地形条件修正，保持 BFM 参数与运动参考接口不变</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>GRAFT</strong> 框架：在冻结行为跟踪器上添加几何条件化的下半身修正，保留基座参数与运动参考接口，并配备部署时可控的门控（可在运行中途关闭/重新启用）</li><li>证明该框架的通用性：在 <strong>4 个不同的冻结跟踪器</strong>（<strong>SONIC</strong>、<strong>Humanoid-GPT</strong>、<strong>HoloMotion</strong>、<strong>ScaleBFM</strong>）上实例化，使用相同的残差结构与奖励族均成功习得地形穿越能力</li><li>通过<strong>特权地形观测→机载深度</strong>的教师—学生蒸馏，在 <strong>Unitree G1</strong> 真机上完成真实世界部署验证</li><li>将地形学习解耦为专注的“执行适配”问题：冻结的 BFM 负责参考跟踪与全身协调，轻量适配器仅学习地形相关的执行偏差</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>核心架构</strong>：冻结 BFM π 处理未修改的运动参考输出标称全身关节目标 a_t⁰；残差策略 f_φ 观测本体感知、基座动作、自身历史修正与局部地形观测（不接收参考），输出修正量 Δa_t = m ⊙ f_φ(o_t^res)，掩码 m 将修正限制在下半身关节</li><li><strong>地形奖励</strong>：摆动间隙奖励（在触地时结算整个摆动期的离地不足）、落脚惩罚（足底采样点在高度不连续边缘或悬空时的惩罚）、平地抑制（基于地形平坦度权重的有界残差幅度惩罚），与基座任务奖励和正则项联合优化</li><li><strong>教师—学生训练</strong>：阶段 I 用 PPO 以特权高程图训练教师适配器；阶段 II 冻结教师，用渲染的机载类深度图像以平方误差损失蒸馏出学生</li><li><strong>关键创新</strong>：修正仅写入下半身执行目标，部署门控可开关残差通路；复用基座的正则项保持原控制器的运动与稳定性约定，适配配方仅限于足部间隙、落脚位置和平地抑制三项</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>参考运动数据</strong>：来自 <strong>SONIC</strong> 训练数据集（未针对地形修改）</li><li><strong>适配的基座模型</strong>：<strong>SONIC</strong>、<strong>Humanoid-GPT</strong>、<strong>HoloMotion</strong>、<strong>ScaleBFM</strong> 四个冻结跟踪器</li><li><strong>机器人平台</strong>：<strong>Unitree G1</strong>（仿真模型与真机部署）</li><li><strong>训练资源</strong>：<strong>Isaac Lab</strong> 中 4096 个并行环境，20k 迭代，50 Hz 控制频率，程序化生成地形 + 难度课程 + 域随机化</li><li><strong>评估环境</strong>：<strong>MuJoCo</strong> 固定地形（上/下楼梯、间隙、平台、平地）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估协议</strong>：每种地形 10 次评估会话的成功率（n=10），并报告下半身修正的 L2 范数</li><li><strong>方法对比（Q1）</strong>：动作残差 2k 迭代内达 0.947 训练成功率，20k 达 0.969，硬地形 39/40 成功，而 RL 从零训练仅 1/40；<strong>LoRA</strong> 微调达到相近地形成功率（0.925）但平地修正更大更不稳定（0.6929±0.7173 vs 0.0520±0.0019）；运动 token 残差在全部四种障碍地形上完全失败</li><li><strong>蒸馏优势</strong>：深度学生达 38/40 硬地形成功，显著优于单阶段深度训练（22/40），且平地修正更小（0.4491 vs 1.5930）</li><li><strong>跨基座迁移（Q2）</strong>：无 GRAFT 时四个基座成功数为 3/40、3/40、8/40、2/40，加上 GRAFT 后提升至 39/40、34/40、39/40、20/40；各基座平地修正均保持在 0.0520–0.0928 的小范围</li><li><strong>适配代价与可移除性（Q3）</strong>：复合地形中障碍段平均残差 1.529、平地段仅 0.408（间隙处峰值 3.488）；手臂跟踪误差基本不变，腰部误差由平地 1.18° 升至障碍段 3.17°；仿真中可中途关闭/重启门控且无瞬态</li><li><strong>真机部署（Q4）</strong>：适配后的 SONIC 跟踪器凭机载深度和未修改参考跨越 0.30 m 平台、0.10 m 与 0.17 m 台阶及推车场景，而冻结基座在障碍前原地踏步</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.36624/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Adapting Video Models for Robot Control via Motion-guided Asymmetric Prediction</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.36420/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SO-101 Bench: Accessible Spatial Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

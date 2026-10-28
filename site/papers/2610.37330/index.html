@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tokens of Motion: Primitive Motion Learning for Human-Humanoid Skill Transfer - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 M-PACT（Motion Primitives for Action Composition and Transfer）框架，旨在解决人类视频向机器人（尤其是人形机器人）技能迁移的难题：人类演示缺乏机器人可执行的动作，且在形态学和运动学上与机器人差异巨大 核心思路是将“可迁移的原始运动结构学习”与“具身特定的运动实现”进行因子分解，从大规模 3D 人手姿态轨迹中学习可泛化、可复用的运动基元，仅需少量具身特定机器人数据即可将基元落地为可执行动作 该方法显著降低对昂贵机器人演示数据的依赖（仅需约 100 条机器人演示即可实现较强的人形运动重建），建立了从大规模人类运动数据到人形操作的可扩展桥梁" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.37330">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.37330.webp" alt="Tokens of Motion: Primitive Motion Learning for Human-Humanoid Skill Transfer" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 M-PACT（Motion Primitives for Action Composition and Transfer）框架，旨在解决人类视频向机器人（尤其是人形机器人）技能迁移的难题：人类演示缺乏机器人可执行的动作，且在形态学和运动学上与机器人差异巨大</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Tokens of Motion: Primitive Motion Learning for Human-Humanoid Skill Transfer</h1>
+            <div class="detail-meta">2026-10-27 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.37330" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.37330" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.37330</span></div>
+            <p class="detail-summary">论文提出 M-PACT（Motion Primitives for Action Composition and Transfer）框架，旨在解决人类视频向机器人（尤其是人形机器人）技能迁移的难题：人类演示缺乏机器人可执行的动作，且在形态学和运动学上与机器人差异巨大 核心思路是将“可迁移的原始运动结构学习”与“具身特定的运动实现”进行因子分解，从大规模 3D 人手姿态轨迹中学习可泛化、可复用的运动基元，仅需少量具身特定机器人数据即可将基元落地为可执行动作 该方法显著降低对昂贵机器人演示数据的依赖（仅需约 100 条机器人演示即可实现较强的人形运动重建），建立了从大规模人类运动数据到人形操作的可扩展桥梁</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">United Imaging Intelligence（Boston, MA, USA）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 M-PACT（Motion Primitives for Action Composition and Transfer）框架，旨在解决人类视频向机器人（尤其是人形机器人）技能迁移的难题：人类演示缺乏机器人可执行的动作，且在形态学和运动学上与机器人差异巨大</p>
+  <ul class="reading-intro-points"><li>论文提出 M-PACT（Motion Primitives for Action Composition and Transfer）框架，旨在解决人类视频向机器人（尤其是人形机器人）技能迁移的难题：人类演示缺乏机器人可执行的动作，且在形态学和运动学上与机器人差异巨大</li><li>核心思路是将“可迁移的原始运动结构学习”与“具身特定的运动实现”进行因子分解，从大规模 3D 人手姿态轨迹中学习可泛化、可复用的运动基元，仅需少量具身特定机器人数据即可将基元落地为可执行动作</li><li>该方法显著降低对昂贵机器人演示数据的依赖（仅需约 100 条机器人演示即可实现较强的人形运动重建），建立了从大规模人类运动数据到人形操作的可扩展桥梁</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>United Imaging Intelligence</strong>（Boston, MA, USA）</li><li><strong>Purdue University</strong>（West Lafayette, IN, USA，第一作者 Hanwen Ren 在联合影像智能实习期间完成该工作）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>M-PACT</strong>（Motion Primitives for Action Composition and Transfer）框架，旨在解决人类视频向机器人（尤其是人形机器人）技能迁移的难题：人类演示缺乏机器人可执行的动作，且在形态学和运动学上与机器人差异巨大</li><li>核心思路是将“可迁移的原始运动结构学习”与“具身特定的运动实现”进行因子分解，从大规模 3D 人手姿态轨迹中学习可泛化、可复用的运动基元，仅需少量具身特定机器人数据即可将基元落地为可执行动作</li><li>该方法显著降低对昂贵机器人演示数据的依赖（仅需约 100 条机器人演示即可实现较强的人形运动重建），建立了从大规模人类运动数据到人形操作的可扩展桥梁</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出运动分词器 <strong>EPMT</strong>（Embodied Primitive Motion Tokenization），从人手轨迹中发现局部化、具身无关的原始运动，基于低成本、网络规模的自视角视频手部姿态数据训练，学习的基元 token 可跨具身复用</li><li>提出 <strong>M-PACT</strong> 多阶段迁移框架，将 EPMT 与上下文感知的视觉表征结合，实现基元 token 的选择、组合，并将其落地为具身特定、机器人可执行的动作，支持不同时间跨度的操作任务</li><li>引入 <strong>SkillSeg</strong> 自监督运动分割模块，基于帧级运动学线索对 3D 人手轨迹进行分割，无需分段标注</li><li>引入 <strong>CC-EPMT</strong>（上下文条件基元预测），结合视觉基础模型特征和任务/观测上下文，实现基元的选择与组合，支持闭环技能实现</li><li>在三个数据集上评估运动重建、跨数据集表征复用、人形解码器适配和上下文基元预测，并辅以真实世界人形机器人定性演示</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>框架分三个阶段：<strong>SkillSeg</strong> 通过自监督重建（结合重建、向量量化、速率和熵损失）将手部轨迹划分为局部运动段；<strong>EPMT</strong> 将每个段编码为离散平移 token（16 个码本）与离散开合 token（4 个码本）及连续旋转潜变量，并由状态条件解码器重建运动净效应；最后在目标具身上仅重新训练轻量解码器（27,399 参数），冻结分割模型、编码器和码本</li><li>创新点：将可复用运动结构与任务上下文、机器人特定控制分离（因子化设计），使基元可跨具身迁移并在任务间组合复用；共享手部状态约定（腕位置、旋转、开合度）统一人类与机器人轨迹</li><li><strong>CC-EPMT</strong> 扩展：在段开始时根据状态/视觉/语言上下文（冻结的 CLIP 编码器）预测基元表示，支持预测-实现-观测的闭环技能组合</li><li>跨具身落地：人类演示提供共享基元词汇表，具身适配只需改变从基元到可执行机器人运动的映射</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>EgoDex</strong>：表征训练，27,411 个片段，保留 2.92M 运动段</li><li><strong>HoloAssist</strong>：冻结迁移评估，35,087 个片段，0.80M 运动段</li><li><strong>HumanoidEveryday</strong>：G1 人形机器人适配，4,064 个片段，96,241 个运动段</li><li>解码器为轻量架构（77 维输入、7 维输出、27,399 参数）；上下文特征来自冻结的 <strong>CLIP</strong> 编码器</li><li>论文未明确披露具体 GPU/TPU 训练资源细节</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估涵盖运动重建、跨数据集/跨具身表征迁移、人形解码器适配、上下文基元预测，以及真实人形机器人四类递进式实验（EPMT 运动重建、Human2Robot 跨具身迁移、CC-EPMT 状态-only 闭环预测、CC-EPMT 全上下文操作）</li><li>主要指标：中位数端点平移/旋转/开合误差（含归一化误差）、码本使用率、top-1 准确率、90% 覆盖下的候选集大小</li><li>EPMT 在 EgoDex 上重建平移误差 2.658 cm（归一化 0.532）；迁移到 HoloAssist（冻结解码器）误差仍低于零变化基线且所有码保持活跃；在 HumanoidEveryday 上仅重训目标解码器即获得低归一化误差（平移 0.454、旋转 0.062），且码本全利用</li><li>学习式分割相比固定窗口和启发式方法给出最低的平移（3.022 cm）和开合（4.514 mm）误差</li><li>CC-EPMT 上下文预测将平移 top-1 准确率从 36.37%（仅状态）提升到 40.42%；机器人域翻译预测中语言+状态达 33.98%（状态 30.64%、多数类基线 22.56%），候选集从 13.25 缩减到 8.35（16 个码中，约 90% 覆盖）</li><li>真实世界实验表明：轻量解码器适配仅需约 100 条机器人演示即可实现强人形运动重建，同一基元 token 表示可桥接人类运动与真实人形执行</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.37378/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VLA-Stem: A Lightweight Safety Mechanism for Vision-Language-Action Models via Reinforcement Learning</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.37219/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Vision-Language-Action or World-Action? Just Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
