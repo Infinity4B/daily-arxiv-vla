@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Continuous-Action World Models: Learning Cross-Embodiment Spatiotemporal Dynamics Priors - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 CoAWM（Continuous-Action World Models） 框架，通过学习跨具身、跨执行频率的时空动力学先验来支持机器人动作生成 核心问题是：不同机器人身体、不同动作接口和控制频率下采集的经验，如何用于学习可共享的时空动力学先验以指导动作生成 关键洞察是将动作的演化建模为函数（而非离散采样指令），通过共享潜在函数空间分离“从异构轨迹学习动力学先验”与“基于当前场景的任务条件动作选择”两个学习问题" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.40401">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.40401.webp" alt="Continuous-Action World Models: Learning Cross-Embodiment Spatiotemporal Dynamics Priors" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 CoAWM（Continuous-Action World Models） 框架，通过学习跨具身、跨执行频率的时空动力学先验来支持机器人动作生成</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Continuous-Action World Models: Learning Cross-Embodiment Spatiotemporal Dynamics Priors</h1>
+            <div class="detail-meta">2026-10-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.40401" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.40401" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.40401</span></div>
+            <p class="detail-summary">提出 CoAWM（Continuous-Action World Models） 框架，通过学习跨具身、跨执行频率的时空动力学先验来支持机器人动作生成 核心问题是：不同机器人身体、不同动作接口和控制频率下采集的经验，如何用于学习可共享的时空动力学先验以指导动作生成 关键洞察是将动作的演化建模为函数（而非离散采样指令），通过共享潜在函数空间分离“从异构轨迹学习动力学先验”与“基于当前场景的任务条件动作选择”两个学习问题</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">同济大学：作者 Liangyu Li 与通讯作者 Qingwen Liu 均来自同济大学</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 CoAWM（Continuous-Action World Models） 框架，通过学习跨具身、跨执行频率的时空动力学先验来支持机器人动作生成</p>
+  <ul class="reading-intro-points"><li>提出 CoAWM（Continuous-Action World Models） 框架，通过学习跨具身、跨执行频率的时空动力学先验来支持机器人动作生成</li><li>核心问题是：不同机器人身体、不同动作接口和控制频率下采集的经验，如何用于学习可共享的时空动力学先验以指导动作生成</li><li>关键洞察是将动作的演化建模为函数（而非离散采样指令），通过共享潜在函数空间分离“从异构轨迹学习动力学先验”与“基于当前场景的任务条件动作选择”两个学习问题</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>同济大学</strong>：作者 <strong>Liangyu Li</strong> 与通讯作者 <strong>Qingwen Liu</strong> 均来自同济大学</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>CoAWM（Continuous-Action World Models）</strong> 框架，通过学习跨具身、跨执行频率的时空动力学先验来支持机器人动作生成</li><li>核心问题是：不同机器人身体、不同动作接口和控制频率下采集的经验，如何用于学习可共享的时空动力学先验以指导动作生成</li><li>关键洞察是将动作的演化建模为<strong>函数</strong>（而非离散采样指令），通过共享潜在函数空间分离“从异构轨迹学习动力学先验”与“基于当前场景的任务条件动作选择”两个学习问题</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>连续动作函数表示</strong>：将动作序列表示为带物理时间接口的固定大小潜在函数，解码器可在任意查询时间返回末端执行器动作，实现不同执行频率的动作生成</li><li>设计<strong>两阶段训练</strong>：Stage A 函数预训练将不同具身与采样频率的轨迹统一到共同表示，Stage B 将预训练函数空间连接到世界模型骨干</li><li>采用 <strong>Mixture-of-Transformers（MoT）编码器</strong>，对位置（XYZ）、姿态（Q）、夹爪（G）分量进行专用处理并通过共享注意力捕捉协调关系</li><li>通过<strong>时间查询执行</strong>机制，使同一预测函数可在 10–60 Hz 多种频率下输出动作，而执行段与重规划周期保持不变</li><li>实验验证了重建精度、更平滑的初始执行、跨频率执行能力和执行能耗降低</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>Stage A（函数预训练）</strong>：编码器将带时间戳的轨迹（位置、四元数、夹爪三路流）经 typed Perceiver 块聚合到 96 个宽度 256 的潜在 token（每模态 32 个），Latent MoT 块在动作组件流间交换信息；解码器通过独立时间查询与 typed cross-attention 输出各分量动作</li><li><strong>物理时间接口与锚定读出</strong>：以当前观测为 τ=0，位置读出以当前位置为锚点（p(τ)=p₀+p̃(τ)−p̃(0)），姿态以四元数相对旋转归一化输出；执行段覆盖 1.2 秒物理时间</li><li><strong>两视角一致性目标</strong>：在源网格与规则网格两种时间采样视图下进行动作重建，并施加潜在表示的 MSE 一致性约束（权重 0.1），学习共享函数空间</li><li><strong>Stage B（世界模型对齐）</strong>：结合 <strong>LaWAM</strong> 视觉世界预测，VLM 特征、预测的未来视觉 token 与本体状态构成交叉注意力记忆，当前 LAM 视觉 token 通过零初始化的输出残差注入；训练时用冻结动作编码器产生的专家潜在目标（余弦相似度损失）和解码动作监督（位置 0.01 m、旋转 0.05 rad、夹爪 0.05 的尺度归一化误差）</li><li><strong>推理</strong>：解码器按期望执行频率的时间点查询预测的潜在函数，原生执行为 30 Hz</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用带时间戳的<strong>机器人末端执行器轨迹</strong>数据（涵盖多种具身与采样频率），未在正文中指明具体公开数据集名称（相关工作引用 <strong>Open X-Embodiment</strong>、<strong>Octo</strong>、<strong>π₀</strong> 等）</li><li>实验平台为<strong>双臂操作机器人</strong>，配备头部相机与两个腕部相机，动作包含 6 维位置、8 维四元数与 2 维夹爪指令（双臂合计）</li><li>执行段 1.2 s，原生执行频率 30 Hz；模型瓶颈为 96 token × 256 宽度</li><li>训练所用 GPU/TPU 资源与参数规模在提供的正文中未明确说明</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>表征精度</strong>：在 8,192 个保留评估窗口上，函数自编码器位置重建误差为 <strong>2.503 mm</strong>，旋转误差为 <strong>0.2295°</strong></li><li><strong>初始执行平滑度</strong>：在 16 个任务、800 组配对试验中，平移 jerk RMS 从 150.87 降至 95.46（<strong>降低 36.7%</strong>），旋转 jerk RMS 从 746.06 降至 341.73（<strong>降低 54.2%</strong>），速度 RMS 相近（0.338 vs 0.332）；同批评估任务成功率为 <strong>75.1%</strong></li><li><strong>多任务双臂操作</strong>：每任务 50 次试验中，双瓶任务成功率 <strong>94%</strong>，左/右 A2B 任务 <strong>90%</strong>，汉堡任务 <strong>88%</strong>，锤子任务 <strong>86%</strong>；50 任务初步评估中两种方法均在 30 个任务上完成全部 3 次试验</li><li><strong>跨频率执行</strong>：同一策略在 10、15、20、30、50、60 Hz 下输出动作（每频率 150 次试验，执行段固定 1.2 s），成功次数分别为 116、121、117、119、116、110</li><li><strong>执行能耗</strong>：基于 PD 力矩估计的正机械功在 13 个双方均成功的场景中从 506.66 降至 392.13（<strong>降低 22.6%</strong>），16 个预设场景中 12 个场景能耗更低</li><li>评估对比基线为 <strong>LaWAM</strong>（Latent World Action Models）</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.40430/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Improving Fine-Grained Manipulation through Demonstration Expansion and Execution Design</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.40373/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HiFOR: Hierarchical Foresight with Action-Guided World Grounding for Vision-Language-Action Model</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

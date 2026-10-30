@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quantize by Doing: Task-Guided Mixed-Precision Quantization of Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 QbD-VLA，一种任务引导的混合精度量化方法，用于在保持任务性能的同时降低视觉-语言-动作（VLA）模型的内存占用。 现有混合精度量化方法依赖校准数据的敏感性分数，但这类分数与闭环任务成功率不一致，且未考虑不同组件间量化误差的交互作用。 QbD-VLA 直接利用闭环任务成功率来分配各组件的权重和激活位宽，并通过顺序测试控制仿真成本。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.38661">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.38661.webp" alt="Quantize by Doing: Task-Guided Mixed-Precision Quantization of Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 QbD-VLA，一种任务引导的混合精度量化方法，用于在保持任务性能的同时降低视觉-语言-动作（VLA）模型的内存占用。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Quantize by Doing: Task-Guided Mixed-Precision Quantization of Vision-Language-Action Models</h1>
+            <div class="detail-meta">2026-10-28 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.38661" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.38661" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.38661</span></div>
+            <p class="detail-summary">论文提出 QbD-VLA，一种任务引导的混合精度量化方法，用于在保持任务性能的同时降低视觉-语言-动作（VLA）模型的内存占用。 现有混合精度量化方法依赖校准数据的敏感性分数，但这类分数与闭环任务成功率不一致，且未考虑不同组件间量化误差的交互作用。 QbD-VLA 直接利用闭环任务成功率来分配各组件的权重和激活位宽，并通过顺序测试控制仿真成本。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Colorado School of Mines（Jiuyi Xu, Yangming Shi）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 QbD-VLA，一种任务引导的混合精度量化方法，用于在保持任务性能的同时降低视觉-语言-动作（VLA）模型的内存占用。</p>
+  <ul class="reading-intro-points"><li>论文提出 QbD-VLA，一种任务引导的混合精度量化方法，用于在保持任务性能的同时降低视觉-语言-动作（VLA）模型的内存占用。</li><li>现有混合精度量化方法依赖校准数据的敏感性分数，但这类分数与闭环任务成功率不一致，且未考虑不同组件间量化误差的交互作用。</li><li>QbD-VLA 直接利用闭环任务成功率来分配各组件的权重和激活位宽，并通过顺序测试控制仿真成本。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Colorado School of Mines</strong>（Jiuyi Xu, Yangming Shi）</li><li><strong>Northeastern University</strong>（Xiao Hu, Yang Ye）</li><li><strong>USC Institute for Creative Technologies</strong>（Meida Chen）</li><li><strong>University of Central Florida</strong>（Song Wang）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>QbD-VLA</strong>，一种任务引导的混合精度量化方法，用于在保持任务性能的同时降低视觉-语言-动作（VLA）模型的内存占用。</li><li>现有混合精度量化方法依赖校准数据的敏感性分数，但这类分数与闭环任务成功率不一致，且未考虑不同组件间量化误差的交互作用。</li><li>QbD-VLA 直接利用闭环任务成功率来分配各组件的权重和激活位宽，并通过顺序测试控制仿真成本。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>QbD-VLA</strong> 方法：从全精度开始逐组降低位宽，每次候选在当前混合精度配置下通过短 horizon 闭环评估，使用 Wilson 置信区间的顺序测试决定是否接受位宽降低。</li><li>在四个 VLA 模型（<strong>π0.5、OpenVLA-OFT、X-VLA、π0</strong>）和全部四个 <strong>LIBERO</strong> 套件上进行了广泛评估，证明所选配置在约 4 位权重和 6 位以下激活下能达到接近全精度的任务成功率，而均匀 W4A4 大多为 0%。</li><li>与敏感性分配（动作误差、激活峰度、重构误差）和两阶段分配（UFR）等基线对比，表明 QbD-VLA 能捕获组件间交互效应，显著优于固定敏感性方法。</li><li>分析了任务引导分配的有效性，并通过因子实验揭示单组敏感性在不同其他组精度下变化巨大，从而支持在<strong>当前混合精度配置内</strong>评估候选。</li><li>将仿真选出的分配迁移到真实 <strong>Franka Research 3</strong> 机械臂，发现 X-VLA 上保持性能，但 <strong>π0.5</strong> 上失败，强调实机部署前必须进行真实环境验证。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>将 VLA 模型划分为若干层组（如视觉编码器、语言骨干、动作头的注意力投影、MLP、调制器等），每组共享同一权重位宽和激活位宽。</li><li>定义可用位宽设置序列：FP → W8A8 → W4A8 → W4A6 → W4A4，使用固定 round-to-nearest (RTN) 量化，无校准，不进行策略训练。</li><li>从全精度配置开始，每次将一个组降低一个位宽等级，按成本降低量降序评估候选；每个候选在当前混合精度配置下执行短 horizon 模拟（每个任务一个 episode，最多 3 个批次）。</li><li>使用 <strong>Wilson 置信区间</strong> 进行顺序测试：接受条件为下界≥阈值，拒绝条件为上界≤阈值；阈值设为全精度参考成功率的 τ 倍（如 τ=0.75 或 0.90）。</li><li>最后从所有接受的配置中选择满足上界达到最大估计成功率的<strong>最低成本</strong>配置，并在独立初始状态和完整任务 horizon 下评估最终结果。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>基准环境：<strong>LIBERO</strong>（四个套件：Spatial、Object、Goal、Long）、<strong>SIMPLER</strong>（variant-aggregation 用于分配，visual-matching 用于评估）。</li><li>模型：<strong>π0.5</strong>（约 28 亿参数）、<strong>OpenVLA-OFT</strong>（约 74 亿参数）、<strong>X-VLA</strong>（约 7.9 亿参数）、<strong>π0</strong>（约 31 亿参数，根据论文附录表格估算）。</li><li>仿真实验在 LIBERO-Spatial 上进行分配，每个模型分配过程消耗约 600-970 个新仿真 episodes（π0.5 还额外复用了 1070 个记录 episodes）。</li><li>真实机器人实验在 <strong>Franka Research 3 (FR3)</strong> 机械臂上进行，每个模型使用 LoRA 微调于 411 个抓取立方体的演示。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>在 LIBERO-Spatial 上，QbD-VLA 分配的配置在 <strong>π0.5</strong>、<strong>OpenVLA-OFT</strong>、<strong>X-VLA</strong> 上分别达到 <strong>98.5%</strong>、<strong>97.5%</strong>、<strong>97.0%</strong> 的成功率（全精度分别为 99.0%、100.0%、97.0%），而均匀 W4A4 均为 0%。</li><li>所选配置的平均权重位宽约 4.00-4.16 位，平均激活位宽约 5.74-5.94 位，显著优于均匀 W4A6 在某些模型上的表现（如 OpenVLA-OFT 从 22.4% 提升至 91.8% 平均成功率）。</li><li>与敏感性分配方法相比，在 <strong>π0.5</strong> 上动作误差、激活峰度、重构误差分别仅达 27.5%、0.0%、52.0%，而 QbD-VLA 达 98.5%；两阶段方法 UFR 需要更高位预算才能接近 QbD-VLA 性能。</li><li>在 SIMPLER 视觉匹配集上，QbD-VLA 最好配置（40 任务，τ=0.95）达到 <strong>66.8%</strong> 整体成功率，略高于均匀 W4A6 的 64.8%，但抽屉任务仍落后于全精度，增益有限。</li><li>真实机器人迁移：<strong>X-VLA</strong> 上 QbD-VLA 成功 13/30 次（全精度 11/30），无明显损失；<strong>π0.5</strong> 上 QbD-VLA 成功 0/6 次（全精度 6/6），且未发出夹爪闭合指令，所有低比特分配均失败，均匀 W8A8 可恢复至 5/6 成功。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.39287/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">OpenFlyV2: An onboard vision-language-action model for aerial perception and navigation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.38508/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SaiVLA-JEPA: Evaluating Future Latent Prediction in JEPA-Conditioned VLA Control</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
