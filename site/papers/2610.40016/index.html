@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LOGIV: Graph-Verified Execution with Causal Local Repair for Long-Horizon Robot Tasks - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 LOGIV（Long-Horizon Online Graph-based Inference and Verification for Plan Repair），一个面向长时程机器人任务的图工程框架，用显式任务图连接符号规划、基于观测的验证与具身动作执行 解决的核心问题：已完成动作的效果不一定会持续——后续干扰可能使剩余计划所依赖的支撑条件失效（如桥梁装配中支撑被移位），可靠的长时程执行需要同时追踪动作完成状态及其后果的持续有效性 框架运行在现有 VLA 和 WAM 策略之上，无需增加可训练组件，通过依赖追踪确定失败后需恢复的内容，并以保留的未完成动作约束修复目标" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.40016">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.40016.webp" alt="LOGIV: Graph-Verified Execution with Causal Local Repair for Long-Horizon Robot Tasks" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 LOGIV（Long-Horizon Online Graph-based Inference and Verification for Plan Repair），一个面向长时程机器人任务的图工程框架，用显式任务图连接符号规划、基于观测的验证与具身动作执行</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">LOGIV: Graph-Verified Execution with Causal Local Repair for Long-Horizon Robot Tasks</h1>
+            <div class="detail-meta">2026-10-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.40016" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.40016" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.40016</span></div>
+            <p class="detail-summary">提出 LOGIV（Long-Horizon Online Graph-based Inference and Verification for Plan Repair），一个面向长时程机器人任务的图工程框架，用显式任务图连接符号规划、基于观测的验证与具身动作执行 解决的核心问题：已完成动作的效果不一定会持续——后续干扰可能使剩余计划所依赖的支撑条件失效（如桥梁装配中支撑被移位），可靠的长时程执行需要同时追踪动作完成状态及其后果的持续有效性 框架运行在现有 VLA 和 WAM 策略之上，无需增加可训练组件，通过依赖追踪确定失败后需恢复的内容，并以保留的未完成动作约束修复目标</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">CUHKSZ（香港中文大学深圳校区）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 LOGIV（Long-Horizon Online Graph-based Inference and Verification for Plan Repair），一个面向长时程机器人任务的图工程框架，用显式任务图连接符号规划、基于观测的验证与具身动作执行</p>
+  <ul class="reading-intro-points"><li>提出 LOGIV（Long-Horizon Online Graph-based Inference and Verification for Plan Repair），一个面向长时程机器人任务的图工程框架，用显式任务图连接符号规划、基于观测的验证与具身动作执行</li><li>解决的核心问题：已完成动作的效果不一定会持续——后续干扰可能使剩余计划所依赖的支撑条件失效（如桥梁装配中支撑被移位），可靠的长时程执行需要同时追踪动作完成状态及其后果的持续有效性</li><li>框架运行在现有 VLA 和 WAM 策略之上，无需增加可训练组件，通过依赖追踪确定失败后需恢复的内容，并以保留的未完成动作约束修复目标</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>CUHKSZ</strong>（香港中文大学深圳校区）</li><li>**A*STAR**（新加坡科技研究局）</li><li><strong>Caltech</strong>（加州理工学院）</li><li><strong>NUS</strong>（新加坡国立大学）</li><li><strong>HKUST</strong>（香港科技大学）</li><li><strong>COCO Matrix</strong></li><li><strong>NTU</strong>（南洋理工大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>LOGIV</strong>（Long-Horizon Online Graph-based Inference and Verification for Plan Repair），一个面向长时程机器人任务的图工程框架，用显式任务图连接符号规划、基于观测的验证与具身动作执行</li><li>解决的核心问题：已完成动作的效果不一定会持续——后续干扰可能使剩余计划所依赖的支撑条件失效（如桥梁装配中支撑被移位），可靠的长时程执行需要同时追踪动作完成状态及其后果的持续有效性</li><li>框架运行在现有 <strong>VLA</strong> 和 <strong>WAM</strong> 策略之上，无需增加可训练组件，通过依赖追踪确定失败后需恢复的内容，并以保留的未完成动作约束修复目标</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出<strong>图工程</strong>（graph engineering）建模形式：在物理任务执行中将“已完成动作”与“其条件支撑的持续有效性”分离</li><li>构建<strong>闭环实现</strong>：结合基于观测的图检查（State Gate / Node Gate / Graph Gate 三道门控）、由保留动作约束的依赖引导局部修复、以及对完整续接计划的符号验证</li><li>提出拓扑引导的局部修复方法：通过依赖追踪识别受影响动作，仅修复受影响的支撑操作而保留未受影响的动作，修复失败时扩展替换范围</li><li>在两个仿真基准、三个执行骨干和真实机器人上进行了广泛评估，并通过消融实验验证图验证与修复设计的作用</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>预执行规划</strong>：Operator Planner 基于 PDDL Domain/Problem 生成参考计划，经 <strong>VAL</strong> 验证后编译为任务 DAG，节点为子任务，包含<strong>因果边</strong>（记录哪个动作供给另一动作所需条件）和<strong>资源边</strong>（编码资源使用顺序约束）</li><li><strong>在线验证</strong>：三道门控——State Gate（融合视觉事实与机器人状态）、Node Gate（检查前置条件与动作效果）、Graph Gate（检查资源前驱与条件支撑），使用 <strong>GPT-4o</strong> 作为 VLM 提取视觉事实，输出 PASS/FAIL/UNRESOLVED 状态</li><li><strong>修复范围选择</strong>：失败后通过依赖追踪识别受影响动作；已完成的动作保持完成状态，仅当其支撑失效时保留未完成的消费者动作并进行修复</li><li><strong>修复规划与验证</strong>：从最终目标反向推导修复目标 g_rep，生成修复片段 ΔPt 与保留计划 P_keep 拼接，用 <strong>VAL</strong> 验证完整计划后再重建任务图并恢复执行</li><li>关键创新：将节点的完成状态与其提供支撑的当前有效性分离；修复约束于保留的未完成动作，修复验证失败时扩展替换范围</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>仿真基准：<strong>RoboTwin V2</strong>（10 个双臂任务）与 <strong>BiCoord</strong>（10 个双臂任务），每任务 10 个预定义初始状态</li><li>执行骨干策略：<strong>π₀.₅</strong>、<strong>AHA-WAM</strong>、<strong>Light-WAM</strong>（均经任务特定微调）</li><li>VLM 配置：<strong>GPT-4o</strong>（每次调用最多 512 输出 token）；规划器采用 Fast Downward 的 <strong>LAMA-first</strong>（30 秒规划时限，5 秒 VAL 验证时限）</li><li>真实机器人平台：<strong>Astribot S1</strong> 全身双臂机器人和两台 <strong>AgileX Piper</strong> 6 自由度机械臂组成的工作单元，配备第三人称 RGB-D 相机与腕部相机</li><li>LOGIV 本身不引入任何可训练组件，仅在策略之上增加执行与修复层</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估指标：无扰动全任务成功率（<strong>C</strong>）、注入扰动后的全任务成功率（<strong>P</strong>）、条件恢复率（<strong>R</strong>）</li><li>无扰动仿真结果：三个骨干的平均成功率在 RoboTwin V2 上从 71.67% 提升至 82.33%（+10.67 pp），在 BiCoord 上从 42.33% 提升至 57.67%（+15.33 pp）</li><li>扰动设置下：π₀.₅、AHA-WAM、Light-WAM 在 RoboTwin V2 成功率分别达 60%、83%、72%，超越基线骨干 28、23、14 个百分点；在 BiCoord 上为 48%、53%、49%，提升 17、10、10 个百分点</li><li>条件恢复率全面超越三个改造的恢复基线（<strong>VeriGraph-PDDL</strong>、<strong>LERa-PDDL</strong>、<strong>VLM-RP-BT</strong>）在所有基准与骨干组合上的表现</li><li>真实机器人实验：三个任务（pick_tomato、build_blocks、insert_cable）共 30 次试验，成功次数从 12/30（40.0%）提升至 17/30（56.7%）</li><li>消融实验：移除 Graph Gate 使扰动任务成功率从 60% 降至 48%；移除因果依赖追踪使扰动成功率降至 52%；用全量重规划替代局部修复使重复执行的有效动作从 0.2 增至 1.6；移除修复计划验证使条件恢复率从 72% 降至 62%</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.40026/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RoboSeed: Multidimensional Evaluation of Vision-Language-Action and World-Action Models: Capability, Resource Affordability, and Research Evidence</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.40002/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">How Much Should a VLA Trust Its Reasoning? Step-Level Guidance as a Measured Action-Value Function</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
