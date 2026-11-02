@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CaPtain: A Pipeline for Post-Training Code-as-Policy Robot Agents - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 CaPtain，一个开放的 Code-as-Policy (CaP) 机器人智能体后训练流水线，将小型开源视觉语言模型（VLM）转化为独立的 CaP 智能体 解决现有 CaP 系统依赖闭源前沿模型或冻结的视觉-语言-动作模型（VLA）的问题，这些方案无法对操纵决策本身进行端到端训练 在 CaPtain-Harness 执行环境中，先通过监督微调（SFT）对齐模型与接口，再利用模拟器中的多轮强化学习（RL）优化闭环操纵与恢复行为" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2610.40799">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2610.40799.webp" alt="CaPtain: A Pipeline for Post-Training Code-as-Policy Robot Agents" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">提出 CaPtain，一个开放的 Code-as-Policy (CaP) 机器人智能体后训练流水线，将小型开源视觉语言模型（VLM）转化为独立的 CaP 智能体</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">CaPtain: A Pipeline for Post-Training Code-as-Policy Robot Agents</h1>
+            <div class="detail-meta">2026-10-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.40799" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.40799" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.40799</span></div>
+            <p class="detail-summary">提出 CaPtain，一个开放的 Code-as-Policy (CaP) 机器人智能体后训练流水线，将小型开源视觉语言模型（VLM）转化为独立的 CaP 智能体 解决现有 CaP 系统依赖闭源前沿模型或冻结的视觉-语言-动作模型（VLA）的问题，这些方案无法对操纵决策本身进行端到端训练 在 CaPtain-Harness 执行环境中，先通过监督微调（SFT）对齐模型与接口，再利用模拟器中的多轮强化学习（RL）优化闭环操纵与恢复行为</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">作者来自 MMLab, The Chinese University of Hong Kong（香港中…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 CaPtain，一个开放的 Code-as-Policy (CaP) 机器人智能体后训练流水线，将小型开源视觉语言模型（VLM）转化为独立的 CaP 智能体</p>
+  <ul class="reading-intro-points"><li>提出 CaPtain，一个开放的 Code-as-Policy (CaP) 机器人智能体后训练流水线，将小型开源视觉语言模型（VLM）转化为独立的 CaP 智能体</li><li>解决现有 CaP 系统依赖闭源前沿模型或冻结的视觉-语言-动作模型（VLA）的问题，这些方案无法对操纵决策本身进行端到端训练</li><li>在 CaPtain-Harness 执行环境中，先通过监督微调（SFT）对齐模型与接口，再利用模拟器中的多轮强化学习（RL）优化闭环操纵与恢复行为</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>作者来自 <strong>MMLab, The Chinese University of Hong Kong</strong>（香港中文大学多媒体实验室）及 <strong>NovaXBot</strong></li><li>通讯作者：<strong>Xiangyu Yue</strong>（xyyue@ie.cuhk.edu.hk）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>CaPtain</strong>，一个开放的 <strong>Code-as-Policy (CaP)</strong> 机器人智能体后训练流水线，将小型开源视觉语言模型（VLM）转化为独立的 CaP 智能体</li><li>解决现有 CaP 系统依赖闭源前沿模型或冻结的视觉-语言-动作模型（VLA）的问题，这些方案无法对操纵决策本身进行端到端训练</li><li>在 <strong>CaPtain-Harness</strong> 执行环境中，先通过监督微调（SFT）对齐模型与接口，再利用模拟器中的多轮强化学习（RL）优化闭环操纵与恢复行为</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>CaPtain</strong> 流水线，将小型开源 VLM（<strong>Qwen3.5-4B</strong>）通过 SFT+RL 训练成独立 CaP 智能体，并发布 SFT 数据、训练代码和模型权重</li><li>设计 <strong>CaPtain-Harness</strong>，一个可移植的执行环境，仅暴露 22 个低层感知、几何测量和受保护运动原语，并返回结构化文本回执</li><li>提出 <strong>模拟器批评家（simulator critic）</strong>，读取策略不可见的特权物理状态，将状态转移转化为密集的逐请求信用分配，解决多轮 VLM 智能体的信用分配难题</li><li>进行全面的评估，证明 RL 增益在三个扰动测试套件上持续存在，4B 模型以极低成本超越多个前沿模型智能体，并实现跨基准、跨具身和真机零样本迁移</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>CaPtain-Harness</strong>：ReAct 风格循环，策略在每步请求中生成 Python 代码调用低层 API，获得文本回执和图像；包含持久 Python 会话、上下文管理、压缩机制和自验证成功判定</li><li><strong>SFT 阶段</strong>：使用 <strong>GPT-6 Astra</strong> 在 harness 内生成合成轨迹，采用与部署时完全相同的多轮格式进行监督微调；监督智能体生成的推理和代码 token，并以 0.2 概率遮盖历史坐标强制模型依赖当前图像</li><li><strong>RL 阶段</strong>：使用 <strong>模拟器批评家</strong>，从特权物理状态（36 个特征）预测成功概率，用集成 MLP 在线协同训练；逐请求信用定义为状态价值变化量，结合 GAE 和分组相对优势；采用 SAO 风格单遍更新、双面 token 掩码和 KL 正则</li><li>训练时每个起始状态随机采样 4 次 rollout，每 4 轮累积梯度后更新策略；测试时移除批评家，策略仅基于相机图像和文本回执动作</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>训练仅使用 <strong>LIBERO</strong> 的 40 个原始任务，评估于 <strong>LIBERO</strong>、<strong>LIBERO-PRO</strong>、<strong>LIBERO-Plus</strong>、<strong>LIBERO-MAX</strong> 及零样本迁移基准 <strong>RoboTwin 2.0</strong>、<strong>RoboDojo</strong>、<strong>SimplerEnv</strong>、<strong>CaP-Bench</strong></li><li>基础模型为 <strong>Qwen3.5-4B</strong>（40 亿参数，指令微调版本），微调所有语言模型权重，冻结视觉塔</li><li>SFT 数据由 <strong>GPT-6 Astra</strong> 在 harness 内生成</li><li>训练基础设施：异步 rollout 服务器，梯度累积 1024 个 episode 后进行一次优化器更新；具体 GPU/TPU 数量及算力开销见论文附录</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境为 <strong>CaPtain-Harness</strong>，温度 1，最多 60 个请求、150 个物理动作、1080 秒；报告 <strong>host success</strong>（基准谓词）和 <strong>strict success</strong>（额外要求 <code>finish()</code>）</li><li><strong>CaPtain-4B</strong> 在 held-out LIBERO 上从零样本 0% 提升至 SFT 后 55.4%，RL 后 <strong>73.8%</strong>；strict success 从 52.1% 提升至 <strong>67.5%</strong></li><li>在 <strong>LIBERO-PRO</strong>（3 个短程套件）达到 <strong>78.5%</strong>，超越前沿模型智能体 K1（77.2%）、WAA（75.6%）、ASPIRE（71.7%）</li><li>RL 增益在扰动套件上持续：LIBERO-PRO（3 套件）+19.0、LIBERO-Plus +17.6、LIBERO-MAX Dynamic +21.2、Base +18.8；所有七个 LIBERO-Plus 扰动维度均显著改善</li><li>零样本迁移：<strong>SimplerEnv WidowX</strong> 83.3%，<strong>CaP-Bench</strong> 75.0（超越前沿模型及同基准 RL 训练的 7B 编码器），真机任务成功；<strong>RoboTwin 2.0</strong> 22.6%，<strong>RoboDojo</strong> 0.8%（受限于双臂协调和陌生臂运动学）</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.40828/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">From Teleoperation to Long-Horizon Dexterity: Evaluating Visuomotor Skills and Offline Proxies for Dexterous Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.40748/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">WorldBridge: Bridging Video and Action for Task Generalization in World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
