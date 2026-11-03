@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seeing Through the Illusion: Test-Time Scaling for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对世界动作模型（WAM）同时生成机器人动作与想象未来视频时，“视觉上合理的预测未必能由其联合生成的动作实现”这一核心问题（dream-execution 幻觉/分歧现象） 提出 WISE（World Action Inference Scaling through Evaluation），一个执行前的 rollout 选择器：对冻结 WAM 采样的多个候选 rollout 进行打分，选出最优候选执行，无需更新 WAM 权重 核心假设：候选的提议动作与其想象未来不一致者，最可能在真实执行中偏离预测，且该不一致可在执行前被度量" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2611.03585">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2611.03585.webp" alt="Seeing Through the Illusion: Test-Time Scaling for World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">针对世界动作模型（WAM）同时生成机器人动作与想象未来视频时，“视觉上合理的预测未必能由其联合生成的动作实现”这一核心问题（dream-execution 幻觉/分歧现象）</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Seeing Through the Illusion: Test-Time Scaling for World Action Models</h1>
+            <div class="detail-meta">2026-11-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.03585" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.03585" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.03585</span></div>
+            <p class="detail-summary">针对世界动作模型（WAM）同时生成机器人动作与想象未来视频时，“视觉上合理的预测未必能由其联合生成的动作实现”这一核心问题（dream-execution 幻觉/分歧现象） 提出 WISE（World Action Inference Scaling through Evaluation），一个执行前的 rollout 选择器：对冻结 WAM 采样的多个候选 rollout 进行打分，选出最优候选执行，无需更新 WAM 权重 核心假设：候选的提议动作与其想象未来不一致者，最可能在真实执行中偏离预测，且该不一致可在执行前被度量</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">7 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Huawei Technologies Canada（Cheikh Ahmed、Mahdi Mosta…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">针对世界动作模型（WAM）同时生成机器人动作与想象未来视频时，“视觉上合理的预测未必能由其联合生成的动作实现”这一核心问题（dream-execution 幻觉/分歧现象）</p>
+  <ul class="reading-intro-points"><li>针对世界动作模型（WAM）同时生成机器人动作与想象未来视频时，“视觉上合理的预测未必能由其联合生成的动作实现”这一核心问题（dream-execution 幻觉/分歧现象）</li><li>提出 WISE（World Action Inference Scaling through Evaluation），一个执行前的 rollout 选择器：对冻结 WAM 采样的多个候选 rollout 进行打分，选出最优候选执行，无需更新 WAM 权重</li><li>核心假设：候选的提议动作与其想象未来不一致者，最可能在真实执行中偏离预测，且该不一致可在执行前被度量</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Huawei Technologies Canada</strong>（Cheikh Ahmed、Mahdi Mostajabdaveh、Zirui Zhou）</li><li><strong>University of British Columbia</strong>（Milad Yazdani）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>针对<strong>世界动作模型（WAM）</strong>同时生成机器人动作与想象未来视频时，“视觉上合理的预测未必能由其联合生成的动作实现”这一核心问题（dream-execution 幻觉/分歧现象）</li><li>提出 <strong>WISE</strong>（World Action Inference Scaling through Evaluation），一个执行前的 rollout 选择器：对冻结 WAM 采样的多个候选 rollout 进行打分，选出最优候选执行，无需更新 WAM 权重</li><li>核心假设：候选的提议动作与其想象未来不一致者，最可能在真实执行中偏离预测，且该不一致可在执行前被度量</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出一个将<strong>动作有效性</strong>、<strong>跨输出一致性</strong>和<strong>任务进度</strong>融合为单一有界分数的执行前选择器，全程保持 WAM 冻结</li><li>提出<strong>逆动力学一致性分数</strong>：检验候选自身联合生成的动作是否支持其想象未来中的运动（这是 WAM 原生暴露的新一致性关系，区别于现有方法）</li><li>在两组 WAM-本体组合（<strong>Cosmos 3 Edge + RoboLab</strong>、<strong>DreamZero + LIBERO</strong>）上进行匹配候选预算的闭环评估，并提供组件消融与一致性分析</li><li>消融表明三种分数对候选的排序方式不同（超过 92% 的决策中三个组件不完全一致），且任务进度在融合决策中权重最大</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>总体框架</strong>：在每个控制步，冻结的 WAM 采样 B=4 个配对的“动作块+想象未来”候选，对每个候选计算三个 [0,1] 有界分数并求和，执行得分最高的动作块后重新规划</li><li><strong>执行分数</strong>：检查动作块的位置、速度、加速度、加加速度（jerk）等约束，用软惩罚 exp(-δ/τ) 将违规严重度映射为分数</li><li><strong>一致性分数</strong>：用本体特定的<strong>逆动力学模型（IDM）</strong>从想象未来帧恢复动作，与 WAM 提议动作对比；连续通道用归一化 Smooth L1 差异的指数衰减，离散通道（如夹爪）用阈值化后的匹配率，两者各占 1/2</li><li><strong>任务进度分数</strong>：使用冻结的 <strong>Robometer</strong> 模型对最终想象帧评估任务进度（模型无关）</li><li>IDM 仅需为每个本体训练一次，整个流程 WAM 保持冻结，测试时扩展只通过候选生成与执行前选择实现</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li><strong>RoboLab</strong>：Cosmos 3 Edge，10 个操作任务 × 5 个闭环回合 = 50 回合；IDM 基于 <strong>DROID</strong> 真机轨迹训练（21,000 训练 + 1,000 场景无关验证回合）</li><li><strong>LIBERO</strong>：DreamZero（使用公开的 <strong>RLinf WAN2.2-5B LIBERO SFT</strong> 第 26,000 步检查点），四个标准套件（Spatial/Object/Goal/Long）各 500 回合，共 2,000 回合/方法；IDM 基于 physical-intelligence/libero 演示数据（1,693 回合，5% 验证集）</li><li>辅助模型：<strong>Robometer-4B</strong>（RoboLab）与 <strong>Robometer-LIBERO</strong>（LIBERO）作为任务进度评估器</li><li>论文未明确说明训练所用 GPU/TPU 资源</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>评估协议</strong>：闭环任务成功率；匹配候选预算 B=4，基线为 <strong>Future Consensus</strong>、<strong>GeoBoN</strong>、<strong>Robometer</strong>，对比单 rollout 直接执行（B=1）</li><li><strong>RoboLab</strong>：成功率从基线 6.0% 提升至 <strong>24.0%</strong>，优于 Future Consensus（18.0%）、GeoBoN（20.0%）、Robometer（20.0%），领先最强基线 4.0 个百分点</li><li><strong>LIBERO</strong>：平均成功率从 75.1% 提升至 <strong>78.3%</strong>，四个套件全面超越单 rollout 执行；最大增益在 LIBERO-Object（+4.8）和 LIBERO-Spatial（+3.2），聚合领先最强基线 Robometer 0.9 个百分点</li><li>运行时间：相比 B=1，WISE 将平均回合时间增加 3.4×（RoboLab）和 3.5×（LIBERO）</li><li><strong>消融</strong>：单组件选择器 Exec-only 10.0%、Cons-only 16.0%、Prog-only 20.0%，均低于完整 WISE 的 24.0%；三个组件仅在约 7-8% 的决策中一致，移除任务进度组件会改变近一半的选择，证明融合三个互补信号优于任何单一信号</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-next" href="../../papers/2611.03168/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Rollout then Recycle: 3,718 Labelled Real-Robot Episodes from Benchmarking 7 Policies on 12 Tasks</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>

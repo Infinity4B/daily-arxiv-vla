@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Leap-VLA: High-Rate Robot Control from a Low-Rate VLM Backbone - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Leap-VLA，解决现有 VLA 模型在每个控制步都重跑多亿参数 VLM 导致的算力浪费与控制频率受限问题 核心思路是将语义理解（低频 VLM 语义锚点，缓存可复用上下文）与反应式控制（高频 flow-matching 动作专家）解耦 通过可测缓存年龄条件、快速视觉流注入、staleness-aware 训练与 chunk 边界校正，在显著降低 VLM 调用频率的同时保持高成功率" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2611.01011">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><article class="note-cover note-cover-title-only" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6; --cover-muted: rgba(251, 255, 246, 0.82); --cover-chip: rgba(251, 255, 246, 0.16); --cover-stroke: rgba(251, 255, 246, 0.24)">
+  <div class="note-cover-mesh"></div>
+  <div class="note-cover-title-shell">
+    <h1 class="note-cover-title">Leap-VLA: High-Rate Robot Control from a Low-Rate VLM Backbone</h1>
+  </div>
+</article></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Leap-VLA: High-Rate Robot Control from a Low-Rate VLM Backbone</h1>
+            <div class="detail-meta">2026-10-31 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.01011" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.01011" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.01011</span></div>
+            <p class="detail-summary">提出 Leap-VLA，解决现有 VLA 模型在每个控制步都重跑多亿参数 VLM 导致的算力浪费与控制频率受限问题 核心思路是将语义理解（低频 VLM 语义锚点，缓存可复用上下文）与反应式控制（高频 flow-matching 动作专家）解耦 通过可测缓存年龄条件、快速视觉流注入、staleness-aware 训练与 chunk 边界校正，在显著降低 VLM 调用频率的同时保持高成功率</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">论文作者均来自 Leapmotor（零跑汽车）Automation PBU 的 Embodied Al…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">提出 Leap-VLA，解决现有 VLA 模型在每个控制步都重跑多亿参数 VLM 导致的算力浪费与控制频率受限问题</p>
+  <ul class="reading-intro-points"><li>提出 Leap-VLA，解决现有 VLA 模型在每个控制步都重跑多亿参数 VLM 导致的算力浪费与控制频率受限问题</li><li>核心思路是将语义理解（低频 VLM 语义锚点，缓存可复用上下文）与反应式控制（高频 flow-matching 动作专家）解耦</li><li>通过可测缓存年龄条件、快速视觉流注入、staleness-aware 训练与 chunk 边界校正，在显著降低 VLM 调用频率的同时保持高成功率</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li>论文作者均来自 <strong>Leapmotor（零跑汽车）Automation PBU 的 Embodied Algorithm Group</strong></li><li>通讯作者为 <strong>Lin Yang</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>Leap-VLA</strong>，解决现有 VLA 模型在每个控制步都重跑多亿参数 VLM 导致的算力浪费与控制频率受限问题</li><li>核心思路是将语义理解（低频 VLM 语义锚点，缓存可复用上下文）与反应式控制（高频 flow-matching 动作专家）解耦</li><li>通过可测缓存年龄条件、快速视觉流注入、staleness-aware 训练与 chunk 边界校正，在显著降低 VLM 调用频率的同时保持高成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>非对称频率 VLA 架构</strong>，在保留共享注意力 VLA 逐层语义耦合的前提下复用语义缓存</li><li>提出 <strong>staleness-aware cache reuse</strong>：测量年龄条件 + 物理时钟 staleness 分布训练 + 部署同态像素损坏课程，使 LIBERO-Spatial 在语义刷新 2s 下从 61.4% 恢复到 95.5%</li><li>提出 <strong>统一多模态注入接口</strong>：快速视觉流以可插拔 token-block 进入专家，配合机器人视频预训练（重建 + 光流 + 深度）获得运动与几何感知的冻结编码器</li><li>提出 <strong>soft-nudge</strong> 前向 chunk 边界校正，无需反向传播即可匹配 autograd RTC 引导，使逐控制步重规划达到 97.1%</li><li>构建 <strong>指令-场景一致性研究</strong>：零成本负样本训练的 CoT verdict gate 在指令与场景不匹配时冻结执行，且不损害可行任务成功率</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>慢系统</strong>：<strong>Qwen2.5-VL-2B</strong> VLM 低频运行，缓存上下文；机器人状态不写入 prompt，避免缓存副本随运动立即失效；CoT 监督仅塑造 anchor 表示，不进入动作路径</li><li><strong>快系统</strong>：flow-matching 动作专家高频运行，通过 <strong>AdaRMS</strong> 接收 flow time 与测量 cache age τ；proprioception 作为独立 token 输入；视觉流采用双帧图像 token 序列拼接，其他流通过零初始化门控交叉注意力注入</li><li><strong>快速视觉流预训练</strong>：约 23M 参数编码器，双帧 early fusion，~49% 行/列 strip mask；三个共享解码器分别做重建、<strong>WAFT</strong> 光流、<strong>Depth Anything V2</strong> 深度预测</li><li><strong>staleness-aware 训练</strong>：从真实 episode 历史采样 Δ ∈ [0, Δmax]，使用有效年龄 g(τ)=log(1+τ) 进行零初始化投影条件；对 stale 快照施加随年龄递增的矩形像素擦除</li><li><strong>soft-nudge</strong>：前向更新 x_{t+δ} = x̂₁ + η w ⊙ (ℓ − x̂₁)，以恒等代替 RTC 引导中的 Jacobian 转置，省去反向传播</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>评估数据集：<strong>LIBERO</strong> 四套件（Goal、Spatial、Object、Long）、<strong>LIBERO-plus</strong>、<strong>LIBERO-PRO</strong> 扰动基准</li><li>真实机器人：四平台共 7 个任务，每任务 50 次试验；平台包括 <strong>Realman</strong>、<strong>Galaxea</strong> 双机械臂工作站、<strong>Dobot Atom</strong> 移动双臂人形、自研人形上半身</li><li>快速编码器预训练数据：62 个机器人数据集，约 319k episodes、约 73M 帧；含 9 个多相机套件（约 63.5k episodes / 45M 帧）与 53 个公开 OXE 源（约 256k episodes / 28M 帧）</li><li>模型规模：慢系统 <strong>Qwen2.5-VL-2B</strong>；快速视觉编码器约 <strong>23M</strong> 参数；动作专家为 <strong>1536 维、32 块 Transformer</strong>，动作 chunk 长度 H=20，4 次 Euler step，每相机 196 个 token（224²/patch-16）</li><li>训练资源：论文未具体列出 GPU/TPU 型号与数量；推理在异步部署栈上运行，soft-nudge 支持 TensorRT/NPU 导出</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：LIBERO 四套件、LIBERO-plus、LIBERO-PRO 及四平台真实机器人；部署线使用 50ms 控制周期、默认每 0.5s 重规划、语义刷新取 0.5s/1s/2s</li><li>主要评估指标：任务成功率（%）为主，辅以 chunk 边界位移、峰值边界位移、动作 RMS 与路径长度</li><li><strong>LIBERO 四套件</strong>：Leap-VLA 平均成功率 <strong>96.3%</strong>（Goal 97.2 / Spatial 97.5 / Object 98.0 / Long 92.4），在异步栈匹配频率点测得</li><li><strong>语义刷新降频</strong>：四套件平均从 0.5s 的 96.3% 降至 1s 的 95.2%、2s 的 94.5%；LIBERO-Spatial 从 97.5% 降至 95.9%（1s）与 95.5%（2s）</li><li><strong>Staleness 消融</strong>：频率匹配参考在 2s 刷新下崩溃至 61.4%；异步曝光恢复至 91.8%，加入测量年龄条件至 92.9%，加入 stale-frame masking 后达到 95.5%</li><li><strong>soft-nudge 结果</strong>：在 0.05s 逐控制步重规划下，异步训练 + soft-nudge 达到 <strong>97.1%</strong>；边界/内部位移比从 1.907 降至 <strong>1.035 ± 0.186</strong>，峰值边界位移从 0.281 降至 <strong>0.181</strong></li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.01039/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">pico-WAM: Evaluating Counterfactual Prediction and Planning Error in a Compact World Action Model</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.00896/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Verifying Test-State Identity in Paired Evaluation of Vision-Language-Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
