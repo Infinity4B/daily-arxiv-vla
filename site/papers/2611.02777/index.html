@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文总结：Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2611.02777">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2611.02777.webp" alt="Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文总结：Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</h1>
+            <div class="detail-meta">2026-11-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.02777" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.02777" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.02777</span></div>
+            <p class="detail-summary">论文总结：Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">8 分钟读完</span>
+              <span class="meta-pill">7 张阅读卡</span>
+              <span class="meta-pill">University of Chinese Academy of Sciences（中国科学院大学）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文总结：Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</p>
+  <ul class="reading-intro-points"><li>论文总结：Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</li><li>实证分析了专家部署与轨迹蒸馏的局限性：成功的临界阶段接管仍会产生抖动执行，且直接轨迹蒸馏存在动作波动继承和师生状态分布不匹配问题</li><li>提出 REPAIR 框架：通过 critic 加权的专家候选动作构建价值精炼的监督分布，统一的 flow-matching 目标同时支持离线初始化和在学生访问状态上的在线策略修复</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><h1>论文总结：Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</h1></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>University of Chinese Academy of Sciences</strong>（中国科学院大学）</li><li><strong>Striding AI</strong></li><li><strong>Tsinghua University</strong>（清华大学）</li><li><strong>Institute of Automation, Chinese Academy of Sciences</strong>（中科院自动化所）</li><li><strong>Zhongguancun Academy</strong>（中关村学院）</li><li><strong>Beijing Institute of Technology</strong>（北京理工大学）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>研究如何将轻量级 RL 专家（specialist）的能力蒸馏到单一视觉-语言-动作（VLA）策略中，以解决 VLA 在长时程操作中精确关键阶段（precision-critical phases）易失败的问题</li><li>指出直接对完整 VLA 应用 RL 会导致策略更新不稳定，而部署 RL 专家补丁需要保留辅助控制器和切换机制，且专家执行存在动作抖动（jitter）问题</li><li>直接模仿专家轨迹存在两个缺陷：继承专家的随机动作波动，以及教师-学习者状态分布不匹配导致学生遇到无监督覆盖的状态</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>实证分析了专家部署与轨迹蒸馏的局限性：成功的临界阶段接管仍会产生抖动执行，且直接轨迹蒸馏存在动作波动继承和师生状态分布不匹配问题</li><li>提出 <strong>REPAIR</strong> 框架：通过 critic 加权的专家候选动作构建价值精炼的监督分布，统一的 flow-matching 目标同时支持离线初始化和在学生访问状态上的在线策略修复</li><li>在六个真实机器人任务（每任务 30 次评估）上实现 <strong>100% 成功率</strong>，且部署单一 VLA，无需辅助控制器</li><li>相比 RL 专家接管，将成功轨迹上的平均末端执行器 jerk（加加速度）降低 <strong>29.8–67.5%</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li><strong>REPAIR</strong> 框架包含三个阶段：(a) 人类演示 SFT 初始化基础 VLA（$\pi_{0.5}$）；(b) 冻结 VLA，使用 <strong>RL Token (RLT)</strong> 训练每个临界阶段的轻量 MLP 专家 actor 和 critic；(c) 统一的离线到在线蒸馏</li><li><strong>价值精炼专家目标</strong>：在每个临界观测下，重新查询专家获得多个动作候选（N 个），使用组归一化的 critic 分数（组相对优势加权）构建价值倾斜的专家动作分布，而非使用固定执行动作标签</li><li><strong>统一流匹配目标</strong>：对候选动作按 critic 值加权（温度 τ 控制），在临界阶段使用价值精炼监督（VRFM），非临界阶段使用 VLA 存储动作的自我蒸馏（FM）</li><li><strong>两阶段训练</strong>：先用专家辅助 rollout 观测进行离线热启动，再用 VLA 自身执行收集的观测进行在线修复；在线阶段专家提供监督但不接管控制；critic 在在线阶段更新以适应学生访问的状态</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>Franka 机器人</strong>真实平台进行实验（单臂和双臂配置）</li><li>SFT 数据：短时程任务每任务 50 条人类遥操作轨迹，长时程任务 100 条</li><li>自适应预算：每任务 50 条 rollout（30 条训练 RLT 专家 + 10 条专家辅助离线蒸馏 + 10 条学生 VLA 在线修复），与所有基线公平对齐</li><li>每任务使用 30 次评估试验；基线包括 <strong>RLT</strong>、<strong>EXPO-FT</strong>、<strong>ConRFT</strong>、<strong>HG-DAgger</strong></li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 07</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li>评估环境：六个真实机器人任务，包括两个短时程任务（<strong>Stick Pick-and-Place</strong>、<strong>Single-Arm Peg Insertion</strong>）和四个长时程任务（<strong>Dual-Arm Peg Insertion</strong>、<strong>Grocery Bagging</strong>、<strong>Bimanual Table Clearing</strong>、<strong>Toy Stowing in a Drawer</strong>）</li><li>评估指标：成功率（SR）和运动平滑度（平均末端执行器 jerk，单位 m·s⁻³）</li><li><strong>REPAIR 在全部六个任务上达到 100% 成功率</strong>，与专家接管（RLT）的成功率持平，而 RLT 存在明显动作抖动（jerk 为 4.7–16.7）</li><li>在长时程任务上显著优于其他基线：EXPO-FT 和 ConRFT 在 Bagging、Table Clearing、Drawer 任务上成功率为 0%；HG-DAgger 四个长时程任务聚合成功率为 74.2%，比 REPAIR 低 25.8 个百分点</li><li>REPAIR 相比 RLT 在所有六个任务上将平均 jerk 降低 <strong>29.8–67.5%</strong>，且在 Dual-Arm Peg Insertion 上将平均 episode 长度缩短 4.7%</li><li>消融实验：critic 加权的 8 个候选动作监督使成功率从执行动作克隆的 60.0% 提升至 90.0%，jerk 降低 39.6%；在线策略蒸馏以更少的 rollout（10+10 vs 50 离线）在 Table Clearing 上高出 10 个百分点，验证了在学生访问状态上标注的价值</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.03103/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VLALagBench: Understanding When and Why VLA Inference Latency Matters</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.02660/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HeLM: Hierarchical Explicit Language Memory for Non-Markovian Manipulation</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
