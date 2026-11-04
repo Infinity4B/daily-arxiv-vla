@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FloMo: 3D Scene Flow as a World Action Model Intermediate for Learning from Human Video - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 FloMo，一个基于预训练视频生成模型 Wan 2.2 5B 的世界动作模型，将 3D 场景流 作为视频与机器人动作之间的中间预测目标。 核心问题是：视频预测信号冗余，包含大量纹理、光照、背景等无关外观信息，浪费模型容量；论文用 3D 运动（场景流） 替代像素/视频预测，使预训练视频先验更直接迁移到动作预测。 通过将场景流渲染为 RGB 并复用预训练视频 VAE 编码，模型无需训练新 tokenizer，即可在视频潜在空间中联合 flow-matching 场景流和动作 tokens。" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+    <script>
+      (function() {
+        try {
+          var themePreference = window.localStorage.getItem('color-theme') || 'system';
+          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolvedTheme = themePreference === 'system'
+            ? (systemUsesDarkTheme ? 'dark' : 'light')
+            : themePreference;
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.themePreference = themePreference;
+          document.documentElement.style.colorScheme = resolvedTheme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/style.css" />
+  </head>
+  <body class="detail-page" data-paper-id="2611.05062">
+    <div class="page-noise"></div>
+    <div class="page-blur page-blur-a"></div>
+    <div class="page-blur page-blur-b"></div>
+
+    <header class="header detail-page-header">
+      <div class="container">
+        <div class="detail-page-topbar">
+          <a class="back-link" href="../../index.html">返回列表</a>
+          <div class="detail-topbar-actions">
+            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
+</button>
+          </div>
+        </div>
+
+        <div class="detail-hero-grid">
+          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
+  <img class="paper-figure-image" src="../../assets/paper-images/2611.05062.webp" alt="FloMo: 3D Scene Flow as a World Action Model Intermediate for Learning from Human Video" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
+  <figcaption class="paper-figure-caption">论文提出 FloMo，一个基于预训练视频生成模型 Wan 2.2 5B 的世界动作模型，将 3D 场景流 作为视频与机器人动作之间的中间预测目标。</figcaption>
+</figure></div>
+          <div class="detail-hero-copy">
+            <p class="eyebrow">论文详情</p>
+            <h1 class="detail-page-title">FloMo: 3D Scene Flow as a World Action Model Intermediate for Learning from Human Video</h1>
+            <div class="detail-meta">2026-11-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.05062" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.05062" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.05062</span></div>
+            <p class="detail-summary">论文提出 FloMo，一个基于预训练视频生成模型 Wan 2.2 5B 的世界动作模型，将 3D 场景流 作为视频与机器人动作之间的中间预测目标。 核心问题是：视频预测信号冗余，包含大量纹理、光照、背景等无关外观信息，浪费模型容量；论文用 3D 运动（场景流） 替代像素/视频预测，使预训练视频先验更直接迁移到动作预测。 通过将场景流渲染为 RGB 并复用预训练视频 VAE 编码，模型无需训练新 tokenizer，即可在视频潜在空间中联合 flow-matching 场景流和动作 tokens。</p>
+            <div class="detail-micro-meta">
+              <span class="meta-pill">9 分钟读完</span>
+              <span class="meta-pill">6 张阅读卡</span>
+              <span class="meta-pill">Georgia Institute of Technology（作者：Jeremy A. Collin…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container detail-layout">
+      <div class="detail-shell">
+        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
+  <div class="reading-card-topline">
+    <span class="reading-badge">一眼看懂</span>
+  </div>
+  <p class="reading-intro-hook">论文提出 FloMo，一个基于预训练视频生成模型 Wan 2.2 5B 的世界动作模型，将 3D 场景流 作为视频与机器人动作之间的中间预测目标。</p>
+  <ul class="reading-intro-points"><li>论文提出 FloMo，一个基于预训练视频生成模型 Wan 2.2 5B 的世界动作模型，将 3D 场景流 作为视频与机器人动作之间的中间预测目标。</li><li>核心问题是：视频预测信号冗余，包含大量纹理、光照、背景等无关外观信息，浪费模型容量；论文用 3D 运动（场景流） 替代像素/视频预测，使预训练视频先验更直接迁移到动作预测。</li><li>通过将场景流渲染为 RGB 并复用预训练视频 VAE 编码，模型无需训练新 tokenizer，即可在视频潜在空间中联合 flow-matching 场景流和动作 tokens。</li></ul>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 01</span>
+    <span class="reading-step-note">研究单位</span>
+  </div>
+  <h2>研究单位</h2>
+  <div class="reading-card-content"><ul><li><strong>Georgia Institute of Technology</strong>（作者：Jeremy A. Collins、Namra Patel、Ayush Agarwal、Shitij Govil、Animesh Garg）</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 02</span>
+    <span class="reading-step-note">论文概述</span>
+  </div>
+  <h2>论文概述</h2>
+  <div class="reading-card-content"><ul><li>论文提出 <strong>FloMo</strong>，一个基于预训练视频生成模型 <strong>Wan 2.2 5B</strong> 的世界动作模型，将 <strong>3D 场景流</strong> 作为视频与机器人动作之间的中间预测目标。</li><li>核心问题是：视频预测信号冗余，包含大量纹理、光照、背景等无关外观信息，浪费模型容量；论文用 <strong>3D 运动（场景流）</strong> 替代像素/视频预测，使预训练视频先验更直接迁移到动作预测。</li><li>通过将场景流渲染为 RGB 并复用预训练视频 VAE 编码，模型无需训练新 tokenizer，即可在视频潜在空间中联合 flow-matching 场景流和动作 tokens。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 03</span>
+    <span class="reading-step-note">核心贡献</span>
+  </div>
+  <h2>核心贡献</h2>
+  <div class="reading-card-content"><ul><li>提出 <strong>motion as WAM prediction target</strong>：预测 3D 场景流而非视频，利用预训练视频 VAE 将场景流映射到相同潜在空间，避免训练新 tokenizer。</li><li>证明 motion 是策略学习最有效的预测目标：在 3 个真实机器人任务上 FloMo 平均成功率 <strong>91%</strong>，显著优于视频-动作（VA）和视频-运动-动作（VMA）变体。</li><li>展示从人类视频的泛化能力：仅通过动作无关的人类视频，模型可泛化到训练机器人数据中未见的物体、运动原语和任务（如拉绳、关柜门）。</li><li>通过逆动力学探针和注意力分析证明 motion 是更样本高效且更受动作 token 关注的中间表示。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 04</span>
+    <span class="reading-step-note">方法描述</span>
+  </div>
+  <h2>方法描述</h2>
+  <div class="reading-card-content"><ul><li>使用 <strong>SpatialTrackerV2</strong> 离线提取 16 帧窗口的 3D 点轨迹，计算累计场景流（Fi = pi - p0），并转换到第一帧相机坐标系以消除相机自运动影响。</li><li>将累计场景流按每个通道 1%/99% 百分位裁剪并线性映射到 [0,1] 渲染为 RGB 视频，再用冻结的 <strong>Wan 2.2-TI2V VAE</strong> 编码为 latent，使其与视频 latent 分布对齐。</li><li>模型基于 <strong>Wan 2.2 5B 文生视频 DiT</strong>，使用冻结 VAE 和 <strong>umT5-XXL</strong> 文本编码器，联合 flow-matching 场景流 latent 和动作 tokens；动作通过可学习的线性投影映射到 DiT token。</li><li>仅对 backbone 使用 <strong>LoRA</strong>（r=64，α=128）微调，训参约 <strong>161M</strong>；采用共享噪声级别 t 和单一 velocity 目标，支持按样本屏蔽不同模态损失。</li><li>训练分两阶段：<strong>Stage 1 mid-training</strong> 混合动作无关人类视频（仅场景流损失）和机器人数据（场景流+动作损失）；<strong>Stage 2 fine-tuning</strong> 仅用机器人数据并将动作损失权重提升到 1。</li><li>推理使用 <strong>UniPC ODE solver</strong>，10 步，无 classifier-free guidance，预测 16 步动作块后重新规划。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 05</span>
+    <span class="reading-step-note">数据集与资源</span>
+  </div>
+  <h2>数据集与资源</h2>
+  <div class="reading-card-content"><ul><li>动作无关人类视频：<strong>EgoVerse</strong> 81 小时（从 1362 小时中过滤），另含 0.7 小时内部动作无关人类演示。</li><li>机器人遥操作数据：<strong>MolmoAct2-BimanualYAM</strong> 10 小时、内部任务导向 YAM 3.7 小时、内部无导向 YAM play 0.4 小时。</li><li>RoboTwin 基准：每个任务使用官方 50 条演示进行单任务适配，100 个 Easy 设置 episode 评估。</li><li>模型规模：<strong>5B</strong> 预训练视频生成 backbone + 约 <strong>161M</strong> LoRA 可训练参数；动作空间为 20 维双臂末端执行器位姿（3D 位置+6D 旋转+1D 夹爪）。</li><li>训练资源：Stage 1 全局 batch size <strong>512</strong>，约 <strong>14,000</strong> 步；Stage 2 batch size <strong>256</strong>，约 <strong>1,500</strong> 步；使用 AdamW 和 bf16 混合精度；场景流提取在 <strong>NVIDIA L40S</strong> 上约 2.4s/窗口，推理在 <strong>NVIDIA H100</strong> 上约 0.7s/周期。</li></ul></div>
+</section>
+<section class="reading-card reading-card-section">
+  <div class="reading-card-topline">
+    <span class="reading-step">Card 06</span>
+    <span class="reading-step-note">评估与结果</span>
+  </div>
+  <h2>评估与结果</h2>
+  <div class="reading-card-content"><ul><li><strong>分布内真实机器人</strong>（Oven、Toolbox、Corn，每任务 15 次 rollout）：FloMo 平均成功率 <strong>91%</strong>，VMA <strong>51%</strong>，VA <strong>40%</strong>；Toolbox 任务差距最大（FloMo 87% vs 变体 13%）。</li><li><strong>分布外泛化</strong>（Close Cabinet、Pull String、Highlighter，每条件 10 次 rollout）：FloMo 平均成功率 <strong>60%</strong>、任务进度 <strong>68%</strong>，优于 <strong>AMPLIFY</strong>（20%/23%）、<strong>DreamZero</strong>（20%/30%）、<strong>VMA/VA</strong>（7%/15%）；FloMo 是唯一在所有三种分布偏移下稳定泛化的方法。</li><li><strong>人类视频消融</strong>：移除人类视频后平均成功率从 60% 降至 <strong>7%</strong>，说明大部分 OOD 泛化来自人类视频先验。</li><li><strong>RoboTwin 基准</strong>（5 个任务，每任务 100 episode）：FloMo 平均成功率 <strong>63.6%</strong>，高于 <strong>π0.5</strong>（44.8%）、<strong>FAST-WAM</strong>（41.0%）和 <strong>Diffusion Policy/BC</strong>（19.2%）。</li><li><strong>逆动力学样本效率</strong>：用 ground-truth 未来场景流条件比 ground-truth 未来 RGB 在 1% 数据规模下动作误差低约 <strong>22%</strong>（0.058 vs 0.074），差距随数据量增大缩小。</li><li><strong>动作注意力分析</strong>：VMA 变体中，动作 query 对 motion tokens 的注意力在中层约达到 <strong>55%</strong>，平均约是 video tokens 的 <strong>3 倍</strong>（video 仅约 10%），表明动作流主要依赖 motion 而非视频。</li></ul></div>
+</section></article>
+        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
+          <p class="detail-toc-title">阅读目录</p>
+          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
+        </aside>
+      </div>
+      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.05080/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">CRONOS: Benchmarking Non-Episodic Reinforcement Learning for Robotic Manipulation</span></a>
+      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.05023/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">HiLo-WAM: Decoupling Long-Horizon Task Evolution and Local Dynamics in World Action Models</span></a></nav>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+      </div>
+    </footer>
+
+    <script src="../../assets/theme.js"></script>
+    <script src="../../assets/media.js"></script>
+    <script src="../../assets/analytics.js"></script>
+    <script src="../../assets/paper.js"></script>
+  </body>
+</html>
