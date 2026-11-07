@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>MindVLA-U1: VLA Beats VA with Unified Streaming Architecture for Autonomous Driving - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出了 MindVLA-U1，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。 该架构旨在解决现有 VLA 模型在接口设计上的缺陷（如动作精度不足、时序建模短视、语言与动作缺乏桥梁），通过统一骨干网络同时实现场景理解与连续动作生成。 论文证明了 VLA 模型在规划质量上可以超越纯视觉-动作（VA）模型，并在保持自然语言交互能力的同时达到实时推理速度。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2605.12624">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2605.12624.webp" alt="MindVLA-U1: VLA Beats VA with Unified Streaming Architecture for Autonomous Driving" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出了 MindVLA-U1，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">MindVLA-U1: VLA Beats VA with Unified Streaming Architecture for Autonomous Driving</h1>
-            <div class="detail-meta">2026-05-12 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2605.12624" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2605.12624" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2605.12624</span></div>
-            <p class="detail-summary">论文提出了 MindVLA-U1，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。 该架构旨在解决现有 VLA 模型在接口设计上的缺陷（如动作精度不足、时序建模短视、语言与动作缺乏桥梁），通过统一骨干网络同时实现场景理解与连续动作生成。 论文证明了 VLA 模型在规划质量上可以超越纯视觉-动作（VA）模型，并在保持自然语言交互能力的同时达到实时推理速度。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">CUHK MMLab（香港中文大学多媒体实验室）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出了 MindVLA-U1，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。</p>
-  <ul class="reading-intro-points"><li>论文提出了 MindVLA-U1，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。</li><li>该架构旨在解决现有 VLA 模型在接口设计上的缺陷（如动作精度不足、时序建模短视、语言与动作缺乏桥梁），通过统一骨干网络同时实现场景理解与连续动作生成。</li><li>论文证明了 VLA 模型在规划质量上可以超越纯视觉-动作（VA）模型，并在保持自然语言交互能力的同时达到实时推理速度。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-05-12">2026-05-12</time></p>
+        <h1 class="article-title">MindVLA-U1: VLA Beats VA with Unified Streaming Architecture for Autonomous Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2605.12624" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2605.12624" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 MindVLA-U1，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2605.12624.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2605.12624.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2605.12624.webp" alt="MindVLA-U1: VLA Beats VA with Unified Streaming Architecture for Autonomous Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">CUHK MMLab（香港中文大学多媒体实验室）</p>
+        <ul class="article-facts"><li>arXiv 2605.12624</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>CUHK MMLab</strong>（香港中文大学多媒体实验室）</li><li><strong>Li Auto</strong>（理想汽车）</li><li><strong>Tsinghua University</strong>（清华大学）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>CUHK MMLab</strong>（香港中文大学多媒体实验室）</li><li><strong>Li Auto</strong>（理想汽车）</li><li><strong>Tsinghua University</strong>（清华大学）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>MindVLA-U1</strong>，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。</li><li>该架构旨在解决现有 VLA 模型在接口设计上的缺陷（如动作精度不足、时序建模短视、语言与动作缺乏桥梁），通过统一骨干网络同时实现场景理解与连续动作生成。</li><li>论文证明了 VLA 模型在规划质量上可以超越纯视觉-动作（VA）模型，并在保持自然语言交互能力的同时达到实时推理速度。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出了 <strong>MindVLA-U1</strong>，这是首个用于自动驾驶的统一流式视觉-语言-动作（VLA）架构。</li><li>该架构旨在解决现有 VLA 模型在接口设计上的缺陷（如动作精度不足、时序建模短视、语言与动作缺乏桥梁），通过统一骨干网络同时实现场景理解与连续动作生成。</li><li>论文证明了 VLA 模型在规划质量上可以超越纯视觉-动作（VA）模型，并在保持自然语言交互能力的同时达到实时推理速度。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出了首个自动驾驶领域的统一共享 VLA 架构，单次前向传播中联合生成自回归语言和流匹配连续轨迹。</li><li>设计了全流式范式，通过 FIFO 内存通道高效传播时序上下文，支持帧级处理和长时域预测，消除了动作分块和冗余的时序建模。</li><li>引入了 <strong>Intent-CFG</strong> 机制，建立了从语言意图到连续动作的可控路径，并利用 <strong>Mixture-of-Transformers (MoT)</strong> 支持快/慢系统执行。</li><li>在 <strong>WOD-E2E</strong> 基准上首次超越经验丰富的人类驾驶员评分，实现了 SOTA 的规划精度。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出了首个自动驾驶领域的统一共享 VLA 架构，单次前向传播中联合生成自回归语言和流匹配连续轨迹。</li><li>设计了全流式范式，通过 FIFO 内存通道高效传播时序上下文，支持帧级处理和长时域预测，消除了动作分块和冗余的时序建模。</li><li>引入了 <strong>Intent-CFG</strong> 机制，建立了从语言意图到连续动作的可控路径，并利用 <strong>Mixture-of-Transformers (MoT)</strong> 支持快/慢系统执行。</li><li>在 <strong>WOD-E2E</strong> 基准上首次超越经验丰富的人类驾驶员评分，实现了 SOTA 的规划精度。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>统一共享骨干网络</strong>：视觉、状态、语言、记忆和噪声动作 token 通过共享的 Transformer 层处理；语言通过 LM Head 解码，动作通过轻量级 MLP 预测流匹配速度场。</li><li><strong>Intent-CFG</strong>：模型预测驾驶意图 token，将其嵌入作为 Classifier-Free Guidance 条件，引导动作扩散过程，实现语言对动作的控制。</li><li><strong>流式内存更新</strong>：采用 FIFO 通道存储压缩的记忆 token，帧间通过传播 Transformer 更新，读取时进行运动对齐，以低成本维持长时序一致性。</li><li><strong>快慢系统与 MoT</strong>：通过注意力掩码组合支持 <code>vqa_first</code> 或 <code>action_only</code> 等模式；MoT 结构将层分为上下文专家组和动作专家组，提升计算效率。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>统一共享骨干网络</strong>：视觉、状态、语言、记忆和噪声动作 token 通过共享的 Transformer 层处理；语言通过 LM Head 解码，动作通过轻量级 MLP 预测流匹配速度场。</li><li><strong>Intent-CFG</strong>：模型预测驾驶意图 token，将其嵌入作为 Classifier-Free Guidance 条件，引导动作扩散过程，实现语言对动作的控制。</li><li><strong>流式内存更新</strong>：采用 FIFO 通道存储压缩的记忆 token，帧间通过传播 Transformer 更新，读取时进行运动对齐，以低成本维持长时序一致性。</li><li><strong>快慢系统与 MoT</strong>：通过注意力掩码组合支持 <code>vqa_first</code> 或 <code>action_only</code> 等模式；MoT 结构将层分为上下文专家组和动作专家组，提升计算效率。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主要数据集：<strong>Waymo Open Dataset End-to-End (WOD-E2E)</strong>，包含 4,021 个长尾场景片段。</li><li>自标注数据：构建了 <strong>MindLabel</strong> 数据集，包含约 18.8K 片段、3.8M VQA 对和 250K 梦幻轨迹。</li><li>模型骨干：主要基于 <strong>Qwen3-VL-2B</strong>，并扩展至 <strong>Qwen3.5-VL</strong> 进行骨干缩放实验。</li><li>训练资源：使用 <strong>8x H200 GPUs</strong>，在 BF16 精度下训练约 7 小时，采用 DeepSpeed ZeRO-2 优化。</li><li>推理设置：仅需 <strong>2 个扩散步</strong>即可生成轨迹。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>主要数据集：<strong>Waymo Open Dataset End-to-End (WOD-E2E)</strong>，包含 4,021 个长尾场景片段。</li><li>自标注数据：构建了 <strong>MindLabel</strong> 数据集，包含约 18.8K 片段、3.8M VQA 对和 250K 梦幻轨迹。</li><li>模型骨干：主要基于 <strong>Qwen3-VL-2B</strong>，并扩展至 <strong>Qwen3.5-VL</strong> 进行骨干缩放实验。</li><li>训练资源：使用 <strong>8x H200 GPUs</strong>，在 BF16 精度下训练约 7 小时，采用 DeepSpeed ZeRO-2 优化。</li><li>推理设置：仅需 <strong>2 个扩散步</strong>即可生成轨迹。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：<strong>WOD-E2E</strong> 验证集，涵盖长尾场景。</li><li>主要指标：<strong>RFS (Rater Feedback Score)</strong>、ADE (Average Displacement Error) at 3s/5s、BLEU-4 和 ROUGE-L。</li><li>关键结果：<strong>MindVLA-U1</strong> 取得 8.20 RFS，首次超越人类驾驶员的 8.13 GT RFS；在 3s/5s ADE 上大幅优于现有 VA/VLA 方法。</li><li>推理效率：达到约 <strong>16 FPS</strong> 的推理速度，与 SOTA VA 方法（如 RAP 的约 18 FPS）相当，且保留了语言交互接口。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估基准：<strong>WOD-E2E</strong> 验证集，涵盖长尾场景。</li><li>主要指标：<strong>RFS (Rater Feedback Score)</strong>、ADE (Average Displacement Error) at 3s/5s、BLEU-4 和 ROUGE-L。</li><li>关键结果：<strong>MindVLA-U1</strong> 取得 8.20 RFS，首次超越人类驾驶员的 8.13 GT RFS；在 3s/5s ADE 上大幅优于现有 VA/VLA 方法。</li><li>推理效率：达到约 <strong>16 FPS</strong> 的推理速度，与 SOTA VA 方法（如 RAP 的约 18 FPS）相当，且保留了语言交互接口。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2605.12625/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Driving Intents Amplify Planning-Oriented Reinforcement Learning</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2605.12622/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Action Emergence from Streaming Intent</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2605.12625/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Driving Intents Amplify Planning-Oriented Reinforcement Learning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2605.12622/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Action Emergence from Streaming Intent</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

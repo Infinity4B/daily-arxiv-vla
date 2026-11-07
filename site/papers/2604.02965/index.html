@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Open-Loop Planning, Closed-Loop Verification: Speculative Verification for VLA - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出了 SV-VLA (Speculative Verification VLA) 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题 该框架结合低频开环宏规划与高频轻量级闭环验证，通过重型VLA生成行动序列，用轻量级验证器实时监控执行状态并触发必要时的重规划 核心目标是保持行动分块的计算效率优势，同时恢复闭环控制对环境变化的响应能力，避免开环执行中的误差累积" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2604.02965">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2604.02965.webp" alt="Open-Loop Planning, Closed-Loop Verification: Speculative Verification for VLA" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出了 SV-VLA (Speculative Verification VLA) 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Open-Loop Planning, Closed-Loop Verification: Speculative Verification for VLA</h1>
-            <div class="detail-meta">2026-04-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2604.02965" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2604.02965" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2604.02965</span></div>
-            <p class="detail-summary">论文提出了 SV-VLA (Speculative Verification VLA) 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题 该框架结合低频开环宏规划与高频轻量级闭环验证，通过重型VLA生成行动序列，用轻量级验证器实时监控执行状态并触发必要时的重规划 核心目标是保持行动分块的计算效率优势，同时恢复闭环控制对环境变化的响应能力，避免开环执行中的误差累积</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">东南大学 计算机科学与工程学院</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出了 SV-VLA (Speculative Verification VLA) 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题</p>
-  <ul class="reading-intro-points"><li>论文提出了 SV-VLA (Speculative Verification VLA) 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题</li><li>该框架结合低频开环宏规划与高频轻量级闭环验证，通过重型VLA生成行动序列，用轻量级验证器实时监控执行状态并触发必要时的重规划</li><li>核心目标是保持行动分块的计算效率优势，同时恢复闭环控制对环境变化的响应能力，避免开环执行中的误差累积</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-04-03">2026-04-03</time></p>
+        <h1 class="article-title">Open-Loop Planning, Closed-Loop Verification: Speculative Verification for VLA</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2604.02965" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2604.02965" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 SV-VLA (Speculative Verification VLA) 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2604.02965.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2604.02965.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2604.02965.webp" alt="Open-Loop Planning, Closed-Loop Verification: Speculative Verification for VLA 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">东南大学 计算机科学与工程学院</p>
+        <ul class="article-facts"><li>arXiv 2604.02965</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>东南大学</strong> 计算机科学与工程学院</li><li><strong>东南大学</strong> 网络科学与工程学院</li><li><strong>紫山实验室</strong></li><li><strong>南洋理工大学</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>东南大学</strong> 计算机科学与工程学院</li><li><strong>东南大学</strong> 网络科学与工程学院</li><li><strong>紫山实验室</strong></li><li><strong>南洋理工大学</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>SV-VLA (Speculative Verification VLA)</strong> 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题</li><li>该框架结合低频开环宏规划与高频轻量级闭环验证，通过重型VLA生成行动序列，用轻量级验证器实时监控执行状态并触发必要时的重规划</li><li>核心目标是保持行动分块的计算效率优势，同时恢复闭环控制对环境变化的响应能力，避免开环执行中的误差累积</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出了 <strong>SV-VLA (Speculative Verification VLA)</strong> 框架，旨在解决视觉语言行动模型在动态环境中的推理效率与控制鲁棒性平衡问题</li><li>该框架结合低频开环宏规划与高频轻量级闭环验证，通过重型VLA生成行动序列，用轻量级验证器实时监控执行状态并触发必要时的重规划</li><li>核心目标是保持行动分块的计算效率优势，同时恢复闭环控制对环境变化的响应能力，避免开环执行中的误差累积</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出了 <strong>推测验证框架</strong>，将重型VLA用作低频宏规划器生成行动序列，同时引入轻量级验证器进行高频在线验证，实现开环预测与闭环验证的结合</li><li>设计了 <strong>偏差驱动的重规划机制</strong>，通过比较计划动作与基于最新观测的参考动作，在偏差超过阈值时触发重规划，兼顾效率与鲁棒性</li><li>在 <strong>LIBERO基准</strong> 上验证了方法有效性，将平均成功率从79.5%提升至90.9%，同时保持2.17倍的速度提升</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出了 <strong>推测验证框架</strong>，将重型VLA用作低频宏规划器生成行动序列，同时引入轻量级验证器进行高频在线验证，实现开环预测与闭环验证的结合</li><li>设计了 <strong>偏差驱动的重规划机制</strong>，通过比较计划动作与基于最新观测的参考动作，在偏差超过阈值时触发重规划，兼顾效率与鲁棒性</li><li>在 <strong>LIBERO基准</strong> 上验证了方法有效性，将平均成功率从79.5%提升至90.9%，同时保持2.17倍的速度提升</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>开环规划与闭环验证</strong> 解耦架构：重型VLA在规划边界生成宏行动序列及规划上下文特征；轻量级验证器在每个控制步骤融合当前观测与规划特征进行验证</li><li>使用 <strong>ViT-Tiny</strong> 作为轻量级视觉骨干，将视觉特征与规划特征拼接后通过验证头预测参考动作</li><li>通过 <strong>L1距离</strong> 量化计划动作与参考动作的偏差，当偏差超过阈值 τ 时丢弃剩余行动序列并调用重型VLA重规划</li><li>训练策略为冻结重型VLA参数，仅训练轻量级验证器，使用L1回归损失对齐验证器预测与真实行动</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>采用 <strong>开环规划与闭环验证</strong> 解耦架构：重型VLA在规划边界生成宏行动序列及规划上下文特征；轻量级验证器在每个控制步骤融合当前观测与规划特征进行验证</li><li>使用 <strong>ViT-Tiny</strong> 作为轻量级视觉骨干，将视觉特征与规划特征拼接后通过验证头预测参考动作</li><li>通过 <strong>L1距离</strong> 量化计划动作与参考动作的偏差，当偏差超过阈值 τ 时丢弃剩余行动序列并调用重型VLA重规划</li><li>训练策略为冻结重型VLA参数，仅训练轻量级验证器，使用L1回归损失对齐验证器预测与真实行动</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO基准</strong>，包含LIBERO-Goal、LIBERO-Spatial、LIBERO-Object三个任务套件，涵盖目标变化、空间关系和物体类别等不同变化源</li><li>采用 <strong>OpenVLA-OFT</strong> 作为重型VLA模型，行动块大小设置为64</li><li>训练使用 <strong>4 NVIDIA A100 GPU</strong>，验证在 <strong>单 NVIDIA V100 GPU</strong> 上进行公平比较</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>使用 <strong>LIBERO基准</strong>，包含LIBERO-Goal、LIBERO-Spatial、LIBERO-Object三个任务套件，涵盖目标变化、空间关系和物体类别等不同变化源</li><li>采用 <strong>OpenVLA-OFT</strong> 作为重型VLA模型，行动块大小设置为64</li><li>训练使用 <strong>4 NVIDIA A100 GPU</strong>，验证在 <strong>单 NVIDIA V100 GPU</strong> 上进行公平比较</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 <strong>LIBERO模拟器</strong> 中进行在线推演实验，评估指标包括任务成功率和推理速度（相对于基线的加速比）</li><li>主要结果显示：SV-VLA在块大小64时，平均成功率从开环基线的79.5%提升至90.9%，同时保持2.17倍速度提升，相比块大小8的高频闭环基线效率更高</li><li>相比推测解码方法，SV-VLA在效率与鲁棒性上取得更好平衡，平均成功率达90.9%（推测解码81.7%），速度提升2.17倍（推测解码1.36倍）</li><li>推理时间分析表明：宏规划调用耗时1.373秒，验证器调用仅0.081秒，SV-VLA将昂贵的宏规划调用从14.5次/ episode降至6.7次/ episode</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>在 <strong>LIBERO模拟器</strong> 中进行在线推演实验，评估指标包括任务成功率和推理速度（相对于基线的加速比）</li><li>主要结果显示：SV-VLA在块大小64时，平均成功率从开环基线的79.5%提升至90.9%，同时保持2.17倍速度提升，相比块大小8的高频闭环基线效率更高</li><li>相比推测解码方法，SV-VLA在效率与鲁棒性上取得更好平衡，平均成功率达90.9%（推测解码81.7%），速度提升2.17倍（推测解码1.36倍）</li><li>推理时间分析表明：宏规划调用耗时1.373秒，验证器调用仅0.081秒，SV-VLA将昂贵的宏规划调用从14.5次/ episode降至6.7次/ episode</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2604.03037/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">ARM: Advantage Reward Modeling for Long-Horizon Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2604.02714/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">ExploreVLA: Dense World Modeling and Exploration for End-to-End Autonomous Driving</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2604.03037/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ARM: Advantage Reward Modeling for Long-Horizon Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2604.02714/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ExploreVLA: Dense World Modeling and Exploration for End-to-End Autonomous Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

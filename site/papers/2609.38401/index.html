@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Memorize, Adapt, Ignore: Diagnosing Robot Learning Mechanisms under Training Data Variation - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文研究训练数据变化（如域随机化（DR）和演示数据多样化）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。 核心问题是区分三种学习机制：记忆（Memorize）、适应（Adapt） 和忽略（Ignore），即策略是在记忆孤立环境、自适应泛化，还是对任务无关因素产生不变性。 论文提出基于表示核（representation kernel）的诊断框架，以经验神经正切核（eNTK）为主要工具，跨越RL、模仿学习和VLA模型，为数据设计提供可操作的指导。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2609.38401">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.38401.webp" alt="Memorize, Adapt, Ignore: Diagnosing Robot Learning Mechanisms under Training Data Variation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文研究训练数据变化（如域随机化（DR）和演示数据多样化）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Memorize, Adapt, Ignore: Diagnosing Robot Learning Mechanisms under Training Data Variation</h1>
-            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.38401" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.38401" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.38401</span></div>
-            <p class="detail-summary">论文研究训练数据变化（如域随机化（DR）和演示数据多样化）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。 核心问题是区分三种学习机制：记忆（Memorize）、适应（Adapt） 和忽略（Ignore），即策略是在记忆孤立环境、自适应泛化，还是对任务无关因素产生不变性。 论文提出基于表示核（representation kernel）的诊断框架，以经验神经正切核（eNTK）为主要工具，跨越RL、模仿学习和VLA模型，为数据设计提供可操作的指导。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">PRIME Robotics Lab，Department of Mechanical Enginee…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文研究训练数据变化（如域随机化（DR）和演示数据多样化）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。</p>
-  <ul class="reading-intro-points"><li>论文研究训练数据变化（如域随机化（DR）和演示数据多样化）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。</li><li>核心问题是区分三种学习机制：记忆（Memorize）、适应（Adapt） 和忽略（Ignore），即策略是在记忆孤立环境、自适应泛化，还是对任务无关因素产生不变性。</li><li>论文提出基于表示核（representation kernel）的诊断框架，以经验神经正切核（eNTK）为主要工具，跨越RL、模仿学习和VLA模型，为数据设计提供可操作的指导。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-09-29">2026-09-29</time></p>
+        <h1 class="article-title">Memorize, Adapt, Ignore: Diagnosing Robot Learning Mechanisms under Training Data Variation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.38401" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.38401" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究训练数据变化（如域随机化（DR）和演示数据多样化）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.38401.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2609.38401.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2609.38401.webp" alt="Memorize, Adapt, Ignore: Diagnosing Robot Learning Mechanisms under Training Data Variation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">PRIME Robotics Lab，Department of Mechanical Enginee…</p>
+        <ul class="article-facts"><li>arXiv 2609.38401</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>PRIME Robotics Lab，Department of Mechanical Engineering，The University of British Columbia</strong></li><li><strong>Department of Computer Science，University of British Columbia</strong></li><li><strong>Alberta Machine Intelligence Institute</strong></li><li>作者：Ke Zhang、Danica J. Sutherland、Chao Liu</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>PRIME Robotics Lab，Department of Mechanical Engineering，The University of British Columbia</strong></li><li><strong>Department of Computer Science，University of British Columbia</strong></li><li><strong>Alberta Machine Intelligence Institute</strong></li><li>作者：Ke Zhang、Danica J. Sutherland、Chao Liu</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究训练数据变化（如<strong>域随机化（DR）</strong>和<strong>演示数据多样化</strong>）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。</li><li>核心问题是区分三种学习机制：<strong>记忆（Memorize）</strong>、<strong>适应（Adapt）</strong> 和<strong>忽略（Ignore）</strong>，即策略是在记忆孤立环境、自适应泛化，还是对任务无关因素产生不变性。</li><li>论文提出基于<strong>表示核（representation kernel）</strong>的诊断框架，以<strong>经验神经正切核（eNTK）</strong>为主要工具，跨越RL、模仿学习和VLA模型，为数据设计提供可操作的指导。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文研究训练数据变化（如<strong>域随机化（DR）</strong>和<strong>演示数据多样化</strong>）如何影响机器人操纵策略的鲁棒性，但现有方法通常依赖昂贵的试错来设计随机化参数，缺乏对底层学习机制的理解。</li><li>核心问题是区分三种学习机制：<strong>记忆（Memorize）</strong>、<strong>适应（Adapt）</strong> 和<strong>忽略（Ignore）</strong>，即策略是在记忆孤立环境、自适应泛化，还是对任务无关因素产生不变性。</li><li>论文提出基于<strong>表示核（representation kernel）</strong>的诊断框架，以<strong>经验神经正切核（eNTK）</strong>为主要工具，跨越RL、模仿学习和VLA模型，为数据设计提供可操作的指导。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出基于<strong>表示核（eNTK）</strong>的诊断框架，能够显式区分策略的"记忆—适应—忽略"三种学习机制，而不仅仅是评估任务成功率。</li><li>引入<strong>有效秩（effective rank）</strong> 和<strong>因子敏感性比率（FSR / SNR）</strong>、<strong>CKA</strong> 等核统计量，用于量化和跟踪训练数据变化对内部表征结构的影响。</li><li>通过多项实验证明了 <strong>NTK 几何结构</strong>与经验成功率之间的强相关性（Spearman ρ 高达0.92），可作为无需完整评估滚动就能预测 OOD 鲁棒性的代理指标。</li><li>揭示<strong>独立变化（factorial design）优于混淆变化</strong>：在相同数据预算下，独立变化显著提升对新类别的泛化性能（0.0755 vs. 0.0846动作误差）。</li><li>展示不同表示核（输出核、最后隐藏层核、eNTK）具有互补的盲点，并验证硬件实验中<strong>光照域随机化</strong>可将真实场景成功率从1/10提升至8/10。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出基于<strong>表示核（eNTK）</strong>的诊断框架，能够显式区分策略的"记忆—适应—忽略"三种学习机制，而不仅仅是评估任务成功率。</li><li>引入<strong>有效秩（effective rank）</strong> 和<strong>因子敏感性比率（FSR / SNR）</strong>、<strong>CKA</strong> 等核统计量，用于量化和跟踪训练数据变化对内部表征结构的影响。</li><li>通过多项实验证明了 <strong>NTK 几何结构</strong>与经验成功率之间的强相关性（Spearman ρ 高达0.92），可作为无需完整评估滚动就能预测 OOD 鲁棒性的代理指标。</li><li>揭示<strong>独立变化（factorial design）优于混淆变化</strong>：在相同数据预算下，独立变化显著提升对新类别的泛化性能（0.0755 vs. 0.0846动作误差）。</li><li>展示不同表示核（输出核、最后隐藏层核、eNTK）具有互补的盲点，并验证硬件实验中<strong>光照域随机化</strong>可将真实场景成功率从1/10提升至8/10。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用三阶段流程：<strong>受控训练</strong>（系统变化单个或多个因素并固定其他分布）、<strong>探针集构建</strong>（保留位置和动作不变，重渲染变化因素的专家轨迹或验证帧）、<strong>表示核诊断</strong>（计算eNTK矩阵并提取统计量）。</li><li><strong>eNTK</strong> 作为默认诊断工具，通过参数梯度内积表征一个样本上的训练如何传播到其他样本；为降低计算成本，将 Jacobian 限制在 <strong>LoRA 适配器</strong> 的参数空间。</li><li>设计了多种核统计量：<strong>FSR（因子敏感比）</strong> 衡量不同因素引起的表征距离变化之比；<strong>SNR</strong> 为任务相关因素与任务无关因素的 FSR 特例；<strong>CKA</strong> 用于单因素组织对齐分析。</li><li>通过 PCA 可视化探针表示，观察表征随训练颜色数量增加而从分离状态过渡到状态相关/颜色不敏感的结构。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>采用三阶段流程：<strong>受控训练</strong>（系统变化单个或多个因素并固定其他分布）、<strong>探针集构建</strong>（保留位置和动作不变，重渲染变化因素的专家轨迹或验证帧）、<strong>表示核诊断</strong>（计算eNTK矩阵并提取统计量）。</li><li><strong>eNTK</strong> 作为默认诊断工具，通过参数梯度内积表征一个样本上的训练如何传播到其他样本；为降低计算成本，将 Jacobian 限制在 <strong>LoRA 适配器</strong> 的参数空间。</li><li>设计了多种核统计量：<strong>FSR（因子敏感比）</strong> 衡量不同因素引起的表征距离变化之比；<strong>SNR</strong> 为任务相关因素与任务无关因素的 FSR 特例；<strong>CKA</strong> 用于单因素组织对齐分析。</li><li>通过 PCA 可视化探针表示，观察表征随训练颜色数量增加而从分离状态过渡到状态相关/颜色不敏感的结构。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>ManiSkill</strong> 模拟器（pick-and-place / pick-cube任务，CNN策略）</li><li>使用 <strong>LIBERO</strong> 和 <strong>RoboTwin</strong> 基准（<strong>OpenVLA</strong>、<strong>RIPT-VLA</strong>、<strong>OpenVLA-OFT</strong> 模型）</li><li>使用 <strong>ACT（Action Chunking with Transformers）</strong> 策略进行 peg insertion 和硬件实验</li><li>使用 LoRA 适配器模块对VLA/Transformer模型进行受限 eNTK 计算</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>使用 <strong>ManiSkill</strong> 模拟器（pick-and-place / pick-cube任务，CNN策略）</li><li>使用 <strong>LIBERO</strong> 和 <strong>RoboTwin</strong> 基准（<strong>OpenVLA</strong>、<strong>RIPT-VLA</strong>、<strong>OpenVLA-OFT</strong> 模型）</li><li>使用 <strong>ACT（Action Chunking with Transformers）</strong> 策略进行 peg insertion 和硬件实验</li><li>使用 LoRA 适配器模块对VLA/Transformer模型进行受限 eNTK 计算</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>NTK 预测有效性</strong>：NTK 余弦相似度与经验成功率间的 Spearman 相关 ρ 在多种DR配置下为0.57–0.92（p&lt;0.01），验证 NTK 几何作为诊断代理的有效性。</li><li><strong>记忆→适应相变</strong>：在颜色数量从1增到27的过程中，eNTK 矩阵从块状结构平滑过渡为平坦结构，有效秩先升后降，OOD 成功率与有效秩平台期同步跃升。</li><li><strong>忽略机制</strong>：足够背景和物体 DR 后，SNR 从约 3.0 升至 3.5–4.1，状态 CKA 上升、颜色 CKA 下降，证明策略正忽略任务无关颜色/光照变化。</li><li><strong>ACT 策略（单因素）</strong>：无 DR 策略验证损失最低（0.098）但 OOD 成功率最差（0.05）；充分 DR 下 OOD 成功率升至 0.43，SNR（激活和 eNTK）均正确追踪 OOD 改善趋势。</li><li><strong>ACT 策略（双因素）</strong>：联合探针 SNR 正确排序四种训练条件的联合 OOD 成功率（joint DR 达到 0.35），单因素变化主要改善对应因素的泛化。</li><li><strong>VLA 零样本模型选择</strong>：在 LIBERO 光照扰动下，eNTK SNR 排序（OpenVLA-OFT 3.53 &gt; RIPT-VLA 3.51 &gt; OpenVLA 2.80）与实证 OOD 亮度鲁棒性一致（88.7% &gt; 88.4% &gt; 8.1%）。</li><li><strong>捷径学习检测</strong>：在 RoboTwin 任务中，引入第三个任务打破视觉—文本混淆后，场景/语言 FSR 从21.4降至11.0（p=0.002），而对照保持15.0，无需任务级评估即可检测捷径学习。</li><li><strong>表示核比较</strong>：eNTK 和最后隐藏层均能检测捷径学习（10/10次），输出核失败（4/10次）；在双臂任务中，最后隐藏层因双臂共享无法分辨（SNR≈1），输出核则从 1.4–1.9 升至约48；eNTK 弱但可靠的上升趋势（1.02→1.14）。</li><li><strong>硬件验证</strong>：在真实世界 ACT 金字塔拾取任务中，亮度 DR 将 SNR 从2.5提高到5.5；明亮光照成功率从1/10升至8/10，暗光照从1/10升至6/10，分布内从6/10升至10/10。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>NTK 预测有效性</strong>：NTK 余弦相似度与经验成功率间的 Spearman 相关 ρ 在多种DR配置下为0.57–0.92（p<0.01），验证 NTK 几何作为诊断代理的有效性。</li><li><strong>记忆→适应相变</strong>：在颜色数量从1增到27的过程中，eNTK 矩阵从块状结构平滑过渡为平坦结构，有效秩先升后降，OOD 成功率与有效秩平台期同步跃升。</li><li><strong>忽略机制</strong>：足够背景和物体 DR 后，SNR 从约 3.0 升至 3.5–4.1，状态 CKA 上升、颜色 CKA 下降，证明策略正忽略任务无关颜色/光照变化。</li><li><strong>ACT 策略（单因素）</strong>：无 DR 策略验证损失最低（0.098）但 OOD 成功率最差（0.05）；充分 DR 下 OOD 成功率升至 0.43，SNR（激活和 eNTK）均正确追踪 OOD 改善趋势。</li><li><strong>ACT 策略（双因素）</strong>：联合探针 SNR 正确排序四种训练条件的联合 OOD 成功率（joint DR 达到 0.35），单因素变化主要改善对应因素的泛化。</li><li><strong>VLA 零样本模型选择</strong>：在 LIBERO 光照扰动下，eNTK SNR 排序（OpenVLA-OFT 3.53 > RIPT-VLA 3.51 > OpenVLA 2.80）与实证 OOD 亮度鲁棒性一致（88.7% > 88.4% > 8.1%）。</li><li><strong>捷径学习检测</strong>：在 RoboTwin 任务中，引入第三个任务打破视觉—文本混淆后，场景/语言 FSR 从21.4降至11.0（p=0.002），而对照保持15.0，无需任务级评估即可检测捷径学习。</li><li><strong>表示核比较</strong>：eNTK 和最后隐藏层均能检测捷径学习（10/10次），输出核失败（4/10次）；在双臂任务中，最后隐藏层因双臂共享无法分辨（SNR≈1），输出核则从 1.4–1.9 升至约48；eNTK 弱但可靠的上升趋势（1.02→1.14）。</li><li><strong>硬件验证</strong>：在真实世界 ACT 金字塔拾取任务中，亮度 DR 将 SNR 从2.5提高到5.5；明亮光照成功率从1/10升至8/10，暗光照从1/10升至6/10，分布内从6/10升至10/10。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.38570/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Data-Efficient Adaptation of a Driving VLA to Class 8 Trucks</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.38164/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Rho: A Foundation for Efficiently Adaptable VLA Models</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2609.38570/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Data-Efficient Adaptation of a Driving VLA to Class 8 Trucks</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2609.38164/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Rho: A Foundation for Efficiently Adaptable VLA Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

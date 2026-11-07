@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>When Delay Meets Drift: Physical Safety of Robot Foundation Models Is a Cross-Layer Problem - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟 核心论点：物理安全不是模型本身的属性，而是物理环境、模型、计算平台和执行层在闭环中交互变化的涌现属性 提出并验证了“跨层变化传播”（cross-layer variation propagation）概念：单独无害的条件组合起来可能变得危险（例如视角偏移与推理延迟同时存在时）" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.02101">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.02101.webp" alt="When Delay Meets Drift: Physical Safety of Robot Foundation Models Is a Cross-Layer Problem" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">When Delay Meets Drift: Physical Safety of Robot Foundation Models Is a Cross-Layer Problem</h1>
-            <div class="detail-meta">2026-11-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.02101" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.02101" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.02101</span></div>
-            <p class="detail-summary">论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟 核心论点：物理安全不是模型本身的属性，而是物理环境、模型、计算平台和执行层在闭环中交互变化的涌现属性 提出并验证了“跨层变化传播”（cross-layer variation propagation）概念：单独无害的条件组合起来可能变得危险（例如视角偏移与推理延迟同时存在时）</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Texas Tech University（德克萨斯理工大学）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟</p>
-  <ul class="reading-intro-points"><li>论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟</li><li>核心论点：物理安全不是模型本身的属性，而是物理环境、模型、计算平台和执行层在闭环中交互变化的涌现属性</li><li>提出并验证了“跨层变化传播”（cross-layer variation propagation）概念：单独无害的条件组合起来可能变得危险（例如视角偏移与推理延迟同时存在时）</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-01">2026-11-01</time></p>
+        <h1 class="article-title">When Delay Meets Drift: Physical Safety of Robot Foundation Models Is a Cross-Layer Problem</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.02101" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.02101" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.02101.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.02101.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.02101.webp" alt="When Delay Meets Drift: Physical Safety of Robot Foundation Models Is a Cross-Layer Problem 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Texas Tech University（德克萨斯理工大学）</p>
+        <ul class="article-facts"><li>arXiv 2611.02101</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Texas Tech University</strong>（德克萨斯理工大学）</li><li>作者：Liangkai Liu、Bimal Thapa Magar</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Texas Tech University</strong>（德克萨斯理工大学）</li><li>作者：Liangkai Liu、Bimal Thapa Magar</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟</li><li>核心论点：物理安全不是模型本身的属性，而是<strong>物理环境、模型、计算平台和执行层在闭环中交互变化</strong>的涌现属性</li><li>提出并验证了“跨层变化传播”（cross-layer variation propagation）概念：单独无害的条件组合起来可能变得危险（例如视角偏移与推理延迟同时存在时）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文研究机器人基础模型（VLA 模型）的物理安全性问题，指出现有评估方法的缺陷：鲁棒性基准在假设即时推理的前提下扰动场景，而实时执行方法只在标称场景下研究推理延迟</li><li>核心论点：物理安全不是模型本身的属性，而是<strong>物理环境、模型、计算平台和执行层在闭环中交互变化</strong>的涌现属性</li><li>提出并验证了“跨层变化传播”（cross-layer variation propagation）概念：单独无害的条件组合起来可能变得危险（例如视角偏移与推理延迟同时存在时）</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>跨层变化传播的形式化框架</strong>：将机器人系统分为环境、具身、模型、计算平台和执行五个层级，并提出显式交互项度量联合风险</li><li><strong>交互对比度量</strong>：定义 I(E,C) = R(E,C) − R(E,0) − R(0,C) + R(0,0)，量化联合变化产生的超出各自风险之和的额外风险</li><li><strong>超加性实验证据</strong>：在 4,000 个配对闭环回合中证明 π₀.₅ 的安全违规率存在超加性交互（60° 偏移 + 400ms 延迟下交互项达 +0.335，95% CI 0.25–0.43）</li><li><strong>面向“可预测物理智能”的研究议程</strong>：预测变化何时成为风险、自适应分配算力与功率</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li><strong>跨层变化传播的形式化框架</strong>：将机器人系统分为环境、具身、模型、计算平台和执行五个层级，并提出显式交互项度量联合风险</li><li><strong>交互对比度量</strong>：定义 I(E,C) = R(E,C) − R(E,0) − R(0,C) + R(0,0)，量化联合变化产生的超出各自风险之和的额外风险</li><li><strong>超加性实验证据</strong>：在 4,000 个配对闭环回合中证明 π₀.₅ 的安全违规率存在超加性交互（60° 偏移 + 400ms 延迟下交互项达 +0.335，95% CI 0.25–0.43）</li><li><strong>面向“可预测物理智能”的研究议程</strong>：预测变化何时成为风险、自适应分配算力与功率</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>定义跨层交互对比：R(E,C) 为物理变化 E 和计算条件 C 下的安全违规概率，交互项 I 为“差值之差”，衡量联合变化是否产生叠加风险</li><li>实验设计：将相机视角偏移（0°/30°/45°/60°）与推理延迟（0/50/100/200/400 ms）交叉，构成 4×5 网格，每格使用相同的 200 个配对回合（共享随机种子与初始状态）</li><li>延迟仿真：模拟每个动作块（chunk）从 k=δ/Δt 步前的旧观测计算执行，每个执行动作至少滞后 δ</li><li>安全违规判据（固定于预实验）：非目标物体位移超过 2 cm，或对非目标物体/固定物/桌面的接触力超过 150 N</li><li>统计分析：使用回合级和任务级 cluster-bootstrap 计算 95% 置信区间，保持配对设计</li><li>理论分析：证明当安全边际消耗超过阈值时，加性边际消耗会导致超加性风险（凸性论证）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>定义跨层交互对比：R(E,C) 为物理变化 E 和计算条件 C 下的安全违规概率，交互项 I 为“差值之差”，衡量联合变化是否产生叠加风险</li><li>实验设计：将相机视角偏移（0°/30°/45°/60°）与推理延迟（0/50/100/200/400 ms）交叉，构成 4×5 网格，每格使用相同的 200 个配对回合（共享随机种子与初始状态）</li><li>延迟仿真：模拟每个动作块（chunk）从 k=δ/Δt 步前的旧观测计算执行，每个执行动作至少滞后 δ</li><li>安全违规判据（固定于预实验）：非目标物体位移超过 2 cm，或对非目标物体/固定物/桌面的接触力超过 150 N</li><li>统计分析：使用回合级和任务级 cluster-bootstrap 计算 95% 置信区间，保持配对设计</li><li>理论分析：证明当安全边际消耗超过阈值时，加性边际消耗会导致超加性风险（凸性论证）</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>模型</strong>：<strong>π₀.₅</strong>（vision-language-action 模型，Physical Intelligence 发布的公开微调检查点 <code>lerobot/pi05_libero_finetuned_v044</code>）</li><li><strong>数据集/基准</strong>：<strong>LIBERO</strong>（全部 10 个 LIBERO-Spatial 任务），闭环仿真</li><li><strong>仿真平台</strong>：LeRobot 0.6.1 + MuJoCo，20 Hz 控制，50 步动作块、每 10 步重规划</li><li><strong>硬件</strong>：<strong>RTX 3080</strong>（10 GB 显存，bf16 精度）；π₀.₅ 单个动作块推理耗时约 221 ms</li><li><strong>实验规模</strong>：4×5 网格 × 200 配对回合 = <strong>4,000 个闭环回合</strong>（10 任务 × 20 初始状态）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>模型</strong>：<strong>π₀.₅</strong>（vision-language-action 模型，Physical Intelligence 发布的公开微调检查点 <code>lerobot/pi05_libero_finetuned_v044</code>）</li><li><strong>数据集/基准</strong>：<strong>LIBERO</strong>（全部 10 个 LIBERO-Spatial 任务），闭环仿真</li><li><strong>仿真平台</strong>：LeRobot 0.6.1 + MuJoCo，20 Hz 控制，50 步动作块、每 10 步重规划</li><li><strong>硬件</strong>：<strong>RTX 3080</strong>（10 GB 显存，bf16 精度）；π₀.₅ 单个动作块推理耗时约 221 ms</li><li><strong>实验规模</strong>：4×5 网格 × 200 配对回合 = <strong>4,000 个闭环回合</strong>（10 任务 × 20 初始状态）</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO-Spatial 闭环仿真，4 个视角等级 × 5 个延迟等级，每格 200 个配对回合</li><li><strong>评估指标</strong>：任务成功率、安全违规率（位移 &gt; 2 cm 或接触力 &gt; 150 N）、交互项 I(E,C)、块不一致性（chunk inconsistency）</li><li><strong>关键结果 1</strong>：训练视角下 400 ms 延迟仅使违规率从 0.045 升至 0.080；但 60° 相机偏移下，同样延迟使违规率从 0.215 升至 0.585，超加性交互达 <strong>+0.335</strong>（95% CI 0.25–0.43）</li><li><strong>关键结果 2</strong>：12 个非标称单元格中 6 个交互显著为正，集中于高偏移（≥45°）×高延迟（≥100 ms）区域；任务级 bootstrap 下结论不变</li><li><strong>任务一致性</strong>：400 ms 延迟下，60° 偏移时 10 个任务全部为正，45° 时 9/10 为正</li><li><strong>失败模式</strong>：延迟使失败更危险——失败回合中含违规的比例随延迟从 0.17 升至 0.43（45°）、从 0.44 升至 0.62（60°）</li><li><strong>机制线索</strong>：视角偏移使块不一致性从 0.59（0°）单调升至 1.29（60°），但回合级不稳定性不能单独预测延迟伤害</li><li><strong>局限</strong>：单一策略、单一任务套件、单一扰动对、仿真中仿真的延迟；未来需扩展至更多策略、硬件诱导延迟（功耗上限、热节流）和真实机器人</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：LIBERO-Spatial 闭环仿真，4 个视角等级 × 5 个延迟等级，每格 200 个配对回合</li><li><strong>评估指标</strong>：任务成功率、安全违规率（位移 > 2 cm 或接触力 > 150 N）、交互项 I(E,C)、块不一致性（chunk inconsistency）</li><li><strong>关键结果 1</strong>：训练视角下 400 ms 延迟仅使违规率从 0.045 升至 0.080；但 60° 相机偏移下，同样延迟使违规率从 0.215 升至 0.585，超加性交互达 <strong>+0.335</strong>（95% CI 0.25–0.43）</li><li><strong>关键结果 2</strong>：12 个非标称单元格中 6 个交互显著为正，集中于高偏移（≥45°）×高延迟（≥100 ms）区域；任务级 bootstrap 下结论不变</li><li><strong>任务一致性</strong>：400 ms 延迟下，60° 偏移时 10 个任务全部为正，45° 时 9/10 为正</li><li><strong>失败模式</strong>：延迟使失败更危险——失败回合中含违规的比例随延迟从 0.17 升至 0.43（45°）、从 0.44 升至 0.62（60°）</li><li><strong>机制线索</strong>：视角偏移使块不一致性从 0.59（0°）单调升至 1.29（60°），但回合级不稳定性不能单独预测延迟伤害</li><li><strong>局限</strong>：单一策略、单一任务套件、单一扰动对、仿真中仿真的延迟；未来需扩展至更多策略、硬件诱导延迟（功耗上限、热节流）和真实机器人</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.02284/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SVD-Prune: Spectral Vision Token Pruning under Extreme Compression</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.02076/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Scene-Adaptive Readout and Decoding in Diffusion Driving VLAs</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.02284/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SVD-Prune: Spectral Vision Token Pruning under Extreme Compression</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.02076/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Scene-Adaptive Readout and Decoding in Diffusion Driving VLAs</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

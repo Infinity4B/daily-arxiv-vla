@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Unmasking the Illusion of Embodied Reasoning in Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文揭示了当前最先进的Vision-Language-Action (VLA) 模型在标准机器人基准测试中表现出的高成功率实际上是一种&quot;具身推理幻觉&quot;（illusion of embodied reasoning） 通过引入BeTTER诊断基准测试，系统评估了VLA模型在动态场景下的真实推理能力，发现它们在空间布局变化、子目标重组、因果状态追踪和细粒度语义理解方面存在严重缺陷 论文追溯了这些缺陷的根本原因：VLA架构在容量压缩、感知抽象和实时控制需求之间的根本性权衡导致语义表征退化" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2604.18000">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2604.18000.webp" alt="Unmasking the Illusion of Embodied Reasoning in Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文揭示了当前最先进的Vision-Language-Action (VLA) 模型在标准机器人基准测试中表现出的高成功率实际上是一种&quot;具身推理幻觉&quot;（illusion of embodied reasoning）</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Unmasking the Illusion of Embodied Reasoning in Vision-Language-Action Models</h1>
-            <div class="detail-meta">2026-04-20 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2604.18000" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2604.18000" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2604.18000</span></div>
-            <p class="detail-summary">论文揭示了当前最先进的Vision-Language-Action (VLA) 模型在标准机器人基准测试中表现出的高成功率实际上是一种&quot;具身推理幻觉&quot;（illusion of embodied reasoning） 通过引入BeTTER诊断基准测试，系统评估了VLA模型在动态场景下的真实推理能力，发现它们在空间布局变化、子目标重组、因果状态追踪和细粒度语义理解方面存在严重缺陷 论文追溯了这些缺陷的根本原因：VLA架构在容量压缩、感知抽象和实时控制需求之间的根本性权衡导致语义表征退化</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">北京大学（Peking University）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文揭示了当前最先进的Vision-Language-Action (VLA) 模型在标准机器人基准测试中表现出的高成功率实际上是一种&quot;具身推理幻觉&quot;（illusion of embodied reasoning）</p>
-  <ul class="reading-intro-points"><li>论文揭示了当前最先进的Vision-Language-Action (VLA) 模型在标准机器人基准测试中表现出的高成功率实际上是一种&quot;具身推理幻觉&quot;（illusion of embodied reasoning）</li><li>通过引入BeTTER诊断基准测试，系统评估了VLA模型在动态场景下的真实推理能力，发现它们在空间布局变化、子目标重组、因果状态追踪和细粒度语义理解方面存在严重缺陷</li><li>论文追溯了这些缺陷的根本原因：VLA架构在容量压缩、感知抽象和实时控制需求之间的根本性权衡导致语义表征退化</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-04-20">2026-04-20</time></p>
+        <h1 class="article-title">Unmasking the Illusion of Embodied Reasoning in Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2604.18000" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2604.18000" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文揭示了当前最先进的Vision-Language-Action (VLA) 模型在标准机器人基准测试中表现出的高成功率实际上是一种&quot;具身推理幻觉&quot;（illusion of embodied reasoning）</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2604.18000.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2604.18000.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2604.18000.webp" alt="Unmasking the Illusion of Embodied Reasoning in Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">北京大学（Peking University）</p>
+        <ul class="article-facts"><li>arXiv 2604.18000</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>北京大学</strong>（Peking University）</li><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>BeingBeyond</strong>（企业研究机构）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>北京大学</strong>（Peking University）</li><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>BeingBeyond</strong>（企业研究机构）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文揭示了当前最先进的<strong>Vision-Language-Action (VLA)</strong> 模型在标准机器人基准测试中表现出的高成功率实际上是一种"具身推理幻觉"（illusion of embodied reasoning）</li><li>通过引入<strong>BeTTER</strong>诊断基准测试，系统评估了VLA模型在动态场景下的真实推理能力，发现它们在空间布局变化、子目标重组、因果状态追踪和细粒度语义理解方面存在严重缺陷</li><li>论文追溯了这些缺陷的根本原因：VLA架构在容量压缩、感知抽象和实时控制需求之间的根本性权衡导致语义表征退化</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文揭示了当前最先进的<strong>Vision-Language-Action (VLA)</strong> 模型在标准机器人基准测试中表现出的高成功率实际上是一种"具身推理幻觉"（illusion of embodied reasoning）</li><li>通过引入<strong>BeTTER</strong>诊断基准测试，系统评估了VLA模型在动态场景下的真实推理能力，发现它们在空间布局变化、子目标重组、因果状态追踪和细粒度语义理解方面存在严重缺陷</li><li>论文追溯了这些缺陷的根本原因：VLA架构在容量压缩、感知抽象和实时控制需求之间的根本性权衡导致语义表征退化</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>BeTTER诊断基准</strong>：首个可扩展的模板驱动基准测试，通过控制性因果干预（空间布局偏移、原语重组、对抗性物体扰动、时间外推）来评估真实具身推理能力，同时记录特权状态以实现可解释的失败分析</li><li><strong>系统性缺陷诊断</strong>：揭示了四种关键失败模式——词汇-运动捷径（lexical-kinematic shortcuts）、行为惯性（behavioral inertia）、因果状态追踪失败、语义特征崩溃（semantic feature collapse）</li><li><strong>机制性根因分析</strong>：追踪到VLM-to-VLA适应过程中的三个关键瓶颈——容量压缩（8B→2B参数导致推理能力显著下降）、协同训练不对称性（空间定位恢复但顺序规划退化）、"近视"感知约束（单张224×224输入导致细粒度语义丢失）</li><li><strong>真实世界验证</strong>：在SO101机器人平台上进行物理压力测试，证实模拟环境中发现的表征失败在真实物理控制环境中持续存在</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li><strong>BeTTER诊断基准</strong>：首个可扩展的模板驱动基准测试，通过控制性因果干预（空间布局偏移、原语重组、对抗性物体扰动、时间外推）来评估真实具身推理能力，同时记录特权状态以实现可解释的失败分析</li><li><strong>系统性缺陷诊断</strong>：揭示了四种关键失败模式——词汇-运动捷径（lexical-kinematic shortcuts）、行为惯性（behavioral inertia）、因果状态追踪失败、语义特征崩溃（semantic feature collapse）</li><li><strong>机制性根因分析</strong>：追踪到VLM-to-VLA适应过程中的三个关键瓶颈——容量压缩（8B→2B参数导致推理能力显著下降）、协同训练不对称性（空间定位恢复但顺序规划退化）、"近视"感知约束（单张224×224输入导致细粒度语义丢失）</li><li><strong>真实世界验证</strong>：在SO101机器人平台上进行物理压力测试，证实模拟环境中发现的表征失败在真实物理控制环境中持续存在</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>模板驱动的任务生成</strong>：使用VLM（如Gemini）将高层交互模板实例化为具体任务规范，结合开放词汇3D资产检索（Objaverse）构建多样化环境</li><li><strong>轨迹放大与特权状态记录</strong>：通过MimicGen过程化重定向人类演示，并自动记录深度图、2D/3D边界框、物体分割掩码等特权状态用于诊断</li><li><strong>逐步消融分析</strong>：以InternVL-3.5为基线，系统性地消融模型容量、预训练数据混合和感知约束，量化各因素对推理表征的影响</li><li><strong>运动学隔离设计</strong>：确保测试失败源于高层推理崩溃而非低层执行限制，通过控制物体放置位置保证运动原语始终有效</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>模板驱动的任务生成</strong>：使用VLM（如Gemini）将高层交互模板实例化为具体任务规范，结合开放词汇3D资产检索（Objaverse）构建多样化环境</li><li><strong>轨迹放大与特权状态记录</strong>：通过MimicGen过程化重定向人类演示，并自动记录深度图、2D/3D边界框、物体分割掩码等特权状态用于诊断</li><li><strong>逐步消融分析</strong>：以InternVL-3.5为基线，系统性地消融模型容量、预训练数据混合和感知约束，量化各因素对推理表征的影响</li><li><strong>运动学隔离设计</strong>：确保测试失败源于高层推理崩溃而非低层执行限制，通过控制物体放置位置保证运动原语始终有效</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>BeTTER基准</strong>：10个基础操作任务扩展为60个变体，涵盖松散容纳到精确插入等多样物理约束</li><li><strong>评估模型</strong>：π₀.₅（2B参数）、GR00T-N1.6、Being-H0.5等最先进的VLA模型</li><li><strong>对比基准</strong>：LIBERO（静态分布内测试）、CALVIN（OOD分布外测试）、EmbSpatial、RefSpatial、EgoPlan-Bench2等</li><li><strong>真实世界平台</strong>：SO101机器人手臂，配备水果篮、柠檬、山竹等物体的工作空间</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>BeTTER基准</strong>：10个基础操作任务扩展为60个变体，涵盖松散容纳到精确插入等多样物理约束</li><li><strong>评估模型</strong>：π₀.₅（2B参数）、GR00T-N1.6、Being-H0.5等最先进的VLA模型</li><li><strong>对比基准</strong>：LIBERO（静态分布内测试）、CALVIN（OOD分布外测试）、EmbSpatial、RefSpatial、EgoPlan-Bench2等</li><li><strong>真实世界平台</strong>：SO101机器人手臂，配备水果篮、柠檬、山竹等物体的工作空间</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>关键发现1（指令理解幻觉）</strong>：在"准备晨咖啡"任务中，GR00T-N1.6在空间指令上达到100%准确率但在语义指令上仅5%，显示词汇-运动捷径；Being-H0.5表现出显著的空间位置偏差</li><li><strong>关键发现2（子目标组合失败）</strong>：在"打包快餐订单"任务中，模型在未见过的B→C组合上成功率从60-75%骤降至0-15%，ΔSR高达-52.5%，揭示行为惯性</li><li><strong>关键发现3（因果状态追踪失败）</strong>：当初始条件从"两个汉堡"变为"一个汉堡"时，模型错误地跳过第一步直接执行第二步，显示依赖表面视觉线索而非真实因果推理</li><li><strong>关键发现4（细粒度语义崩溃）</strong>：在杂乱环境中，干扰物抓取率（DGR）显著上升，模型退化为"盲抓取"启发式策略</li><li><strong>VLM-to-VLA退化量化</strong>：8B→2B压缩使EgoPlan从40.80降至33.38，RefSpatial从27.50降至6.00；单224px约束进一步将RefSpatial从29.50降至7.50</li><li><strong>基准测试悖论</strong>：LIBERO上所有配置均饱和于~97%，但CALVIN OOD测试揭示"VLA+VLM"配置（平均长度4.086）显著优于纯"VLA"配置（3.860），证明静态基准无法区分真实推理与运动学记忆</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>关键发现1（指令理解幻觉）</strong>：在"准备晨咖啡"任务中，GR00T-N1.6在空间指令上达到100%准确率但在语义指令上仅5%，显示词汇-运动捷径；Being-H0.5表现出显著的空间位置偏差</li><li><strong>关键发现2（子目标组合失败）</strong>：在"打包快餐订单"任务中，模型在未见过的B→C组合上成功率从60-75%骤降至0-15%，ΔSR高达-52.5%，揭示行为惯性</li><li><strong>关键发现3（因果状态追踪失败）</strong>：当初始条件从"两个汉堡"变为"一个汉堡"时，模型错误地跳过第一步直接执行第二步，显示依赖表面视觉线索而非真实因果推理</li><li><strong>关键发现4（细粒度语义崩溃）</strong>：在杂乱环境中，干扰物抓取率（DGR）显著上升，模型退化为"盲抓取"启发式策略</li><li><strong>VLM-to-VLA退化量化</strong>：8B→2B压缩使EgoPlan从40.80降至33.38，RefSpatial从27.50降至6.00；单224px约束进一步将RefSpatial从29.50降至7.50</li><li><strong>基准测试悖论</strong>：LIBERO上所有配置均饱和于~97%，但CALVIN OOD测试揭示"VLA+VLM"配置（平均长度4.086）显著优于纯"VLA"配置（3.860），证明静态基准无法区分真实推理与运动学记忆</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2604.18107/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Test-Time Perturbation Learning with Delayed Feedback for Vision-Language-Action Models</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2604.17915/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">OneDrive: Unified Multi-Paradigm Driving with Vision-Language-Action Models</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2604.18107/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Test-Time Perturbation Learning with Delayed Feedback for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2604.17915/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">OneDrive: Unified Multi-Paradigm Driving with Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

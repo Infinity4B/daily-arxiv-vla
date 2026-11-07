@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>pico-WAM: Evaluating Counterfactual Prediction and Planning Error in a Compact World Action Model - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="引入 pico-WAM，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。 核心问题：当世界行动模型控制失败时，瓶颈是动作提案生成（proposal generation）还是轨迹评分（trajectory scoring）？ 通过受控实验（206 个 Push-T 演示、15 个训练种子）比较数据机制和搜索配置，研究反事实预测与规划误差。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.01039">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.01039.webp" alt="pico-WAM: Evaluating Counterfactual Prediction and Planning Error in a Compact World Action Model" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">引入 pico-WAM，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">pico-WAM: Evaluating Counterfactual Prediction and Planning Error in a Compact World Action Model</h1>
-            <div class="detail-meta">2026-10-31 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.01039" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.01039" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.01039</span></div>
-            <p class="detail-summary">引入 pico-WAM，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。 核心问题：当世界行动模型控制失败时，瓶颈是动作提案生成（proposal generation）还是轨迹评分（trajectory scoring）？ 通过受控实验（206 个 Push-T 演示、15 个训练种子）比较数据机制和搜索配置，研究反事实预测与规划误差。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">6 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Northeastern University Khoury College of Computer…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">引入 pico-WAM，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。</p>
-  <ul class="reading-intro-points"><li>引入 pico-WAM，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。</li><li>核心问题：当世界行动模型控制失败时，瓶颈是动作提案生成（proposal generation）还是轨迹评分（trajectory scoring）？</li><li>通过受控实验（206 个 Push-T 演示、15 个训练种子）比较数据机制和搜索配置，研究反事实预测与规划误差。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-10-31">2026-10-31</time></p>
+        <h1 class="article-title">pico-WAM: Evaluating Counterfactual Prediction and Planning Error in a Compact World Action Model</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.01039" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.01039" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">引入 pico-WAM，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.01039.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.01039.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.01039.webp" alt="pico-WAM: Evaluating Counterfactual Prediction and Planning Error in a Compact World Action Model 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Northeastern University Khoury College of Computer…</p>
+        <ul class="article-facts"><li>arXiv 2611.01039</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Northeastern University</strong> Khoury College of Computer Sciences（作者 <strong>Keivalya Pandya</strong> 所属机构）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Northeastern University</strong> Khoury College of Computer Sciences（作者 <strong>Keivalya Pandya</strong> 所属机构）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>引入 <strong>pico-WAM</strong>，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。</li><li>核心问题：当世界行动模型控制失败时，瓶颈是动作提案生成（proposal generation）还是轨迹评分（trajectory scoring）？</li><li>通过受控实验（206 个 Push-T 演示、15 个训练种子）比较数据机制和搜索配置，研究反事实预测与规划误差。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>引入 <strong>pico-WAM</strong>，一个紧凑的世界行动模型，通过提供显式物理状态来追踪策略-动力学交互，用于诊断世界模型在控制任务中的失败瓶颈。</li><li>核心问题：当世界行动模型控制失败时，瓶颈是动作提案生成（proposal generation）还是轨迹评分（trajectory scoring）？</li><li>通过受控实验（206 个 Push-T 演示、15 个训练种子）比较数据机制和搜索配置，研究反事实预测与规划误差。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>pico-WAM</strong> 紧凑架构：共享表示同时服务于策略、转移模型和显式状态读出，实现每一步决策可追踪。</li><li>发现反事实分支训练改善短视距成本排序，并将策略重启搜索相对于热启动搜索的覆盖率优势扩大 <strong>4.8 个百分点</strong>；重启搜索在两种数据机制下均优于热启动。</li><li>通过交叉实验分离提案与评分：用模拟器成本替换学习轨迹评分使覆盖率提升 <strong>12.2 个百分点</strong>，而仅替换提案生成无显著增益，识别出评分是有效改进目标。</li><li>组件消融和门打开研究揭示更好的轨迹排序不一定带来更好的控制或超越模仿；提供可复现的世界模型诊断协议。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>pico-WAM</strong> 紧凑架构：共享表示同时服务于策略、转移模型和显式状态读出，实现每一步决策可追踪。</li><li>发现反事实分支训练改善短视距成本排序，并将策略重启搜索相对于热启动搜索的覆盖率优势扩大 <strong>4.8 个百分点</strong>；重启搜索在两种数据机制下均优于热启动。</li><li>通过交叉实验分离提案与评分：用模拟器成本替换学习轨迹评分使覆盖率提升 <strong>12.2 个百分点</strong>，而仅替换提案生成无显著增益，识别出评分是有效改进目标。</li><li>组件消融和门打开研究揭示更好的轨迹排序不一定带来更好的控制或超越模仿；提供可复现的世界模型诊断协议。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>共享表示</strong>：输入 64×64 图像、固定指令和 8 维状态（位置、速度、块位姿），通过三层 CNN（16 个空间 softmax 关键点）、GRU 和状态 MLP 融合生成 128 维潜在向量 \(z_t\)。</li><li><strong>训练</strong>：联合优化行为克隆损失、当前与未来状态重建损失、潜在一致性损失；反事实分支通过高斯噪声（SD 0.3）扰动演示动作生成额外训练数据（6,013 分支，48,104 转移），仅提供预测目标。</li><li><strong>规划</strong>：策略前向 12 步生成提案，构建 256 个候选（提案 + 254 个噪声扰动），使用加权成本函数（块到目标角距离 + 代理接近惩罚）评分，选择第一个动作执行后重新规划。</li><li><strong>干预设计</strong>：交叉学习（L）和精确（E）组件构建 LL、LE、EL、EE 四种规划器，隔离提案生成与评分的影响；精确评分使用模拟器真实状态，精确提案涉及渲染和重新编码。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>共享表示</strong>：输入 64×64 图像、固定指令和 8 维状态（位置、速度、块位姿），通过三层 CNN（16 个空间 softmax 关键点）、GRU 和状态 MLP 融合生成 128 维潜在向量 \(z_t\)。</li><li><strong>训练</strong>：联合优化行为克隆损失、当前与未来状态重建损失、潜在一致性损失；反事实分支通过高斯噪声（SD 0.3）扰动演示动作生成额外训练数据（6,013 分支，48,104 转移），仅提供预测目标。</li><li><strong>规划</strong>：策略前向 12 步生成提案，构建 256 个候选（提案 + 254 个噪声扰动），使用加权成本函数（块到目标角距离 + 代理接近惩罚）评分，选择第一个动作执行后重新规划。</li><li><strong>干预设计</strong>：交叉学习（L）和精确（E）组件构建 LL、LE、EL、EE 四种规划器，隔离提案生成与评分的影响；精确评分使用模拟器真实状态，精确提案涉及渲染和重新编码。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>Push-T</strong>：使用 <strong>LeRobot</strong> 的 206 个演示（25,444 个转移，10 Hz），保留原始几何和 100 Hz 物理，重建物理以实现精确回放；覆盖率衡量最大目标重叠，成功率阈值为 95%。</li><li><strong>Meta-World door-open-v3</strong>：39 维状态、4 维动作，80 个脚本专家演示 + 80 个噪声专家演示（共 5,840 个五步窗口）用于门打开研究。</li><li>模型规模：潜在维度 128；策略三个 512 单元隐藏层；残差动力学两个 256 单元隐藏层；状态读出线性层。</li><li>训练资源：V100-SXM2 GPU；主要研究 21.3 GPU 小时，扩散策略实验 44.7 GPU 小时，动力学研究 1,390 CPU 小时。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>Push-T</strong>：使用 <strong>LeRobot</strong> 的 206 个演示（25,444 个转移，10 Hz），保留原始几何和 100 Hz 物理，重建物理以实现精确回放；覆盖率衡量最大目标重叠，成功率阈值为 95%。</li><li><strong>Meta-World door-open-v3</strong>：39 维状态、4 维动作，80 个脚本专家演示 + 80 个噪声专家演示（共 5,840 个五步窗口）用于门打开研究。</li><li>模型规模：潜在维度 128；策略三个 512 单元隐藏层；残差动力学两个 256 单元隐藏层；状态读出线性层。</li><li>训练资源：V100-SXM2 GPU；主要研究 21.3 GPU 小时，扩散策略实验 44.7 GPU 小时，动力学研究 1,390 CPU 小时。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：Push-T 任务（重建物理），200 个最终评估起始状态跨 15 个训练运行，以及原始 gym-pusht 环境。</li><li><strong>主要指标</strong>：覆盖率、成功率、预测 nMSE、候选排名相关性、选择 regret、规划增益。</li><li><strong>关键结果</strong>：分支训练将策略重启搜索覆盖率从 43.8% 提高到 78.4%（成功率 32.8%）；精确评分（LE）覆盖率比 LL 高 12.2 个百分点；分支训练将排名相关性从 0.49 提高到 0.80，选择 regret 从 7.56 降至 2.77；分支训练使随机动作下块预测误差降低约三倍；门打开研究中混合数据降低 regret 但规划器成功率仍低于反应式 BC（88.2% vs 98.6%）。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：Push-T 任务（重建物理），200 个最终评估起始状态跨 15 个训练运行，以及原始 gym-pusht 环境。</li><li><strong>主要指标</strong>：覆盖率、成功率、预测 nMSE、候选排名相关性、选择 regret、规划增益。</li><li><strong>关键结果</strong>：分支训练将策略重启搜索覆盖率从 43.8% 提高到 78.4%（成功率 32.8%）；精确评分（LE）覆盖率比 LL 高 12.2 个百分点；分支训练将排名相关性从 0.49 提高到 0.80，选择 regret 从 7.56 降至 2.77；分支训练使随机动作下块预测误差降低约三倍；门打开研究中混合数据降低 regret 但规划器成功率仍低于反应式 BC（88.2% vs 98.6%）。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.01112/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Auriga Technical Report: A Task-Agnostic Agent Harness for Zero-Shot Embodied Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.01011/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Leap-VLA: High-Rate Robot Control from a Low-Rate VLM Backbone</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.01112/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Auriga Technical Report: A Task-Agnostic Agent Harness for Zero-Shot Embodied Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.01011/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Leap-VLA: High-Rate Robot Control from a Low-Rate VLM Backbone</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

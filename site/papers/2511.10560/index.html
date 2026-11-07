@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>OmniVGGT: Omni-Modality Driven Visual Geometry Grounded - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2511.10560">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,108 +57,73 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2511.10560.webp" alt="OmniVGGT: Omni-Modality Driven Visual Geometry Grounded" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">OmniVGGT: Omni-Modality Driven Visual Geometry Grounded</h1>
-            <div class="detail-meta">2025-11-13 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2511.10560" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2511.10560" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2511.10560</span></div>
-            <p class="detail-summary">论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">香港科技大学(HKUST)、南洋理工大学(NTU)、中山大学(SYSU)、新加坡国立大学(NUS)、阿…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。</p>
-  <ul class="reading-intro-points"><li>论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。</li><li>提出了GeoAdapter，一个轻量级适配器，能够将深度图和相机参数编码到空间基础模型中，使用零初始化卷积逐步注入几何信息而不破坏基础模型的表示空间</li><li>设计了随机多模态融合策略，在训练时随机采样模态子集，使模型能够在测试时接受任意数量的模态输入，并学习鲁棒的空间表示</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2025-11-13">2025-11-13</time></p>
+        <h1 class="article-title">OmniVGGT: Omni-Modality Driven Visual Geometry Grounded</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2511.10560" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2511.10560" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2511.10560.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2511.10560.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2511.10560.webp" alt="OmniVGGT: Omni-Modality Driven Visual Geometry Grounded 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">香港科技大学(HKUST)、南洋理工大学(NTU)、中山大学(SYSU)、新加坡国立大学(NUS)、阿…</p>
+        <ul class="article-facts"><li>arXiv 2511.10560</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><p>香港科技大学(HKUST)、南洋理工大学(NTU)、中山大学(SYSU)、新加坡国立大学(NUS)、阿里巴巴集团</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><p>香港科技大学(HKUST)、南洋理工大学(NTU)、中山大学(SYSU)、新加坡国立大学(NUS)、阿里巴巴集团</p></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><p>论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><p>论文提出了OmniVGGT框架，这是一个能够有效利用任意数量辅助几何模态（如深度图、相机内参和外参）进行训练和推理的视觉基础模型。该框架通过轻量级的GeoAdapter模块逐步注入几何信息，并采用随机多模态融合策略，使模型能够在测试时处理任意数量的模态输入。在单目/多视角深度估计、多视角立体视觉和相机姿态估计等多个3D视觉任务上取得了最先进的性能。</p></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ol><li>提出了GeoAdapter，一个轻量级适配器，能够将深度图和相机参数编码到空间基础模型中，使用零初始化卷积逐步注入几何信息而不破坏基础模型的表示空间</li><li>设计了随机多模态融合策略，在训练时随机采样模态子集，使模型能够在测试时接受任意数量的模态输入，并学习鲁棒的空间表示</li><li>在多种3D视觉任务上超越了现有方法，即使仅使用RGB输入也取得了最先进的结果</li><li>成功将OmniVGGT集成到视觉-语言-动作(VLA)模型中，在机器人操作任务上实现了持续的性能提升</li></ol></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ol><li>提出了GeoAdapter，一个轻量级适配器，能够将深度图和相机参数编码到空间基础模型中，使用零初始化卷积逐步注入几何信息而不破坏基础模型的表示空间</li><li>设计了随机多模态融合策略，在训练时随机采样模态子集，使模型能够在测试时接受任意数量的模态输入，并学习鲁棒的空间表示</li><li>在多种3D视觉任务上超越了现有方法，即使仅使用RGB输入也取得了最先进的结果</li><li>成功将OmniVGGT集成到视觉-语言-动作(VLA)模型中，在机器人操作任务上实现了持续的性能提升</li></ol></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ol><li><strong>GeoAdapter架构</strong>：包含相机适配器和深度适配器两部分。相机适配器对相机内参和外参进行归一化、参数化为特征向量，然后通过专用编码器和零卷积层处理；深度适配器对深度图进行批内归一化，通过卷积层编码为空间标记</li><li><strong>随机多模态训练</strong>：在训练过程中随机为图像序列分配不同数量的辅助信息（相机参数和深度图），确保模型对各种部分信息场景具有鲁棒性</li><li><strong>训练目标</strong>：采用多任务损失函数，包括相机损失、深度损失和点图损失，每个都增强梯度项以提高局部几何一致性</li><li><strong>网络架构</strong>：基于VGGT框架，使用24个交替注意力块处理输入，最终通过三个预测头输出深度图、相机姿态和3D点图</li></ol></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ol><li><strong>GeoAdapter架构</strong>：包含相机适配器和深度适配器两部分。相机适配器对相机内参和外参进行归一化、参数化为特征向量，然后通过专用编码器和零卷积层处理；深度适配器对深度图进行批内归一化，通过卷积层编码为空间标记</li><li><strong>随机多模态训练</strong>：在训练过程中随机为图像序列分配不同数量的辅助信息（相机参数和深度图），确保模型对各种部分信息场景具有鲁棒性</li><li><strong>训练目标</strong>：采用多任务损失函数，包括相机损失、深度损失和点图损失，每个都增强梯度项以提高局部几何一致性</li><li><strong>网络架构</strong>：基于VGGT框架，使用24个交替注意力块处理输入，最终通过三个预测头输出深度图、相机姿态和3D点图</li></ol></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><p>使用19个公共数据集进行训练，包括ARKitScenes、BlendedMVS、DL3DV、Dynamic Replica、HyperSim、Kubric、MapFree、MegaDepth、Matterport 3D、MVS-Synth、ScanNet、ScanNet++、Spring、TartanAir、UASOL、Unreal 4K、Virtual KITTI、Waymo和WildRGBD。这些数据集涵盖了合成和真实内容、室内外环境以及静态和动态场景。训练使用32个NVIDIA A100 GPU，耗时10天，采用梯度检查点优化内存使用。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><p>使用19个公共数据集进行训练，包括ARKitScenes、BlendedMVS、DL3DV、Dynamic Replica、HyperSim、Kubric、MapFree、MegaDepth、Matterport 3D、MVS-Synth、ScanNet、ScanNet++、Spring、TartanAir、UASOL、Unreal 4K、Virtual KITTI、Waymo和WildRGBD。这些数据集涵盖了合成和真实内容、室内外环境以及静态和动态场景。训练使用32个NVIDIA A100 GPU，耗时10天，采用梯度检查点优化内存使用。</p></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><p>在多个标准数据集上进行评估：</p>
-<ul><li><strong>深度估计</strong>：使用绝对相对误差和δ<1.25指标</li><li><strong>相机姿态估计</strong>：使用相对旋转精度(RRA)、相对平移精度(RTA)和AUC(精度阈值曲线下面积)</li><li><strong>3D重建</strong>：使用精度、完整性和法线一致性指标</li><li><strong>机器人操作任务</strong>：在CALVIN数据集上评估平均长度等指标</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><p>在多个标准数据集上进行评估：</p>
+<ul><li><strong>深度估计</strong>：使用绝对相对误差和δ&lt;1.25指标</li><li><strong>相机姿态估计</strong>：使用相对旋转精度(RRA)、相对平移精度(RTA)和AUC(精度阈值曲线下面积)</li><li><strong>3D重建</strong>：使用精度、完整性和法线一致性指标</li><li><strong>机器人操作任务</strong>：在CALVIN数据集上评估平均长度等指标</li></ul>
 <p>模型在Sintel、Bonn、NYU-v2、ScanNet、ETH3D、DTU、Tanks and Temples、7-Scenes、Co3Dv2和RealEstate10K等数据集上进行了广泛测试。</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2511.11298/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Experiences from Benchmarking Vision-Language-Action Models for Robotic Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2511.10008/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Phantom Menace: Exploring and Enhancing the Robustness of VLA Models against Physical Sensor Attacks</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2511.11298/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Experiences from Benchmarking Vision-Language-Action Models for Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2511.10008/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Phantom Menace: Exploring and Enhancing the Robustness of VLA Models against Physical Sensor Attacks</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

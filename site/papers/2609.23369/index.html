@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>The Right Future for Action: Learning Action-Relevant Predictive States in World Action Models - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测 通过表征诊断发现：更高的未来可预测性不一定带来更好的动作可读性；观察到的未来变化提供了当前表示中缺失的动作相关信息；动作可读性在空间上高度集中 提出 Action‑Relevant Predictive States (ARPS)，将紧凑的状态接口与多尺度未来表示监督相结合，以提升分布内和分布外控制性能" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2609.23369">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,110 +57,75 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.23369.webp" alt="The Right Future for Action: Learning Action-Relevant Predictive States in World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">The Right Future for Action: Learning Action-Relevant Predictive States in World Action Models</h1>
-            <div class="detail-meta">2026-09-20 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.23369" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.23369" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.23369</span></div>
-            <p class="detail-summary">研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测 通过表征诊断发现：更高的未来可预测性不一定带来更好的动作可读性；观察到的未来变化提供了当前表示中缺失的动作相关信息；动作可读性在空间上高度集中 提出 Action‑Relevant Predictive States (ARPS)，将紧凑的状态接口与多尺度未来表示监督相结合，以提升分布内和分布外控制性能</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Tongji University</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测</p>
-  <ul class="reading-intro-points"><li>研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测</li><li>通过表征诊断发现：更高的未来可预测性不一定带来更好的动作可读性；观察到的未来变化提供了当前表示中缺失的动作相关信息；动作可读性在空间上高度集中</li><li>提出 Action‑Relevant Predictive States (ARPS)，将紧凑的状态接口与多尺度未来表示监督相结合，以提升分布内和分布外控制性能</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-09-20">2026-09-20</time></p>
+        <h1 class="article-title">The Right Future for Action: Learning Action-Relevant Predictive States in World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.23369" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.23369" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.23369.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2609.23369.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2609.23369.webp" alt="The Right Future for Action: Learning Action-Relevant Predictive States in World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Tongji University</p>
+        <ul class="article-facts"><li>arXiv 2609.23369</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Tongji University</strong></li><li><strong>DreamX Team, Alibaba Group</strong></li><li><strong>Shanghai Jiao Tong University</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Tongji University</strong></li><li><strong>DreamX Team, Alibaba Group</strong></li><li><strong>Shanghai Jiao Tong University</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测</li><li>通过表征诊断发现：更高的未来可预测性不一定带来更好的动作可读性；观察到的未来变化提供了当前表示中缺失的动作相关信息；动作可读性在空间上高度集中</li><li>提出 <strong>Action‑Relevant Predictive States (ARPS)</strong>，将紧凑的状态接口与多尺度未来表示监督相结合，以提升分布内和分布外控制性能</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>研究世界行动模型（WAM）中预测性状态的表示：应保留何种未来信息以支持下游动作预测</li><li>通过表征诊断发现：更高的未来可预测性不一定带来更好的动作可读性；观察到的未来变化提供了当前表示中缺失的动作相关信息；动作可读性在空间上高度集中</li><li>提出 <strong>Action‑Relevant Predictive States (ARPS)</strong>，将紧凑的状态接口与多尺度未来表示监督相结合，以提升分布内和分布外控制性能</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>首次系统诊断了预测表示的“可预测性”与“动作可读性”之间的关系，揭示二者可能分离，并量化了未来帧提供的额外动作信息及空间集中特性</li><li>提出 <strong>ARPS</strong>，一个 horizon‑conditioned 的状态预测器，将中间视频特征压缩为紧凑的状态，并用 frozen V‑JEPA2 教师提供的绝对和差分未来表示进行监督</li><li>验证了紧凑状态设计在多个基准上的有效性：ARPS 在 <strong>LIBERO</strong> 上达到 99.2%，在 <strong>LIBERO‑Plus</strong> 上 zero‑shot 达到 87.3%（超过 Fast‑WAM 39.2 个百分点），在 <strong>RoboTwin 2.0</strong> 上保持整体性能并降低推理延迟</li><li>通过消融实验确认未来表示监督（尤其是多时间尺度和绝对+差分目标）对分布外泛化的关键作用</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>首次系统诊断了预测表示的“可预测性”与“动作可读性”之间的关系，揭示二者可能分离，并量化了未来帧提供的额外动作信息及空间集中特性</li><li>提出 <strong>ARPS</strong>，一个 horizon‑conditioned 的状态预测器，将中间视频特征压缩为紧凑的状态，并用 frozen V‑JEPA2 教师提供的绝对和差分未来表示进行监督</li><li>验证了紧凑状态设计在多个基准上的有效性：ARPS 在 <strong>LIBERO</strong> 上达到 99.2%，在 <strong>LIBERO‑Plus</strong> 上 zero‑shot 达到 87.3%（超过 Fast‑WAM 39.2 个百分点），在 <strong>RoboTwin 2.0</strong> 上保持整体性能并降低推理延迟</li><li>通过消融实验确认未来表示监督（尤其是多时间尺度和绝对+差分目标）对分布外泛化的关键作用</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>Fast‑WAM</strong> 架构，在视频专家的中间层插入 <strong>horizon‑conditioned state predictor</strong></li><li>该 predictor 使用可学习的查询（按未来时间步分组）通过交叉注意力从当前帧特征聚合出固定数量（如 32 个）的 state tokens，构成预测性状态 \(Z_t\)</li><li>训练时，使用 frozen <strong>V‑JEPA2</strong> 教师提取多个未来时刻的表示，计算绝对未来表示和相对当前的变化（差分）作为监督目标，通过位置查询解码器从对应时间的 state tokens 解码</li><li>损失包含余弦相似度与 smooth L1 的组合，联合优化绝对表示和差分表示</li><li>推理时仅保留视频专家前 \(\ell\) 层的状态提取，移除教师和解码头，动作专家直接从 compact state 预测动作片段</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>基于 <strong>Fast‑WAM</strong> 架构，在视频专家的中间层插入 <strong>horizon‑conditioned state predictor</strong></li><li>该 predictor 使用可学习的查询（按未来时间步分组）通过交叉注意力从当前帧特征聚合出固定数量（如 32 个）的 state tokens，构成预测性状态 \(Z_t\)</li><li>训练时，使用 frozen <strong>V‑JEPA2</strong> 教师提取多个未来时刻的表示，计算绝对未来表示和相对当前的变化（差分）作为监督目标，通过位置查询解码器从对应时间的 state tokens 解码</li><li>损失包含余弦相似度与 smooth L1 的组合，联合优化绝对表示和差分表示</li><li>推理时仅保留视频专家前 \(\ell\) 层的状态提取，移除教师和解码头，动作专家直接从 compact state 预测动作片段</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>训练与评估数据集：<strong>LIBERO</strong>（四个任务套件）、<strong>LIBERO‑Plus</strong>（无适应迁移）和 <strong>RoboTwin 2.0</strong>（双机械臂操作）</li><li>模型规模：视频专家为 <strong>Wan2.2‑TI2V‑5B</strong>，动作专家为 <strong>1B ActionDiT</strong>（从视频专家初始化）；ARPS 额外增加一个三块 transformer 的状态预测器（约 32 个 state tokens）</li><li>教师模型：frozen <strong>V‑JEPA2</strong>（用于提供未来表示目标）</li><li>训练资源：未明确说明 GPU 数量，但使用大规模视频扩散模型进行端到端训练，推断需多 GPU 并行</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>训练与评估数据集：<strong>LIBERO</strong>（四个任务套件）、<strong>LIBERO‑Plus</strong>（无适应迁移）和 <strong>RoboTwin 2.0</strong>（双机械臂操作）</li><li>模型规模：视频专家为 <strong>Wan2.2‑TI2V‑5B</strong>，动作专家为 <strong>1B ActionDiT</strong>（从视频专家初始化）；ARPS 额外增加一个三块 transformer 的状态预测器（约 32 个 state tokens）</li><li>教师模型：frozen <strong>V‑JEPA2</strong>（用于提供未来表示目标）</li><li>训练资源：未明确说明 GPU 数量，但使用大规模视频扩散模型进行端到端训练，推断需多 GPU 并行</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估基准：<strong>LIBERO</strong> 情景成功率（Spatial, Object, Goal, Long 套件）；<strong>LIBERO‑Plus</strong> 的七种分布外扰动（Camera, Robot, Language, Light, Background, Noise, Layout）；<strong>RoboTwin 2.0</strong> 的 Clean 和 Random 设置</li><li>主要指标：任务成功率（%），LIBERO‑Plus 上还报告总体零样本成功率</li><li>关键实验结果：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：<strong>LIBERO</strong> 情景成功率（Spatial, Object, Goal, Long 套件）；<strong>LIBERO‑Plus</strong> 的七种分布外扰动（Camera, Robot, Language, Light, Background, Noise, Layout）；<strong>RoboTwin 2.0</strong> 的 Clean 和 Random 设置</li><li>主要指标：任务成功率（%），LIBERO‑Plus 上还报告总体零样本成功率</li><li>关键实验结果：</li></ul>
 <p> - <strong>LIBERO</strong>：ARPS 平均成功率 99.2%，超过 Fast‑WAM（97.6%）和 LingBot‑VA（98.5%）</p>
 <p> - <strong>RoboTwin 2.0</strong>：Clean 91.32%、Random 90.10%，与 Fast‑WAM 总体持平但 Clean 上略微提升</p>
 <p> - <strong>LIBERO‑Plus</strong>：总零样本成功率 87.3%，大幅优于 Fast‑WAM（48.1%）和 Cosmos‑Policy（82.2%）；在 Camera 和 Noise 扰动下提升尤为显著（分别 +74.3 和 +58.0 个百分点）</p>
 <p> - 消融实验表明：去除未来监督、使用 VGGT 或 DINOv2 教师、减小状态容量或改变提取层都会显著降低 LIBERO‑Plus 性能，未来差分监督和较远的预测时间步对泛化尤其重要</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.23418/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">HEARTH: An Object-Centric RGB-Thermal-3D Dataset for Temperature-Aware Robot Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.23275/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SCULPT-VLA: Learning Structured Control through Staged Action Grounding</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2609.23418/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">HEARTH: An Object-Centric RGB-Thermal-3D Dataset for Temperature-Aware Robot Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2609.23275/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SCULPT-VLA: Learning Structured Control through Staged Action Grounding</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

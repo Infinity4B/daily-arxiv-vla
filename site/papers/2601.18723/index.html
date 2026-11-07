@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证执行质量（如平滑性、安全性、效率）和来源真实性（区分策略生成轨迹与人类远程操作轨迹） 当前评估主要依赖二元成功率（成功/失败），无法区分&quot;抖动成功&quot;与&quot;平滑成功&quot;，也无法验证&quot;成功演示&quot;是来自真正的自主策略还是隐藏的人类远程操作 解决方案包括：Eval-Actions 基准数据集（首个为评估完整性设计的数据集）和 AutoEval 评估架构（基于 VLM 的自动化评估框架）" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2601.18723">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,111 +57,76 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2601.18723.webp" alt="Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证执行质量（如平滑性、安全性、效率）和来源真实性（区分策略生成轨迹与人类远程操作轨迹）</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods</h1>
-            <div class="detail-meta">2026-01-26 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2601.18723" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2601.18723" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2601.18723</span></div>
-            <p class="detail-summary">论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证执行质量（如平滑性、安全性、效率）和来源真实性（区分策略生成轨迹与人类远程操作轨迹） 当前评估主要依赖二元成功率（成功/失败），无法区分&quot;抖动成功&quot;与&quot;平滑成功&quot;，也无法验证&quot;成功演示&quot;是来自真正的自主策略还是隐藏的人类远程操作 解决方案包括：Eval-Actions 基准数据集（首个为评估完整性设计的数据集）和 AutoEval 评估架构（基于 VLM 的自动化评估框架）</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">论文作者信息显示来自中国，作者包括 Mengyuan Liu、Juyi Sheng（通讯作者）、Pei…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证执行质量（如平滑性、安全性、效率）和来源真实性（区分策略生成轨迹与人类远程操作轨迹）</p>
-  <ul class="reading-intro-points"><li>论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证执行质量（如平滑性、安全性、效率）和来源真实性（区分策略生成轨迹与人类远程操作轨迹）</li><li>当前评估主要依赖二元成功率（成功/失败），无法区分&quot;抖动成功&quot;与&quot;平滑成功&quot;，也无法验证&quot;成功演示&quot;是来自真正的自主策略还是隐藏的人类远程操作</li><li>解决方案包括：Eval-Actions 基准数据集（首个为评估完整性设计的数据集）和 AutoEval 评估架构（基于 VLM 的自动化评估框架）</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-01-26">2026-01-26</time></p>
+        <h1 class="article-title">Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2601.18723" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2601.18723" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证执行质量（如平滑性、安全性、效率）和来源真实性（区分策略生成轨迹与人类远程操作轨迹）</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2601.18723.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2601.18723.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2601.18723.webp" alt="Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者信息显示来自中国，作者包括 Mengyuan Liu、Juyi Sheng（通讯作者）、Pei…</p>
+        <ul class="article-facts"><li>arXiv 2601.18723</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者信息显示来自中国，作者包括 Mengyuan Liu、Juyi Sheng（通讯作者）、Peiming Li、Ziyi Wang、Tianming Xu、Tiantian Xu、Hong Liu（通讯作者）</li><li>通讯邮箱显示为 tsinghua.edu.cn 域名，推测为<strong>清华大学</strong></li><li>项目主页：https://term-bench.github.io/</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li>论文作者信息显示来自中国，作者包括 Mengyuan Liu、Juyi Sheng（通讯作者）、Peiming Li、Ziyi Wang、Tianming Xu、Tiantian Xu、Hong Liu（通讯作者）</li><li>通讯邮箱显示为 tsinghua.edu.cn 域名，推测为<strong>清华大学</strong></li><li>项目主页：https://term-bench.github.io/</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证<strong>执行质量</strong>（如平滑性、安全性、效率）和<strong>来源真实性</strong>（区分策略生成轨迹与人类远程操作轨迹）</li><li>当前评估主要依赖二元成功率（成功/失败），无法区分"抖动成功"与"平滑成功"，也无法验证"成功演示"是来自真正的自主策略还是隐藏的人类远程操作</li><li>解决方案包括：<strong>Eval-Actions 基准数据集</strong>（首个为评估完整性设计的数据集）和 <strong>AutoEval 评估架构</strong>（基于 VLM 的自动化评估框架）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文针对机器人操作领域评估方法滞后的问题，提出可信评估框架，旨在同时验证<strong>执行质量</strong>（如平滑性、安全性、效率）和<strong>来源真实性</strong>（区分策略生成轨迹与人类远程操作轨迹）</li><li>当前评估主要依赖二元成功率（成功/失败），无法区分"抖动成功"与"平滑成功"，也无法验证"成功演示"是来自真正的自主策略还是隐藏的人类远程操作</li><li>解决方案包括：<strong>Eval-Actions 基准数据集</strong>（首个为评估完整性设计的数据集）和 <strong>AutoEval 评估架构</strong>（基于 VLM 的自动化评估框架）</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>建立可信评估标准</strong>：将评估从二元结果转向细粒度行为诊断，量化平滑性、安全性和效率，解决低质量执行被误认为稳健成功的模糊性问题</li><li><strong>引入 Eval-Actions 基准</strong>：首个评估导向数据集，集成失败场景（2.8k）和混合轨迹来源（策略 vs 人类），支持 Expert Grading (EG)、Rank-Guided (RG) 和 Chain-of-Thought (CoT) 三种监督信号</li><li><strong>提出 AutoEval 框架</strong>：通过时空聚合策略实现 SOTA 评分（SRCC 0.84），利用 GRPO 范式增强物理推理能力，最关键的是实现了高达 <strong>99.6%</strong> 的来源真实性验证精度</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li><strong>建立可信评估标准</strong>：将评估从二元结果转向细粒度行为诊断，量化平滑性、安全性和效率，解决低质量执行被误认为稳健成功的模糊性问题</li><li><strong>引入 Eval-Actions 基准</strong>：首个评估导向数据集，集成失败场景（2.8k）和混合轨迹来源（策略 vs 人类），支持 Expert Grading (EG)、Rank-Guided (RG) 和 Chain-of-Thought (CoT) 三种监督信号</li><li><strong>提出 AutoEval 框架</strong>：通过时空聚合策略实现 SOTA 评分（SRCC 0.84），利用 GRPO 范式增强物理推理能力，最关键的是实现了高达 <strong>99.6%</strong> 的来源真实性验证精度</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Rank-Guided Weight Optimization</strong>：使用遗传算法（GA）优化运动学指标的权重，将自动评估与人类专家判断对齐，生成可靠的 GT 标注</li><li><strong>AutoEval-S</strong>：针对 EG 和 RG 任务，采用时空聚合策略将高频运动细节压缩到固定 token 预算中，引入 Kinematic Calibration Signal（辅助运动学校准信号）补偿视频压缩伪影</li><li><strong>AutoEval-P</strong>：针对 CoT 推理，采用 Group Relative Policy Optimization (GRPO) 范式，结合混合奖励函数（内容准确性 + 格式约束）增强物理推理能力，减少语言幻觉</li><li>任务形式化：将动作质量评估、成功检测、来源分类统一为条件文本生成任务</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>Rank-Guided Weight Optimization</strong>：使用遗传算法（GA）优化运动学指标的权重，将自动评估与人类专家判断对齐，生成可靠的 GT 标注</li><li><strong>AutoEval-S</strong>：针对 EG 和 RG 任务，采用时空聚合策略将高频运动细节压缩到固定 token 预算中，引入 Kinematic Calibration Signal（辅助运动学校准信号）补偿视频压缩伪影</li><li><strong>AutoEval-P</strong>：针对 CoT 推理，采用 Group Relative Policy Optimization (GRPO) 范式，结合混合奖励函数（内容准确性 + 格式约束）增强物理推理能力，减少语言幻觉</li><li>任务形式化：将动作质量评估、成功检测、来源分类统一为条件文本生成任务</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>Eval-Actions 数据集</strong>：约 <strong>52 小时</strong>操作视频，包含 <strong>13,000+</strong> 演示 episode，覆盖 <strong>150+</strong> 任务（包括单臂和双臂协作场景）</li><li><strong>失败场景</strong>：<strong>2.8k</strong> 失败轨迹（约占 37.4%），与成功执行混合</li><li><strong>数据来源</strong>：20 名人类操作员（工程师、学生、非专家）+ 多种 VA 和 VLA 策略生成轨迹</li><li><strong>标注类型</strong>：Expert Grading (EG)、Rank-Guided preferences (RG)、Chain-of-Thought (CoT) 三种监督信号</li><li><strong>实验子集 EAS</strong>：每个样本包含腕部视角、头部视角、第三人称视角同步录制，以及 7-DoF 关节角度和末端执行器状态</li><li><strong>基础模型</strong>：使用 SmolVLM2-2.2B、QwenVL2.5-3B、QwenVL3-4B、InternVL3.5-4B 进行微调</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>Eval-Actions 数据集</strong>：约 <strong>52 小时</strong>操作视频，包含 <strong>13,000+</strong> 演示 episode，覆盖 <strong>150+</strong> 任务（包括单臂和双臂协作场景）</li><li><strong>失败场景</strong>：<strong>2.8k</strong> 失败轨迹（约占 37.4%），与成功执行混合</li><li><strong>数据来源</strong>：20 名人类操作员（工程师、学生、非专家）+ 多种 VA 和 VLA 策略生成轨迹</li><li><strong>标注类型</strong>：Expert Grading (EG)、Rank-Guided preferences (RG)、Chain-of-Thought (CoT) 三种监督信号</li><li><strong>实验子集 EAS</strong>：每个样本包含腕部视角、头部视角、第三人称视角同步录制，以及 7-DoF 关节角度和末端执行器状态</li><li><strong>基础模型</strong>：使用 SmolVLM2-2.2B、QwenVL2.5-3B、QwenVL3-4B、InternVL3.5-4B 进行微调</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：在 Eval-Actions Small (EAS) 子集上进行实验，平衡数据分布</li><li><strong>主要评估指标</strong>：SRCC（Spearman 等级相关系数）、Rₗ₂（相对 L2 误差）、Accuracy、F1-Score、AUC</li><li><strong>关键实验结果</strong>：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：在 Eval-Actions Small (EAS) 子集上进行实验，平衡数据分布</li><li><strong>主要评估指标</strong>：SRCC（Spearman 等级相关系数）、Rₗ₂（相对 L2 误差）、Accuracy、F1-Score、AUC</li><li><strong>关键实验结果</strong>：</li></ul>
 <p> - <strong>Expert Grading (EG)</strong>：AutoEval-S 达到 <strong>SRCC 0.81</strong>，成功预测 Accuracy 90.6%，来源预测 <strong>Accuracy 99.1%</strong></p>
 <p> - <strong>Rank-Guided (RG)</strong>：AutoEval-S 达到 <strong>SRCC 0.84</strong>（最优），来源预测 <strong>Accuracy 99.6%</strong>（最优）</p>
 <p> - <strong>Chain-of-Thought (CoT)</strong>：AutoEval-P 达到 SRCC 0.70</p>
 <p> - <strong>零样本基线对比</strong>：未微调的 VLM（如 InternVL3.5-4B）SRCC 接近 0，证明微调 pipeline 的必要性</p>
 <ul><li><strong>结论</strong>：AutoEval 在细粒度动作质量评估和来源真实性验证方面均达到领先性能，为机器人评估建立了严格的透明标准</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2601.19634/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">AC^2-VLA: Action-Context-Aware Adaptive Computation in Vision-Language-Action Models for Efficient Robotic Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2601.18692/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">A Pragmatic VLA Foundation Model</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2601.19634/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">AC^2-VLA: Action-Context-Aware Adaptive Computation in Vision-Language-Action Models for Efficient Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2601.18692/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">A Pragmatic VLA Foundation Model</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

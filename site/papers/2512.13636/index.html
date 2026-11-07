@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>MindDrive: A Vision-Language-Action Model for Autonomous Driving via Online Reinforcement Learning - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="提出 MindDrive，首个通过在线强化学习（Online RL）训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题 核心创新在于将连续动作空间转换为离散语言决策空间，通过动态语言-动作映射实现高效探索，并利用轨迹级奖励优化推理能力" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2512.13636">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2512.13636.webp" alt="MindDrive: A Vision-Language-Action Model for Autonomous Driving via Online Reinforcement Learning" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">提出 MindDrive，首个通过在线强化学习（Online RL）训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">MindDrive: A Vision-Language-Action Model for Autonomous Driving via Online Reinforcement Learning</h1>
-            <div class="detail-meta">2025-12-15 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2512.13636" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2512.13636" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2512.13636</span></div>
-            <p class="detail-summary">提出 MindDrive，首个通过在线强化学习（Online RL）训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题 核心创新在于将连续动作空间转换为离散语言决策空间，通过动态语言-动作映射实现高效探索，并利用轨迹级奖励优化推理能力</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Huazhong University of Science and Technology（华中科技大…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">提出 MindDrive，首个通过在线强化学习（Online RL）训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题</p>
-  <ul class="reading-intro-points"><li>提出 MindDrive，首个通过在线强化学习（Online RL）训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题</li><li>核心创新在于将连续动作空间转换为离散语言决策空间，通过动态语言-动作映射实现高效探索，并利用轨迹级奖励优化推理能力</li><li>提出双专家架构：Decision Expert（决策专家）负责场景推理和驾驶决策，Action Expert（动作专家）将语言决策动态映射为可行轨迹，两者共享基础LLM但使用不同LoRA参数</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2025-12-15">2025-12-15</time></p>
+        <h1 class="article-title">MindDrive: A Vision-Language-Action Model for Autonomous Driving via Online Reinforcement Learning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2512.13636" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2512.13636" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 MindDrive，首个通过在线强化学习（Online RL）训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2512.13636.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2512.13636.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2512.13636.webp" alt="MindDrive: A Vision-Language-Action Model for Autonomous Driving via Online Reinforcement Learning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Huazhong University of Science and Technology（华中科技大…</p>
+        <ul class="article-facts"><li>arXiv 2512.13636</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Huazhong University of Science and Technology</strong>（华中科技大学）</li><li><strong>Xiaomi EV</strong>（小米汽车）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Huazhong University of Science and Technology</strong>（华中科技大学）</li><li><strong>Xiaomi EV</strong>（小米汽车）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>MindDrive</strong>，首个通过<strong>在线强化学习（Online RL）</strong>训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题</li><li>核心创新在于将连续动作空间转换为离散语言决策空间，通过动态语言-动作映射实现高效探索，并利用轨迹级奖励优化推理能力</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>MindDrive</strong>，首个通过<strong>在线强化学习（Online RL）</strong>训练的视觉-语言-动作（VLA）自动驾驶模型，解决传统模仿学习（IL）中的分布偏移和因果混淆问题</li><li>核心创新在于将连续动作空间转换为离散语言决策空间，通过动态语言-动作映射实现高效探索，并利用轨迹级奖励优化推理能力</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出双专家架构：<strong>Decision Expert</strong>（决策专家）负责场景推理和驾驶决策，<strong>Action Expert</strong>（动作专家）将语言决策动态映射为可行轨迹，两者共享基础LLM但使用不同LoRA参数</li><li>建立<strong>语言-动作映射机制</strong>，通过模仿学习预训练建立元动作与多模态轨迹的一一对应，为在线RL提供高质量候选轨迹并缩小探索空间</li><li>设计<strong>计算高效的在线RL框架</strong>，基于CARLA模拟器实现闭环交互训练，采用稀疏奖励函数和PPO算法优化决策专家的推理能力</li><li>在<strong>Bench2Drive</strong>基准上取得SOTA性能：使用轻量级<strong>Qwen2-0.5B</strong>模型，Driving Score达<strong>78.04</strong>，Success Rate达<strong>55.09%</strong>，超越同规模IL基线<strong>ORION</strong> 5.15 DS和9.26% SR</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出双专家架构：<strong>Decision Expert</strong>（决策专家）负责场景推理和驾驶决策，<strong>Action Expert</strong>（动作专家）将语言决策动态映射为可行轨迹，两者共享基础LLM但使用不同LoRA参数</li><li>建立<strong>语言-动作映射机制</strong>，通过模仿学习预训练建立元动作与多模态轨迹的一一对应，为在线RL提供高质量候选轨迹并缩小探索空间</li><li>设计<strong>计算高效的在线RL框架</strong>，基于CARLA模拟器实现闭环交互训练，采用稀疏奖励函数和PPO算法优化决策专家的推理能力</li><li>在<strong>Bench2Drive</strong>基准上取得SOTA性能：使用轻量级<strong>Qwen2-0.5B</strong>模型，Driving Score达<strong>78.04</strong>，Success Rate达<strong>55.09%</strong>，超越同规模IL基线<strong>ORION</strong> 5.15 DS和9.26% SR</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>两阶段训练流程</strong>：第一阶段用模仿学习（IL）训练语言-动作对齐，包括交叉熵损失、行为克隆损失、VAE损失和检测损失；第二阶段用在线强化学习（RL）优化决策专家，采用PPO算法、GAE优势估计和KL散度正则化防止灾难性遗忘</li><li><strong>动态映射机制</strong>：Decision Expert生成7种速度元动作和6种路径元动作，Action Expert通过VAE和GRU解码器将其转换为6个速度航点（3秒轨迹，2Hz采样）和20个路径航点（20米路径，1米间隔）</li><li><strong>高效RL训练</strong>：部署24个并行CARLA采集器，使用状态嵌入缓存减少内存开销，支持大批量训练；价值网络共享LLM权重，仅最后一层替换为MLP</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>两阶段训练流程</strong>：第一阶段用模仿学习（IL）训练语言-动作对齐，包括交叉熵损失、行为克隆损失、VAE损失和检测损失；第二阶段用在线强化学习（RL）优化决策专家，采用PPO算法、GAE优势估计和KL散度正则化防止灾难性遗忘</li><li><strong>动态映射机制</strong>：Decision Expert生成7种速度元动作和6种路径元动作，Action Expert通过VAE和GRU解码器将其转换为6个速度航点（3秒轨迹，2Hz采样）和20个路径航点（20米路径，1米间隔）</li><li><strong>高效RL训练</strong>：部署24个并行CARLA采集器，使用状态嵌入缓存减少内存开销，支持大批量训练；价值网络共享LLM权重，仅最后一层替换为MLP</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>Bench2Drive</strong>基准，基于CARLA模拟器，包含1000个训练片段（base set）和220个短路线用于闭环评估，覆盖44种交互场景</li><li><strong>模型规模</strong>：基础LLM为<strong>Qwen2-0.5B</strong>（5亿参数），视觉编码器为<strong>EVA-02-L</strong>，LoRA秩维度为16</li><li><strong>训练资源</strong>：32块<strong>NVIDIA A800 GPU</strong>（80GB显存），24个并行CARLA模拟器用于RL数据收集</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>Bench2Drive</strong>基准，基于CARLA模拟器，包含1000个训练片段（base set）和220个短路线用于闭环评估，覆盖44种交互场景</li><li><strong>模型规模</strong>：基础LLM为<strong>Qwen2-0.5B</strong>（5亿参数），视觉编码器为<strong>EVA-02-L</strong>，LoRA秩维度为16</li><li><strong>训练资源</strong>：32块<strong>NVIDIA A800 GPU</strong>（80GB显存），24个并行CARLA模拟器用于RL数据收集</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：CARLA模拟器闭环评估，官方Bench2Drive基准</li><li><strong>主要指标</strong>：<strong>Driving Score (DS)</strong>、<strong>Success Rate (SR)</strong>、<strong>Multi-Ability</strong>（包含Merging、Overtaking、Emergency Brake、Give Way、Traffic Sign五种能力）</li><li><strong>关键结果</strong>：MindDrive在Overtaking能力提升<strong>55.56%</strong>，Give Way提升<strong>30%</strong>；相比离线RL方法RecogDrive，DS提升6.68，SR提升9.64%；相比同规模IL方法ORION（Qwen2-0.5B），Mean Ability提升5.57%</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：CARLA模拟器闭环评估，官方Bench2Drive基准</li><li><strong>主要指标</strong>：<strong>Driving Score (DS)</strong>、<strong>Success Rate (SR)</strong>、<strong>Multi-Ability</strong>（包含Merging、Overtaking、Emergency Brake、Give Way、Traffic Sign五种能力）</li><li><strong>关键结果</strong>：MindDrive在Overtaking能力提升<strong>55.56%</strong>，Give Way提升<strong>30%</strong>；相比离线RL方法RecogDrive，DS提升6.68，SR提升9.64%；相比同规模IL方法ORION（Qwen2-0.5B），Mean Ability提升5.57%</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2512.14031/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Sample-Efficient Robot Skill Learning for Construction Tasks: Benchmarking Hierarchical Reinforcement Learning and Vision-Language-Action VLA Model</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2512.13080/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Spatial-Aware VLA Pretraining through Visual-Physical Alignment from Human Videos</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2512.14031/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Sample-Efficient Robot Skill Learning for Construction Tasks: Benchmarking Hierarchical Reinforcement Learning and Vision-Language-Action VLA Model</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2512.13080/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Spatial-Aware VLA Pretraining through Visual-Physical Alignment from Human Videos</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

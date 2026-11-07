@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。 论文提出LexiconVLA可检索原子动作框架与AtomAction细粒度原子动作数据集，旨在学习可跨任务复用的原子动作离散词表，通过组合基础交互原语完成未见任务，同时支持执行失败时的自动恢复。 核心目标是无需任务特定专家或部署阶段参数更新，仅利用预训练的通用原子动作知识，让共享策略通过检索、组合原子动作完成新型操作任务。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2609.36774">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,111 +57,76 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.36774.webp" alt="LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks</h1>
-            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.36774" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.36774" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.36774</span></div>
-            <p class="detail-summary">现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。 论文提出LexiconVLA可检索原子动作框架与AtomAction细粒度原子动作数据集，旨在学习可跨任务复用的原子动作离散词表，通过组合基础交互原语完成未见任务，同时支持执行失败时的自动恢复。 核心目标是无需任务特定专家或部署阶段参数更新，仅利用预训练的通用原子动作知识，让共享策略通过检索、组合原子动作完成新型操作任务。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">中山大学（Sun Yat-sen University）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。</p>
-  <ul class="reading-intro-points"><li>现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。</li><li>论文提出LexiconVLA可检索原子动作框架与AtomAction细粒度原子动作数据集，旨在学习可跨任务复用的原子动作离散词表，通过组合基础交互原语完成未见任务，同时支持执行失败时的自动恢复。</li><li>核心目标是无需任务特定专家或部署阶段参数更新，仅利用预训练的通用原子动作知识，让共享策略通过检索、组合原子动作完成新型操作任务。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-09-29">2026-09-29</time></p>
+        <h1 class="article-title">LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.36774" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.36774" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.36774.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2609.36774.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2609.36774.webp" alt="LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中山大学（Sun Yat-sen University）</p>
+        <ul class="article-facts"><li>arXiv 2609.36774</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中山大学（Sun Yat-sen University）</strong></li><li><strong>鹏城实验室（Pengcheng Laboratory）</strong></li><li><strong>X-Era AI Lab</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>中山大学（Sun Yat-sen University）</strong></li><li><strong>鹏城实验室（Pengcheng Laboratory）</strong></li><li><strong>X-Era AI Lab</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。</li><li>论文提出<strong>LexiconVLA</strong>可检索原子动作框架与<strong>AtomAction</strong>细粒度原子动作数据集，旨在学习可跨任务复用的原子动作离散词表，通过组合基础交互原语完成未见任务，同时支持执行失败时的自动恢复。</li><li>核心目标是无需任务特定专家或部署阶段参数更新，仅利用预训练的通用原子动作知识，让共享策略通过检索、组合原子动作完成新型操作任务。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>现有视觉-语言-动作（VLA）模型在未见任务上泛化性能骤降，论文通过诊断研究揭示：任务级训练得到的策略无法可靠独立执行任务所需的原子动作原语，是跨任务泛化的核心瓶颈。</li><li>论文提出<strong>LexiconVLA</strong>可检索原子动作框架与<strong>AtomAction</strong>细粒度原子动作数据集，旨在学习可跨任务复用的原子动作离散词表，通过组合基础交互原语完成未见任务，同时支持执行失败时的自动恢复。</li><li>核心目标是无需任务特定专家或部署阶段参数更新，仅利用预训练的通用原子动作知识，让共享策略通过检索、组合原子动作完成新型操作任务。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>AtomAction Dataset</strong>，包含来自69个任务、57803个标注的原子动作片段，每个片段配有时间边界观测、状态轨迹、原子动作标签与8种风格的语言描述，为原子动作学习提供了细粒度监督来源；配套诊断分析首次系统揭示了任务完成率与原子动作可靠独立执行之间的显著差距。</li><li>提出<strong>LexiconVLA</strong>框架，学习包含全局码书（捕获跨任务共享的交互结构）和细节码书（保留细粒度执行变化）的双层级可检索原子动作词表，通过<strong>视觉-原子动作对齐（V3A）</strong>将词表 grounded 在动作对应的视觉状态变化中，提升动作表示的可迁移性。</li><li>设计闭环执行架构：VLM规划器将任务指令分解为原子子任务，场景感知适配器根据当前观测检索对应原子动作码条件化共享VLA策略，配合NEXT/CONTINUE/RETRY/REPLAN四类调度技能实现执行监控与失败恢复，无需任务特定专家或部署时参数更新。</li><li>在5种策略骨干、26个RLBench任务与真实机器人平台上的广泛实验验证了方法有效性：LexiconVLA在保持已见任务性能的同时大幅提升未见任务成功率，搭配BridgeVLA时未见任务成功率从16.67%提升至34.17%（+17.50个百分点），整体成功率71.08%为所有对比方法最高。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出<strong>AtomAction Dataset</strong>，包含来自69个任务、57803个标注的原子动作片段，每个片段配有时间边界观测、状态轨迹、原子动作标签与8种风格的语言描述，为原子动作学习提供了细粒度监督来源；配套诊断分析首次系统揭示了任务完成率与原子动作可靠独立执行之间的显著差距。</li><li>提出<strong>LexiconVLA</strong>框架，学习包含全局码书（捕获跨任务共享的交互结构）和细节码书（保留细粒度执行变化）的双层级可检索原子动作词表，通过<strong>视觉-原子动作对齐（V3A）</strong>将词表 grounded 在动作对应的视觉状态变化中，提升动作表示的可迁移性。</li><li>设计闭环执行架构：VLM规划器将任务指令分解为原子子任务，场景感知适配器根据当前观测检索对应原子动作码条件化共享VLA策略，配合NEXT/CONTINUE/RETRY/REPLAN四类调度技能实现执行监控与失败恢复，无需任务特定专家或部署时参数更新。</li><li>在5种策略骨干、26个RLBench任务与真实机器人平台上的广泛实验验证了方法有效性：LexiconVLA在保持已见任务性能的同时大幅提升未见任务成功率，搭配BridgeVLA时未见任务成功率从16.67%提升至34.17%（+17.50个百分点），整体成功率71.08%为所有对比方法最高。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>整体架构分为离线词表学习与在线执行两个阶段：离线阶段通过<strong>向量量化原子动作模型（VQAA）</strong>学习原子动作词表，在线阶段VLM规划器分解任务为原子子任务，场景感知适配器检索对应词表条目条件化共享VLA策略执行，执行反馈驱动子任务调度。</li><li>关键技术1：<strong>Atomic Action-NSVQ</strong>采用噪声替换向量量化（NSVQ）解决离散量化不可导问题，通过掩码平均池化提取全局动作特征、可学习查询交叉注意力提取细节动作特征，分别量化到全局码书与细节码书，再用条件流匹配解码器重建原子动作轨迹，同时保留动作的通用模式与执行细节。</li><li>关键技术2：<strong>视觉-原子动作对齐（V3A）</strong>引入两类视觉监督：一是通过初始-最终观测的视觉变化重建对应原子动作，让动作码与视觉交互变化关联；二是用全局码通过FiLM调制初始帧特征，预测最终帧的DINOv2特征，让动作码与动作导致的视觉结果关联，强化词表的视觉 grounded 性。</li><li>核心创新：首次显式建模可跨任务复用的原子动作离散词表，替代隐式存储在策略参数中的动作知识；双层级码书设计同时平衡动作的通用性与执行细节；闭环调度架构无需额外训练即可支持新任务的执行与失败恢复。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>整体架构分为离线词表学习与在线执行两个阶段：离线阶段通过<strong>向量量化原子动作模型（VQAA）</strong>学习原子动作词表，在线阶段VLM规划器分解任务为原子子任务，场景感知适配器检索对应词表条目条件化共享VLA策略执行，执行反馈驱动子任务调度。</li><li>关键技术1：<strong>Atomic Action-NSVQ</strong>采用噪声替换向量量化（NSVQ）解决离散量化不可导问题，通过掩码平均池化提取全局动作特征、可学习查询交叉注意力提取细节动作特征，分别量化到全局码书与细节码书，再用条件流匹配解码器重建原子动作轨迹，同时保留动作的通用模式与执行细节。</li><li>关键技术2：<strong>视觉-原子动作对齐（V3A）</strong>引入两类视觉监督：一是通过初始-最终观测的视觉变化重建对应原子动作，让动作码与视觉交互变化关联；二是用全局码通过FiLM调制初始帧特征，预测最终帧的DINOv2特征，让动作码与动作导致的视觉结果关联，强化词表的视觉 grounded 性。</li><li>核心创新：首次显式建模可跨任务复用的原子动作离散词表，替代隐式存储在策略参数中的动作知识；双层级码书设计同时平衡动作的通用性与执行细节；闭环调度架构无需额外训练即可支持新任务的执行与失败恢复。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>训练与评估数据集：<strong>AtomAction Dataset</strong>，包含57803个原子动作片段，来自RLBench基准的69个任务，涵盖18类原子动作，每个样本包含39维低维状态轨迹、五视角RGB/深度/掩码边界观测、原子动作标签与多风格语言描述；仿真评估基于<strong>RLBench</strong>基准，包含18个策略已见任务与8个策略未见任务。</li><li>模型规模：论文未明确给出VQAA、场景感知适配器等组件的具体参数量与码书默认规模，仅提及通过附录分析验证了默认码书大小的最优性。</li><li>训练资源：提供的论文文本未提及具体的GPU/TPU等训练硬件配置信息，真实机器人实验的平台配置也未在提供文本中明确标注。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>训练与评估数据集：<strong>AtomAction Dataset</strong>，包含57803个原子动作片段，来自RLBench基准的69个任务，涵盖18类原子动作，每个样本包含39维低维状态轨迹、五视角RGB/深度/掩码边界观测、原子动作标签与多风格语言描述；仿真评估基于<strong>RLBench</strong>基准，包含18个策略已见任务与8个策略未见任务。</li><li>模型规模：论文未明确给出VQAA、场景感知适配器等组件的具体参数量与码书默认规模，仅提及通过附录分析验证了默认码书大小的最优性。</li><li>训练资源：提供的论文文本未提及具体的GPU/TPU等训练硬件配置信息，真实机器人实验的平台配置也未在提供文本中明确标注。</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估环境与基准：仿真实验基于<strong>RLBench</strong>基准，每任务每随机种子测试25轮episode，共3个随机种子取均值；真实机器人实验额外测试标准任务与泛化场景的成功率。</li><li>主要评估指标：任务成功率（%），按未见任务、已见任务、整体任务三类分别统计。</li><li>关键实验结果：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境与基准：仿真实验基于<strong>RLBench</strong>基准，每任务每随机种子测试25轮episode，共3个随机种子取均值；真实机器人实验额外测试标准任务与泛化场景的成功率。</li><li>主要评估指标：任务成功率（%），按未见任务、已见任务、整体任务三类分别统计。</li><li>关键实验结果：</li></ul>
 <p> - 现有VLA策略已见任务成功率最高可达89.78%（BridgeVLA），但未见任务成功率仅11.83%~19.17%，证实任务级训练的泛化瓶颈；</p>
 <p> - LexiconVLA在5种不同架构的策略骨干（PerAct、RVT、RVT-2、BridgeVLA++、BridgeVLA）上均实现性能提升，未见任务与整体成功率均高于对应基线，已见任务性能基本保持；</p>
 <p> - 搭配BridgeVLA时，未见任务成功率从16.67%提升至34.17%（+17.50pp），整体成功率从67.28%提升至71.08%，为所有对比方法最高，超过次优的3D Diffuser Actor 5.50个百分点；</p>
 <p> - 消融实验验证了规划器、双层级码书、V3A视觉对齐模块的必要性，移除任一组件都会导致未见任务与整体成功率下降2~6个百分点；</p>
 <p> - 真实机器人实验验证了LexiconVLA的逐步原子动作执行能力与执行错误后的自动恢复能力。</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.36915/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">AeroManip-VLA: Scalable Vision-Language-Action Learning for Aerial Manipulation with RL-Generated Demonstrations</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.36720/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">T$^2$Mem: Learning Test-Time Memory for Robotics</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2609.36915/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">AeroManip-VLA: Scalable Vision-Language-Action Learning for Aerial Manipulation with RL-Generated Demonstrations</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2609.36720/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">T$^2$Mem: Learning Test-Time Memory for Robotics</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

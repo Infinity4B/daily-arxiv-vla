@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Latent Chain-of-Thought World Modeling for End-to-End Driving - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出 LCDrive（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过潜在空间中的思维链（Latent Chain-of-Thought）推理替代传统的自然语言推理 核心动机：自然语言不适合表达驾驶中的时空几何和多智能体交互，且文本推理引入显著延迟；潜在推理更高效且与动作对齐" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2512.10226">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,113 +57,78 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2512.10226.webp" alt="Latent Chain-of-Thought World Modeling for End-to-End Driving" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出 LCDrive（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过潜在空间中的思维链（Latent Chain-of-Thought）推理替代传统的自然语言推理</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Latent Chain-of-Thought World Modeling for End-to-End Driving</h1>
-            <div class="detail-meta">2025-12-11 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2512.10226" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2512.10226" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2512.10226</span></div>
-            <p class="detail-summary">论文提出 LCDrive（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过潜在空间中的思维链（Latent Chain-of-Thought）推理替代传统的自然语言推理 核心动机：自然语言不适合表达驾驶中的时空几何和多智能体交互，且文本推理引入显著延迟；潜在推理更高效且与动作对齐</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">UT Austin（德克萨斯大学奥斯汀分校）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出 LCDrive（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过潜在空间中的思维链（Latent Chain-of-Thought）推理替代传统的自然语言推理</p>
-  <ul class="reading-intro-points"><li>论文提出 LCDrive（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过潜在空间中的思维链（Latent Chain-of-Thought）推理替代传统的自然语言推理</li><li>核心动机：自然语言不适合表达驾驶中的时空几何和多智能体交互，且文本推理引入显著延迟；潜在推理更高效且与动作对齐</li><li>提出 LCDrive 框架，在潜在空间中进行思维链推理，使用与动作相同的词汇表表示推理过程</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2025-12-11">2025-12-11</time></p>
+        <h1 class="article-title">Latent Chain-of-Thought World Modeling for End-to-End Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2512.10226" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2512.10226" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 LCDrive（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过潜在空间中的思维链（Latent Chain-of-Thought）推理替代传统的自然语言推理</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2512.10226.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2512.10226.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2512.10226.webp" alt="Latent Chain-of-Thought World Modeling for End-to-End Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">UT Austin（德克萨斯大学奥斯汀分校）</p>
+        <ul class="article-facts"><li>arXiv 2512.10226</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>UT Austin</strong>（德克萨斯大学奥斯汀分校）</li><li><strong>NVIDIA</strong>（英伟达）</li><li><strong>Stanford University</strong>（斯坦福大学）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>UT Austin</strong>（德克萨斯大学奥斯汀分校）</li><li><strong>NVIDIA</strong>（英伟达）</li><li><strong>Stanford University</strong>（斯坦福大学）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>LCDrive</strong>（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过<strong>潜在空间中的思维链（Latent Chain-of-Thought）推理</strong>替代传统的自然语言推理</li><li>核心动机：自然语言不适合表达驾驶中的时空几何和多智能体交互，且文本推理引入显著延迟；潜在推理更高效且与动作对齐</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出 <strong>LCDrive</strong>（Latent-CoT-Drive），一种用于端到端自动驾驶的视觉-语言-动作（VLA）模型，通过<strong>潜在空间中的思维链（Latent Chain-of-Thought）推理</strong>替代传统的自然语言推理</li><li>核心动机：自然语言不适合表达驾驶中的时空几何和多智能体交互，且文本推理引入显著延迟；潜在推理更高效且与动作对齐</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>LCDrive</strong> 框架，在潜在空间中进行思维链推理，使用与动作相同的词汇表表示推理过程</li><li>设计<strong>交错式潜在推理机制</strong>：交替生成动作提议令牌（action-proposal tokens）和潜在世界模型令牌（LWM tokens），实现反事实未来模拟</li><li>开发<strong>三阶段训练流程</strong>：非推理预训练 → 潜在CoT冷启动（监督学习）→ 闭环强化学习优化</li><li>证明潜在CoT比文本CoT具有<strong>更快的推理速度、更高的轨迹质量</strong>，且从RL中获得更大提升</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>LCDrive</strong> 框架，在潜在空间中进行思维链推理，使用与动作相同的词汇表表示推理过程</li><li>设计<strong>交错式潜在推理机制</strong>：交替生成动作提议令牌（action-proposal tokens）和潜在世界模型令牌（LWM tokens），实现反事实未来模拟</li><li>开发<strong>三阶段训练流程</strong>：非推理预训练 → 潜在CoT冷启动（监督学习）→ 闭环强化学习优化</li><li>证明潜在CoT比文本CoT具有<strong>更快的推理速度、更高的轨迹质量</strong>，且从RL中获得更大提升</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>潜在世界模型（LWM）</strong>：编码自车周围智能体的1秒时序窗口状态，压缩为2个紧凑令牌</li><li><strong>推理令牌结构</strong>：每个推理分支为交错序列 <code>[A₀, LWM₁, A₁, LWM₂, ..., A_{K-1}, LWM_K]</code>，其中A为1秒动作块（10个令牌），LWM为预测的未来世界状态</li><li><strong>多分支推理</strong>：默认使用B=2个分支，顺序生成以利用先前推理上下文</li><li><strong>三阶段训练</strong>：</li></ul>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>潜在世界模型（LWM）</strong>：编码自车周围智能体的1秒时序窗口状态，压缩为2个紧凑令牌</li><li><strong>推理令牌结构</strong>：每个推理分支为交错序列 <code>[A₀, LWM₁, A₁, LWM₂, ..., A_{K-1}, LWM_K]</code>，其中A为1秒动作块（10个令牌），LWM为预测的未来世界状态</li><li><strong>多分支推理</strong>：默认使用B=2个分支，顺序生成以利用先前推理上下文</li><li><strong>三阶段训练</strong>：</li></ul>
 <p> - Stage 0：训练非推理VLA基线</p>
 <p> - Stage 1：用冻结基线生成动作提议，结合GT未来构建监督信号，训练潜在CoT结构</p>
 <p> - Stage 2：使用<strong>GRPO（Group Relative Policy Optimization）</strong>进行强化学习，以ADE为奖励优化推理和动作生成</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>PhysicalAI-AV</strong> 数据集，1727小时真实驾驶数据，使用场景平衡子集（87小时训练，53小时验证，23,758个验证片段）</li><li><strong>模型架构</strong>：<strong>Qwen3-0.5B</strong> 作为语言-动作模块，<strong>DINOv2</strong> ViT作为图像编码器</li><li><strong>训练配置</strong>：Stage 0（100k步，batch size 128），Stage 1（10k步），Stage 2 GRPO（3k步，group size 8）</li><li><strong>推理深度</strong>：K=5（5个1秒推理步），B=2（2个分支）</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>PhysicalAI-AV</strong> 数据集，1727小时真实驾驶数据，使用场景平衡子集（87小时训练，53小时验证，23,758个验证片段）</li><li><strong>模型架构</strong>：<strong>Qwen3-0.5B</strong> 作为语言-动作模块，<strong>DINOv2</strong> ViT作为图像编码器</li><li><strong>训练配置</strong>：Stage 0（100k步，batch size 128），Stage 1（10k步），Stage 2 GRPO（3k步，group size 8）</li><li><strong>推理深度</strong>：K=5（5个1秒推理步），B=2（2个分支）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估指标</strong>：ADE（平均位移误差）、OffRoad（驶离道路比例）、Coll（碰撞比例）、Corner Dist（角点距离）</li><li><strong>主要结果</strong>（Table 1）：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估指标</strong>：ADE（平均位移误差）、OffRoad（驶离道路比例）、Coll（碰撞比例）、Corner Dist（角点距离）</li><li><strong>主要结果</strong>（Table 1）：</li></ul>
 <p> - <strong>LCDrive（Latent CoT + RL）</strong>：ADE 1.626，OffRoad₂.₅ 1.219，Coll₅.₀ 0.836</p>
 <p> - 优于非推理基线（ADE 1.762）和文本CoT基线（ADE 1.650）</p>
 <p> - 使用GT LWM的Latent CoT* + RL达到最佳性能（ADE 1.197）</p>
 <ul><li><strong>场景分析</strong>（Table 2）：在复杂交互场景（Intersection Navigation、Merging、Turning Maneuver）中优势显著，RL对潜在CoT的提升效果明显大于基线</li><li><strong>推理效率</strong>：潜在CoT比文本CoT显著减少令牌数量，推理速度更快</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2512.10394/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RoboNeuron: A Modular Framework Linking Foundation Models and ROS for Embodied AI</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2512.11908/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Safe Learning for Contact-Rich Robot Tasks: A Survey from Classical Learning-Based Methods to Safe Foundation Models</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2512.10394/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RoboNeuron: A Modular Framework Linking Foundation Models and ROS for Embodied AI</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2512.11908/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Safe Learning for Contact-Rich Robot Tasks: A Survey from Classical Learning-Based Methods to Safe Foundation Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

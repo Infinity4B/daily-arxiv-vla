@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>LongTail Driving Scenarios with Reasoning Traces: The KITScenes LongTail Dataset - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出了一个用于端到端驾驶的新数据集 KITScenes LongTail，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题 数据集提供多视角视频数据、轨迹、高级指令和详细推理轨迹，支持上下文学习和少样本泛化 该基准测试不仅评估安全性和舒适性，还评估指令跟随和模型输出之间的语义一致性，并提供英语、西班牙语和中文的多语言推理轨迹" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2603.23607">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,110 +57,75 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2603.23607.webp" alt="LongTail Driving Scenarios with Reasoning Traces: The KITScenes LongTail Dataset" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出了一个用于端到端驾驶的新数据集 KITScenes LongTail，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">LongTail Driving Scenarios with Reasoning Traces: The KITScenes LongTail Dataset</h1>
-            <div class="detail-meta">2026-03-24 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2603.23607" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2603.23607" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2603.23607</span></div>
-            <p class="detail-summary">论文提出了一个用于端到端驾驶的新数据集 KITScenes LongTail，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题 数据集提供多视角视频数据、轨迹、高级指令和详细推理轨迹，支持上下文学习和少样本泛化 该基准测试不仅评估安全性和舒适性，还评估指令跟随和模型输出之间的语义一致性，并提供英语、西班牙语和中文的多语言推理轨迹</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Karlsruhe Institute of Technology (KIT) - 德国卡尔斯鲁厄理工…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出了一个用于端到端驾驶的新数据集 KITScenes LongTail，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题</p>
-  <ul class="reading-intro-points"><li>论文提出了一个用于端到端驾驶的新数据集 KITScenes LongTail，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题</li><li>数据集提供多视角视频数据、轨迹、高级指令和详细推理轨迹，支持上下文学习和少样本泛化</li><li>该基准测试不仅评估安全性和舒适性，还评估指令跟随和模型输出之间的语义一致性，并提供英语、西班牙语和中文的多语言推理轨迹</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-03-24">2026-03-24</time></p>
+        <h1 class="article-title">LongTail Driving Scenarios with Reasoning Traces: The KITScenes LongTail Dataset</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2603.23607" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2603.23607" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了一个用于端到端驾驶的新数据集 KITScenes LongTail，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2603.23607.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2603.23607.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2603.23607.webp" alt="LongTail Driving Scenarios with Reasoning Traces: The KITScenes LongTail Dataset 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Karlsruhe Institute of Technology (KIT) - 德国卡尔斯鲁厄理工…</p>
+        <ul class="article-facts"><li>arXiv 2603.23607</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Karlsruhe Institute of Technology (KIT)</strong> - 德国卡尔斯鲁厄理工学院</li><li><strong>FZI Research Center for Information Technology</strong> - 德国信息技术研究中心</li><li><strong>University Charles III of Madrid</strong> - 西班牙马德里卡洛斯三世大学</li><li><strong>Technical University of Madrid</strong> - 马德里理工大学</li><li><strong>University of Toronto</strong> - 多伦多大学</li><li><strong>Delft University of Technology</strong> - 代尔夫特理工大学</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Karlsruhe Institute of Technology (KIT)</strong> - 德国卡尔斯鲁厄理工学院</li><li><strong>FZI Research Center for Information Technology</strong> - 德国信息技术研究中心</li><li><strong>University Charles III of Madrid</strong> - 西班牙马德里卡洛斯三世大学</li><li><strong>Technical University of Madrid</strong> - 马德里理工大学</li><li><strong>University of Toronto</strong> - 多伦多大学</li><li><strong>Delft University of Technology</strong> - 代尔夫特理工大学</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了一个用于端到端驾驶的新数据集 <strong>KITScenes LongTail</strong>，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题</li><li>数据集提供多视角视频数据、轨迹、高级指令和详细推理轨迹，支持上下文学习和少样本泛化</li><li>该基准测试不仅评估安全性和舒适性，还评估指令跟随和模型输出之间的语义一致性，并提供英语、西班牙语和中文的多语言推理轨迹</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出了一个用于端到端驾驶的新数据集 <strong>KITScenes LongTail</strong>，专注于长尾驾驶事件，旨在解决自动驾驶在罕见场景下的泛化问题</li><li>数据集提供多视角视频数据、轨迹、高级指令和详细推理轨迹，支持上下文学习和少样本泛化</li><li>该基准测试不仅评估安全性和舒适性，还评估指令跟随和模型输出之间的语义一致性，并提供英语、西班牙语和中文的多语言推理轨迹</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>贡献点 1</strong>: 提出长尾驾驶场景数据集，包含多视角视频、高级指令和人类标注的多语言推理轨迹</li><li><strong>贡献点 2</strong>: 提出语义一致性度量方法，量化推理轨迹中描述的驾驶动作与预测轨迹中动作的匹配程度</li><li><strong>贡献点 3</strong>: 提出多机动分数（MMS），这是一个轻量级指标，覆盖多种可能的机动动作、驾驶舒适性和指令跟随</li><li><strong>贡献点 4</strong>: 评估视觉语言模型（VLMs）的零样本和少样本规划能力，证明推理追踪对长尾场景规划的重要性</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li><strong>贡献点 1</strong>: 提出长尾驾驶场景数据集，包含多视角视频、高级指令和人类标注的多语言推理轨迹</li><li><strong>贡献点 2</strong>: 提出语义一致性度量方法，量化推理轨迹中描述的驾驶动作与预测轨迹中动作的匹配程度</li><li><strong>贡献点 3</strong>: 提出多机动分数（MMS），这是一个轻量级指标，覆盖多种可能的机动动作、驾驶舒适性和指令跟随</li><li><strong>贡献点 4</strong>: 评估视觉语言模型（VLMs）的零样本和少样本规划能力，证明推理追踪对长尾场景规划的重要性</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>数据收集涵盖城郊环境和高速公路，通过调整路线包含大量施工区域和交叉口，筛选罕见事件如恶劣天气、道路封闭和事故</li><li>提供六视角视频数据和帧级拼接的360度全景视图，支持ViTs处理的图像格式</li><li>由领域专家（自动驾驶研究人员）用母语或流利语言标注推理轨迹，包含五个问题涵盖场景描述和基于专家轨迹的驾驶动作解释</li><li>使用Rocchio分类和句子嵌入测量语义一致性，采用EmbeddingGemma 0.3B生成嵌入向量</li><li>MMS指标通过计算规划轨迹与参考轨迹的相似度来排名，结合舒适度惩罚（基于加加速度和曲折度）和指令跟随评估</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>数据收集涵盖城郊环境和高速公路，通过调整路线包含大量施工区域和交叉口，筛选罕见事件如恶劣天气、道路封闭和事故</li><li>提供六视角视频数据和帧级拼接的360度全景视图，支持ViTs处理的图像格式</li><li>由领域专家（自动驾驶研究人员）用母语或流利语言标注推理轨迹，包含五个问题涵盖场景描述和基于专家轨迹的驾驶动作解释</li><li>使用Rocchio分类和句子嵌入测量语义一致性，采用EmbeddingGemma 0.3B生成嵌入向量</li><li>MMS指标通过计算规划轨迹与参考轨迹的相似度来排名，结合舒适度惩罚（基于加加速度和曲折度）和指令跟随评估</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>: KITScenes LongTail，包含1000个场景，分为训练集500个、测试集400个、验证集100个</li><li><strong>场景类型</strong>: 夜间、恶劣天气（雪/冻雨）、大雨、施工区域、超车/变道、交叉口等</li><li><strong>视频数据</strong>: 9秒长多视角视频，360度水平视场，6个视角，原始分辨率3200×2200，针孔模型3488×2272，拼接后5746×512，帧率5Hz</li><li><strong>高级指令</strong>: 包括直行（45.16%）、右转（14.53%）、左转（6.17%）、使用右车道（7.75%）、使用左车道（6.54%）、超车命令（13.56%）</li><li><strong>推理轨迹</strong>: 英语、中文、西班牙语三种语言，来自不同文化背景的领域专家</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>: KITScenes LongTail，包含1000个场景，分为训练集500个、测试集400个、验证集100个</li><li><strong>场景类型</strong>: 夜间、恶劣天气（雪/冻雨）、大雨、施工区域、超车/变道、交叉口等</li><li><strong>视频数据</strong>: 9秒长多视角视频，360度水平视场，6个视角，原始分辨率3200×2200，针孔模型3488×2272，拼接后5746×512，帧率5Hz</li><li><strong>高级指令</strong>: 包括直行（45.16%）、右转（14.53%）、左转（6.17%）、使用右车道（7.75%）、使用左车道（6.54%）、超车命令（13.56%）</li><li><strong>推理轨迹</strong>: 英语、中文、西班牙语三种语言，来自不同文化背景的领域专家</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估指标</strong>: MMS（多机动分数）、L2误差、语义一致性、指令跟随、驾驶舒适性</li><li><strong>主要发现</strong>:</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估指标</strong>: MMS（多机动分数）、L2误差、语义一致性、指令跟随、驾驶舒适性</li><li><strong>主要发现</strong>:</li></ul>
 <p> - MMS与L2误差和闭环DrivingScores呈负相关，证明其作为评估指标的有效性</p>
 <p> - 零样本规划在长尾场景中表现脆弱，少样本提示能改善规划能力</p>
 <p> - 语义一致性较低表明模型推理与规划之间存在不一致</p>
 <p> - 低语义一致性与CoT保真度低相关，提示需要领域 grounded 的推理</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2603.24060/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">SOMA: Strategic Orchestration and Memory-Augmented System for Vision-Language-Action Model Robustness via In-Context Adaptation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2603.23481/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">VTAM: Video-Tactile-Action Models for Complex Physical Interaction Beyond VLAs</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2603.24060/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SOMA: Strategic Orchestration and Memory-Augmented System for Vision-Language-Action Model Robustness via In-Context Adaptation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2603.23481/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">VTAM: Video-Tactile-Action Models for Complex Physical Interaction Beyond VLAs</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>World Action Planner: Generalizable Decision-Making with Action-Conditioned World Models - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出 World Action Planner (WAP)，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。 旨在解决端到端模仿学习策略（如 VLA、WAM）难以泛化到新场景、新布局和新任务的根本性问题。 系统通过 VLM 提出初始动作计划，并基于世界模型的想象 rollout 进行迭代优化与搜索，实现测试时对新任务的泛化决策。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2607.27599">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,110 +57,75 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2607.27599.webp" alt="World Action Planner: Generalizable Decision-Making with Action-Conditioned World Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出 World Action Planner (WAP)，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">World Action Planner: Generalizable Decision-Making with Action-Conditioned World Models</h1>
-            <div class="detail-meta">2026-07-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2607.27599" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2607.27599" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.27599</span></div>
-            <p class="detail-summary">论文提出 World Action Planner (WAP)，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。 旨在解决端到端模仿学习策略（如 VLA、WAM）难以泛化到新场景、新布局和新任务的根本性问题。 系统通过 VLM 提出初始动作计划，并基于世界模型的想象 rollout 进行迭代优化与搜索，实现测试时对新任务的泛化决策。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Harvard University（哈佛大学）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出 World Action Planner (WAP)，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。</p>
-  <ul class="reading-intro-points"><li>论文提出 World Action Planner (WAP)，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。</li><li>旨在解决端到端模仿学习策略（如 VLA、WAM）难以泛化到新场景、新布局和新任务的根本性问题。</li><li>系统通过 VLM 提出初始动作计划，并基于世界模型的想象 rollout 进行迭代优化与搜索，实现测试时对新任务的泛化决策。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-07-30">2026-07-30</time></p>
+        <h1 class="article-title">World Action Planner: Generalizable Decision-Making with Action-Conditioned World Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2607.27599" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2607.27599" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 World Action Planner (WAP)，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2607.27599.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2607.27599.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2607.27599.webp" alt="World Action Planner: Generalizable Decision-Making with Action-Conditioned World Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Harvard University（哈佛大学）</p>
+        <ul class="article-facts"><li>arXiv 2607.27599</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Harvard University</strong>（哈佛大学）</li><li>作者：Xiangcheng Zhang、Yilun Du</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Harvard University</strong>（哈佛大学）</li><li>作者：Xiangcheng Zhang、Yilun Du</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>World Action Planner (WAP)</strong>，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。</li><li>旨在解决端到端模仿学习策略（如 VLA、WAM）难以泛化到新场景、新布局和新任务的根本性问题。</li><li>系统通过 VLM 提出初始动作计划，并基于世界模型的想象 rollout 进行迭代优化与搜索，实现测试时对新任务的泛化决策。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出 <strong>World Action Planner (WAP)</strong>，一种结合视觉语言模型（VLM）推理能力与动作条件世界模型物理 grounding 的机器人规划系统。</li><li>旨在解决端到端模仿学习策略（如 VLA、WAM）难以泛化到新场景、新布局和新任务的根本性问题。</li><li>系统通过 VLM 提出初始动作计划，并基于世界模型的想象 rollout 进行迭代优化与搜索，实现测试时对新任务的泛化决策。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>姿态-图像条件（pose-image conditioned）机器人世界模型</strong>，在新动作、新场景及跨机器人 embodiment 泛化上显著优于现有方法。</li><li>提供<strong>理论分析</strong>，证明在 tabular 设置和线性函数逼近下，基于模型的规划在多任务泛化上优于模仿学习（模仿学习次优差距随任务数线性增长 Ω(\|C\|/K)，而模型方法为 Õ(1/√K)）。</li><li>提出 <strong>World Action Planner</strong> 规划系统，通过世界模型想象实现系统化的动作提议、优化与搜索，在组合任务、新布局和零样本泛化场景中大幅超越 <strong>π₀.₅</strong>、<strong>cosmos-policy</strong> 等 SOTA 策略。</li><li>提出"<strong>策略即工具</strong>"范式，将模仿学习策略（如扩散策略）作为模块化工具集成进规划框架。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出<strong>姿态-图像条件（pose-image conditioned）机器人世界模型</strong>，在新动作、新场景及跨机器人 embodiment 泛化上显著优于现有方法。</li><li>提供<strong>理论分析</strong>，证明在 tabular 设置和线性函数逼近下，基于模型的规划在多任务泛化上优于模仿学习（模仿学习次优差距随任务数线性增长 Ω(\|C\|/K)，而模型方法为 Õ(1/√K)）。</li><li>提出 <strong>World Action Planner</strong> 规划系统，通过世界模型想象实现系统化的动作提议、优化与搜索，在组合任务、新布局和零样本泛化场景中大幅超越 <strong>π₀.₅</strong>、<strong>cosmos-policy</strong> 等 SOTA 策略。</li><li>提出"<strong>策略即工具</strong>"范式，将模仿学习策略（如扩散策略）作为模块化工具集成进规划框架。</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>姿态-图像条件化</strong>：通过正向动力学预计算未来机器人关节位置，渲染为姿态骨架图像，经视频模型 VAE 编码后与视频 token 拼接为统一序列；相比低维动作向量条件化具有更好的泛化性。</li><li><strong>多视角预测</strong>：将第三人称与腕部视角拼接成 2×2 网格，使模型推断机器人关节的相对 3D 位置。</li><li>采用 <strong>diffusion-forcing</strong> 与 <strong>flow-matching</strong> 目标训练，历史帧加独立噪声、未来帧加均匀噪声、姿态图像保持无噪声。</li><li><strong>WAP 规划流程</strong>（Algorithm 1）包含四个阶段：</li></ul>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>姿态-图像条件化</strong>：通过正向动力学预计算未来机器人关节位置，渲染为姿态骨架图像，经视频模型 VAE 编码后与视频 token 拼接为统一序列；相比低维动作向量条件化具有更好的泛化性。</li><li><strong>多视角预测</strong>：将第三人称与腕部视角拼接成 2×2 网格，使模型推断机器人关节的相对 3D 位置。</li><li>采用 <strong>diffusion-forcing</strong> 与 <strong>flow-matching</strong> 目标训练，历史帧加独立噪声、未来帧加均匀噪声、姿态图像保持无噪声。</li><li><strong>WAP 规划流程</strong>（Algorithm 1）包含四个阶段：</li></ul>
 <p> - <strong>Agent Action Proposal</strong>：VLM 生成 MOVE/ROTATE/GRASP/RELEASE 等动作原语，通过多视角三角化获得 3D 目标位置。</p>
 <p> - <strong>Global Optimization</strong>：基于世界模型想象 rollout，VLM 提供语义反馈修正动作（如避免碰撞）。</p>
 <p> - <strong>Local Search</strong>：网格搜索候选动作，VLM 对想象结果排序选择最优。</p>
 <p> - <strong>Policies as Tools</strong>：在精细操作阶段调用扩散策略完成抓取等动作。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>数据集：<strong>LIBERO</strong>（LIBERO-90/Long/Spatial/Object）、<strong>RoboCasa</strong>、<strong>MimicGen</strong>、<strong>DexMimicGen</strong>、<strong>Robosuite</strong>。</li><li>世界模型骨干：<strong>Wan-T2V-1.3B</strong> 视频生成模型，微调 10K 步，全局 batch size 64。</li><li>视频设置：21 帧历史（7 FPS）预测 20 帧未来（20 FPS），4 视角 2×2 网格（每视角 224px），20 步扩散采样。</li><li>每任务 100 条训练轨迹（含高斯噪声扰动增广），10 条评估轨迹；新布局实验中仅用 <strong>5 条专家演示</strong>（基线使用 40+ 条）。</li><li>VLM 代理：<strong>Gemini 3.0 Flash</strong>。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO</strong>（LIBERO-90/Long/Spatial/Object）、<strong>RoboCasa</strong>、<strong>MimicGen</strong>、<strong>DexMimicGen</strong>、<strong>Robosuite</strong>。</li><li>世界模型骨干：<strong>Wan-T2V-1.3B</strong> 视频生成模型，微调 10K 步，全局 batch size 64。</li><li>视频设置：21 帧历史（7 FPS）预测 20 帧未来（20 FPS），4 视角 2×2 网格（每视角 224px），20 步扩散采样。</li><li>每任务 100 条训练轨迹（含高斯噪声扰动增广），10 条评估轨迹；新布局实验中仅用 <strong>5 条专家演示</strong>（基线使用 40+ 条）。</li><li>VLM 代理：<strong>Gemini 3.0 Flash</strong>。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>世界模型评估</strong>：在 PSNR/LPIPS 指标上对比 WPE、IRA-Sim、Ctrl-World，分布内平均提升 <strong>11.4%</strong>，泛化设置平均提升 <strong>16.8%</strong>；跨 embodiment（动作维度 7/12/14/24 混合训练）同样优于统一动作空间、embodiment-aware 编码器等方法。</li><li><strong>组合任务泛化</strong>（LIBERO-Long，每任务 50 次试验）：WAP 成功率 <strong>72/68/78/70</strong>，远超 π₀.₅（4/0/0/0）、cosmos-policy（全 0）、SAILOR（18/0/8/2）、GPC-RANK（10/0/0/0）及 vision-language planner（56/28/46/32）。</li><li><strong>新布局泛化</strong>（LIBERO-Object，改变物体位置）：WAP 成功率 <strong>88/86/90/66/84/78</strong>，而 VLA/WAM 基线几乎全为 0，展现强空间泛化能力。</li><li>关键发现：端到端 VLA 模型在完成第一个子任务后因缺乏状态转换演示而停滞，WAP 通过 VLM 推理提出桥接动作解决该问题；世界模型想象还能检测碰撞等物理风险并优化动作安全性。</li><li>系统还在零样本泛化场景及消融实验（对比 Best-of-N 采样等）中验证了各组件的有效性。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.27782/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RedFlow: Redirect Failure into Action-Level Corrections for Flow-matching VLA Policy</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.27549/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Cross-Embodiment Transfer via Behavior-Aligned Representations</span></a></nav>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>世界模型评估</strong>：在 PSNR/LPIPS 指标上对比 WPE、IRA-Sim、Ctrl-World，分布内平均提升 <strong>11.4%</strong>，泛化设置平均提升 <strong>16.8%</strong>；跨 embodiment（动作维度 7/12/14/24 混合训练）同样优于统一动作空间、embodiment-aware 编码器等方法。</li><li><strong>组合任务泛化</strong>（LIBERO-Long，每任务 50 次试验）：WAP 成功率 <strong>72/68/78/70</strong>，远超 π₀.₅（4/0/0/0）、cosmos-policy（全 0）、SAILOR（18/0/8/2）、GPC-RANK（10/0/0/0）及 vision-language planner（56/28/46/32）。</li><li><strong>新布局泛化</strong>（LIBERO-Object，改变物体位置）：WAP 成功率 <strong>88/86/90/66/84/78</strong>，而 VLA/WAM 基线几乎全为 0，展现强空间泛化能力。</li><li>关键发现：端到端 VLA 模型在完成第一个子任务后因缺乏状态转换演示而停滞，WAP 通过 VLM 推理提出桥接动作解决该问题；世界模型想象还能检测碰撞等物理风险并优化动作安全性。</li><li>系统还在零样本泛化场景及消融实验（对比 Best-of-N 采样等）中验证了各组件的有效性。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2607.27782/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RedFlow: Redirect Failure into Action-Level Corrections for Flow-matching VLA Policy</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2607.27549/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Cross-Embodiment Transfer via Behavior-Aligned Representations</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

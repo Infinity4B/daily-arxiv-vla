@@ -113,7 +113,7 @@ python scripts/register_paper_image_fallbacks.py
 python scripts/build_site.py
 ```
 
-`build_site.py` 会在 `site/` 下生成首页、`data.json`、每篇论文的详情页和封面卡页面，并把首图转为 WebP、生成缩略图。
+`build_site.py` 会在 `site/` 下生成首页、`data.json` / `search-index.json`、每篇论文的详情页，把 `scripts/web/` 中的前端源码复制到 `site/assets/`，并把首图转为 WebP、生成缩略图。
 
 辅助脚本：
 
@@ -189,9 +189,16 @@ python -m http.server 8000
 
 网站标题为「<关键词标签> 每日论文卡」。使用默认检索语句时，关键词标签取 `scripts/build_site.py` 中的 `DEFAULT_ARXIV_KEYWORD_LABEL`（当前为 `VLA / World Action Model`）；设置了自定义的 `ARXIV_QUERY_KEYWORD` 时，标签直接显示检索语句本身。如需修改，编辑 `DEFAULT_ARXIV_KEYWORD_LABEL` 或 `get_arxiv_keyword_label()`。
 
-### 修改样式
+### 修改前端
 
-页面样式由 `scripts/build_site.py` 生成，并合并 `scripts/modern_ui.css` 中的样式。
+前端源码都在 `scripts/web/`，构建时原样输出到 `site/assets/`（不要直接改 `site/assets/` 下的文件，下次构建会被覆盖）：
+
+- `style.css`：全部样式。颜色、阴影等都是 CSS 变量，夜间主题只需覆盖 `html[data-theme="dark"]` 中的变量。
+- `app.js`：首页（按日期分批渲染、搜索与高亮、已读标记、页内阅读抽屉）。阅读抽屉用列表数据即时渲染标题、导读和首图，正文从对应详情页 HTML 的 `.article-sections` 抓取并缓存（悬停时预取），所以调整详情页结构时要保留这个容器。
+- `paper.js`：独立详情页（目录高亮、首图放大、←/→ 切换论文、记录阅读位置）。
+- `theme.js`、`analytics.js`、`read-state.js`、`media.js`：公共模块，构建时按顺序拼接为 `site.js`。
+
+HTML 中引用的资源地址带有内容哈希（`?v=...`），部署后浏览器不会混用新旧版本的脚本和样式。
 
 ## 项目结构
 
@@ -208,19 +215,19 @@ daily-arxiv-vla/
 │   ├── render_paper_image_fallbacks.mjs   # Playwright 截图兜底
 │   ├── register_paper_image_fallbacks.py  # 把截图结果写入首图 manifest
 │   ├── build_site.py                      # 网站构建
-│   ├── modern_ui.css                      # 附加样式
+│   ├── web/                               # 前端源码（样式与脚本）
 │   ├── clean_summaries.py                 # 规范化摘要
 │   └── clear_summaries.py                 # 重置全部摘要
 ├── site/                                  # 生成的静态网站（由工作流提交进仓库）
 │   ├── index.html
 │   ├── papers/<arxiv-id>/index.html       # 论文详情页
-│   ├── covers/<arxiv-id>/index.html       # 论文封面卡
 │   └── assets/
 │       ├── paper-images/                  # 全尺寸首图（WebP）
 │       │   └── thumbs/                    # 缩略图
-│       ├── paper-images.json              # 首图 manifest
-│       ├── data.json                      # 首页数据
-│       ├── app.js / paper.js / media.js / theme.js / analytics.js
+│       ├── paper-images.json              # 首图 manifest（仅构建使用，不随 Pages 发布）
+│       ├── data.json                      # 首页卡片数据
+│       ├── search-index.json              # 全文检索补充文本（用户搜索时才加载）
+│       ├── site.js / app.js / paper.js
 │       └── style.css
 └── .github/workflows/deploy.yml           # 爬取、构建与部署工作流
 ```

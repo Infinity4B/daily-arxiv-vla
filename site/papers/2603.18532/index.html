@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Scaling Sim-to-Real Reinforcement Learning for Robot VLAs with Generative 3D Worlds - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高 本文提出利用生成式3D世界模型自动构建大规模可交互仿真场景，配合语言驱动的场景设计器和并行RL框架，实现VLA的高效微调，同时验证场景多样性对模型零样本泛化能力的提升作用 研究目标是在不牺牲VLA泛化性的前提下大幅降低微调环节的人工成本，实现高成功率的sim-to-real策略迁移" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2603.18532">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,108 +57,73 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2603.18532.webp" alt="Scaling Sim-to-Real Reinforcement Learning for Robot VLAs with Generative 3D Worlds" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Scaling Sim-to-Real Reinforcement Learning for Robot VLAs with Generative 3D Worlds</h1>
-            <div class="detail-meta">2026-03-19 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2603.18532" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2603.18532" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2603.18532</span></div>
-            <p class="detail-summary">本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高 本文提出利用生成式3D世界模型自动构建大规模可交互仿真场景，配合语言驱动的场景设计器和并行RL框架，实现VLA的高效微调，同时验证场景多样性对模型零样本泛化能力的提升作用 研究目标是在不牺牲VLA泛化性的前提下大幅降低微调环节的人工成本，实现高成功率的sim-to-real策略迁移</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Horizon Robotics（地平线机器人，作者Wei Xu所属单位）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高</p>
-  <ul class="reading-intro-points"><li>本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高</li><li>本文提出利用生成式3D世界模型自动构建大规模可交互仿真场景，配合语言驱动的场景设计器和并行RL框架，实现VLA的高效微调，同时验证场景多样性对模型零样本泛化能力的提升作用</li><li>研究目标是在不牺牲VLA泛化性的前提下大幅降低微调环节的人工成本，实现高成功率的sim-to-real策略迁移</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-03-19">2026-03-19</time></p>
+        <h1 class="article-title">Scaling Sim-to-Real Reinforcement Learning for Robot VLAs with Generative 3D Worlds</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2603.18532" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2603.18532" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2603.18532.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2603.18532.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2603.18532.webp" alt="Scaling Sim-to-Real Reinforcement Learning for Robot VLAs with Generative 3D Worlds 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Horizon Robotics（地平线机器人，作者Wei Xu所属单位）</p>
+        <ul class="article-facts"><li>arXiv 2603.18532</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Horizon Robotics</strong>（地平线机器人，作者Wei Xu所属单位）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Horizon Robotics</strong>（地平线机器人，作者Wei Xu所属单位）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高</li><li>本文提出利用生成式3D世界模型自动构建大规模可交互仿真场景，配合语言驱动的场景设计器和并行RL框架，实现VLA的高效微调，同时验证场景多样性对模型零样本泛化能力的提升作用</li><li>研究目标是在不牺牲VLA泛化性的前提下大幅降低微调环节的人工成本，实现高成功率的sim-to-real策略迁移</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>本文聚焦于解决视觉-语言-动作（VLA）模型微调的两大核心痛点：真实世界强化学习（RL）微调受限于物理场景的可扩展性，容易导致预训练模型的泛化能力丢失、策略过拟合到特定场景；仿真RL微调则需要大量人工设计3D场景，成本极高</li><li>本文提出利用生成式3D世界模型自动构建大规模可交互仿真场景，配合语言驱动的场景设计器和并行RL框架，实现VLA的高效微调，同时验证场景多样性对模型零样本泛化能力的提升作用</li><li>研究目标是在不牺牲VLA泛化性的前提下大幅降低微调环节的人工成本，实现高成功率的sim-to-real策略迁移</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出语言驱动的场景设计器与3D世界生成模型结合的自动化仿真场景生成管线，可自动生成数百种多样交互场景，支持VLA的大规模并行RL微调，仿真场景成功率从9.7%提升至79.8%，任务完成速度提升1.25倍</li><li>通过系统性消融实验验证场景多样性与零样本泛化能力呈正相关，在50个训练场景上微调可使零样本成功率提升24.7个百分点，显著缩小分布内与分布外的性能差距</li><li>证明高保真生成场景、域随机化、带重力补偿的PD控制的组合可实现高效的sim-to-real迁移，在12个真实场景240次试验中，成功率从21.7%提升至75%，任务完成速度提升1.13倍</li><li>提出PPOFlow算法，通过引入可学习噪声头解决流匹配VLA与PPO框架的适配问题，可将多步流匹配策略转化为单步高斯策略，实现2.36倍推理加速，同时验证了扩散模型的多模态性对机器人策略性能并非关键因素</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出语言驱动的场景设计器与3D世界生成模型结合的自动化仿真场景生成管线，可自动生成数百种多样交互场景，支持VLA的大规模并行RL微调，仿真场景成功率从9.7%提升至79.8%，任务完成速度提升1.25倍</li><li>通过系统性消融实验验证场景多样性与零样本泛化能力呈正相关，在50个训练场景上微调可使零样本成功率提升24.7个百分点，显著缩小分布内与分布外的性能差距</li><li>证明高保真生成场景、域随机化、带重力补偿的PD控制的组合可实现高效的sim-to-real迁移，在12个真实场景240次试验中，成功率从21.7%提升至75%，任务完成速度提升1.13倍</li><li>提出PPOFlow算法，通过引入可学习噪声头解决流匹配VLA与PPO框架的适配问题，可将多步流匹配策略转化为单步高斯策略，实现2.36倍推理加速，同时验证了扩散模型的多模态性对机器人策略性能并非关键因素</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>生成式仿真管线：基于<strong>ManiSkill 3</strong> GPU并行仿真器，扩展<strong>EmbodiedGen</strong>作为3D场景生成后端，采用GPT-4o驱动的语言场景设计器，将自然语言任务描述转换为包含背景、干扰项、操作目标、机器人等语义角色及空间关系的结构化场景图，再通过自动化质量保证循环过滤物理不合理的配置，生成可交互的3D仿真场景</li><li>PPOFlow微调算法：针对流匹配模型确定性输出无法计算PPO所需重要性采样比的问题，引入可学习噪声头将数值积分步骤转换为高斯采样，结合价值头和幂缩放重要性比，适配PPO的裁剪目标函数，实现流匹配VLA的强化学习微调，同时支持将多步迭代推理的策略转化为单步高斯策略，降低推理延迟</li><li>Sim-to-real迁移方案：结合高保真生成场景、域随机化、带重力补偿的PD控制三类技术，缩小虚实之间的视觉和动态差距，无需复杂的系统辨识即可实现策略迁移</li><li>核心创新点：自动化生成式场景管线大幅降低了仿真场景设计成本；PPOFlow解决了流匹配基础模型与强化学习微调框架的适配难题；系统性验证了场景多样性对VLA泛化能力的核心提升作用</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>生成式仿真管线：基于<strong>ManiSkill 3</strong> GPU并行仿真器，扩展<strong>EmbodiedGen</strong>作为3D场景生成后端，采用GPT-4o驱动的语言场景设计器，将自然语言任务描述转换为包含背景、干扰项、操作目标、机器人等语义角色及空间关系的结构化场景图，再通过自动化质量保证循环过滤物理不合理的配置，生成可交互的3D仿真场景</li><li>PPOFlow微调算法：针对流匹配模型确定性输出无法计算PPO所需重要性采样比的问题，引入可学习噪声头将数值积分步骤转换为高斯采样，结合价值头和幂缩放重要性比，适配PPO的裁剪目标函数，实现流匹配VLA的强化学习微调，同时支持将多步迭代推理的策略转化为单步高斯策略，降低推理延迟</li><li>Sim-to-real迁移方案：结合高保真生成场景、域随机化、带重力补偿的PD控制三类技术，缩小虚实之间的视觉和动态差距，无需复杂的系统辨识即可实现策略迁移</li><li>核心创新点：自动化生成式场景管线大幅降低了仿真场景设计成本；PPOFlow解决了流匹配基础模型与强化学习微调框架的适配难题；系统性验证了场景多样性对VLA泛化能力的核心提升作用</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：预训练使用大规模机器人操作数据集<strong>BridgeV2</strong>；仿真训练使用<strong>EmbodiedGen</strong>自动生成的100个独特交互场景，以及<strong>SimplerEnv</strong>的3个手工设计场景作为基线；真实世界评估使用12个包含分布外物体、属性的桌面操作场景，共240次试验</li><li>模型规模：基线模型为预训练流匹配VLA <strong>π₀</strong>，包含VLM骨干和动作专家头；PPOFlow新增浅层MLP构成的价值头与噪声头，整体参数量与原VLA保持一致，仅新增少量轻量头部参数</li><li>训练资源：仿真训练采用8块<strong>NVIDIA RTX 6000 Ada</strong> GPU，训练周期为5天，采用LoRA微调VLM骨干、全参数微调动作专家头与新增头部的方案；真实世界评估采用<strong>NVIDIA RTX 4090</strong> GPU，机器人本体为<strong>Interbotix WidowX 250S</strong>，搭配单目Logitech C922摄像头</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>数据集：预训练使用大规模机器人操作数据集<strong>BridgeV2</strong>；仿真训练使用<strong>EmbodiedGen</strong>自动生成的100个独特交互场景，以及<strong>SimplerEnv</strong>的3个手工设计场景作为基线；真实世界评估使用12个包含分布外物体、属性的桌面操作场景，共240次试验</li><li>模型规模：基线模型为预训练流匹配VLA <strong>π₀</strong>，包含VLM骨干和动作专家头；PPOFlow新增浅层MLP构成的价值头与噪声头，整体参数量与原VLA保持一致，仅新增少量轻量头部参数</li><li>训练资源：仿真训练采用8块<strong>NVIDIA RTX 6000 Ada</strong> GPU，训练周期为5天，采用LoRA微调VLM骨干、全参数微调动作专家头与新增头部的方案；真实世界评估采用<strong>NVIDIA RTX 4090</strong> GPU，机器人本体为<strong>Interbotix WidowX 250S</strong>，搭配单目Logitech C922摄像头</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估环境：仿真环境基于<strong>ManiSkill 3</strong>构建，包含100个EmbodiedGen生成场景和SimplerEnv手工场景；真实世界为12个桌面操作场景，涵盖未见物体、未见属性、未见任务组合等分布外情况</li><li>主要评估指标：仿真场景评估成功率（SR）、任务完成时间（TF）；真实世界评估部分成功率（PSR，正确抓取并提起目标物体）、整体任务成功率（SR）、动态失败率（DFR，执行错误导致）、语义失败率（SFR，任务理解错误导致）、任务完成时间（TF）</li><li>关键实验结果：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：仿真环境基于<strong>ManiSkill 3</strong>构建，包含100个EmbodiedGen生成场景和SimplerEnv手工场景；真实世界为12个桌面操作场景，涵盖未见物体、未见属性、未见任务组合等分布外情况</li><li>主要评估指标：仿真场景评估成功率（SR）、任务完成时间（TF）；真实世界评估部分成功率（PSR，正确抓取并提起目标物体）、整体任务成功率（SR）、动态失败率（DFR，执行错误导致）、语义失败率（SFR，任务理解错误导致）、任务完成时间（TF）</li><li>关键实验结果：</li></ul>
 <p> 1. 仿真性能：在100个生成场景上微调的策略相比 imitation 基线，成功率从9.7%提升至79.8%，任务完成时间从约10s缩短至8s；场景数量从1增至50时，分布外成功率从53.2%提升至77.9%，跨SimplerEnv场景的成功率从36.1%提升至68.4%，分布内与分布外的性能差距从41.1个百分点缩小至2.6个百分点</p>
 <p> 2. Sim-to-real迁移：真实世界整体成功率从21.7%提升至75%，部分成功率从45%提升至88.3%，任务完成时间从11.5s缩短至10.2s；动态失败率从66.7%降至18.3%，语义失败率从18.3%降至6.7%，在包含未见物体（如螺丝刀、茶杯）的场景中也有显著性能提升</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2603.18892/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">MultihopSpatial: Multi-hop Compositional Spatial Reasoning Benchmark for Vision-Language Model</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2603.18464/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">AcceRL: A Distributed Asynchronous Reinforcement Learning and World Model Framework for Vision-Language-Action Models</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2603.18892/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">MultihopSpatial: Multi-hop Compositional Spatial Reasoning Benchmark for Vision-Language Model</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2603.18464/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">AcceRL: A Distributed Asynchronous Reinforcement Learning and World Model Framework for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

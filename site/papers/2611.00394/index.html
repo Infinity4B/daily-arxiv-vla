@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>CalVLA: Shaping Native Confidence in Vision-Language-Action Policies with Outcome Supervision - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文研究视觉-语言-动作（VLA）策略能否从自身动作概率中预测任务失败风险 提出 CalVLA 方法，利用成功与失败轨迹的结果监督来塑造 OpenVLA-7B 的原生动作置信度 旨在不训练辅助故障检测器的前提下，让策略自身能够区分可能失败与可能成功的尝试" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.00394">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.00394.webp" alt="CalVLA: Shaping Native Confidence in Vision-Language-Action Policies with Outcome Supervision" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文研究视觉-语言-动作（VLA）策略能否从自身动作概率中预测任务失败风险</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">CalVLA: Shaping Native Confidence in Vision-Language-Action Policies with Outcome Supervision</h1>
-            <div class="detail-meta">2026-10-30 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.00394" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.00394" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.00394</span></div>
-            <p class="detail-summary">论文研究视觉-语言-动作（VLA）策略能否从自身动作概率中预测任务失败风险 提出 CalVLA 方法，利用成功与失败轨迹的结果监督来塑造 OpenVLA-7B 的原生动作置信度 旨在不训练辅助故障检测器的前提下，让策略自身能够区分可能失败与可能成功的尝试</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">作者：Boniface Chukwuemeka Godwin</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文研究视觉-语言-动作（VLA）策略能否从自身动作概率中预测任务失败风险</p>
-  <ul class="reading-intro-points"><li>论文研究视觉-语言-动作（VLA）策略能否从自身动作概率中预测任务失败风险</li><li>提出 CalVLA 方法，利用成功与失败轨迹的结果监督来塑造 OpenVLA-7B 的原生动作置信度</li><li>旨在不训练辅助故障检测器的前提下，让策略自身能够区分可能失败与可能成功的尝试</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-10-30">2026-10-30</time></p>
+        <h1 class="article-title">CalVLA: Shaping Native Confidence in Vision-Language-Action Policies with Outcome Supervision</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.00394" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.00394" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究视觉-语言-动作（VLA）策略能否从自身动作概率中预测任务失败风险</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.00394.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.00394.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.00394.webp" alt="CalVLA: Shaping Native Confidence in Vision-Language-Action Policies with Outcome Supervision 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者：Boniface Chukwuemeka Godwin</p>
+        <ul class="article-facts"><li>arXiv 2611.00394</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者：<strong>Boniface Chukwuemeka Godwin</strong></li><li>所属机构：<strong>Carnegie Mellon University Africa</strong></li><li>地点：<strong>Kigali, Rwanda</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li>作者：<strong>Boniface Chukwuemeka Godwin</strong></li><li>所属机构：<strong>Carnegie Mellon University Africa</strong></li><li>地点：<strong>Kigali, Rwanda</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究<strong>视觉-语言-动作（VLA）策略</strong>能否从自身动作概率中预测任务失败风险</li><li>提出 <strong>CalVLA</strong> 方法，利用成功与失败轨迹的结果监督来塑造 <strong>OpenVLA-7B</strong> 的原生动作置信度</li><li>旨在不训练辅助故障检测器的前提下，让策略自身能够区分可能失败与可能成功的尝试</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文研究<strong>视觉-语言-动作（VLA）策略</strong>能否从自身动作概率中预测任务失败风险</li><li>提出 <strong>CalVLA</strong> 方法，利用成功与失败轨迹的结果监督来塑造 <strong>OpenVLA-7B</strong> 的原生动作置信度</li><li>旨在不训练辅助故障检测器的前提下，让策略自身能够区分可能失败与可能成功的尝试</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ACal（Action-Confidence Alignment）</strong> 平方边际排序损失，直接优化动作 token 置信度，使成功轨迹置信度高于失败轨迹</li><li>证明原生置信度可以通过结果监督进行“塑造”，AUROC 从 0.4485 提升至 0.7392（三个种子均值）</li><li>设计了基于<strong>归一化经过时间</strong>的配对策略，而非依赖等效物理进度，降低任务身份和时间捷径</li><li>与冻结特征探针（P-LINEAR、P-STATIC、P-TEMPORAL）进行系统对比，表明 CalVLA 显著优于大多数探针，但相对线性探针优势不具统计显著性</li><li>明确指出 CalVLA 改善的是失败判别能力而非控制性能（任务成功率从 58% 降至 55%）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>ACal（Action-Confidence Alignment）</strong> 平方边际排序损失，直接优化动作 token 置信度，使成功轨迹置信度高于失败轨迹</li><li>证明原生置信度可以通过结果监督进行“塑造”，AUROC 从 0.4485 提升至 0.7392（三个种子均值）</li><li>设计了基于<strong>归一化经过时间</strong>的配对策略，而非依赖等效物理进度，降低任务身份和时间捷径</li><li>与冻结特征探针（P-LINEAR、P-STATIC、P-TEMPORAL）进行系统对比，表明 CalVLA 显著优于大多数探针，但相对线性探针优势不具统计显著性</li><li>明确指出 CalVLA 改善的是失败判别能力而非控制性能（任务成功率从 58% 降至 55%）</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 <strong>rank-16 LoRA 适配器</strong>微调 <strong>OpenVLA-7B</strong> 的注意力层（q_proj 和 v_proj），冻结预训练骨干网络</li><li>定义<strong>原生置信度</strong>为 7 个动作 token 维度平均的 top-token 概率（公式 1）</li><li>将成功与失败轨迹中同一任务、归一化时间接近（差值 ≤ 0.02）的观测进行配对</li><li>采用 <strong>ACal 平方 hinge 排序损失</strong>（公式 2），使成功观测置信度比失败观测至少高 0.2 的边际</li><li>测试阶段使用观测前缀的平均置信度负值作为失败风险得分（公式 3），无需未来观测</li><li>通过零 KL 惩罚学习结果监督信号，不依赖传统模拟器或辅助模型</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>使用 <strong>rank-16 LoRA 适配器</strong>微调 <strong>OpenVLA-7B</strong> 的注意力层（q_proj 和 v_proj），冻结预训练骨干网络</li><li>定义<strong>原生置信度</strong>为 7 个动作 token 维度平均的 top-token 概率（公式 1）</li><li>将成功与失败轨迹中同一任务、归一化时间接近（差值 ≤ 0.02）的观测进行配对</li><li>采用 <strong>ACal 平方 hinge 排序损失</strong>（公式 2），使成功观测置信度比失败观测至少高 0.2 的边际</li><li>测试阶段使用观测前缀的平均置信度负值作为失败风险得分（公式 3），无需未来观测</li><li>通过零 KL 惩罚学习结果监督信号，不依赖传统模拟器或辅助模型</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO-10</strong> 基准，包含 10 个任务 × 50 个初始状态 = 500 个配置</li><li>训练/验证/测试划分：<strong>350 / 50 / 100</strong> 个配置（每任务 35/5/10）</li><li>生成 <strong>11,378</strong> 个训练配对，失败观测限制在最后 130 步，每源片段最多 128 对</li><li>适配器可训练参数：<strong>8,388,608</strong>（约 8.4M）</li><li>计算精度：置信度、softmax、损失使用 FP32，冻结骨干使用 FP16</li><li>论文未明确记录 GPU 型号或训练时长</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>使用 <strong>LIBERO-10</strong> 基准，包含 10 个任务 × 50 个初始状态 = 500 个配置</li><li>训练/验证/测试划分：<strong>350 / 50 / 100</strong> 个配置（每任务 35/5/10）</li><li>生成 <strong>11,378</strong> 个训练配对，失败观测限制在最后 130 步，每源片段最多 128 对</li><li>适配器可训练参数：<strong>8,388,608</strong>（约 8.4M）</li><li>计算精度：置信度、softmax、损失使用 FP32，冻结骨干使用 FP16</li><li>论文未明确记录 GPU 型号或训练时长</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>LIBERO-10</strong> 模拟基准，100 个留出测试配置</li><li>主要指标：<strong>失败判别 AUROC</strong>（0.5 为随机）、<strong>任务成功率（TSR）</strong></li><li><strong>CalVLA</strong> 联合 AUROC：<strong>0.7392 ± 0.0480</strong>（130 步和 260 步均值）</li><li>冻结原生置信度基线 AUROC：0.4485；冻结探针 AUROC：0.6146–0.6436</li><li>CalVLA 平均 TSR：<strong>0.550 ± 0.026</strong>，低于冻结控制器的 0.58</li><li>相对 P-LINEAR 探针的 AUROC 增益为 0.0956，但 95% 置信区间 [-0.0105, 0.2017] 包含 0，优势不具统计显著性</li><li>作者强调结果仅覆盖单一检查点、单一模拟基准和三个种子，且未测试真实机器人安全效益</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估环境：<strong>LIBERO-10</strong> 模拟基准，100 个留出测试配置</li><li>主要指标：<strong>失败判别 AUROC</strong>（0.5 为随机）、<strong>任务成功率（TSR）</strong></li><li><strong>CalVLA</strong> 联合 AUROC：<strong>0.7392 ± 0.0480</strong>（130 步和 260 步均值）</li><li>冻结原生置信度基线 AUROC：0.4485；冻结探针 AUROC：0.6146–0.6436</li><li>CalVLA 平均 TSR：<strong>0.550 ± 0.026</strong>，低于冻结控制器的 0.58</li><li>相对 P-LINEAR 探针的 AUROC 增益为 0.0956，但 95% 置信区间 [-0.0105, 0.2017] 包含 0，优势不具统计显著性</li><li>作者强调结果仅覆盖单一检查点、单一模拟基准和三个种子，且未测试真实机器人安全效益</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.00522/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Behavioral Steering of Vision-Language-Action Models in the Low-Parameter Regime</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.42096/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">CausalWAM: Learning the Causes of Actions in World Action Models</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.00522/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Behavioral Steering of Vision-Language-Action Models in the Low-Parameter Regime</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2610.42096/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">CausalWAM: Learning the Causes of Actions in World Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

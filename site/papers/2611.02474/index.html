@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Gnomon4D: Learning Where and When to Focus for Geometric Motion-Grounded World-Action Modeling - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出 Gnomon4D，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 GeoDelta——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。 针对现有 WAM 的两大缺陷：RGB 未来预测将物理状态变化与外观纠缠（易过拟合外观、缺乏 3D 几何）；逐帧深度/点图缺乏时间对应关系。现有 4D 方法要么将运动隐含在视觉特征中（训练后丢弃），要么通过独立接口将轨迹转换为动作。 研究目标：让显式 4D 几何运动与视频、动作在线联合生成，并指导动作专家“在哪里”（交互区域）和“何时”（接触/释放等转变帧）聚焦，从而提升闭环操作性能与泛化能力。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.02474">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.02474.webp" alt="Gnomon4D: Learning Where and When to Focus for Geometric Motion-Grounded World-Action Modeling" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出 Gnomon4D，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 GeoDelta——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Gnomon4D: Learning Where and When to Focus for Geometric Motion-Grounded World-Action Modeling</h1>
-            <div class="detail-meta">2026-11-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.02474" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.02474" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.02474</span></div>
-            <p class="detail-summary">论文提出 Gnomon4D，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 GeoDelta——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。 针对现有 WAM 的两大缺陷：RGB 未来预测将物理状态变化与外观纠缠（易过拟合外观、缺乏 3D 几何）；逐帧深度/点图缺乏时间对应关系。现有 4D 方法要么将运动隐含在视觉特征中（训练后丢弃），要么通过独立接口将轨迹转换为动作。 研究目标：让显式 4D 几何运动与视频、动作在线联合生成，并指导动作专家“在哪里”（交互区域）和“何时”（接触/释放等转变帧）聚焦，从而提升闭环操作性能与泛化能力。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">9 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">KlingAI（可灵 AI）研究院（快手，KlingAI Research）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出 Gnomon4D，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 GeoDelta——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。</p>
-  <ul class="reading-intro-points"><li>论文提出 Gnomon4D，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 GeoDelta——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。</li><li>针对现有 WAM 的两大缺陷：RGB 未来预测将物理状态变化与外观纠缠（易过拟合外观、缺乏 3D 几何）；逐帧深度/点图缺乏时间对应关系。现有 4D 方法要么将运动隐含在视觉特征中（训练后丢弃），要么通过独立接口将轨迹转换为动作。</li><li>研究目标：让显式 4D 几何运动与视频、动作在线联合生成，并指导动作专家“在哪里”（交互区域）和“何时”（接触/释放等转变帧）聚焦，从而提升闭环操作性能与泛化能力。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-02">2026-11-02</time></p>
+        <h1 class="article-title">Gnomon4D: Learning Where and When to Focus for Geometric Motion-Grounded World-Action Modeling</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.02474" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.02474" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Gnomon4D，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 GeoDelta——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.02474.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.02474.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.02474.webp" alt="Gnomon4D: Learning Where and When to Focus for Geometric Motion-Grounded World-Action Modeling 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">KlingAI（可灵 AI）研究院（快手，KlingAI Research）</p>
+        <ul class="article-facts"><li>arXiv 2611.02474</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>KlingAI（可灵 AI）研究院</strong>（快手，KlingAI Research）</li><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>华南理工大学</strong>（South China University of Technology）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>KlingAI（可灵 AI）研究院</strong>（快手，KlingAI Research）</li><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>华南理工大学</strong>（South China University of Technology）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Gnomon4D</strong>，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 <strong>GeoDelta</strong>——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。</li><li>针对现有 WAM 的两大缺陷：RGB 未来预测将物理状态变化与外观纠缠（易过拟合外观、缺乏 3D 几何）；逐帧深度/点图缺乏时间对应关系。现有 4D 方法要么将运动隐含在视觉特征中（训练后丢弃），要么通过独立接口将轨迹转换为动作。</li><li>研究目标：让显式 4D 几何运动与视频、动作在线联合生成，并指导动作专家“在哪里”（交互区域）和“何时”（接触/释放等转变帧）聚焦，从而提升闭环操作性能与泛化能力。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出 <strong>Gnomon4D</strong>，一种世界-动作模型（World-Action Model, WAM），可联合生成未来视频、机器人动作以及 <strong>GeoDelta</strong>——一种视频对齐的 4D 几何运动场，编码本体与物体点的跨帧图像平面位移和深度变化 (Δu, Δv, Δd)。</li><li>针对现有 WAM 的两大缺陷：RGB 未来预测将物理状态变化与外观纠缠（易过拟合外观、缺乏 3D 几何）；逐帧深度/点图缺乏时间对应关系。现有 4D 方法要么将运动隐含在视觉特征中（训练后丢弃），要么通过独立接口将轨迹转换为动作。</li><li>研究目标：让显式 4D 几何运动与视频、动作在线联合生成，并指导动作专家“在哪里”（交互区域）和“何时”（接触/释放等转变帧）聚焦，从而提升闭环操作性能与泛化能力。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>Gnomon4D 架构</strong>：基于 Mixture-of-Transformers 的 WAM，联合生成未来视频、动作和显式 4D 几何运动表示 GeoDelta，使本体-物体交互动力学直接暴露给动作专家。</li><li><strong>InSAttn 与 TransAgg 读出机制</strong>：任务自适应的时空重加权——InSAttn（Interaction-Salient Attention）聚焦交互显著的区域，TransAgg（Transition-Anchored Aggregation）聚合相对运动发生转变（如抓取、释放）的关键帧。</li><li><strong>Embodiment 无关的共享“准动作”</strong>：GeoDelta 仅描述表面运动、不含本体特定控制参数，可作为人类与机器人共享的 quasi-action，支持在 <strong>EgoManip-5000H</strong>（5000+ 小时无动作标签自我中心操作视频）上进行无动作预训练，再在 <strong>Robot-30H</strong> 真机数据上中期训练。</li><li>在 <strong>RoboTwin 2.0、VLABench、RoboDojo</strong> 三个仿真基准上取得领先，真机实验中在分布内/分布外设定下分别超过最强基线 <strong>7.0 和 16.0 个百分点</strong>。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li><strong>Gnomon4D 架构</strong>：基于 Mixture-of-Transformers 的 WAM，联合生成未来视频、动作和显式 4D 几何运动表示 GeoDelta，使本体-物体交互动力学直接暴露给动作专家。</li><li><strong>InSAttn 与 TransAgg 读出机制</strong>：任务自适应的时空重加权——InSAttn（Interaction-Salient Attention）聚焦交互显著的区域，TransAgg（Transition-Anchored Aggregation）聚合相对运动发生转变（如抓取、释放）的关键帧。</li><li><strong>Embodiment 无关的共享“准动作”</strong>：GeoDelta 仅描述表面运动、不含本体特定控制参数，可作为人类与机器人共享的 quasi-action，支持在 <strong>EgoManip-5000H</strong>（5000+ 小时无动作标签自我中心操作视频）上进行无动作预训练，再在 <strong>Robot-30H</strong> 真机数据上中期训练。</li><li>在 <strong>RoboTwin 2.0、VLABench、RoboDojo</strong> 三个仿真基准上取得领先，真机实验中在分布内/分布外设定下分别超过最强基线 <strong>7.0 和 16.0 个百分点</strong>。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>GeoDelta 表示</strong>：对前景（本体+被操作物体）表面点，记录同一物理点在相邻采样帧间的像素位移与深度变化，并对相机运动不变；通过软阈值、固定尺度归一化和 μ 律压扩（μ=31）编码为 8 位 RGB 三通道，复用冻结的视频 VAE，且 μ 律为小幅接触运动保留更多精度。</li><li><strong>联合世界-运动-动作生成</strong>：Video、GeoDelta、Action 三个专家（各为 DiT 块堆叠）通过逐层联合注意力交互，并经交叉注意力读取语言指令与本体状态；GeoDelta 与 Action 专家共享<strong>去噪时钟</strong>（σ_G(u)=σ_A(u)=max(1−2u,0)，比 Video 快一倍），动作与几何运动在前半程联合去噪、后半段作为干净条件供视频细化；注意力掩码遵循执行的因果顺序。</li><li><strong>关系引导交互读出</strong>：由 GeoDelta 特征预测 token 级运动与本体/物体角色概率，构造相对运动场 c（衡量 token 运动偏离本体局部运动的程度）；用 K=32 个可学习查询先经 InSAttn 逐帧空间读出（显著度加权注意力），再经 TransAgg 按转变分数 r_n 时间聚合，交互 token 以残差方式注入动作专家，并配辅助读出头强制 Z 携带动作相关信息。</li><li><strong>推理</strong>：20 步求解器，GeoDelta 与动作在第 10 步即达干净状态，控制器执行动作块前缀并重规划，其余步骤仅在需要时细化视频。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>GeoDelta 表示</strong>：对前景（本体+被操作物体）表面点，记录同一物理点在相邻采样帧间的像素位移与深度变化，并对相机运动不变；通过软阈值、固定尺度归一化和 μ 律压扩（μ=31）编码为 8 位 RGB 三通道，复用冻结的视频 VAE，且 μ 律为小幅接触运动保留更多精度。</li><li><strong>联合世界-运动-动作生成</strong>：Video、GeoDelta、Action 三个专家（各为 DiT 块堆叠）通过逐层联合注意力交互，并经交叉注意力读取语言指令与本体状态；GeoDelta 与 Action 专家共享<strong>去噪时钟</strong>（σ_G(u)=σ_A(u)=max(1−2u,0)，比 Video 快一倍），动作与几何运动在前半程联合去噪、后半段作为干净条件供视频细化；注意力掩码遵循执行的因果顺序。</li><li><strong>关系引导交互读出</strong>：由 GeoDelta 特征预测 token 级运动与本体/物体角色概率，构造相对运动场 c（衡量 token 运动偏离本体局部运动的程度）；用 K=32 个可学习查询先经 InSAttn 逐帧空间读出（显著度加权注意力），再经 TransAgg 按转变分数 r_n 时间聚合，交互 token 以残差方式注入动作专家，并配辅助读出头强制 Z 携带动作相关信息。</li><li><strong>推理</strong>：20 步求解器，GeoDelta 与动作在第 10 步即达干净状态，控制器执行动作块前缀并重规划，其余步骤仅在需要时细化视频。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>预训练</strong>：EgoManip-5000H——5000+ 小时无动作标签的自我中心操作视频（Video 与 GeoDelta 专家预训练）。</li><li><strong>中期训练</strong>：Robot-30H——来自 IG-10K 的 30+ 小时真机数据，用于将运动空间对接到机器人控制；随后在目标任务上后训练。</li><li><strong>监督构造</strong>：RoboTwin 2.0 由 SAPIEN 种子回放、VLABench 用 MuJoCo 官方采样器重生成得到精确 GeoDelta；RoboDojo 用前向运动学 + DA3 深度 + SAM 3.1 掩码 + RAFT 光流估计；真机使用 RGB-D 相机深度 + SAM 3.1 掩码 + RAFT 光流。</li><li><strong>模型规模</strong>：Video 专家初始化自 <strong>Wan2.2-TI2V-5B</strong>（30 层、宽度 3072）；GeoDelta 与 Action 专家宽度 1024，经宽度插值共享注意力空间；训练采用 FSDP 混合分片与 bfloat16 精度。</li><li><strong>推理设置</strong>：预测 H=32 控制步动作块，视频/GeoDelta 以步长 4 采样得 N=8 帧，20 步求解器，GeoDelta 与动作在第 10 步收敛。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>预训练</strong>：EgoManip-5000H——5000+ 小时无动作标签的自我中心操作视频（Video 与 GeoDelta 专家预训练）。</li><li><strong>中期训练</strong>：Robot-30H——来自 IG-10K 的 30+ 小时真机数据，用于将运动空间对接到机器人控制；随后在目标任务上后训练。</li><li><strong>监督构造</strong>：RoboTwin 2.0 由 SAPIEN 种子回放、VLABench 用 MuJoCo 官方采样器重生成得到精确 GeoDelta；RoboDojo 用前向运动学 + DA3 深度 + SAM 3.1 掩码 + RAFT 光流估计；真机使用 RGB-D 相机深度 + SAM 3.1 掩码 + RAFT 光流。</li><li><strong>模型规模</strong>：Video 专家初始化自 <strong>Wan2.2-TI2V-5B</strong>（30 层、宽度 3072）；GeoDelta 与 Action 专家宽度 1024，经宽度插值共享注意力空间；训练采用 FSDP 混合分片与 bfloat16 精度。</li><li><strong>推理设置</strong>：预测 H=32 控制步动作块，视频/GeoDelta 以步长 4 采样得 N=8 帧，20 步求解器，GeoDelta 与动作在第 10 步收敛。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：RoboTwin 2.0-Full（50 个双臂任务）、VLABench（ID/Cat/CS/Ins/Tex 五轨道）、RoboDojo（多维度评测）。</li><li><strong>真机评测</strong>：5 个真实机器人任务，含分布内（ID）与分布外（OOD）设定；对比 Fast-WAM（RGB）、X-WAM（RGB-D）、FlowWAM（RGB+2D 光流）等基线。</li><li><strong>主要结果</strong>：RoboTwin 2.0-Full 上平均成功率 <strong>94.33%</strong>（Clean 94.56 / Rand. 94.10），超过 π₀.₅、Galaxea G-0.5、OpenWAM-Alpha、WAM4D、FlowWAM、STARRY 等 VLA/WAM 基线；VLABench 平均成功率 <strong>62.5%</strong>，领先 OpenWAM-Alpha（58.9%）等；真机实验在 ID/OOD 设定下分别超出最强基线 <strong>7.0 和 16.0 个百分点</strong>。</li><li><strong>消融研究</strong>：系统消融未来表示形式、交互读出机制与预训练课程，验证显式 4D 运动及交互读出各组件的贡献。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>仿真基准</strong>：RoboTwin 2.0-Full（50 个双臂任务）、VLABench（ID/Cat/CS/Ins/Tex 五轨道）、RoboDojo（多维度评测）。</li><li><strong>真机评测</strong>：5 个真实机器人任务，含分布内（ID）与分布外（OOD）设定；对比 Fast-WAM（RGB）、X-WAM（RGB-D）、FlowWAM（RGB+2D 光流）等基线。</li><li><strong>主要结果</strong>：RoboTwin 2.0-Full 上平均成功率 <strong>94.33%</strong>（Clean 94.56 / Rand. 94.10），超过 π₀.₅、Galaxea G-0.5、OpenWAM-Alpha、WAM4D、FlowWAM、STARRY 等 VLA/WAM 基线；VLABench 平均成功率 <strong>62.5%</strong>，领先 OpenWAM-Alpha（58.9%）等；真机实验在 ID/OOD 设定下分别超出最强基线 <strong>7.0 和 16.0 个百分点</strong>。</li><li><strong>消融研究</strong>：系统消融未来表示形式、交互读出机制与预训练课程，验证显式 4D 运动及交互读出各组件的贡献。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.02497/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RoboColosseum: Evaluating Physical Intelligence at Scale In-The-Wild</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.02284/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SVD-Prune: Spectral Vision Token Pruning under Extreme Compression</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.02497/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RoboColosseum: Evaluating Physical Intelligence at Scale In-The-Wild</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.02284/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SVD-Prune: Spectral Vision Token Pruning under Extreme Compression</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

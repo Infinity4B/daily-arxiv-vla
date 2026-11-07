@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>GatedVLA with Camera-Based Emergency Braking: AlpaSim E2E Closed Loop Challenge Technical Report - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="本报告介绍了 GatedVLA，用于 AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道） 的端到端自动驾驶系统。 核心目标是解决视觉-语言-动作（VLA）策略在闭环驾驶中因规划误差导致的碰撞问题，尤其是追尾碰撞。 通过引入可学习视觉掩码和基于检测器的自动紧急制动（AEB）模块，提升闭环场景评分并降低有责碰撞率。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.01663">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.01663.webp" alt="GatedVLA with Camera-Based Emergency Braking: AlpaSim E2E Closed Loop Challenge Technical Report" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">本报告介绍了 GatedVLA，用于 AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道） 的端到端自动驾驶系统。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">GatedVLA with Camera-Based Emergency Braking: AlpaSim E2E Closed Loop Challenge Technical Report</h1>
-            <div class="detail-meta">2026-11-01 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.01663" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.01663" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.01663</span></div>
-            <p class="detail-summary">本报告介绍了 GatedVLA，用于 AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道） 的端到端自动驾驶系统。 核心目标是解决视觉-语言-动作（VLA）策略在闭环驾驶中因规划误差导致的碰撞问题，尤其是追尾碰撞。 通过引入可学习视觉掩码和基于检测器的自动紧急制动（AEB）模块，提升闭环场景评分并降低有责碰撞率。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">京都大学（Kyoto University）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">本报告介绍了 GatedVLA，用于 AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道） 的端到端自动驾驶系统。</p>
-  <ul class="reading-intro-points"><li>本报告介绍了 GatedVLA，用于 AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道） 的端到端自动驾驶系统。</li><li>核心目标是解决视觉-语言-动作（VLA）策略在闭环驾驶中因规划误差导致的碰撞问题，尤其是追尾碰撞。</li><li>通过引入可学习视觉掩码和基于检测器的自动紧急制动（AEB）模块，提升闭环场景评分并降低有责碰撞率。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-01">2026-11-01</time></p>
+        <h1 class="article-title">GatedVLA with Camera-Based Emergency Braking: AlpaSim E2E Closed Loop Challenge Technical Report</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.01663" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.01663" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">本报告介绍了 GatedVLA，用于 AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道） 的端到端自动驾驶系统。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.01663.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.01663.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.01663.webp" alt="GatedVLA with Camera-Based Emergency Braking: AlpaSim E2E Closed Loop Challenge Technical Report 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">京都大学（Kyoto University）</p>
+        <ul class="article-facts"><li>arXiv 2611.01663</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>京都大学（Kyoto University）</strong></li><li><strong>东京农工大学（Tokyo University of Agriculture and Technology）</strong></li><li><strong>东京大学（The University of Tokyo）</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>京都大学（Kyoto University）</strong></li><li><strong>东京农工大学（Tokyo University of Agriculture and Technology）</strong></li><li><strong>东京大学（The University of Tokyo）</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>本报告介绍了 <strong>GatedVLA</strong>，用于 <strong>AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道）</strong> 的端到端自动驾驶系统。</li><li>核心目标是解决视觉-语言-动作（VLA）策略在闭环驾驶中因规划误差导致的碰撞问题，尤其是追尾碰撞。</li><li>通过引入可学习视觉掩码和基于检测器的自动紧急制动（AEB）模块，提升闭环场景评分并降低有责碰撞率。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>本报告介绍了 <strong>GatedVLA</strong>，用于 <strong>AlpaSim E2E 闭环挑战赛（Physical AI AV 赛道）</strong> 的端到端自动驾驶系统。</li><li>核心目标是解决视觉-语言-动作（VLA）策略在闭环驾驶中因规划误差导致的碰撞问题，尤其是追尾碰撞。</li><li>通过引入可学习视觉掩码和基于检测器的自动紧急制动（AEB）模块，提升闭环场景评分并降低有责碰撞率。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>GatedVLA</strong> 策略：将驾驶预训练的 <strong>Qwen-Drive-1.0-4B</strong> 视觉语言模型与层式流匹配动作专家结合，输出 2.5 秒的加速度和曲率控制。</li><li>设计了一种 <strong>软视觉掩码</strong>，直接作用于动作专家的交叉注意力 logits，通过自蒸馏训练，在左转场景中降低开环误差（FDE 1.100 vs 1.213），闭环评分从 0.479 提升至 0.517。</li><li>集成基于 <strong>RT-DETRv2</strong> 检测器的规则式 <strong>自动紧急制动（AEB）</strong> 模块，在部署时独立干预减速，进一步将平均场景评分提升至 0.599，有责碰撞场景数从 34.0 降至 11.0。</li><li>提供完整的训练配置、开源代码（GitHub 仓库 <code>Azuma413/GatedVLA</code>）以及多种变体的详尽评估与消融实验。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>GatedVLA</strong> 策略：将驾驶预训练的 <strong>Qwen-Drive-1.0-4B</strong> 视觉语言模型与层式流匹配动作专家结合，输出 2.5 秒的加速度和曲率控制。</li><li>设计了一种 <strong>软视觉掩码</strong>，直接作用于动作专家的交叉注意力 logits，通过自蒸馏训练，在左转场景中降低开环误差（FDE 1.100 vs 1.213），闭环评分从 0.479 提升至 0.517。</li><li>集成基于 <strong>RT-DETRv2</strong> 检测器的规则式 <strong>自动紧急制动（AEB）</strong> 模块，在部署时独立干预减速，进一步将平均场景评分提升至 0.599，有责碰撞场景数从 34.0 降至 11.0。</li><li>提供完整的训练配置、开源代码（GitHub 仓库 <code>Azuma413/GatedVLA</code>）以及多种变体的详尽评估与消融实验。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>输入表示</strong>：使用两个前视广角相机帧（当前帧和 0.1 秒前帧）和固定文本提示“predict trajectory”；自车状态历史（5 步 10Hz 的 x,y,heading,speed,a_lon）与目标点提供给动作专家。</li><li><strong>动作专家</strong>：采用 <strong>π0 风格层式架构</strong>，包含 32 块 Diffusion Transformer（DiT），通过条件流匹配训练，预测 25 步的加速度和曲率控制，使用 10 步 Euler 积分生成轨迹。</li><li><strong>视觉掩码</strong>：门控模块基于视觉 token 的 VLM 隐藏状态和条件查询计算对数分数，通过 <strong>预算约束</strong>（ρ=0.2）生成软掩码，并将 <code>log m</code> 加到专家的交叉注意力 logits 上，保留与导航意图相关的视觉证据。</li><li><strong>三路径训练</strong>：共享 VLM 前向和噪声，路径 A 为标准流匹配损失（更新 VLM 和 DiT），路径 B 使用停止梯度掩码蒸馏 DiT，路径 C 仅更新门控模块，自蒸馏让掩码学会保留导航目标信息。</li><li><strong>自动紧急制动（AEB）</strong>：使用 COCO 预训练的 RT-DETRv2-R18 检测器处理当前帧，将检测框投影到地面平面，计算最近障碍物的弧长距离和接近速度，当所需减速度超过阈值时对规划速度进行线性减速，并沿规划路径重新计时。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>输入表示</strong>：使用两个前视广角相机帧（当前帧和 0.1 秒前帧）和固定文本提示“predict trajectory”；自车状态历史（5 步 10Hz 的 x,y,heading,speed,a_lon）与目标点提供给动作专家。</li><li><strong>动作专家</strong>：采用 <strong>π0 风格层式架构</strong>，包含 32 块 Diffusion Transformer（DiT），通过条件流匹配训练，预测 25 步的加速度和曲率控制，使用 10 步 Euler 积分生成轨迹。</li><li><strong>视觉掩码</strong>：门控模块基于视觉 token 的 VLM 隐藏状态和条件查询计算对数分数，通过 <strong>预算约束</strong>（ρ=0.2）生成软掩码，并将 <code>log m</code> 加到专家的交叉注意力 logits 上，保留与导航意图相关的视觉证据。</li><li><strong>三路径训练</strong>：共享 VLM 前向和噪声，路径 A 为标准流匹配损失（更新 VLM 和 DiT），路径 B 使用停止梯度掩码蒸馏 DiT，路径 C 仅更新门控模块，自蒸馏让掩码学会保留导航目标信息。</li><li><strong>自动紧急制动（AEB）</strong>：使用 COCO 预训练的 RT-DETRv2-R18 检测器处理当前帧，将检测框投影到地面平面，计算最近障碍物的弧长距离和接近速度，当所需减速度超过阈值时对规划速度进行线性减速，并沿规划路径重新计时。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>NVIDIA PhysicalAI-Autonomous-Vehicles</strong> 数据集（仅使用前视广角相机流和自车运动轨迹，无 LiDAR/雷达/感知标签）。</li><li><strong>预训练模型</strong>：VLM 初始化自 <strong>Qwen-Drive-1.0-4B</strong>（Apache-2.0）；检测器使用 <strong>RT-DETRv2-R18</strong>（COCO 预训练）。</li><li><strong>模型规模</strong>：动作专家为 32 块 DiT（宽度 1024，16 头，dropout 0.2），策略总显存约 11.6 GiB，检测器额外约 0.2 GiB。</li><li><strong>训练资源</strong>：12 个 <strong>Intel Aurora XPU tiles</strong>，共训练 12 个 epoch（38,400 步），batch size 每 tile 4，使用 bf16 精度和梯度检查点。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>NVIDIA PhysicalAI-Autonomous-Vehicles</strong> 数据集（仅使用前视广角相机流和自车运动轨迹，无 LiDAR/雷达/感知标签）。</li><li><strong>预训练模型</strong>：VLM 初始化自 <strong>Qwen-Drive-1.0-4B</strong>（Apache-2.0）；检测器使用 <strong>RT-DETRv2-R18</strong>（COCO 预训练）。</li><li><strong>模型规模</strong>：动作专家为 32 块 DiT（宽度 1024，16 头，dropout 0.2），策略总显存约 11.6 GiB，检测器额外约 0.2 GiB。</li><li><strong>训练资源</strong>：12 个 <strong>Intel Aurora XPU tiles</strong>，共训练 12 个 epoch（38,400 步），batch size 每 tile 4，使用 bf16 精度和梯度检查点。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：开环评估在 240 个固定验证样本上进行（80 左转、80 右转、80 直行）；闭环评估在 <strong>AlpaSim</strong> 模拟器的 150 个场景（每场景 2 次 rollout，使用 dev 预设 40m 路线偏移）上进行。</li><li><strong>主要指标</strong>：开环使用 ADE、FDE、miss rate；闭环使用场景评分（无失败时按进度归一化，失败为 0）和有责碰撞、偏离道路、走廊退出等失败计数。</li><li><strong>开环结果</strong>：掩码策略与基线总体 ADE/FDE 相当（0.341/1.023 vs 0.337/1.029），但左转 FDE 从 1.213 降至 1.100，miss rate 从 0.200 降至 0.150；直行段误差略增。</li><li><strong>闭环结果</strong>：视觉掩码使平均场景评分从 0.479 提升至 0.517（配对差异 +0.038，95% CI [-0.018, +0.093]）；叠加 AEB (10 Hz) 后进一步提升至 0.599（+0.082，CI [+0.023, +0.143]），有责碰撞场景数从 34.0 降至 11.0；AEB 5Hz 与 10Hz 差异不显著。</li><li><strong>运行时</strong>：在独立单 rollout 测试中，AEB 变体的平均 Drive RPC 延迟为 0.10–0.11 秒（NVIDIA RTX 6000 Ada GPU）。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：开环评估在 240 个固定验证样本上进行（80 左转、80 右转、80 直行）；闭环评估在 <strong>AlpaSim</strong> 模拟器的 150 个场景（每场景 2 次 rollout，使用 dev 预设 40m 路线偏移）上进行。</li><li><strong>主要指标</strong>：开环使用 ADE、FDE、miss rate；闭环使用场景评分（无失败时按进度归一化，失败为 0）和有责碰撞、偏离道路、走廊退出等失败计数。</li><li><strong>开环结果</strong>：掩码策略与基线总体 ADE/FDE 相当（0.341/1.023 vs 0.337/1.029），但左转 FDE 从 1.213 降至 1.100，miss rate 从 0.200 降至 0.150；直行段误差略增。</li><li><strong>闭环结果</strong>：视觉掩码使平均场景评分从 0.479 提升至 0.517（配对差异 +0.038，95% CI [-0.018, +0.093]）；叠加 AEB (10 Hz) 后进一步提升至 0.599（+0.082，CI [+0.023, +0.143]），有责碰撞场景数从 34.0 降至 11.0；AEB 5Hz 与 10Hz 差异不显著。</li><li><strong>运行时</strong>：在独立单 rollout 测试中，AEB 变体的平均 Drive RPC 延迟为 0.10–0.11 秒（NVIDIA RTX 6000 Ada GPU）。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.01677/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Xiaomi Auto World Model 2.0: Causal World Models for Real-World Driving and Embodied Intelligence</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.01600/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">SCOUT: Planning under Occlusion via Object-Centric World Model Rollouts</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.01677/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Xiaomi Auto World Model 2.0: Causal World Models for Real-World Driving and Embodied Intelligence</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.01600/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SCOUT: Planning under Occlusion via Object-Centric World Model Rollouts</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

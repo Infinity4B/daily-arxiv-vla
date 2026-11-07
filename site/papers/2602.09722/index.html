@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Rethinking Visual-Language-Action Model Scaling: Alignment, Mixture, and Regularization - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2602.09722">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,115 +57,80 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2602.09722.webp" alt="Rethinking Visual-Language-Action Model Scaling: Alignment, Mixture, and Regularization" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Rethinking Visual-Language-Action Model Scaling: Alignment, Mixture, and Regularization</h1>
-            <div class="detail-meta">2026-02-10 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2602.09722" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2602.09722" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2602.09722</span></div>
-            <p class="detail-summary">本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">6 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">中国人民大学 (Renmin University of China)，BeingBeyond，北京大…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。</p>
-  <ul class="reading-intro-points"><li>本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。</li><li>识别出末端执行器相对坐标动作表示对于跨本体迁移学习至关重要，提供了对通用策略更有优势的动作参数化选择。</li><li>揭示了在VLA预训练中，简单混合异质机器人数据常常导致性能下降而非提升，挑战了在机器人领域简单放大数据规模的有效性。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-02-10">2026-02-10</time></p>
+        <h1 class="article-title">Rethinking Visual-Language-Action Model Scaling: Alignment, Mixture, and Regularization</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2602.09722" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2602.09722" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2602.09722.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2602.09722.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2602.09722.webp" alt="Rethinking Visual-Language-Action Model Scaling: Alignment, Mixture, and Regularization 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中国人民大学 (Renmin University of China)，BeingBeyond，北京大…</p>
+        <ul class="article-facts"><li>arXiv 2602.09722</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><p>中国人民大学 (Renmin University of China)，BeingBeyond，北京大学 (Peking University)</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><p>中国人民大学 (Renmin University of China)，BeingBeyond，北京大学 (Peking University)</p></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><p>本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><p>本研究对视觉-语言-动作模型在大规模异质机器人数据上扩展的有效性进行了系统的、受控的实验研究。研究挑战了“简单扩大数据规模就能提升泛化能力”的普遍假设，深入探讨了三个核心设计维度（物理对齐、本体数据混合、训练正则化）对VLA模型性能的影响。论文构建了一个基于混合专家架构和流匹配动作生成的代表性VLA框架作为受控测试平台，并提出了一个分组盲集协议以减少真实世界评估中的实验者偏差。</p></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ol><li>识别出末端执行器相对坐标动作表示对于跨本体迁移学习至关重要，提供了对通用策略更有优势的动作参数化选择。</li><li>揭示了在VLA预训练中，简单混合异质机器人数据常常导致性能下降而非提升，挑战了在机器人领域简单放大数据规模的有效性。</li><li>实证表明，一些直观的训练正则化策略（如感官丢弃、多阶段微调）在大规模训练中并不能稳定地带来性能增益。</li><li>提出了一个分组盲集评估协议，通过将模型身份匿名化和分离策略执行与结果判定，显著减少了真实机器人实验中的实验者偏差，为可靠的VLA评估提供了方法。</li></ol></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ol><li>识别出末端执行器相对坐标动作表示对于跨本体迁移学习至关重要，提供了对通用策略更有优势的动作参数化选择。</li><li>揭示了在VLA预训练中，简单混合异质机器人数据常常导致性能下降而非提升，挑战了在机器人领域简单放大数据规模的有效性。</li><li>实证表明，一些直观的训练正则化策略（如感官丢弃、多阶段微调）在大规模训练中并不能稳定地带来性能增益。</li><li>提出了一个分组盲集评估协议，通过将模型身份匿名化和分离策略执行与结果判定，显著减少了真实机器人实验中的实验者偏差，为可靠的VLA评估提供了方法。</li></ol></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ol><li><strong>模型架构</strong>: 采用混合专家架构，包含一个从预训练VLM初始化的语义专家和一个随机初始化用于控制的任务专家。两个专家通过逐层共享的自注意力机制进行跨模态交互。</li><li><strong>动作生成</strong>: 使用流匹配方法对动作片段进行建模，将动作生成视为基于多模态上下文的条件分布，以实现平滑的轨迹生成。</li><li><strong>物理对齐的统一动作空间</strong>: 定义了一个分区的、物理接地的统一动作空间，包含末端执行器姿态、关节、夹持器等语义对齐的子空间。研究了四种末端执行器姿态的坐标参数化：世界相对、世界增量、EEF相对、EEF增量。</li><li><strong>分组盲集评估协议</strong>: 将待评估模型池随机分成不重叠的小组，对每个组内的模型进行匿名化，并在任务中以随机顺序执行策略，实验者不知晓所用模型的身份，仅作为执行者记录成功/失败结果，以降低人类偏好和疲劳带来的评估偏差。</li></ol></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ol><li><strong>模型架构</strong>: 采用混合专家架构，包含一个从预训练VLM初始化的语义专家和一个随机初始化用于控制的任务专家。两个专家通过逐层共享的自注意力机制进行跨模态交互。</li><li><strong>动作生成</strong>: 使用流匹配方法对动作片段进行建模，将动作生成视为基于多模态上下文的条件分布，以实现平滑的轨迹生成。</li><li><strong>物理对齐的统一动作空间</strong>: 定义了一个分区的、物理接地的统一动作空间，包含末端执行器姿态、关节、夹持器等语义对齐的子空间。研究了四种末端执行器姿态的坐标参数化：世界相对、世界增量、EEF相对、EEF增量。</li><li><strong>分组盲集评估协议</strong>: 将待评估模型池随机分成不重叠的小组，对每个组内的模型进行匿名化，并在任务中以随机顺序执行策略，实验者不知晓所用模型的身份，仅作为执行者记录成功/失败结果，以降低人类偏好和疲劳带来的评估偏差。</li></ol></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ol><li><strong>数据集</strong>: 构建了一个大规模异质机器人数据集混合体，总计约1.8亿帧数据转换。数据集来源包括：</li></ol>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ol><li><strong>数据集</strong>: 构建了一个大规模异质机器人数据集混合体，总计约1.8亿帧数据转换。数据集来源包括：</li></ol>
 <p> * <strong>真实世界EEF数据</strong>: Open X-Embodiment (DROID, Bridge, Fractal等子集)，AgiBot (夹持器和灵巧手)，RoboMind (多平台)。</p>
 <p> * <strong>仿真和关节空间数据</strong>: InternData (仿真和灵巧手)，SO-100 (低成本遥操作)，真实世界人形数据集。</p>
 <p> * <strong>数据平衡</strong>: 采用动态下采样策略以平衡各数据源的规模差异，防止大型数据集主导梯度更新。</p>
 <ol><li><strong>训练资源</strong>: 所有实验在8个NVIDIA A800 GPU上进行，全局批次大小为256。</li></ol></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ol><li><strong>评估环境</strong>:</li></ol>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ol><li><strong>评估环境</strong>:</li></ol>
 <p> * <strong>仿真基准</strong>: LIBERO (多任务套件，5样本微调协议) 和 RoboCasa (24个厨房任务，50样本微调协议)。</p>
 <p> * <strong>真实机器人实验</strong>: 配备两个RGB摄像头的Franka Panda机械臂。定义了四个任务：堆叠碗、拾取放入抽屉、擦黑板、浇灌植物，以测试不同能力。</p>
 <ol><li><strong>评估指标</strong>:</li></ol>
 <p> * <strong>仿真</strong>: 任务成功率。对LIBERO，报告了空间、物体、目标和长序列四个子任务的分数及平均成功率。对RoboCasa，报告了拾取/放置、门/抽屉、其他三类任务的分数及平均成功率。</p>
 <p> * <strong>真实世界</strong>: 使用详细的多步骤评分标准对每个任务进行评分（如堆叠碗最高3分），每个任务进行10次试验，计算总分并换算为百分比。评估在分组盲集协议下进行。</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2602.09973/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">RoboInter: A Holistic Intermediate Representation Suite Towards Robotic Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2602.09657/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">AutoFly: Vision-Language-Action Model for UAV Autonomous Navigation in the Wild</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2602.09973/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RoboInter: A Holistic Intermediate Representation Suite Towards Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2602.09657/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">AutoFly: Vision-Language-Action Model for UAV Autonomous Navigation in the Wild</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

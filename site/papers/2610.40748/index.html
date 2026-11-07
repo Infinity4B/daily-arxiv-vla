@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>WorldBridge: Bridging Video and Action for Task Generalization in World Action Models - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究世界动作模型（World Action Models, WAMs）中视频泛化与动作泛化的互补作用。 通过控制任务视频和动作标签的监督程度，量化新增视频与稀疏动作监督对任务迁移的贡献，并据此提出 WorldBridge 模型。 旨在解决机器人执行超出初始训练分布的新任务时，如何利用视频预测和动作接地实现可靠控制的问题。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2610.40748">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2610.40748.webp" alt="WorldBridge: Bridging Video and Action for Task Generalization in World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究世界动作模型（World Action Models, WAMs）中视频泛化与动作泛化的互补作用。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">WorldBridge: Bridging Video and Action for Task Generalization in World Action Models</h1>
-            <div class="detail-meta">2026-10-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.40748" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.40748" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.40748</span></div>
-            <p class="detail-summary">论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究世界动作模型（World Action Models, WAMs）中视频泛化与动作泛化的互补作用。 通过控制任务视频和动作标签的监督程度，量化新增视频与稀疏动作监督对任务迁移的贡献，并据此提出 WorldBridge 模型。 旨在解决机器人执行超出初始训练分布的新任务时，如何利用视频预测和动作接地实现可靠控制的问题。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">论文作者所属机构为 Joy Future Academy（以 WorldBridge Team 署名）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究世界动作模型（World Action Models, WAMs）中视频泛化与动作泛化的互补作用。</p>
-  <ul class="reading-intro-points"><li>论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究世界动作模型（World Action Models, WAMs）中视频泛化与动作泛化的互补作用。</li><li>通过控制任务视频和动作标签的监督程度，量化新增视频与稀疏动作监督对任务迁移的贡献，并据此提出 WorldBridge 模型。</li><li>旨在解决机器人执行超出初始训练分布的新任务时，如何利用视频预测和动作接地实现可靠控制的问题。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-10-29">2026-10-29</time></p>
+        <h1 class="article-title">WorldBridge: Bridging Video and Action for Task Generalization in World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.40748" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.40748" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究世界动作模型（World Action Models, WAMs）中视频泛化与动作泛化的互补作用。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2610.40748.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2610.40748.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2610.40748.webp" alt="WorldBridge: Bridging Video and Action for Task Generalization in World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者所属机构为 Joy Future Academy（以 WorldBridge Team 署名）</p>
+        <ul class="article-facts"><li>arXiv 2610.40748</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者所属机构为 <strong>Joy Future Academy</strong>（以 <strong>WorldBridge Team</strong> 署名）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li>论文作者所属机构为 <strong>Joy Future Academy</strong>（以 <strong>WorldBridge Team</strong> 署名）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究<strong>世界动作模型（World Action Models, WAMs）</strong>中视频泛化与动作泛化的互补作用。</li><li>通过控制任务视频和动作标签的监督程度，量化新增视频与稀疏动作监督对任务迁移的贡献，并据此提出 <strong>WorldBridge</strong> 模型。</li><li>旨在解决机器人执行超出初始训练分布的新任务时，如何利用视频预测和动作接地实现可靠控制的问题。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文针对具身模型在物理环境中实现广泛任务泛化的挑战，研究<strong>世界动作模型（World Action Models, WAMs）</strong>中视频泛化与动作泛化的互补作用。</li><li>通过控制任务视频和动作标签的监督程度，量化新增视频与稀疏动作监督对任务迁移的贡献，并据此提出 <strong>WorldBridge</strong> 模型。</li><li>旨在解决机器人执行超出初始训练分布的新任务时，如何利用视频预测和动作接地实现可靠控制的问题。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>系统研究 WAMs 中任务泛化的机制，量化额外任务视频和稀疏动作监督带来的性能提升：仅 ID 视频-动作监督时 OOD 成功率 25.07%，加入 OOD 视频升至 55.90%，再加每任务 1 条动作演示升至 70.70%。</li><li>提出 <strong>WorldBridge</strong> 模型，采用 <strong>Mixture-of-Transformers (MoT)</strong> 架构，通过结构化注意力与联合流匹配连接视频预测和动作生成。</li><li>构建统一数据预处理管道，将异构机器人轨迹和自中心手部演示标准化为共享 46 维动作表示，并实施多级质量过滤。</li><li>在 <strong>RoboTwin 2.0、RoboCasa GR1 TableTop、RMBench、DOMINO Level-1</strong> 等多个基准上取得最先进性能，并在 <strong>AgiBot G2</strong> 和 <strong>ARX AC-1</strong> 真实机器人上完成部署验证。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>系统研究 WAMs 中任务泛化的机制，量化额外任务视频和稀疏动作监督带来的性能提升：仅 ID 视频-动作监督时 OOD 成功率 25.07%，加入 OOD 视频升至 55.90%，再加每任务 1 条动作演示升至 70.70%。</li><li>提出 <strong>WorldBridge</strong> 模型，采用 <strong>Mixture-of-Transformers (MoT)</strong> 架构，通过结构化注意力与联合流匹配连接视频预测和动作生成。</li><li>构建统一数据预处理管道，将异构机器人轨迹和自中心手部演示标准化为共享 46 维动作表示，并实施多级质量过滤。</li><li>在 <strong>RoboTwin 2.0、RoboCasa GR1 TableTop、RMBench、DOMINO Level-1</strong> 等多个基准上取得最先进性能，并在 <strong>AgiBot G2</strong> 和 <strong>ARX AC-1</strong> 真实机器人上完成部署验证。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>模型架构</strong>：WorldBridge 包含独立的视频专家和动作专家，通过联合自注意力交换信息，视频专家额外利用语言特征交叉注意力。</li><li><strong>训练目标</strong>：采用<strong>联合流匹配 (joint flow matching)</strong>，分别采样视频和动作的流时间步，模型预测速度场；推理时从高斯噪声分别去噪生成未来视频潜在和动作块。</li><li><strong>视觉记忆</strong>：引入双尺度记忆——短期记忆（间隔 2 步取 4 帧）捕捉局部运动，长期记忆（间隔 32 步取 4 帧）提供任务进展上下文，经因果视频 VAE 编码后作为条件。</li><li><strong>动作强制 (Action Forcing)</strong>：训练时对动作块内不同组独立采样噪声水平，使动作专家在部分动作干净、部分动作高噪的条件下学习，增强对视觉上下文的依赖。</li><li><strong>注意力掩码</strong>：预训练阶段视频 token 不关注动作 token，动作 token 关注全部；后训练阶段采用结构化掩码，形成从记忆/当前帧到未来视频再到动作的显式信息路径。</li><li><strong>数据管道</strong>：机器人数据处理包括语义审计、静态边界修剪、运动学一致性过滤、信号异常检测；自中心数据处理包括坐标标准化、手部几何到动作映射、质量过滤与有效性掩码。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>模型架构</strong>：WorldBridge 包含独立的视频专家和动作专家，通过联合自注意力交换信息，视频专家额外利用语言特征交叉注意力。</li><li><strong>训练目标</strong>：采用<strong>联合流匹配 (joint flow matching)</strong>，分别采样视频和动作的流时间步，模型预测速度场；推理时从高斯噪声分别去噪生成未来视频潜在和动作块。</li><li><strong>视觉记忆</strong>：引入双尺度记忆——短期记忆（间隔 2 步取 4 帧）捕捉局部运动，长期记忆（间隔 32 步取 4 帧）提供任务进展上下文，经因果视频 VAE 编码后作为条件。</li><li><strong>动作强制 (Action Forcing)</strong>：训练时对动作块内不同组独立采样噪声水平，使动作专家在部分动作干净、部分动作高噪的条件下学习，增强对视觉上下文的依赖。</li><li><strong>注意力掩码</strong>：预训练阶段视频 token 不关注动作 token，动作 token 关注全部；后训练阶段采用结构化掩码，形成从记忆/当前帧到未来视频再到动作的显式信息路径。</li><li><strong>数据管道</strong>：机器人数据处理包括语义审计、静态边界修剪、运动学一致性过滤、信号异常检测；自中心数据处理包括坐标标准化、手部几何到动作映射、质量过滤与有效性掩码。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>机器人数据集</strong>：<strong>ABC-130K, AgiBotWorld-Beta, AgiBotWorld2026, DROID, Galaxea Open-World, RoboCOIN, RoboMIND, RoboMIND 2.0, GenieSim 3.0, InternData-A1</strong>，清洗后共 <strong>1,275,715</strong> 个 episode，<strong>9,729.58</strong> 小时。</li><li><strong>自中心数据集</strong>：<strong>EgoStandard, Lightwheel, XDOF, CyberOrigin, Xperience, EgoDex, GenRobot</strong>，清洗后共 <strong>2,105,846</strong> 个 episode，<strong>12,591.63</strong> 小时。</li><li>合并后总数据规模约 <strong>3,381,561</strong> 个 episode，<strong>22,321.21</strong> 小时。</li><li>训练资源：<strong>64 个 GPU</strong>，使用 <strong>BF16</strong> 精度，每个 GPU 12 个样本、2 步梯度累积，有效批次大小 <strong>1,536</strong>，总训练步数 <strong>60,000</strong>。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>机器人数据集</strong>：<strong>ABC-130K, AgiBotWorld-Beta, AgiBotWorld2026, DROID, Galaxea Open-World, RoboCOIN, RoboMIND, RoboMIND 2.0, GenieSim 3.0, InternData-A1</strong>，清洗后共 <strong>1,275,715</strong> 个 episode，<strong>9,729.58</strong> 小时。</li><li><strong>自中心数据集</strong>：<strong>EgoStandard, Lightwheel, XDOF, CyberOrigin, Xperience, EgoDex, GenRobot</strong>，清洗后共 <strong>2,105,846</strong> 个 episode，<strong>12,591.63</strong> 小时。</li><li>合并后总数据规模约 <strong>3,381,561</strong> 个 episode，<strong>22,321.21</strong> 小时。</li><li>训练资源：<strong>64 个 GPU</strong>，使用 <strong>BF16</strong> 精度，每个 GPU 12 个样本、2 步梯度累积，有效批次大小 <strong>1,536</strong>，总训练步数 <strong>60,000</strong>。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>任务泛化研究</strong>（RoboTwin 2.0）：仅 ID 监督时 OOD 成功率 <strong>25.07%</strong>；加入 OOD 视频（无动作标签）升至 <strong>55.90%</strong>；再为每任务添加 1 条动作演示达到 <strong>70.70%</strong>；5 条演示 <strong>84.67%</strong>；20 条 <strong>90.03%</strong>；100 条 <strong>93.17%</strong>；550 条 <strong>92.83%</strong>。</li><li><strong>模拟基准</strong>：在 <strong>RoboTwin 2.0</strong> 全数据设置达到 <strong>96.23%</strong>，干净到随机（C2R）设置 <strong>80.9%</strong>；<strong>RoboCasa GR1 TableTop</strong> 达到 <strong>82.8%</strong>；<strong>RMBench</strong> 达到 <strong>83.0%</strong>；<strong>DOMINO Level-1</strong> 达到 <strong>57.6%</strong>。</li><li><strong>真实机器人实验</strong>：在 <strong>AgiBot G2</strong> 和 <strong>ARX AC-1</strong> 平台上微调同一预训练检查点，验证了长程执行、记忆依赖交互、空间定位和双手协调等能力。</li><li>消融实验显示联合视频-动作预训练优于单一模态训练，记忆机制对需要扫描和回顾的任务有显著帮助，异步执行与推理加速策略可有效降低部署延迟。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>任务泛化研究</strong>（RoboTwin 2.0）：仅 ID 监督时 OOD 成功率 <strong>25.07%</strong>；加入 OOD 视频（无动作标签）升至 <strong>55.90%</strong>；再为每任务添加 1 条动作演示达到 <strong>70.70%</strong>；5 条演示 <strong>84.67%</strong>；20 条 <strong>90.03%</strong>；100 条 <strong>93.17%</strong>；550 条 <strong>92.83%</strong>。</li><li><strong>模拟基准</strong>：在 <strong>RoboTwin 2.0</strong> 全数据设置达到 <strong>96.23%</strong>，干净到随机（C2R）设置 <strong>80.9%</strong>；<strong>RoboCasa GR1 TableTop</strong> 达到 <strong>82.8%</strong>；<strong>RMBench</strong> 达到 <strong>83.0%</strong>；<strong>DOMINO Level-1</strong> 达到 <strong>57.6%</strong>。</li><li><strong>真实机器人实验</strong>：在 <strong>AgiBot G2</strong> 和 <strong>ARX AC-1</strong> 平台上微调同一预训练检查点，验证了长程执行、记忆依赖交互、空间定位和双手协调等能力。</li><li>消融实验显示联合视频-动作预训练优于单一模态训练，记忆机制对需要扫描和回顾的任务有显著帮助，异步执行与推理加速策略可有效降低部署延迟。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.40799/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">CaPtain: A Pipeline for Post-Training Code-as-Policy Robot Agents</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.40565/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Gym-Anything for Robotics: Scaling physical simulations with digital agents</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2610.40799/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CaPtain: A Pipeline for Post-Training Code-as-Policy Robot Agents</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2610.40565/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Gym-Anything for Robotics: Scaling physical simulations with digital agents</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

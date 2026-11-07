@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>T$^2$Mem: Learning Test-Time Memory for Robotics - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="针对机器人操作中记忆依赖任务的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容 提出T²Mem框架，核心目标是将记忆能力内生日预训练的VLA策略中，无需外部记忆模块、记忆专用标注或额外大模型推理，仅通过动作监督和测试时自监督更新，实现决策相关历史信息的自动保留与使用" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2609.36720">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,110 +57,75 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.36720.webp" alt="T$^2$Mem: Learning Test-Time Memory for Robotics" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">针对机器人操作中记忆依赖任务的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">T$^2$Mem: Learning Test-Time Memory for Robotics</h1>
-            <div class="detail-meta">2026-09-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.36720" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.36720" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2609.36720</span></div>
-            <p class="detail-summary">针对机器人操作中记忆依赖任务的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容 提出T²Mem框架，核心目标是将记忆能力内生日预训练的VLA策略中，无需外部记忆模块、记忆专用标注或额外大模型推理，仅通过动作监督和测试时自监督更新，实现决策相关历史信息的自动保留与使用</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">论文作者所属研究机构包括：Stanford University（Yize Liu、Huang Hua…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">针对机器人操作中记忆依赖任务的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容</p>
-  <ul class="reading-intro-points"><li>针对机器人操作中记忆依赖任务的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容</li><li>提出T²Mem框架，核心目标是将记忆能力内生日预训练的VLA策略中，无需外部记忆模块、记忆专用标注或额外大模型推理，仅通过动作监督和测试时自监督更新，实现决策相关历史信息的自动保留与使用</li><li>提出观察 grounded 的内存接口，连接VLM骨干与动作专家，将视觉-语言语义特征压缩为紧凑状态摘要，用于记忆的读写和动作条件生成，避免基于动作历史的捷径学习</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-09-29">2026-09-29</time></p>
+        <h1 class="article-title">T$^2$Mem: Learning Test-Time Memory for Robotics</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2609.36720" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2609.36720" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对机器人操作中记忆依赖任务的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2609.36720.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2609.36720.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2609.36720.webp" alt="T$^2$Mem: Learning Test-Time Memory for Robotics 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者所属研究机构包括：Stanford University（Yize Liu、Huang Hua…</p>
+        <ul class="article-facts"><li>arXiv 2609.36720</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者所属研究机构包括：<strong>Stanford University</strong>（Yize Liu、Huang Huang、Yining Hong、Li Fei-Fei、Jiajun Wu）、<strong>NVIDIA</strong>（Zijian Du）、<strong>University of Michigan, Ann Arbor</strong>（Zhi Cao）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li>论文作者所属研究机构包括：<strong>Stanford University</strong>（Yize Liu、Huang Huang、Yining Hong、Li Fei-Fei、Jiajun Wu）、<strong>NVIDIA</strong>（Zijian Du）、<strong>University of Michigan, Ann Arbor</strong>（Zhi Cao）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对机器人操作中<strong>记忆依赖任务</strong>的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容</li><li>提出<strong>T²Mem</strong>框架，核心目标是将记忆能力内生日预训练的VLA策略中，无需外部记忆模块、记忆专用标注或额外大模型推理，仅通过动作监督和测试时自监督更新，实现决策相关历史信息的自动保留与使用</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>针对机器人操作中<strong>记忆依赖任务</strong>的核心痛点：该类任务需要依赖当前观测中缺失的过往交互信息才能决策，现有无记忆预训练视觉-语言-动作（VLA）基座无法有效保留和使用历史信息，显式记忆模块会引入中间瓶颈，循环记忆方法仅压缩历史而非保留决策相关内容</li><li>提出<strong>T²Mem</strong>框架，核心目标是将记忆能力内生日预训练的VLA策略中，无需外部记忆模块、记忆专用标注或额外大模型推理，仅通过动作监督和测试时自监督更新，实现决策相关历史信息的自动保留与使用</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>观察 grounded 的内存接口</strong>，连接VLM骨干与动作专家，将视觉-语言语义特征压缩为紧凑状态摘要，用于记忆的读写和动作条件生成，避免基于动作历史的捷径学习</li><li>设计<strong>交替记忆-策略学习范式</strong>，分离“学习记忆”与“学习使用记忆”的优化过程，通过固定对方的慢参数稳定训练，解决联合训练中记忆与策略相互耦合、难以收敛的问题</li><li>提出<strong>自适应自监督记忆写入机制</strong>，根据更新方向与初始权重的对齐度、重建残差动态调整写入强度，减少相关观测的重复干扰，降低早期记忆绑定的破坏</li><li>在<strong>RoboMME</strong>基准的16个记忆依赖任务上验证有效性，平均任务成功率从无记忆基座的17.93%提升至56.83%，超过现有循环记忆基线，同时实现至少3倍的推理加速</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出<strong>观察 grounded 的内存接口</strong>，连接VLM骨干与动作专家，将视觉-语言语义特征压缩为紧凑状态摘要，用于记忆的读写和动作条件生成，避免基于动作历史的捷径学习</li><li>设计<strong>交替记忆-策略学习范式</strong>，分离“学习记忆”与“学习使用记忆”的优化过程，通过固定对方的慢参数稳定训练，解决联合训练中记忆与策略相互耦合、难以收敛的问题</li><li>提出<strong>自适应自监督记忆写入机制</strong>，根据更新方向与初始权重的对齐度、重建残差动态调整写入强度，减少相关观测的重复干扰，降低早期记忆绑定的破坏</li><li>在<strong>RoboMME</strong>基准的16个记忆依赖任务上验证有效性，平均任务成功率从无记忆基座的17.93%提升至56.83%，超过现有循环记忆基线，同时实现至少3倍的推理加速</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基础架构基于预训练的<strong>π₀.₅</strong> VLA策略，在VLM骨干和动作专家（AE）之间插入参数化记忆模块，保留原始VLM到AE的直接通路以获取当前场景信息，避免丢失实时感知能力</li><li>记忆接口通过可学习查询token聚合VLM的视觉-语言特征，生成状态摘要用于记忆读写；快权重记忆采用测试时训练（TTT）机制，通过在线自监督关联损失更新快权重编码历史信息，慢参数（策略、接口、记忆投影等）训练时学习、部署时固定，每个回合重置快权重到 learned 初始化</li><li>训练过程采用三阶段交替范式：Stage0初始化预训练VLA，Stage1无记忆适配任务特定的视觉运动技能，Stage2A固定VLA/AE训练记忆机制，Stage2B固定记忆机制训练条件策略，两个阶段交替重复，通过专家动作监督引导记忆的形成与使用</li><li>核心创新包括：1. 将记忆能力内生到单一VLA策略，无需外部模块；2. 观察 grounded 的接口确保记忆基于视觉语义而非动作历史；3. 交替学习范式解耦记忆形成与使用，稳定优化；4. 自适应写入降低历史干扰，提升记忆质量</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>基础架构基于预训练的<strong>π₀.₅</strong> VLA策略，在VLM骨干和动作专家（AE）之间插入参数化记忆模块，保留原始VLM到AE的直接通路以获取当前场景信息，避免丢失实时感知能力</li><li>记忆接口通过可学习查询token聚合VLM的视觉-语言特征，生成状态摘要用于记忆读写；快权重记忆采用测试时训练（TTT）机制，通过在线自监督关联损失更新快权重编码历史信息，慢参数（策略、接口、记忆投影等）训练时学习、部署时固定，每个回合重置快权重到 learned 初始化</li><li>训练过程采用三阶段交替范式：Stage0初始化预训练VLA，Stage1无记忆适配任务特定的视觉运动技能，Stage2A固定VLA/AE训练记忆机制，Stage2B固定记忆机制训练条件策略，两个阶段交替重复，通过专家动作监督引导记忆的形成与使用</li><li>核心创新包括：1. 将记忆能力内生到单一VLA策略，无需外部模块；2. 观察 grounded 的接口确保记忆基于视觉语义而非动作历史；3. 交替学习范式解耦记忆形成与使用，稳定优化；4. 自适应写入降低历史干扰，提升记忆质量</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用数据集：<strong>RoboMME</strong>基准，包含16个记忆依赖的机器人操作任务，分为计数、持久性、参考、模仿4大类，覆盖时间、空间、物体中心、程序性4类记忆能力</li><li>模型规模：基于<strong>π₀.₅</strong>预训练VLA策略，训练时除视觉和语言编码器外全部参数解冻，未公开具体总参数量</li><li>训练资源：32块<strong>NVIDIA H200</strong> GPU，总训练时长48小时</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>使用数据集：<strong>RoboMME</strong>基准，包含16个记忆依赖的机器人操作任务，分为计数、持久性、参考、模仿4大类，覆盖时间、空间、物体中心、程序性4类记忆能力</li><li>模型规模：基于<strong>π₀.₅</strong>预训练VLA策略，训练时除视觉和语言编码器外全部参数解冻，未公开具体总参数量</li><li>训练资源：32块<strong>NVIDIA H200</strong> GPU，总训练时长48小时</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估环境与基准：在RoboMME的16个任务上评估，每个任务使用50集测试集和3个评估种子，基线涵盖符号记忆（SimpleSG、GroundSG）、感知记忆（TokenDrop、FrameSamp）、循环记忆（TTT、RMT）以及SAM2Act+、MemER等方法，人类表现和特权信息Oracle作为参考基准</li><li>主要评估指标：任务成功率（%）、推理延迟（ms）</li><li>关键实验结果：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境与基准：在RoboMME的16个任务上评估，每个任务使用50集测试集和3个评估种子，基线涵盖符号记忆（SimpleSG、GroundSG）、感知记忆（TokenDrop、FrameSamp）、循环记忆（TTT、RMT）以及SAM2Act+、MemER等方法，人类表现和特权信息Oracle作为参考基准</li><li>主要评估指标：任务成功率（%）、推理延迟（ms）</li><li>关键实验结果：</li></ul>
 <p> - 任务性能：<strong>T²Mem</strong>平均成功率为56.83%，较无记忆基座<strong>π₀.₅</strong>（17.93%）提升38.9个百分点，超过所有无特权信息的循环记忆基线，在VideoRepick、InsertPeg、RouteStick等8个任务上取得最优性能</p>
 <p> - 消融实验：观察 grounded 的内存接口比动作专家侧的记忆实现性能高54个百分点（84% vs 30% on VideoUnmask任务）；交替学习比联合训练效果显著提升，联合训练性能接近无记忆基线；自适应写入将早期记忆绑定的重建误差降低18.8%-46.9%</p>
 <p> - 在线记忆贡献：禁用快权重写入后，VideoUnmask、SwingXtimes、MoveCube三个任务的成功率分别下降82.67、64.67、41.33个百分点；冲突记忆的性能（0.33%）远低于正确记忆（100%）和空记忆（33.7%），证明记忆内容被特异性使用；遮挡前写入的性能（76.67%）与全演示写入相当，显著高于遮挡后写入（20.67%），证明记忆写入的时间合理性</p>
 <p> - 推理效率：在<strong>RTX A5000</strong> GPU上，T²Mem的纯记忆计算延迟比FrameSamp+Modul快约3倍，比MemER快约69.2倍，端到端延迟也显著低于显式记忆方法</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2609.36774/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2609.36645/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Where Predictive Supervision Goes Shapes What VLA Policies Learn</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2609.36774/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">LexiconVLA: Learning Reusable Atomic Action Codebooks for Unseen Tasks</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2609.36645/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Where Predictive Supervision Goes Shapes What VLA Policies Learn</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

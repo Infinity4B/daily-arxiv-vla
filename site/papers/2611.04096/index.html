@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Online Hamilton-Jacobi Reachability Onboard the Robot Control Loop: A Real-Time GPU Solver for Safety-Critical Autonomy - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。 解决传统 HJ 水平集方法因计算复杂度随状态维度指数增长而只能离线使用的问题，使安全关键自主系统能够在线重新计算 BRT。 面向下一代自主系统（如 ADAS/AV、人形机器人、视觉-语言-动作策略）中黑箱概率策略的安全保障需求，提供确定性的安全层。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.04096">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.04096.webp" alt="Online Hamilton-Jacobi Reachability Onboard the Robot Control Loop: A Real-Time GPU Solver for Safety-Critical Autonomy" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Online Hamilton-Jacobi Reachability Onboard the Robot Control Loop: A Real-Time GPU Solver for Safety-Critical Autonomy</h1>
-            <div class="detail-meta">2026-11-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.04096" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.04096" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.04096</span></div>
-            <p class="detail-summary">论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。 解决传统 HJ 水平集方法因计算复杂度随状态维度指数增长而只能离线使用的问题，使安全关键自主系统能够在线重新计算 BRT。 面向下一代自主系统（如 ADAS/AV、人形机器人、视觉-语言-动作策略）中黑箱概率策略的安全保障需求，提供确定性的安全层。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Kevin Weekly 就职于 Mirror AI</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。</p>
-  <ul class="reading-intro-points"><li>论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。</li><li>解决传统 HJ 水平集方法因计算复杂度随状态维度指数增长而只能离线使用的问题，使安全关键自主系统能够在线重新计算 BRT。</li><li>面向下一代自主系统（如 ADAS/AV、人形机器人、视觉-语言-动作策略）中黑箱概率策略的安全保障需求，提供确定性的安全层。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-03">2026-11-03</time></p>
+        <h1 class="article-title">Online Hamilton-Jacobi Reachability Onboard the Robot Control Loop: A Real-Time GPU Solver for Safety-Critical Autonomy</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.04096" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.04096" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.04096.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.04096.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.04096.webp" alt="Online Hamilton-Jacobi Reachability Onboard the Robot Control Loop: A Real-Time GPU Solver for Safety-Critical Autonomy 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Kevin Weekly 就职于 Mirror AI</p>
+        <ul class="article-facts"><li>arXiv 2611.04096</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Kevin Weekly</strong> 就职于 <strong>Mirror AI</strong></li><li><strong>Alexandre M. Bayen</strong> 就职于 <strong>University of California, Berkeley</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Kevin Weekly</strong> 就职于 <strong>Mirror AI</strong></li><li><strong>Alexandre M. Bayen</strong> 就职于 <strong>University of California, Berkeley</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。</li><li>解决传统 HJ 水平集方法因计算复杂度随状态维度指数增长而只能离线使用的问题，使安全关键自主系统能够在线重新计算 BRT。</li><li>面向下一代自主系统（如 ADAS/AV、人形机器人、视觉-语言-动作策略）中黑箱概率策略的安全保障需求，提供确定性的安全层。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出并实现了一个基于 CUDA 的实时 GPU 求解器，用于计算 Hamilton–Jacobi (HJ) 可达性中的后向可达管 (BRT)，在机器人控制循环内运行。</li><li>解决传统 HJ 水平集方法因计算复杂度随状态维度指数增长而只能离线使用的问题，使安全关键自主系统能够在线重新计算 BRT。</li><li>面向下一代自主系统（如 ADAS/AV、人形机器人、视觉-语言-动作策略）中黑箱概率策略的安全保障需求，提供确定性的安全层。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>实现了经典 WENO5 + TVD-RK3 + Lax-Friedrichs 水平集 HJ 求解器的 CUDA 版本，支持 2D、3D 和 4D 动力学，在单块工作站 GPU 上达到控制级求解速率（如 3D Air3D 112 Hz，4D 追击-逃避 61 Hz）。</li><li>提出了 FP32 精度模式，相比自身 FP64 路径加速 21–33 倍，相比 JAX 参考实现 <strong>hj_reachability</strong> 在相同精度下加速 5.9–17.5 倍，且 BRT 集合偏差在亚网格级。</li><li>在八个基准案例上验证了求解器的数值准确性：FP64 下与 <strong>hj_reachability</strong> 点对点一致，并复现 Mitchell Air3D BRT 至细胞计数误差 0.04%。</li><li>展示了嵌入式平台性能：在 <strong>NVIDIA Jetson AGX Thor</strong> 上 Air3D 达 66 Hz、2D 漂移器达 54 Hz，证明可部署于机载环境。</li><li>提出内核算子标签传播扩展，从单次组合 HJ 求解中恢复 K 智能体捕获盆 Voronoi 划分，成本不随舰队规模增长，并在野火响应仿真中验证（6 架四旋翼，4.0 ms/tic，标签一致性 99.5%）。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>实现了经典 WENO5 + TVD-RK3 + Lax-Friedrichs 水平集 HJ 求解器的 CUDA 版本，支持 2D、3D 和 4D 动力学，在单块工作站 GPU 上达到控制级求解速率（如 3D Air3D 112 Hz，4D 追击-逃避 61 Hz）。</li><li>提出了 FP32 精度模式，相比自身 FP64 路径加速 21–33 倍，相比 JAX 参考实现 <strong>hj_reachability</strong> 在相同精度下加速 5.9–17.5 倍，且 BRT 集合偏差在亚网格级。</li><li>在八个基准案例上验证了求解器的数值准确性：FP64 下与 <strong>hj_reachability</strong> 点对点一致，并复现 Mitchell Air3D BRT 至细胞计数误差 0.04%。</li><li>展示了嵌入式平台性能：在 <strong>NVIDIA Jetson AGX Thor</strong> 上 Air3D 达 66 Hz、2D 漂移器达 54 Hz，证明可部署于机载环境。</li><li>提出内核算子标签传播扩展，从单次组合 HJ 求解中恢复 K 智能体捕获盆 Voronoi 划分，成本不随舰队规模增长，并在野火响应仿真中验证（6 架四旋翼，4.0 ms/tic，标签一致性 99.5%）。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>求解 Hamilton–Jacobi–Isaacs (HJI) 偏微分方程，采用后向积分和 Mitchell 的 BRT 钳位操作（V ← min(V_new, V_old)），将 BRT 表示为值函数的零下水平集。</li><li>数值离散：空间梯度采用五阶 WENO (WENO5) 重构，时间积分采用三阶 TVD Runge-Kutta (TVD-RK3)，数值哈密顿量使用 Lax-Friedrichs 耗散，并用 CFL 条件限制时间步长。</li><li>GPU 核结构：每个 TVD-RK3 阶段融合为单个核（包括 WENO5 重构、哈密顿量、阶段合并、BRT 钳位），减少全局内存往返；采用除法精简的 WENO5 重构（一次浮点除代替 13 次）；主机端静态 CFL 步长；3D 求解器使用 CUDA Graph 减少每步开销。</li><li>边界条件支持 Neumann 外推和周期性；提供静态障碍物和 reach-while-avoid 两种后处理器。</li><li>实时模式使用一阶迎风格式（RK1 + upwind）用于多智能体演示，单核每步，支持 ping-pong 缓冲。</li><li>多智能体扩展：在核内进行标签传播，类似竞争快速行进，从单个 HJ 求解恢复 K-agent Voronoi 捕获盆。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>求解 Hamilton–Jacobi–Isaacs (HJI) 偏微分方程，采用后向积分和 Mitchell 的 BRT 钳位操作（V ← min(V_new, V_old)），将 BRT 表示为值函数的零下水平集。</li><li>数值离散：空间梯度采用五阶 WENO (WENO5) 重构，时间积分采用三阶 TVD Runge-Kutta (TVD-RK3)，数值哈密顿量使用 Lax-Friedrichs 耗散，并用 CFL 条件限制时间步长。</li><li>GPU 核结构：每个 TVD-RK3 阶段融合为单个核（包括 WENO5 重构、哈密顿量、阶段合并、BRT 钳位），减少全局内存往返；采用除法精简的 WENO5 重构（一次浮点除代替 13 次）；主机端静态 CFL 步长；3D 求解器使用 CUDA Graph 减少每步开销。</li><li>边界条件支持 Neumann 外推和周期性；提供静态障碍物和 reach-while-avoid 两种后处理器。</li><li>实时模式使用一阶迎风格式（RK1 + upwind）用于多智能体演示，单核每步，支持 ping-pong 缓冲。</li><li>多智能体扩展：在核内进行标签传播，类似竞争快速行进，从单个 HJ 求解恢复 K-agent Voronoi 捕获盆。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>基准案例：8 个案例，涵盖 2D 完整/二重积分、2D 漂移器（常风、空间风、有障碍）、3D Mitchell Air3D 追击-逃避、4D 双车辆追击-逃避（含墙变体）。</li><li>网格规模：2D 案例 N 最高 200（200×200 单元），3D Air3D N 最高 101，4D 追击-逃避 N 最高 51（约 10^6 单元）。</li><li>硬件资源：主要基准使用 <strong>NVIDIA RTX 4000 Ada</strong> (20 GB)，嵌入式验证使用 <strong>NVIDIA Jetson AGX Thor</strong>。</li><li>软件参考：Stanford ASL 的 <strong>hj_reachability</strong> (JAX) 作为主要参考，以及一个 <strong>torch.compile</strong> 重新实现作为张量编译器基线。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>基准案例：8 个案例，涵盖 2D 完整/二重积分、2D 漂移器（常风、空间风、有障碍）、3D Mitchell Air3D 追击-逃避、4D 双车辆追击-逃避（含墙变体）。</li><li>网格规模：2D 案例 N 最高 200（200×200 单元），3D Air3D N 最高 101，4D 追击-逃避 N 最高 51（约 10^6 单元）。</li><li>硬件资源：主要基准使用 <strong>NVIDIA RTX 4000 Ada</strong> (20 GB)，嵌入式验证使用 <strong>NVIDIA Jetson AGX Thor</strong>。</li><li>软件参考：Stanford ASL 的 <strong>hj_reachability</strong> (JAX) 作为主要参考，以及一个 <strong>torch.compile</strong> 重新实现作为张量编译器基线。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>交叉库一致性：在 FP64 下与 <strong>hj_reachability</strong> 在八个基准案例上点对点 L∞ 差异 ≤ 0.04（2D）或 ≤ 0.4（4D），复现 Air3D BRT 细胞计数误差 0.04%。</li><li>速度对比：FP64 下 CUDA 求解器比 <strong>hj_reachability</strong> 快 2.0–4.6 倍，比 <strong>torch.compile</strong> 快 1.3–1.4 倍；FP32 下比 <strong>hj_reachability</strong> 快 5.9–17.5 倍，比 <strong>torch.compile</strong> 快 1.7–16 倍。</li><li>实时性能：FP32 单次调用 Air3D 8.91 ms（112 Hz），4D 追击-逃避约 16 ms（61 Hz），2D 漂移器 6.8–13.5 ms（74–147 Hz）。</li><li>嵌入式性能：<strong>Jetson AGX Thor</strong> 上 Air3D 66 Hz，2D 漂移器 54 Hz，总系统输入功率约 31 W。</li><li>多智能体演示：六架四旋翼野火响应闭环仿真，每 tick 求解 4.0 ms，捕获盆标签一致性 99.5% 与逐智能体 argmin 参考一致。</li><li>等精度加速比：在相同目标精度下，CUDA 求解器比 JAX-GPU 快 3.1–4.9 倍。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>交叉库一致性：在 FP64 下与 <strong>hj_reachability</strong> 在八个基准案例上点对点 L∞ 差异 ≤ 0.04（2D）或 ≤ 0.4（4D），复现 Air3D BRT 细胞计数误差 0.04%。</li><li>速度对比：FP64 下 CUDA 求解器比 <strong>hj_reachability</strong> 快 2.0–4.6 倍，比 <strong>torch.compile</strong> 快 1.3–1.4 倍；FP32 下比 <strong>hj_reachability</strong> 快 5.9–17.5 倍，比 <strong>torch.compile</strong> 快 1.7–16 倍。</li><li>实时性能：FP32 单次调用 Air3D 8.91 ms（112 Hz），4D 追击-逃避约 16 ms（61 Hz），2D 漂移器 6.8–13.5 ms（74–147 Hz）。</li><li>嵌入式性能：<strong>Jetson AGX Thor</strong> 上 Air3D 66 Hz，2D 漂移器 54 Hz，总系统输入功率约 31 W。</li><li>多智能体演示：六架四旋翼野火响应闭环仿真，每 tick 求解 4.0 ms，捕获盆标签一致性 99.5% 与逐智能体 argmin 参考一致。</li><li>等精度加速比：在相同目标精度下，CUDA 求解器比 JAX-GPU 快 3.1–4.9 倍。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.04166/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Say the Same, Act Differently: Diagnosing and Steering Text-Action Divergence in Reasoning VLAs</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.04006/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Controlling Action-Head Co-Adaptation to VLM Representation Anisotropy</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.04166/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Say the Same, Act Differently: Diagnosing and Steering Text-Action Divergence in Reasoning VLAs</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.04006/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Controlling Action-Head Co-Adaptation to VLM Representation Anisotropy</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>FreezeVLA: Action-Freezing Attacks against Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
-    <meta name="description" content="论文研究单位 复旦大学 上海人工智能实验室 Sea AI Lab 论文概述 针对视觉-语言-动作（VLA）模型提出并形式化“行动冻结”（action-freezing）攻击：对抗图像使机器人忽略后续指令，进入持续无响应状态，可能在关键时刻导致不作为，引发实际安全风险。 提出FreezeVLA框架，通过最小-最大双层优化生成跨提示可迁移的对抗图像，在三个SOTA VLA模型与四个机器人基准上实现高攻击成功率，显著优于现有方法。 论文核心贡献点 识别并形式化VLA模型的“行动冻结”漏洞，揭示与错误动作同等严重的“不作为”威胁。 提出FreezeVLA：使用内部最大化（对抗提示优化）与外部最小化（对抗图像优化）的双层优化方法，扩展提示嵌入空间覆盖，显著提升跨提示迁移能力。 跨模型验证：SpatialVLA、OpenVLA、π0 上分别达到平均攻击成功率73.3%、95.4%、59.8%，全面超越随机噪声、PGD、多提示等基线。 论文方法描述 威胁模型与目标：白盒访问VLA模型、黑盒用户指令，通过图像扰动使模型在任意指令下稳定输出冻结令牌（如 、 或“do-nothing”token），导致行动终止。 内部最大化（对抗提示优化）：从初始参考提示集出发，通过梯度分析定位高影响词并进行贪婪同义词替换，迭代生成更难被冻结的“硬提示”集，扩展提示语义空间。 外部最小化（对抗图像优化）：基于“硬提示”集合，对图像进行梯度聚合与更新，使VLA模型在多种提示下均以高概率输出冻结令牌，实现持久冻结。 形式化目标：min−max 双层优化，外层在 L∞ 扰动预算 ε 内最小化冻结损失，内层最大化难提示下的损失，使对抗图像在跨提示下保持有效性。 提示多样性增强：对比“随机采样”与“GPT生成”提示，显示GPT生成的语义多样性进一步提升攻击迁移性。 论文使用数据集和训练资源 数据集与基准：LIBERO-10、LIBERO-Goal、LIBERO-Object、LIBERO-Spatial四个机器人操控基准。 目标模型：SpatialVLA、OpenVLA、π0 三种SOTA VLA模型（具备动作分块/离散化/连续动作头等不同架构与冻结令牌策略）。 训练与实验资源：HPC集群，32×NVIDIA A800-SXM4-80GB GPUs。 论文使用的评估环境和评估指标 评估指标：攻击成功率（ASR），定义为使VLA模型进入一致冻结状态的对抗图像比例。 评估设置： 扰动预算：L∞ 约束下的 ε=4/255（主实验），对比 ε∈{1/255,2/255,4/255,8/255,16/255} 的敏感性。 优化步数与提示数：图像迭代K=100、步长α=1/255；参考提示规模\|P\|=20；内部提示迭代M=10。 基线对比：随机噪声、Single-Prompt PGD、Multi-Prompt（随机/随机+GPT）、FreezeVLA（随机）与FreezeVLA+GPT。 冻结策略差异：SpatialVLA/π0 使用 ；OpenVLA 使用“do-nothing”token。 主要结果：FreezeVLA+GPT 在 ε=4/255 下实现平均ASR 73.3%（SpatialVLA）、95.4%（OpenVLA）、59.8%（π0），并具有强跨提示可迁移性与随预算提升的稳定增益。" />
+    <meta name="description" content="论文研究单位 复旦大学 上海人工智能实验室 Sea AI Lab 论文概述 针对视觉-语言-动作（VLA）模型提出并形式化“行动冻结”（action-freezing）攻击：对抗图像使机器人忽略后续指令，进入持续无响应状态，可能在关键时刻导致不作为，引发实际安全风险。 提出FreezeVLA框架，通过最小-最大双层优化生成跨提示可迁移的对抗图像，在三个SOTA VLA模型与四个机器人基准上实现高攻击成功率，显著优于现有方法。 论文核心贡献点 识别并形式化VLA模型的“行动冻结”漏洞，揭示与错误动作同等严重的“不作为”威胁。 提出FreezeVLA：使用内部最大化（对抗提示优化）与外部最小化（对抗图像优化）的双层优化方法，扩展提示嵌入空间覆盖，显著提升跨提示迁移能力。 跨模型验证：SpatialVLA、OpenVLA、π0 上分别达到平均攻击成功率73.3%、95.4%、59.8%，全面超越随机噪声、PGD、多提示等基线。 论文方法描述 威胁模型与目标：白盒访问VLA模型、黑盒用户指令，通过图像扰动使模型在任意指令下稳定输出冻结令牌（如&lt;freeze&gt;、&lt;eos&gt;或“do-nothing”token），导致行动终止。 内部最大化（对抗提示优化）：从初始参考提示集出发，通过梯度分析定位高影响词并进行贪婪同义词替换，迭代生成更难被冻结的“硬提示”集，扩展提示语义空间。 外部最小化（对抗图像优化）：基于“硬提示”集合，对图像进行梯度聚合与更新，使VLA模型在多种提示下均以高概率输出冻结令牌，实现持久冻结。 形式化目标：min−max 双层优化，外层在 L∞ 扰动预算 ε 内最小化冻结损失，内层最大化难提示下的损失，使对抗图像在跨提示下保持有效性。 提示多样性增强：对比“随机采样”与“GPT生成”提示，显示GPT生成的语义多样性进一步提升攻击迁移性。 论文使用数据集和训练资源 数据集与基准：LIBERO-10、LIBERO-Goal、LIBERO-Object、LIBERO-Spatial四个机器人操控基准。 目标模型：SpatialVLA、OpenVLA、π0 三种SOTA VLA模型（具备动作分块/离散化/连续动作头等不同架构与冻结令牌策略）。 训练与实验资源：HPC集群，32×NVIDIA A800-SXM4-80GB GPUs。 论文使用的评估环境和评估指标 评估指标：攻击成功率（ASR），定义为使VLA模型进入一致冻结状态的对抗图像比例。 评估设置： 扰动预算：L∞ 约束下的 ε=4/255（主实验），对比 ε∈{1/255,2/255,4/255,8/255,16/255} 的敏感性。 优化步数与提示数：图像迭代K=100、步长α=1/255；参考提示规模\|P\|=20；内部提示迭代M=10。 基线对比：随机噪声、Single-Prompt PGD、Multi-Prompt（随机/随机+GPT）、FreezeVLA（随机）与FreezeVLA+GPT。 冻结策略差异：SpatialVLA/π0 使用 &lt;eos&gt;；OpenVLA 使用“do-nothing”token。 主要结果：FreezeVLA+GPT 在 ε=4/255 下实现平均ASR 73.3%（SpatialVLA）、95.4%（OpenVLA）、59.8%（π0），并具有强跨提示可迁移性与随预算提升的稳定增益。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2509.19870">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,47 +57,32 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2509.19870.webp" alt="FreezeVLA: Action-Freezing Attacks against Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">复旦大学</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">FreezeVLA: Action-Freezing Attacks against Vision-Language-Action Models</h1>
-            <div class="detail-meta">2025-09-24 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2509.19870" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2509.19870" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2509.19870</span></div>
-            <p class="detail-summary">论文研究单位 复旦大学 上海人工智能实验室 Sea AI Lab 论文概述 针对视觉-语言-动作（VLA）模型提出并形式化“行动冻结”（action-freezing）攻击：对抗图像使机器人忽略后续指令，进入持续无响应状态，可能在关键时刻导致不作为，引发实际安全风险。 提出FreezeVLA框架，通过最小-最大双层优化生成跨提示可迁移的对抗图像，在三个SOTA VLA模型与四个机器人基准上实现高攻击成功率，显著优于现有方法。 论文核心贡献点 识别并形式化VLA模型的“行动冻结”漏洞，揭示与错误动作同等严重的“不作为”威胁。 提出FreezeVLA：使用内部最大化（对抗提示优化）与外部最小化（对抗图像优化）的双层优化方法，扩展提示嵌入空间覆盖，显著提升跨提示迁移能力。 跨模型验证：SpatialVLA、OpenVLA、π0 上分别达到平均攻击成功率73.3%、95.4%、59.8%，全面超越随机噪声、PGD、多提示等基线。 论文方法描述 威胁模型与目标：白盒访问VLA模型、黑盒用户指令，通过图像扰动使模型在任意指令下稳定输出冻结令牌（如 、 或“do-nothing”token），导致行动终止。 内部最大化（对抗提示优化）：从初始参考提示集出发，通过梯度分析定位高影响词并进行贪婪同义词替换，迭代生成更难被冻结的“硬提示”集，扩展提示语义空间。 外部最小化（对抗图像优化）：基于“硬提示”集合，对图像进行梯度聚合与更新，使VLA模型在多种提示下均以高概率输出冻结令牌，实现持久冻结。 形式化目标：min−max 双层优化，外层在 L∞ 扰动预算 ε 内最小化冻结损失，内层最大化难提示下的损失，使对抗图像在跨提示下保持有效性。 提示多样性增强：对比“随机采样”与“GPT生成”提示，显示GPT生成的语义多样性进一步提升攻击迁移性。 论文使用数据集和训练资源 数据集与基准：LIBERO-10、LIBERO-Goal、LIBERO-Object、LIBERO-Spatial四个机器人操控基准。 目标模型：SpatialVLA、OpenVLA、π0 三种SOTA VLA模型（具备动作分块/离散化/连续动作头等不同架构与冻结令牌策略）。 训练与实验资源：HPC集群，32×NVIDIA A800-SXM4-80GB GPUs。 论文使用的评估环境和评估指标 评估指标：攻击成功率（ASR），定义为使VLA模型进入一致冻结状态的对抗图像比例。 评估设置： 扰动预算：L∞ 约束下的 ε=4/255（主实验），对比 ε∈{1/255,2/255,4/255,8/255,16/255} 的敏感性。 优化步数与提示数：图像迭代K=100、步长α=1/255；参考提示规模\|P\|=20；内部提示迭代M=10。 基线对比：随机噪声、Single-Prompt PGD、Multi-Prompt（随机/随机+GPT）、FreezeVLA（随机）与FreezeVLA+GPT。 冻结策略差异：SpatialVLA/π0 使用 ；OpenVLA 使用“do-nothing”token。 主要结果：FreezeVLA+GPT 在 ε=4/255 下实现平均ASR 73.3%（SpatialVLA）、95.4%（OpenVLA）、59.8%（π0），并具有强跨提示可迁移性与随预算提升的稳定增益。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">5 分钟读完</span>
-              <span class="meta-pill">1 张阅读卡</span>
-              
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">复旦大学</p>
-  <ul class="reading-intro-points"><li>复旦大学</li><li>上海人工智能实验室</li><li>Sea AI Lab</li></ul>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><p>论文研究单位</p>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2025-09-24">2025-09-24</time></p>
+        <h1 class="article-title">FreezeVLA: Action-Freezing Attacks against Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2509.19870" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2509.19870" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">复旦大学</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2509.19870.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2509.19870.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2509.19870.webp" alt="FreezeVLA: Action-Freezing Attacks against Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        
+        <ul class="article-facts"><li>arXiv 2509.19870</li><li>1 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>论文概述</h2>
+  <div class="prose"><p>论文研究单位</p>
 <ul><li>复旦大学</li><li>上海人工智能实验室</li><li>Sea AI Lab</li></ul>
 
 <p>论文概述</p>
@@ -110,7 +92,7 @@
 <ul><li>识别并形式化VLA模型的“行动冻结”漏洞，揭示与错误动作同等严重的“不作为”威胁。</li><li>提出FreezeVLA：使用内部最大化（对抗提示优化）与外部最小化（对抗图像优化）的双层优化方法，扩展提示嵌入空间覆盖，显著提升跨提示迁移能力。</li><li>跨模型验证：SpatialVLA、OpenVLA、π0 上分别达到平均攻击成功率73.3%、95.4%、59.8%，全面超越随机噪声、PGD、多提示等基线。</li></ul>
 
 <p>论文方法描述</p>
-<ul><li>威胁模型与目标：白盒访问VLA模型、黑盒用户指令，通过图像扰动使模型在任意指令下稳定输出冻结令牌（如<freeze>、<eos>或“do-nothing”token），导致行动终止。</li><li>内部最大化（对抗提示优化）：从初始参考提示集出发，通过梯度分析定位高影响词并进行贪婪同义词替换，迭代生成更难被冻结的“硬提示”集，扩展提示语义空间。</li><li>外部最小化（对抗图像优化）：基于“硬提示”集合，对图像进行梯度聚合与更新，使VLA模型在多种提示下均以高概率输出冻结令牌，实现持久冻结。</li><li>形式化目标：min−max 双层优化，外层在 L∞ 扰动预算 ε 内最小化冻结损失，内层最大化难提示下的损失，使对抗图像在跨提示下保持有效性。</li><li>提示多样性增强：对比“随机采样”与“GPT生成”提示，显示GPT生成的语义多样性进一步提升攻击迁移性。</li></ul>
+<ul><li>威胁模型与目标：白盒访问VLA模型、黑盒用户指令，通过图像扰动使模型在任意指令下稳定输出冻结令牌（如&lt;freeze&gt;、&lt;eos&gt;或“do-nothing”token），导致行动终止。</li><li>内部最大化（对抗提示优化）：从初始参考提示集出发，通过梯度分析定位高影响词并进行贪婪同义词替换，迭代生成更难被冻结的“硬提示”集，扩展提示语义空间。</li><li>外部最小化（对抗图像优化）：基于“硬提示”集合，对图像进行梯度聚合与更新，使VLA模型在多种提示下均以高概率输出冻结令牌，实现持久冻结。</li><li>形式化目标：min−max 双层优化，外层在 L∞ 扰动预算 ε 内最小化冻结损失，内层最大化难提示下的损失，使对抗图像在跨提示下保持有效性。</li><li>提示多样性增强：对比“随机采样”与“GPT生成”提示，显示GPT生成的语义多样性进一步提升攻击迁移性。</li></ul>
 
 <p>论文使用数据集和训练资源</p>
 <ul><li>数据集与基准：LIBERO-10、LIBERO-Goal、LIBERO-Object、LIBERO-Spatial四个机器人操控基准。</li><li>目标模型：SpatialVLA、OpenVLA、π0 三种SOTA VLA模型（具备动作分块/离散化/连续动作头等不同架构与冻结令牌策略）。</li><li>训练与实验资源：HPC集群，32×NVIDIA A800-SXM4-80GB GPUs。</li></ul>
@@ -120,27 +102,19 @@
 <p> - 扰动预算：L∞ 约束下的 ε=4/255（主实验），对比 ε∈{1/255,2/255,4/255,8/255,16/255} 的敏感性。</p>
 <p> - 优化步数与提示数：图像迭代K=100、步长α=1/255；参考提示规模\|P\|=20；内部提示迭代M=10。</p>
 <p> - 基线对比：随机噪声、Single-Prompt PGD、Multi-Prompt（随机/随机+GPT）、FreezeVLA（随机）与FreezeVLA+GPT。</p>
-<p> - 冻结策略差异：SpatialVLA/π0 使用 <eos>；OpenVLA 使用“do-nothing”token。</p>
+<p> - 冻结策略差异：SpatialVLA/π0 使用 &lt;eos&gt;；OpenVLA 使用“do-nothing”token。</p>
 <ul><li>主要结果：FreezeVLA+GPT 在 ε=4/255 下实现平均ASR 73.3%（SpatialVLA）、95.4%（OpenVLA）、59.8%（π0），并具有强跨提示可迁移性与随预算提升的稳定增益。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2509.20109/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Discrete Diffusion for Reflective Vision-Language-Action Models in Autonomous Driving</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2509.19012/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Pure Vision Language Action (VLA) Models: A Comprehensive Survey</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2509.20109/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Discrete Diffusion for Reflective Vision-Language-Action Models in Autonomous Driving</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2509.19012/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Pure Vision Language Action (VLA) Models: A Comprehensive Survey</span></a></nav>
+      </article>
+      
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

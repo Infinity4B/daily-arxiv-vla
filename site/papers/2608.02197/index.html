@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Look Where It Matters: Adaptive Visual Refinement for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。 论文旨在解决 VLA 模型在机器人精细操作中因视觉表征不可靠而导致的目标定位错误和几何细节丢失问题。 提出了 AtVLA 框架，通过注册令牌增强视觉编码并实施不确定性门控的局部视觉细化，以恢复可靠的空间注意力和高分辨率感知。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2608.02197">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,111 +57,76 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2608.02197.webp" alt="Look Where It Matters: Adaptive Visual Refinement for Vision-Language-Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Look Where It Matters: Adaptive Visual Refinement for Vision-Language-Action Models</h1>
-            <div class="detail-meta">2026-08-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.02197" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.02197" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.02197</span></div>
-            <p class="detail-summary">论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。 论文旨在解决 VLA 模型在机器人精细操作中因视觉表征不可靠而导致的目标定位错误和几何细节丢失问题。 提出了 AtVLA 框架，通过注册令牌增强视觉编码并实施不确定性门控的局部视觉细化，以恢复可靠的空间注意力和高分辨率感知。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">6 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">论文作者所属的研究机构未在提供的 HTML 原文中明确列出。</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。</p>
-  <ul class="reading-intro-points"><li>论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。</li><li>论文旨在解决 VLA 模型在机器人精细操作中因视觉表征不可靠而导致的目标定位错误和几何细节丢失问题。</li><li>提出了 AtVLA 框架，通过注册令牌增强视觉编码并实施不确定性门控的局部视觉细化，以恢复可靠的空间注意力和高分辨率感知。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-08-03">2026-08-03</time></p>
+        <h1 class="article-title">Look Where It Matters: Adaptive Visual Refinement for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.02197" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.02197" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2608.02197.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2608.02197.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2608.02197.webp" alt="Look Where It Matters: Adaptive Visual Refinement for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者所属的研究机构未在提供的 HTML 原文中明确列出。</p>
+        <ul class="article-facts"><li>arXiv 2608.02197</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者所属的研究机构未在提供的 HTML 原文中明确列出。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li>论文作者所属的研究机构未在提供的 HTML 原文中明确列出。</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。</li><li>论文旨在解决 VLA 模型在机器人精细操作中因视觉表征不可靠而导致的目标定位错误和几何细节丢失问题。</li><li>提出了 <strong>AtVLA</strong> 框架，通过注册令牌增强视觉编码并实施不确定性门控的局部视觉细化，以恢复可靠的空间注意力和高分辨率感知。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文揭示了视觉-语言-行动（VLA）模型中的视觉编码器存在注意力伪影，这些伪影与具身微调过程中获取的空间信息相关，损害了模型的空间定位精度。</li><li>论文旨在解决 VLA 模型在机器人精细操作中因视觉表征不可靠而导致的目标定位错误和几何细节丢失问题。</li><li>提出了 <strong>AtVLA</strong> 框架，通过注册令牌增强视觉编码并实施不确定性门控的局部视觉细化，以恢复可靠的空间注意力和高分辨率感知。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>揭示 VLA 视觉编码器中的注意力伪影，并发现其与具身微调过程中获取的空间特征（如物体位置、深度排序）相关。</li><li>通过在视觉编码器中引入可学习的<strong>注册令牌</strong>，使其成为具身空间信息的专用载体，从而恢复干净、空间保真的补丁注意力分布。</li><li>开发了基于<strong>不确定性门控</strong>和<strong>注意力引导</strong>的局部视觉细化机制，仅当预测不确定时，才自适应裁剪并高分辨率重编码任务相关区域。</li><li>在 <strong>LIBERO</strong>、<strong>SimplerEnv</strong> 和真实世界基准测试中，<strong>AtVLA</strong> 显著提升了操作成功率，同时仅引入约 30% 的额外推理计算开销。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>揭示 VLA 视觉编码器中的注意力伪影，并发现其与具身微调过程中获取的空间特征（如物体位置、深度排序）相关。</li><li>通过在视觉编码器中引入可学习的<strong>注册令牌</strong>，使其成为具身空间信息的专用载体，从而恢复干净、空间保真的补丁注意力分布。</li><li>开发了基于<strong>不确定性门控</strong>和<strong>注意力引导</strong>的局部视觉细化机制，仅当预测不确定时，才自适应裁剪并高分辨率重编码任务相关区域。</li><li>在 <strong>LIBERO</strong>、<strong>SimplerEnv</strong> 和真实世界基准测试中，<strong>AtVLA</strong> 显著提升了操作成功率，同时仅引入约 30% 的额外推理计算开销。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>注册增强视觉前缀</strong>：在 SigLIP 视觉编码器中插入少量可学习的注册令牌，它们吸收全局信息，恢复补丁令牌的清洁注意力，其输出作为多槽全局上下文与补丁特征一起输入动作专家。</li><li><strong>不确定性门控动作预测</strong>：动作专家从多个噪声样本中生成动作块，通过计算平移动作维度的标准差来估计不确定性；若不确定性低于阈值，直接执行平均动作，否则触发细化。</li><li><strong>注意力引导局部细化</strong>：当触发细化时，利用动作专家层的注意力图进行注意力传播，生成任务相关的空间显著图，通过对比搜索定位关键区域，裁剪后以高分辨率重编码，并追加到缓存前缀中生成细化动作。</li><li><strong>三阶段训练范式</strong>：首先仅用动作目标适配注册令牌，然后引入真值裁剪以训练裁剪位置编码器，最后联合优化动作预测、裁剪定位和动作条件注意力，并逐步从真值裁剪过渡到自注意力生成的裁剪。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>注册增强视觉前缀</strong>：在 SigLIP 视觉编码器中插入少量可学习的注册令牌，它们吸收全局信息，恢复补丁令牌的清洁注意力，其输出作为多槽全局上下文与补丁特征一起输入动作专家。</li><li><strong>不确定性门控动作预测</strong>：动作专家从多个噪声样本中生成动作块，通过计算平移动作维度的标准差来估计不确定性；若不确定性低于阈值，直接执行平均动作，否则触发细化。</li><li><strong>注意力引导局部细化</strong>：当触发细化时，利用动作专家层的注意力图进行注意力传播，生成任务相关的空间显著图，通过对比搜索定位关键区域，裁剪后以高分辨率重编码，并追加到缓存前缀中生成细化动作。</li><li><strong>三阶段训练范式</strong>：首先仅用动作目标适配注册令牌，然后引入真值裁剪以训练裁剪位置编码器，最后联合优化动作预测、裁剪定位和动作条件注意力，并逐步从真值裁剪过渡到自注意力生成的裁剪。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong>（Spatial, Object, Goal, Long-10 四个套件）、<strong>SimplerEnv</strong>（Google Robot 套件）、自建的真实世界基准（Kitchen 和 Building Blocks 两个套件）。</li><li><strong>模型规模</strong>：基于 <strong>π0</strong> 模型初始化，包含 3B 参数的 PaliGemma 模型（SigLIP-So400m 视觉编码器 + Gemma-2B 语言主干）和 300M 参数的动作专家，新增的注册令牌仅增加 4608 个参数。</li><li><strong>训练资源</strong>：使用 8 块 <strong>NVIDIA RTX 6000 Ada</strong> GPU 进行训练；部署在配备 <strong>NVIDIA RTX 4090</strong> GPU 和 <strong>Franka Research 3</strong> 机器人的平台上。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong>（Spatial, Object, Goal, Long-10 四个套件）、<strong>SimplerEnv</strong>（Google Robot 套件）、自建的真实世界基准（Kitchen 和 Building Blocks 两个套件）。</li><li><strong>模型规模</strong>：基于 <strong>π0</strong> 模型初始化，包含 3B 参数的 PaliGemma 模型（SigLIP-So400m 视觉编码器 + Gemma-2B 语言主干）和 300M 参数的动作专家，新增的注册令牌仅增加 4608 个参数。</li><li><strong>训练资源</strong>：使用 8 块 <strong>NVIDIA RTX 6000 Ada</strong> GPU 进行训练；部署在配备 <strong>NVIDIA RTX 4090</strong> GPU 和 <strong>Franka Research 3</strong> 机器人的平台上。</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估基准</strong>：<strong>LIBERO</strong> 四个套件的平均成功率、<strong>SimplerEnv</strong> 三个任务的成功率、以及真实世界两个套件共 10 个任务的成功率。</li><li><strong>主要评估指标</strong>：任务成功率。</li><li><strong>关键实验结果</strong>：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：<strong>LIBERO</strong> 四个套件的平均成功率、<strong>SimplerEnv</strong> 三个任务的成功率、以及真实世界两个套件共 10 个任务的成功率。</li><li><strong>主要评估指标</strong>：任务成功率。</li><li><strong>关键实验结果</strong>：</li></ul>
 <p> - 在 <strong>LIBERO</strong> 上，<strong>AtVLA</strong> 将平均成功率从 <strong>π0</strong> 的 <strong>94.2%</strong> 提升至 <strong>98.4%</strong>。</p>
 <p> - 在真实世界基准中，<strong>AtVLA</strong> 将平均成功率从 <strong>π0</strong> 的 <strong>46.5%</strong> 提升至 <strong>69.0%</strong>。</p>
 <p> - 在 <strong>SimplerEnv</strong> 的 Pick Coke Can 和 Move Near 任务上，<strong>AtVLA</strong> 均取得最高成功率。</p>
 <p> - 局部细化仅在约 <strong>30%</strong> 的重规划步骤被触发，总体计算量约为 <strong>π0</strong> 的 <strong>1.4 至 1.6 倍</strong>。</p>
 <p> - 消融研究证实，注册令牌不仅抑制了注意力伪影，还保留了丰富的具身空间信息，移除它们会导致性能显著下降。</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.02257/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Learning Panorama-Aware VLA for Mobile Manipulation with Whole-Body Teleoperation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.01851/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Weights or Skills? A Survey of Robot-Learning Techniques: from Action-Predicting Weights to Robots that Write their Own Skills</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2608.02257/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Learning Panorama-Aware VLA for Mobile Manipulation with Whole-Body Teleoperation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2608.01851/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Weights or Skills? A Survey of Robot-Learning Techniques: from Action-Predicting Weights to Robots that Write their Own Skills</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

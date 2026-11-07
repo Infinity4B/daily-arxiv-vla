@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>HOIST: Humanoid Optimization with Imitation and Sample-efficient Tuning for Manipulating Suspended Loads - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文研究 人形机器人吊装（Humanoid Hoisting） 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。 提出 HOIST 方法，结合 VR 遥操作模仿学习 与 样本高效的强化学习（RL），以安全地初始化行为并优化最终放置精度和停止行为。 旨在解决纯模仿学习不直接优化最终放置精度，以及纯强化学习在真实人形机器人上不安全且样本效率低的问题。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2606.00252">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,110 +57,75 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2606.00252.webp" alt="HOIST: Humanoid Optimization with Imitation and Sample-efficient Tuning for Manipulating Suspended Loads" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文研究 人形机器人吊装（Humanoid Hoisting） 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">HOIST: Humanoid Optimization with Imitation and Sample-efficient Tuning for Manipulating Suspended Loads</h1>
-            <div class="detail-meta">2026-05-29 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2606.00252" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2606.00252" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2606.00252</span></div>
-            <p class="detail-summary">论文研究 人形机器人吊装（Humanoid Hoisting） 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。 提出 HOIST 方法，结合 VR 遥操作模仿学习 与 样本高效的强化学习（RL），以安全地初始化行为并优化最终放置精度和停止行为。 旨在解决纯模仿学习不直接优化最终放置精度，以及纯强化学习在真实人形机器人上不安全且样本效率低的问题。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">University of Florida，Department of Civil and Coast…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文研究 人形机器人吊装（Humanoid Hoisting） 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。</p>
-  <ul class="reading-intro-points"><li>论文研究 人形机器人吊装（Humanoid Hoisting） 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。</li><li>提出 HOIST 方法，结合 VR 遥操作模仿学习 与 样本高效的强化学习（RL），以安全地初始化行为并优化最终放置精度和停止行为。</li><li>旨在解决纯模仿学习不直接优化最终放置精度，以及纯强化学习在真实人形机器人上不安全且样本效率低的问题。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-05-29">2026-05-29</time></p>
+        <h1 class="article-title">HOIST: Humanoid Optimization with Imitation and Sample-efficient Tuning for Manipulating Suspended Loads</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2606.00252" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2606.00252" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究 人形机器人吊装（Humanoid Hoisting） 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2606.00252.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2606.00252.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2606.00252.webp" alt="HOIST: Humanoid Optimization with Imitation and Sample-efficient Tuning for Manipulating Suspended Loads 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University of Florida，Department of Civil and Coast…</p>
+        <ul class="article-facts"><li>arXiv 2606.00252</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of Florida</strong>，Department of Civil and Coastal Engineering</li><li>作者包括 <strong>Songyang Liu</strong>、<strong>Shunyu Yao</strong>、<strong>Dingyuan Huang</strong> 和 <strong>Shuai Li</strong>（通讯作者）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>University of Florida</strong>，Department of Civil and Coastal Engineering</li><li>作者包括 <strong>Songyang Liu</strong>、<strong>Shunyu Yao</strong>、<strong>Dingyuan Huang</strong> 和 <strong>Shuai Li</strong>（通讯作者）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究 <strong>人形机器人吊装（Humanoid Hoisting）</strong> 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。</li><li>提出 <strong>HOIST</strong> 方法，结合 <strong>VR 遥操作模仿学习</strong> 与 <strong>样本高效的强化学习（RL）</strong>，以安全地初始化行为并优化最终放置精度和停止行为。</li><li>旨在解决纯模仿学习不直接优化最终放置精度，以及纯强化学习在真实人形机器人上不安全且样本效率低的问题。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文研究 <strong>人形机器人吊装（Humanoid Hoisting）</strong> 问题，即使用人形机器人通过全身运动和非连续接触来操纵外部悬挂的、欠驱动的振荡负载。</li><li>提出 <strong>HOIST</strong> 方法，结合 <strong>VR 遥操作模仿学习</strong> 与 <strong>样本高效的强化学习（RL）</strong>，以安全地初始化行为并优化最终放置精度和停止行为。</li><li>旨在解决纯模仿学习不直接优化最终放置精度，以及纯强化学习在真实人形机器人上不安全且样本效率低的问题。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>引入 <strong>人形机器人吊装</strong> 这一新的全身运动-操纵问题，涉及外部悬挂、间接驱动的振荡负载。</li><li>提出 <strong>HOIST</strong> 框架，将 VR 遥操作、监督式 VLA（视觉-语言-动作）微调、固定全身控制器执行和样本高效的强化学习精炼相结合。</li><li>在仿真和真实人形机器人上验证了 <strong>HOIST</strong> 在悬挂负载定位任务中的有效性，相比纯模仿学习，显著降低了放置误差。</li><li>通过消融实验证明了 <strong>深度图像</strong> 和 <strong>导航指令</strong> 作为输入模态对 VLA 策略初始化的重要性。</li><li>分析了强化学习精炼相较于增加演示数据的优势，表明 RL 能更有效地纠正策略的部署偏差。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>引入 <strong>人形机器人吊装</strong> 这一新的全身运动-操纵问题，涉及外部悬挂、间接驱动的振荡负载。</li><li>提出 <strong>HOIST</strong> 框架，将 VR 遥操作、监督式 VLA（视觉-语言-动作）微调、固定全身控制器执行和样本高效的强化学习精炼相结合。</li><li>在仿真和真实人形机器人上验证了 <strong>HOIST</strong> 在悬挂负载定位任务中的有效性，相比纯模仿学习，显著降低了放置误差。</li><li>通过消融实验证明了 <strong>深度图像</strong> 和 <strong>导航指令</strong> 作为输入模态对 VLA 策略初始化的重要性。</li><li>分析了强化学习精炼相较于增加演示数据的优势，表明 RL 能更有效地纠正策略的部署偏差。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>三阶段流程</strong>：首先通过 <strong>VR 遥操作</strong> 收集吊装演示数据；然后利用这些数据微调一个基于 <strong>GR00T N1.6</strong> 的高层 <strong>VLA 策略</strong>，该策略输出规划器级别的指令增量；最后，在固定 <strong>GR00T 全身控制器</strong> 执行的基础上，通过 <strong>迭代批处理强化学习（RL）</strong> 对策略进行精炼。</li><li><strong>关键技术</strong>：高层 VLA 策略预测短时域的动作指令块（action chunk），包括手部、头部、导航和基座高度目标；强化学习精炼阶段采用 <strong>离线 Actor-Critic</strong> 方法，仅更新一个 <strong>噪声引导模块</strong>，而冻结 VLA 策略本身，从而在保持安全行为的同时优化任务级奖励（放置误差）。</li><li><strong>创新点</strong>：将 VLA 策略与固定的全身控制堆栈解耦，使得任务适应完全在高层策略和 RL 精炼模块中进行，无需修改底层关节级控制。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>三阶段流程</strong>：首先通过 <strong>VR 遥操作</strong> 收集吊装演示数据；然后利用这些数据微调一个基于 <strong>GR00T N1.6</strong> 的高层 <strong>VLA 策略</strong>，该策略输出规划器级别的指令增量；最后，在固定 <strong>GR00T 全身控制器</strong> 执行的基础上，通过 <strong>迭代批处理强化学习（RL）</strong> 对策略进行精炼。</li><li><strong>关键技术</strong>：高层 VLA 策略预测短时域的动作指令块（action chunk），包括手部、头部、导航和基座高度目标；强化学习精炼阶段采用 <strong>离线 Actor-Critic</strong> 方法，仅更新一个 <strong>噪声引导模块</strong>，而冻结 VLA 策略本身，从而在保持安全行为的同时优化任务级奖励（放置误差）。</li><li><strong>创新点</strong>：将 VLA 策略与固定的全身控制堆栈解耦，使得任务适应完全在高层策略和 RL 精炼模块中进行，无需修改底层关节级控制。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>演示数据</strong>：通过 <strong>PICO VR 头显和控制器</strong> 收集人类遥操作吊装演示，用于训练的策略使用 <strong>50 个</strong>（VLA-50）或 <strong>80 个</strong>（VLA-80）演示。</li><li><strong>模型基础</strong>：高层 VLA 策略基于 <strong>GR00T N1.6</strong> 模型修改，并微调了其 VLM 最后四层、扩散 Transformer 动作专家和新模态编码器。</li><li><strong>控制器</strong>：使用固定且未经过吊装任务微调的 <strong>GR00T 全身控制部署栈</strong>。</li><li><strong>RL 数据</strong>：强化学习精炼阶段使用了最多 <strong>30 个</strong> 由当前策略自主产生的同域 rollout。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>演示数据</strong>：通过 <strong>PICO VR 头显和控制器</strong> 收集人类遥操作吊装演示，用于训练的策略使用 <strong>50 个</strong>（VLA-50）或 <strong>80 个</strong>（VLA-80）演示。</li><li><strong>模型基础</strong>：高层 VLA 策略基于 <strong>GR00T N1.6</strong> 模型修改，并微调了其 VLM 最后四层、扩散 Transformer 动作专家和新模态编码器。</li><li><strong>控制器</strong>：使用固定且未经过吊装任务微调的 <strong>GR00T 全身控制部署栈</strong>。</li><li><strong>RL 数据</strong>：强化学习精炼阶段使用了最多 <strong>30 个</strong> 由当前策略自主产生的同域 rollout。</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：在 <strong>仿真</strong> 和 <strong>真实人形机器人平台</strong> 上进行了评估。</li><li><strong>评估基准</strong>：与 <strong>VLA-50</strong>（50 个演示）、<strong>VLA-80</strong>（80 个演示）和 <strong>人类专家遥操作</strong> 的表现进行对比。</li><li><strong>主要评估指标</strong>：负载中心的 <strong>绝对平移误差</strong>（Δx, Δy, \|Δx\|+\|Δy\|）和 <strong>偏航角误差</strong>（Δψ）。</li><li><strong>关键实验结果</strong></li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：在 <strong>仿真</strong> 和 <strong>真实人形机器人平台</strong> 上进行了评估。</li><li><strong>评估基准</strong>：与 <strong>VLA-50</strong>（50 个演示）、<strong>VLA-80</strong>（80 个演示）和 <strong>人类专家遥操作</strong> 的表现进行对比。</li><li><strong>主要评估指标</strong>：负载中心的 <strong>绝对平移误差</strong>（Δx, Δy, \|Δx\|+\|Δy\|）和 <strong>偏航角误差</strong>（Δψ）。</li><li><strong>关键实验结果</strong></li></ul>
 <p> - <strong>RL 精炼有效性</strong>：在仿真中，<strong>HOIST</strong>（VLA-50 + 20 RL rollouts）将平移误差（\|Δx\|+\|Δy\|）从 22.44 cm 降至 <strong>2.54 cm</strong>，角度误差从 3.85° 降至 <strong>0.29°</strong>。</p>
 <p> - <strong>RL vs. 更多演示</strong>：<strong>HOIST</strong>（VLA-50 + 30 RL）在仿真中平移误差为 <strong>6.25 cm</strong>，优于 VLA-80 的 18.58 cm，证明 RL 精炼比增加演示更有效。</p>
 <p> - <strong>真实世界验证</strong>：在真实平台上，<strong>HOIST</strong>（VLA-50 + 30 RL）实现了 <strong>6.38 cm</strong> 的平移误差，优于 VLA-50（9.28 cm）和 VLA-80（8.57 cm）。</p>
 <p> - <strong>消融实验</strong>：同时使用 <strong>深度图像</strong> 和 <strong>导航指令</strong> 作为输入模态的 VLA 变体，在真实平台上取得了最佳的初始化性能（平移误差 9.28 cm，角度误差 14.5°）。</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2606.02735/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">See Less, Specify More: Visual Evidence Budgets for Generalizable VLAs</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2606.00229/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Continuous Reasoning for Vision-Language-Action</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2606.02735/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">See Less, Specify More: Visual Evidence Budgets for Generalizable VLAs</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2606.00229/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Continuous Reasoning for Vision-Language-Action</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

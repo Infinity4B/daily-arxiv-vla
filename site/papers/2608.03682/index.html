@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>PhyAI: Real-Time Physical AI at the Edge, Scalable Rollouts in the Cloud - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="提出 PhyAI，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径 解决现有具身模型在模型评估、云端 RL 推演、边缘 GPU 服务和板载部署等场景中依赖分散推理程序的问题 目标是实现一个运行时，同时满足边缘实时性和云端批处理扩展性，并保持模型语义和动作语义的一致性" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2608.03682">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,110 +57,75 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2608.03682.webp" alt="PhyAI: Real-Time Physical AI at the Edge, Scalable Rollouts in the Cloud" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">提出 PhyAI，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">PhyAI: Real-Time Physical AI at the Edge, Scalable Rollouts in the Cloud</h1>
-            <div class="detail-meta">2026-08-04 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.03682" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.03682" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2608.03682</span></div>
-            <p class="detail-summary">提出 PhyAI，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径 解决现有具身模型在模型评估、云端 RL 推演、边缘 GPU 服务和板载部署等场景中依赖分散推理程序的问题 目标是实现一个运行时，同时满足边缘实时性和云端批处理扩展性，并保持模型语义和动作语义的一致性</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">北京邮电大学 (Beijing University of Posts and Telecommuni…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">提出 PhyAI，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径</p>
-  <ul class="reading-intro-points"><li>提出 PhyAI，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径</li><li>解决现有具身模型在模型评估、云端 RL 推演、边缘 GPU 服务和板载部署等场景中依赖分散推理程序的问题</li><li>目标是实现一个运行时，同时满足边缘实时性和云端批处理扩展性，并保持模型语义和动作语义的一致性</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-08-04">2026-08-04</time></p>
+        <h1 class="article-title">PhyAI: Real-Time Physical AI at the Edge, Scalable Rollouts in the Cloud</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2608.03682" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2608.03682" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 PhyAI，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2608.03682.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2608.03682.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2608.03682.webp" alt="PhyAI: Real-Time Physical AI at the Edge, Scalable Rollouts in the Cloud 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">北京邮电大学 (Beijing University of Posts and Telecommuni…</p>
+        <ul class="article-facts"><li>arXiv 2608.03682</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>北京邮电大学 (Beijing University of Posts and Telecommunications)</strong></li><li><strong>南京大学 (Nanjing University)</strong></li><li><strong>北京大学 (Peking University)</strong></li><li><strong>清华大学 (Tsinghua University)</strong></li><li><strong>明体科技 (MingTi Technology)</strong></li><li><strong>ModelBest</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>北京邮电大学 (Beijing University of Posts and Telecommunications)</strong></li><li><strong>南京大学 (Nanjing University)</strong></li><li><strong>北京大学 (Peking University)</strong></li><li><strong>清华大学 (Tsinghua University)</strong></li><li><strong>明体科技 (MingTi Technology)</strong></li><li><strong>ModelBest</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>PhyAI</strong>，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径</li><li>解决现有具身模型在模型评估、云端 RL 推演、边缘 GPU 服务和板载部署等场景中依赖分散推理程序的问题</li><li>目标是实现一个运行时，同时满足边缘实时性和云端批处理扩展性，并保持模型语义和动作语义的一致性</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>PhyAI</strong>，一个统一的物理 AI 推理引擎，旨在为 VLA（视觉-语言-动作）和 WAM（世界-动作模型）等具身模型提供单一推理路径</li><li>解决现有具身模型在模型评估、云端 RL 推演、边缘 GPU 服务和板载部署等场景中依赖分散推理程序的问题</li><li>目标是实现一个运行时，同时满足边缘实时性和云端批处理扩展性，并保持模型语义和动作语义的一致性</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>统一推理运行时</strong>：PhyAI 提供一条模型路径，支持 VLA 和 WAM 在板载、边缘和云端执行，模型适配器保留架构特定语义，共享服务提供图执行、内核、内存管理、量化、通信和并行性</li><li><strong>控制时间 Roofline 分析</strong>：提出一种分析模型，将推理延迟与环境执行时间相关联，区分推理受限和环境受限的控制，为实时部署提供决策依据</li><li><strong>系统评估</strong>：在多种模型和硬件上测量单请求延迟、阶段行为、静态批处理扩展、多 GPU 执行和模拟 RL 推演工作负载，验证了统一运行时的有效性</li><li><strong>显著加速效果</strong>：相对于官方实现，在所有 11 个测量对中均实现加速，范围从 1.40× 到 4.65×；Cosmos3 在 8 个 H20 GPU 上延迟从 2.46s 降至 1.18s（2.08× 加速）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li><strong>统一推理运行时</strong>：PhyAI 提供一条模型路径，支持 VLA 和 WAM 在板载、边缘和云端执行，模型适配器保留架构特定语义，共享服务提供图执行、内核、内存管理、量化、通信和并行性</li><li><strong>控制时间 Roofline 分析</strong>：提出一种分析模型，将推理延迟与环境执行时间相关联，区分推理受限和环境受限的控制，为实时部署提供决策依据</li><li><strong>系统评估</strong>：在多种模型和硬件上测量单请求延迟、阶段行为、静态批处理扩展、多 GPU 执行和模拟 RL 推演工作负载，验证了统一运行时的有效性</li><li><strong>显著加速效果</strong>：相对于官方实现，在所有 11 个测量对中均实现加速，范围从 1.40× 到 4.65×；Cosmos3 在 8 个 H20 GPU 上延迟从 2.46s 降至 1.18s（2.08× 加速）</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>架构分离</strong>：将模型特定逻辑（预处理、求解器、缓存、动作转换）封装在模型适配器中，与共享执行服务（图重放、优化内核、内存管理、量化、并行通信）分离</li><li><strong>优化技术</strong>：包括内核融合（如自定义 RMSNorm、融合 GEMM）、CUDA 图重放、基于性能分析的算子选择（根据形状和硬件动态选择最优内核）、离线量化（支持 W4A16、W8A16、W8A8、W4A8）</li><li><strong>并行执行策略</strong>：支持数据并行（DP）、张量并行（TP）和分类器自由引导（CFG）并行，根据模型结构灵活组合；例如，π0.5 使用 DP 扩展，Cosmos3 使用 TP 和 CFG 并行</li><li><strong>控制时间 Roofline 模型</strong>：将推理延迟与环境执行时间对比，通过 <code>max(L_inference, L_env)</code> 计算理想重叠控制周期，区分推理受限和环境受限的场景</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>架构分离</strong>：将模型特定逻辑（预处理、求解器、缓存、动作转换）封装在模型适配器中，与共享执行服务（图重放、优化内核、内存管理、量化、并行通信）分离</li><li><strong>优化技术</strong>：包括内核融合（如自定义 RMSNorm、融合 GEMM）、CUDA 图重放、基于性能分析的算子选择（根据形状和硬件动态选择最优内核）、离线量化（支持 W4A16、W8A16、W8A8、W4A8）</li><li><strong>并行执行策略</strong>：支持数据并行（DP）、张量并行（TP）和分类器自由引导（CFG）并行，根据模型结构灵活组合；例如，π0.5 使用 DP 扩展，Cosmos3 使用 TP 和 CFG 并行</li><li><strong>控制时间 Roofline 模型</strong>：将推理延迟与环境执行时间对比，通过 <code>max(L_inference, L_env)</code> 计算理想重叠控制周期，区分推理受限和环境受限的场景</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用的模型和基准：<strong>π0</strong>、<strong>π0.5</strong>、<strong>GR00T N1.7</strong>、<strong>Cosmos3-Nano-Policy-DROID</strong>、<strong>MiniCPM-Robot</strong>、<strong>MiniCPM-Track</strong>；评估使用了 <strong>LIBERO</strong> 四个套件、<strong>RoboTwin</strong> 等</li><li>模型规模：未明确列出参数量，但涵盖从小型 VLA（如 MiniCPM-Robot）到大型 WAM（如 Cosmos3）多种规模</li><li>训练资源：论文侧重于推理，未提及训练资源；推理硬件涵盖 <strong>Jetson Thor</strong>、<strong>RTX 5090</strong>、<strong>A40</strong>、<strong>H100</strong>、多 GPU <strong>H20</strong> 和 <strong>A100</strong> 服务器等</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>使用的模型和基准：<strong>π0</strong>、<strong>π0.5</strong>、<strong>GR00T N1.7</strong>、<strong>Cosmos3-Nano-Policy-DROID</strong>、<strong>MiniCPM-Robot</strong>、<strong>MiniCPM-Track</strong>；评估使用了 <strong>LIBERO</strong> 四个套件、<strong>RoboTwin</strong> 等</li><li>模型规模：未明确列出参数量，但涵盖从小型 VLA（如 MiniCPM-Robot）到大型 WAM（如 Cosmos3）多种规模</li><li>训练资源：论文侧重于推理，未提及训练资源；推理硬件涵盖 <strong>Jetson Thor</strong>、<strong>RTX 5090</strong>、<strong>A40</strong>、<strong>H100</strong>、多 GPU <strong>H20</strong> 和 <strong>A100</strong> 服务器等</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：单 GPU（Thor、RTX 5090、A40、H100）和多 GPU（H20×8、A100×8）硬件，所有延迟测量均使用 CUDA 事件，排除模型加载和观测传输</li><li><strong>主要指标</strong>：单请求推理延迟（<code>L_inference</code>）、批处理吞吐量（<code>Q(B)</code>）、同步批处理时间（<code>T_sync(B)</code>）、阶段延迟占比、控制时间 Roofline（<code>X</code> 和 <code>Y</code>）</li><li><strong>关键实验结果</strong>：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：单 GPU（Thor、RTX 5090、A40、H100）和多 GPU（H20×8、A100×8）硬件，所有延迟测量均使用 CUDA 事件，排除模型加载和观测传输</li><li><strong>主要指标</strong>：单请求推理延迟（<code>L_inference</code>）、批处理吞吐量（<code>Q(B)</code>）、同步批处理时间（<code>T_sync(B)</code>）、阶段延迟占比、控制时间 Roofline（<code>X</code> 和 <code>Y</code>）</li><li><strong>关键实验结果</strong>：</li></ul>
 <p> - 单请求延迟：PhyAI 在所有 11 个模型-设备对中均快于官方实现，加速比 1.40×–4.65×；Cosmos3 在 H20×8 上从 2.46s 降至 1.18s</p>
 <p> - 阶段分析：π0.5 在 batch-1 时动作专家占 8.8% FLOPs 但 57.2% 延迟，batch-32 时降至 13.5%；GR00T 在 batch-1 时瓶颈为 Action Head，batch-4 后转为 Backbone；Cosmos3 生成阶段主导，batch 从 1 到 16 吞吐量仅提升 14.3%</p>
 <p> - 控制时间 Roofline：π0.5 在四个 LIBERO 套件中均为环境受限，而 Cosmos3 仍为推理受限</p>
 <p> - 云 RL 推演模拟：在 A100×8 上，推理时间占比从 53.1% 降至 36.2%，训练吞吐量提升约 1.36×</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2608.03727/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Track4Action: Distilling World-Centric 3D Tracker into Vision-Language-Action Policies</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2608.03563/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Unified Visuomotor Targets: Supervising VLAs Beyond Physical Actions</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2608.03727/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Track4Action: Distilling World-Centric 3D Tracker into Vision-Language-Action Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2608.03563/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Unified Visuomotor Targets: Supervising VLAs Beyond Physical Actions</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

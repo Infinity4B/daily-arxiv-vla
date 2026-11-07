@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Think at 5 Hz, Act at 20 Hz: Asynchronous Fast-Slow Vision-Language-Action Inference for Closed-Loop Driving - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测 提出异步快慢架构：冻结的7B VLM骨干网络以5Hz频率维护增量KV缓存，轻量级337M动作专家以20Hz频率读取缓存并回归航点控制 通过随机陈旧性训练（staleness-augmented training）对齐训练分布与异步部署分布，使专家能够处理缓存滞后于世界状态的情况" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2607.15621">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2607.15621.webp" alt="Think at 5 Hz, Act at 20 Hz: Asynchronous Fast-Slow Vision-Language-Action Inference for Closed-Loop Driving" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Think at 5 Hz, Act at 20 Hz: Asynchronous Fast-Slow Vision-Language-Action Inference for Closed-Loop Driving</h1>
-            <div class="detail-meta">2026-07-17 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2607.15621" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2607.15621" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2607.15621</span></div>
-            <p class="detail-summary">解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测 提出异步快慢架构：冻结的7B VLM骨干网络以5Hz频率维护增量KV缓存，轻量级337M动作专家以20Hz频率读取缓存并回归航点控制 通过随机陈旧性训练（staleness-augmented training）对齐训练分布与异步部署分布，使专家能够处理缓存滞后于世界状态的情况</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">东京大学（The University of Tokyo）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测</p>
-  <ul class="reading-intro-points"><li>解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测</li><li>提出异步快慢架构：冻结的7B VLM骨干网络以5Hz频率维护增量KV缓存，轻量级337M动作专家以20Hz频率读取缓存并回归航点控制</li><li>通过随机陈旧性训练（staleness-augmented training）对齐训练分布与异步部署分布，使专家能够处理缓存滞后于世界状态的情况</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-07-17">2026-07-17</time></p>
+        <h1 class="article-title">Think at 5 Hz, Act at 20 Hz: Asynchronous Fast-Slow Vision-Language-Action Inference for Closed-Loop Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2607.15621" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2607.15621" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2607.15621.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2607.15621.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2607.15621.webp" alt="Think at 5 Hz, Act at 20 Hz: Asynchronous Fast-Slow Vision-Language-Action Inference for Closed-Loop Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">东京大学（The University of Tokyo）</p>
+        <ul class="article-facts"><li>arXiv 2607.15621</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>东京大学</strong>（The University of Tokyo）</li><li><strong>TIER IV, Inc.</strong></li><li><strong>华为</strong>（Huawei）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>东京大学</strong>（The University of Tokyo）</li><li><strong>TIER IV, Inc.</strong></li><li><strong>华为</strong>（Huawei）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测</li><li>提出异步快慢架构：冻结的7B VLM骨干网络以5Hz频率维护增量KV缓存，轻量级337M动作专家以20Hz频率读取缓存并回归航点控制</li><li>通过随机陈旧性训练（staleness-augmented training）对齐训练分布与异步部署分布，使专家能够处理缓存滞后于世界状态的情况</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>解决大型视觉-语言模型（VLM）推理延迟与自动驾驶20Hz闭环控制频率不匹配的问题：现有方法（如LMDrive）通过跳帧或回放陈旧指令，导致一半控制输出忽略最新观测</li><li>提出异步快慢架构：冻结的7B VLM骨干网络以5Hz频率维护增量KV缓存，轻量级337M动作专家以20Hz频率读取缓存并回归航点控制</li><li>通过随机陈旧性训练（staleness-augmented training）对齐训练分布与异步部署分布，使专家能够处理缓存滞后于世界状态的情况</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出异步快慢推理方案，将7B骨干网络转化为增量缓存的上下文提供者，将所有每步计算转移到337M轻量级动作专家</li><li>提出陈旧性增强训练方法，通过在训练时随机掩盖骨干网络前缀模拟缓存滞后，强迫专家融合过时的场景摘要与当前帧证据</li><li>在消费级硬件（<strong>RTX 3090 Ti</strong>）上实现首个快慢VLA架构的闭环驾驶评估，证明专家质量与每步新鲜度（per-tick freshness）对驾驶性能的独立贡献</li><li>开放循环航点L1误差降低近4倍（从0.123降至0.031），且每步模型推理延迟与历史长度无关（约32ms）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出异步快慢推理方案，将7B骨干网络转化为增量缓存的上下文提供者，将所有每步计算转移到337M轻量级动作专家</li><li>提出陈旧性增强训练方法，通过在训练时随机掩盖骨干网络前缀模拟缓存滞后，强迫专家融合过时的场景摘要与当前帧证据</li><li>在消费级硬件（<strong>RTX 3090 Ti</strong>）上实现首个快慢VLA架构的闭环驾驶评估，证明专家质量与每步新鲜度（per-tick freshness）对驾驶性能的独立贡献</li><li>开放循环航点L1误差降低近4倍（从0.123降至0.031），且每步模型推理延迟与历史长度无关（约32ms）</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>慢系统</strong>：冻结的<strong>LMDrive</strong>骨干网络（<strong>LLaMA-7B</strong> + <strong>Q-Former</strong> + 感知编码器），每K=4个仿真步（0.2s）通过增量前向传播将当前帧的4个token追加到每层KV缓存，缓存仅在指令变更、通知到达或episode边界时重建</li><li><strong>快系统</strong>：32层Transformer动作专家（337M参数），每层通过矩形投影将token投射到骨干网络的注意力空间，对骨干网络的每层KV缓存进行交叉注意力（cross-attention），同时处理当前帧的4个视觉token和5个可学习的航点查询，回归5个航点</li><li><strong>异步部署</strong>：骨干网络从不关注专家token，因此缓存演化与单独运行时完全一致；专家每步读取缓存，测试时陈旧性 bounded by K-1个tick，增量缓存数值保真度误差低于4mm</li><li><strong>陈旧性增强训练</strong>：对每个样本随机采样δ~U{0,...,δmax}，在训练时掩盖到第j帧的骨干网络前缀使其以第j-δ帧结束，状态token通过teacher-forced带噪声的历史航点和当前速度、目标点等信息进行训练</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>慢系统</strong>：冻结的<strong>LMDrive</strong>骨干网络（<strong>LLaMA-7B</strong> + <strong>Q-Former</strong> + 感知编码器），每K=4个仿真步（0.2s）通过增量前向传播将当前帧的4个token追加到每层KV缓存，缓存仅在指令变更、通知到达或episode边界时重建</li><li><strong>快系统</strong>：32层Transformer动作专家（337M参数），每层通过矩形投影将token投射到骨干网络的注意力空间，对骨干网络的每层KV缓存进行交叉注意力（cross-attention），同时处理当前帧的4个视觉token和5个可学习的航点查询，回归5个航点</li><li><strong>异步部署</strong>：骨干网络从不关注专家token，因此缓存演化与单独运行时完全一致；专家每步读取缓存，测试时陈旧性 bounded by K-1个tick，增量缓存数值保真度误差低于4mm</li><li><strong>陈旧性增强训练</strong>：对每个样本随机采样δ~U{0,...,δmax}，在训练时掩盖到第j帧的骨干网络前缀使其以第j-δ帧结束，状态token通过teacher-forced带噪声的历史航点和当前速度、目标点等信息进行训练</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LMDrive</strong>语料库的<strong>town05</strong>部分，27,485条最多40帧的指令片段，3种天气条件作为验证集</li><li><strong>评估基准</strong>：<strong>CARLA 0.9.10</strong>模拟器，<strong>LangAuto-Short</strong>（32条town05路线）和<strong>LangAuto-Long</strong>（8条town03长路线）</li><li><strong>模型规模</strong>：骨干网络7B参数（冻结），动作专家337M参数（训练），专家为32层transformer，隐藏宽度512，每帧消耗10个token（1状态token + 4视觉token + 5航点查询）</li><li><strong>训练资源</strong>：单张48GB GPU（<strong>RTX 3090 Ti</strong>），<strong>AdamW</strong>优化器，余弦学习率调度（初始10^-4），有效batch size 32，训练5轮，峰值内存低于28GB</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>LMDrive</strong>语料库的<strong>town05</strong>部分，27,485条最多40帧的指令片段，3种天气条件作为验证集</li><li><strong>评估基准</strong>：<strong>CARLA 0.9.10</strong>模拟器，<strong>LangAuto-Short</strong>（32条town05路线）和<strong>LangAuto-Long</strong>（8条town03长路线）</li><li><strong>模型规模</strong>：骨干网络7B参数（冻结），动作专家337M参数（训练），专家为32层transformer，隐藏宽度512，每帧消耗10个token（1状态token + 4视觉token + 5航点查询）</li><li><strong>训练资源</strong>：单张48GB GPU（<strong>RTX 3090 Ti</strong>），<strong>AdamW</strong>优化器，余弦学习率调度（初始10^-4），有效batch size 32，训练5轮，峰值内存低于28GB</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：CARLA 0.9.10，与基线使用完全相同的模拟器设置、场景定义和PID参数，基线为公开LMDrive代理（10Hz跳帧回放）</li><li><strong>主要指标</strong>：驾驶分数（DS）、路线完成率（RC）、违章分数（IS）、开放循环航点L1误差、每步延迟</li><li><strong>闭环驾驶结果（town05）</strong>：驾驶分数从28.8提升至32.9，路线完成率从37.0%提升至94.0%，红灯违章减少三分之一；帧跳过消融实验证明专家本身提升驾驶分数（34.0 vs 28.8），而每步新鲜度大幅提升完成率（82.1%→94.0%）并减少路线偏离和时间超时</li><li><strong>零样本迁移</strong>：在未见过的<strong>town01</strong>和<strong>town02</strong>上保持84-94%路线完成率，而基线仅31-41%；长路线（town03）完成率85.4%但驾驶分数因碰撞和违章下降至2.96</li><li><strong>延迟结果</strong>：每步模型计算32ms（独立于历史长度），其中专家7-9ms，缓存维护摊销5ms；端到端agent步长中位数58ms（包含传感器格式化开销），实际闭环帧率约17Hz</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：CARLA 0.9.10，与基线使用完全相同的模拟器设置、场景定义和PID参数，基线为公开LMDrive代理（10Hz跳帧回放）</li><li><strong>主要指标</strong>：驾驶分数（DS）、路线完成率（RC）、违章分数（IS）、开放循环航点L1误差、每步延迟</li><li><strong>闭环驾驶结果（town05）</strong>：驾驶分数从28.8提升至32.9，路线完成率从37.0%提升至94.0%，红灯违章减少三分之一；帧跳过消融实验证明专家本身提升驾驶分数（34.0 vs 28.8），而每步新鲜度大幅提升完成率（82.1%→94.0%）并减少路线偏离和时间超时</li><li><strong>零样本迁移</strong>：在未见过的<strong>town01</strong>和<strong>town02</strong>上保持84-94%路线完成率，而基线仅31-41%；长路线（town03）完成率85.4%但驾驶分数因碰撞和违章下降至2.96</li><li><strong>延迟结果</strong>：每步模型计算32ms（独立于历史长度），其中专家7-9ms，缓存维护摊销5ms；端到端agent步长中位数58ms（包含传感器格式化开销），实际闭环帧率约17Hz</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2607.15641/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">IMBench: A Benchmark for Intuitive Robotic Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2607.15330/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Xiaomi-Robotics-1: Scaling Vision-Language-Action Models with over 100K Hours of Real-World Trajectories</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2607.15641/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">IMBench: A Benchmark for Intuitive Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2607.15330/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Xiaomi-Robotics-1: Scaling Vision-Language-Action Models with over 100K Hours of Real-World Trajectories</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

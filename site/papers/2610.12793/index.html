@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Gamma: Grounded Multi-Agent Memory with Mechanical Audit for Memory-Intensive Manipulation - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文研究预训练 VLA（视觉–语言–动作）策略在记忆密集型操作任务上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。 关键观察是：同一策略若条件于特权 oracle 给出的 grounded 子目标文本（每动作块一句、含物体坐标），几乎可解决全部任务（0.841 vs 端到端 0.179），说明瓶颈完全在“记忆→ grounded 符号子目标”这一阶段。 提出 Gamma：用 SAM-3 检测器 + VLM writer + 只追加文本记忆库 + VLM reasoner 组成多智能体记忆系统，并以机械式审计（propose–verify harness）保证每条声明都有视觉证据支持。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2610.12793">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2610.12793.webp" alt="Gamma: Grounded Multi-Agent Memory with Mechanical Audit for Memory-Intensive Manipulation" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文研究预训练 VLA（视觉–语言–动作）策略在记忆密集型操作任务上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Gamma: Grounded Multi-Agent Memory with Mechanical Audit for Memory-Intensive Manipulation</h1>
-            <div class="detail-meta">2026-10-08 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.12793" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.12793" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.12793</span></div>
-            <p class="detail-summary">论文研究预训练 VLA（视觉–语言–动作）策略在记忆密集型操作任务上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。 关键观察是：同一策略若条件于特权 oracle 给出的 grounded 子目标文本（每动作块一句、含物体坐标），几乎可解决全部任务（0.841 vs 端到端 0.179），说明瓶颈完全在“记忆→ grounded 符号子目标”这一阶段。 提出 Gamma：用 SAM-3 检测器 + VLM writer + 只追加文本记忆库 + VLM reasoner 组成多智能体记忆系统，并以机械式审计（propose–verify harness）保证每条声明都有视觉证据支持。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">10 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">Duke University（Yudong Liu、Yueqian Lin、Zijia Tang、Y…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文研究预训练 VLA（视觉–语言–动作）策略在记忆密集型操作任务上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。</p>
-  <ul class="reading-intro-points"><li>论文研究预训练 VLA（视觉–语言–动作）策略在记忆密集型操作任务上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。</li><li>关键观察是：同一策略若条件于特权 oracle 给出的 grounded 子目标文本（每动作块一句、含物体坐标），几乎可解决全部任务（0.841 vs 端到端 0.179），说明瓶颈完全在“记忆→ grounded 符号子目标”这一阶段。</li><li>提出 Gamma：用 SAM-3 检测器 + VLM writer + 只追加文本记忆库 + VLM reasoner 组成多智能体记忆系统，并以机械式审计（propose–verify harness）保证每条声明都有视觉证据支持。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-10-08">2026-10-08</time></p>
+        <h1 class="article-title">Gamma: Grounded Multi-Agent Memory with Mechanical Audit for Memory-Intensive Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.12793" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.12793" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究预训练 VLA（视觉–语言–动作）策略在记忆密集型操作任务上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2610.12793.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2610.12793.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2610.12793.webp" alt="Gamma: Grounded Multi-Agent Memory with Mechanical Audit for Memory-Intensive Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Duke University（Yudong Liu、Yueqian Lin、Zijia Tang、Y…</p>
+        <ul class="article-facts"><li>arXiv 2610.12793</li><li>6 节精读</li><li>约 10 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Duke University</strong>（Yudong Liu、Yueqian Lin、Zijia Tang、Yuxi Zheng、Yiran Chen、Hai Helen Li）</li><li><strong>Qualcomm AI Research</strong>（Yuan Li、Shuai Zhang、Yi Li、Taotao Jing、Shuangjun Liu、Dashan Gao、Ning Bi）</li><li><strong>University of Florida</strong>（Jingwei Sun）</li><li>代码开源：https://github.com/1999Lyd/GAMMA</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>Duke University</strong>（Yudong Liu、Yueqian Lin、Zijia Tang、Yuxi Zheng、Yiran Chen、Hai Helen Li）</li><li><strong>Qualcomm AI Research</strong>（Yuan Li、Shuai Zhang、Yi Li、Taotao Jing、Shuangjun Liu、Dashan Gao、Ning Bi）</li><li><strong>University of Florida</strong>（Jingwei Sun）</li><li>代码开源：https://github.com/1999Lyd/GAMMA</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究预训练 <strong>VLA（视觉–语言–动作）策略</strong>在<strong>记忆密集型操作任务</strong>上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。</li><li>关键观察是：同一策略若条件于<strong>特权 oracle 给出的 grounded 子目标文本</strong>（每动作块一句、含物体坐标），几乎可解决全部任务（<strong>0.841</strong> vs 端到端 <strong>0.179</strong>），说明瓶颈完全在“记忆→ grounded 符号子目标”这一阶段。</li><li>提出 <strong>Gamma</strong>：用 SAM-3 检测器 + VLM writer + 只追加文本记忆库 + VLM reasoner 组成多智能体记忆系统，并以<strong>机械式审计（propose–verify harness）</strong>保证每条声明都有视觉证据支持。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文研究预训练 <strong>VLA（视觉–语言–动作）策略</strong>在<strong>记忆密集型操作任务</strong>上的失败问题：训练数据以马尔可夫（Markov）为主，难以把长时程情节记忆直接映射为动作块。</li><li>关键观察是：同一策略若条件于<strong>特权 oracle 给出的 grounded 子目标文本</strong>（每动作块一句、含物体坐标），几乎可解决全部任务（<strong>0.841</strong> vs 端到端 <strong>0.179</strong>），说明瓶颈完全在“记忆→ grounded 符号子目标”这一阶段。</li><li>提出 <strong>Gamma</strong>：用 SAM-3 检测器 + VLM writer + 只追加文本记忆库 + VLM reasoner 组成多智能体记忆系统，并以<strong>机械式审计（propose–verify harness）</strong>保证每条声明都有视觉证据支持。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>分解论证</strong>：在同一固定策略下对比端到端与 oracle 差距，定位 VLA 记忆任务的真正难点在 memory-to-grounded-subgoal 阶段。</li><li>提出 <strong>Gamma</strong> 系统：以 SAM-3 作为空间 grounding 工具、VLM writer 逐 tick 蒸馏出一行 grounded 文本、append-only 文本记忆库承载全部历史、VLM reasoner 仅读文本库输出下一 grounded 子目标。</li><li>提出通用 <strong>propose–verify harness</strong> 契约：每个智能体声明（事件、进度、grounding）都必须通过机械视觉证据检查，被 <strong>admit / defer / correct / reject</strong>；该契约在训练语料构造与部署时完全一致。</li><li>在 <strong>RoboMME</strong> 十六任务上以固定策略取得非特权方法最好成绩，并<strong>不改契约迁移到第二个基准 RoboMemArena</strong>。</li><li>给出<strong>tick 级诊断协议</strong>，把闭环失败归因到具体的记忆行或缺失，转化为可修复的记忆缺陷。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出<strong>分解论证</strong>：在同一固定策略下对比端到端与 oracle 差距，定位 VLA 记忆任务的真正难点在 memory-to-grounded-subgoal 阶段。</li><li>提出 <strong>Gamma</strong> 系统：以 SAM-3 作为空间 grounding 工具、VLM writer 逐 tick 蒸馏出一行 grounded 文本、append-only 文本记忆库承载全部历史、VLM reasoner 仅读文本库输出下一 grounded 子目标。</li><li>提出通用 <strong>propose–verify harness</strong> 契约：每个智能体声明（事件、进度、grounding）都必须通过机械视觉证据检查，被 <strong>admit / defer / correct / reject</strong>；该契约在训练语料构造与部署时完全一致。</li><li>在 <strong>RoboMME</strong> 十六任务上以固定策略取得非特权方法最好成绩，并<strong>不改契约迁移到第二个基准 RoboMemArena</strong>。</li><li>给出<strong>tick 级诊断协议</strong>，把闭环失败归因到具体的记忆行或缺失，转化为可修复的记忆缺陷。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>系统结构</strong>：与策略 replan tick 对齐，每 tick 先运行 writer 后运行 reasoner；两个智能体不共享隐藏状态，唯一接口是可读的文本记忆库。</li><li><strong>Detector（grounding tool）</strong>：使用 <strong>SAM-3</strong>（<code>facebook/sam3</code>）配合按类调优的文本提示，逐帧输出 <code>name⟨x,y⟩</code> 检测串；训练语料生成与部署使用完全相同的检测器、提示与后处理。</li><li><strong>Agent-1（memory writer）</strong>：微调 VLM，每 tick 从窗口帧、检测结果、已有记忆和上一子目标中提取<strong>视觉身份 ι</strong>与<strong>视觉动态 δ</strong>，输出至多一条 grounded 文本行或 <code>none</code>。</li><li><strong>文本记忆库</strong>：append-only 列表 <code>M_k = M_{k-1} ⊕ m_k</code>，永不重写或摘要，保证信息不被选择器丢弃、每条事实可核查、数百步压缩为少量行。</li><li><strong>Agent-2（reasoner）</strong>：微调 VLM，<strong>完全不用像素</strong>，仅读指令与整个文本库输出下一 grounded 子目标，训练目标为 oracle 字符串逐字匹配；只能引用库中已有的坐标。</li><li><strong>Propose–verify harness</strong>：将声明分为 event / progress / grounding 三类，用小型通用感知词汇表（存在性、遮挡、到达半径、位移阈值）按声明类型参数化判定，处理<strong>admit（生效）、defer（挂起重试，不推进计划）、correct（修正 grounding 绑定）、reject（丢弃，含重复或由证据提取器拥有者）</strong>。</li><li><strong>训练几何</strong>：writer 先在验证过的事件行语料上微调（上下文中给真值 bank），再 rollout 生成预测 bank，reasoner 在预测 bank 上以 oracle 子目标为目标微调，保证训练分布与部署一致。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>系统结构</strong>：与策略 replan tick 对齐，每 tick 先运行 writer 后运行 reasoner；两个智能体不共享隐藏状态，唯一接口是可读的文本记忆库。</li><li><strong>Detector（grounding tool）</strong>：使用 <strong>SAM-3</strong>（<code>facebook/sam3</code>）配合按类调优的文本提示，逐帧输出 <code>name⟨x,y⟩</code> 检测串；训练语料生成与部署使用完全相同的检测器、提示与后处理。</li><li><strong>Agent-1（memory writer）</strong>：微调 VLM，每 tick 从窗口帧、检测结果、已有记忆和上一子目标中提取<strong>视觉身份 ι</strong>与<strong>视觉动态 δ</strong>，输出至多一条 grounded 文本行或 <code>none</code>。</li><li><strong>文本记忆库</strong>：append-only 列表 <code>M_k = M_{k-1} ⊕ m_k</code>，永不重写或摘要，保证信息不被选择器丢弃、每条事实可核查、数百步压缩为少量行。</li><li><strong>Agent-2（reasoner）</strong>：微调 VLM，<strong>完全不用像素</strong>，仅读指令与整个文本库输出下一 grounded 子目标，训练目标为 oracle 字符串逐字匹配；只能引用库中已有的坐标。</li><li><strong>Propose–verify harness</strong>：将声明分为 event / progress / grounding 三类，用小型通用感知词汇表（存在性、遮挡、到达半径、位移阈值）按声明类型参数化判定，处理<strong>admit（生效）、defer（挂起重试，不推进计划）、correct（修正 grounding 绑定）、reject（丢弃，含重复或由证据提取器拥有者）</strong>。</li><li><strong>训练几何</strong>：writer 先在验证过的事件行语料上微调（上下文中给真值 bank），再 rollout 生成预测 bank，reasoner 在预测 bank 上以 oracle 子目标为目标微调，保证训练分布与部署一致。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>RoboMME</strong>（16 个记忆操作任务，held-out 测试 episode）、<strong>RoboMemArena</strong>（26 个长时程厨房任务，held-out 布局）。</li><li><strong>基础模型</strong>：writer 与 reasoner 共享同一 <strong>Qwen3.5-9B</strong> 基座，使用 <strong>LoRA</strong> 适配器；另以相同流程训练一对 <strong>Qwen3.5-0.8B</strong> 智能体作为规模轴。</li><li><strong>检测器</strong>：SAM-3 直接使用、<strong>不做微调</strong>。</li><li><strong>执行器</strong>：固定的子目标条件策略 <strong>π0.5</strong>，与 oracle 行共享，仅输入的子目标流不同。</li><li>训练资源（GPU/TPU 型号与数量）在所给原文片段中未给出。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>：<strong>RoboMME</strong>（16 个记忆操作任务，held-out 测试 episode）、<strong>RoboMemArena</strong>（26 个长时程厨房任务，held-out 布局）。</li><li><strong>基础模型</strong>：writer 与 reasoner 共享同一 <strong>Qwen3.5-9B</strong> 基座，使用 <strong>LoRA</strong> 适配器；另以相同流程训练一对 <strong>Qwen3.5-0.8B</strong> 智能体作为规模轴。</li><li><strong>检测器</strong>：SAM-3 直接使用、<strong>不做微调</strong>。</li><li><strong>执行器</strong>：固定的子目标条件策略 <strong>π0.5</strong>，与 oracle 行共享，仅输入的子目标流不同。</li><li>训练资源（GPU/TPU 型号与数量）在所给原文片段中未给出。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估协议</strong>：闭环运行，每任务每 serving seed 30 个 episode，9B 配置用 3 个 serving seed、单一 agent checkpoint；基线与 oracle 行为 RoboMME 官方报告值，指标为环境成功谓词下的 episode 成功率。</li><li><strong>主结果</strong>：<strong>Gamma</strong> 在 16 任务上平均 <strong>66.0%</strong>，比此前最好的非特权方法 <strong>FrameSamp+Modul（44.5%）</strong> 高 <strong>+21.5</strong>，达到特权 <strong>GroundSG oracle（84.1%）</strong> 的 <strong>78.5%</strong>；在 9/16 任务上为最优非特权方法，并在 <strong>PickXtimes、PatternLock、RouteStick</strong> 上达到 oracle 上限。</li><li><strong>分组表现</strong>：shuffle/reveal（身份类）任务约为最佳基线的两倍（VUS <strong>75.6</strong> vs 38.0，VRP <strong>65.6</strong> vs 30.4，VPO <strong>66.7</strong> vs 36.0）；按键计数任务领先（BU <strong>84.4</strong>，BUS <strong>35.6</strong>）；路径追踪任务达到 oracle（PL <strong>98.9</strong>，RS <strong>56.7</strong>）。</li><li><strong>规模对比</strong>：<strong>0.8B 智能体</strong>版本平均 <strong>57.4%</strong>，仍大幅优于所有非特权基线，显示 harness 契约在小模型上依然有效。</li><li><strong>Harness 消融（9B）</strong>：去掉 <strong>defer</strong> 平均降至 <strong>62.7</strong>（BU 84→57，BUS 36→13）；去掉 <strong>reject</strong> 降至 <strong>55.1</strong>（PL 99→3，RS 57→7）；去掉 <strong>correct</strong> 降至 <strong>65.0</strong>（绑定类任务损失 4–7 点）；不启用完整 harness 亦明显低于 66.0，说明收益主要来自机械审计契约而非模型本身。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估协议</strong>：闭环运行，每任务每 serving seed 30 个 episode，9B 配置用 3 个 serving seed、单一 agent checkpoint；基线与 oracle 行为 RoboMME 官方报告值，指标为环境成功谓词下的 episode 成功率。</li><li><strong>主结果</strong>：<strong>Gamma</strong> 在 16 任务上平均 <strong>66.0%</strong>，比此前最好的非特权方法 <strong>FrameSamp+Modul（44.5%）</strong> 高 <strong>+21.5</strong>，达到特权 <strong>GroundSG oracle（84.1%）</strong> 的 <strong>78.5%</strong>；在 9/16 任务上为最优非特权方法，并在 <strong>PickXtimes、PatternLock、RouteStick</strong> 上达到 oracle 上限。</li><li><strong>分组表现</strong>：shuffle/reveal（身份类）任务约为最佳基线的两倍（VUS <strong>75.6</strong> vs 38.0，VRP <strong>65.6</strong> vs 30.4，VPO <strong>66.7</strong> vs 36.0）；按键计数任务领先（BU <strong>84.4</strong>，BUS <strong>35.6</strong>）；路径追踪任务达到 oracle（PL <strong>98.9</strong>，RS <strong>56.7</strong>）。</li><li><strong>规模对比</strong>：<strong>0.8B 智能体</strong>版本平均 <strong>57.4%</strong>，仍大幅优于所有非特权基线，显示 harness 契约在小模型上依然有效。</li><li><strong>Harness 消融（9B）</strong>：去掉 <strong>defer</strong> 平均降至 <strong>62.7</strong>（BU 84→57，BUS 36→13）；去掉 <strong>reject</strong> 降至 <strong>55.1</strong>（PL 99→3，RS 57→7）；去掉 <strong>correct</strong> 降至 <strong>65.0</strong>（绑定类任务损失 4–7 点）；不启用完整 harness 亦明显低于 66.0，说明收益主要来自机械审计契约而非模型本身。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.12832/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">VLMs are Native Action Models: Unleashing the Manipulation Capabilities of VLMs with Explicit Action-Space Grounding</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.12734/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">StereoEngine: Scaling Stereo Bimanual Robot Data without Stereo Cameras</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2610.12832/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">VLMs are Native Action Models: Unleashing the Manipulation Capabilities of VLMs with Explicit Action-Space Grounding</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2610.12734/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">StereoEngine: Scaling Stereo Bimanual Robot Data without Stereo Cameras</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

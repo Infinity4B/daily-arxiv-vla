@@ -1,248 +1,124 @@
 /**
  * @file paper.js
- * @description 论文详情页逻辑：构建目录、标记当前阅读卡，并按 arXiv id 记录滚动进度。
+ * @description 论文详情页：首图放大、外链统计、←/→ 切换论文、目录高亮、记录阅读位置与已读状态。
+ * （首页的阅读抽屉直接抓取本页正文 HTML，不会运行这个脚本。）
  */
 (function(){
-  const $ = (selector) => document.querySelector(selector);
-  const detailBody = $('#detail-body');
-  const detailToc = $('#detail-toc');
-  const detailTocNav = $('#detail-toc-nav');
   const paperId = document.body.dataset.paperId || '';
-  const paperTitleEl = $('.detail-page-title');
-  const paperTitle = paperTitleEl ? paperTitleEl.textContent.trim() : document.title;
-  const isEmbedded = window.parent !== window && new URL(window.location.href).searchParams.get('embed') === '1';
+  const paperTitle = document.querySelector('.article-title')?.textContent.trim() || document.title;
+  const scrollStorageKey = paperId ? `paper-scroll:${paperId}` : '';
 
   function trackPaperEvent(name, params){
-    window.siteAnalytics?.track(name, {
-      paper_id: paperId,
-      paper_title: paperTitle,
-      ...(params || {})
-    });
+    window.siteAnalytics?.track(name, { paper_id: paperId, paper_title: paperTitle, ...(params || {}) });
   }
 
-  function getImagePayload(imageEl){
-    const figureEl = imageEl.closest('.paper-figure-card');
-    const captionEl = figureEl ? figureEl.querySelector('.paper-figure-caption') : null;
-    return {
-      src: imageEl.currentSrc || imageEl.src,
-      alt: imageEl.alt || '论文图片',
-      caption: captionEl ? captionEl.textContent.trim() : imageEl.alt || ''
-    };
-  }
+  // ---------- 首图放大 / 外链统计 ----------
 
-  function openPaperImage(imageEl){
-    const payload = getImagePayload(imageEl);
-    trackPaperEvent('paper_image_open', {
-      open_mode: isEmbedded ? 'modal' : 'page'
-    });
-    if(isEmbedded){
-      try {
-        if(window.parent.PaperImageViewer){
-          window.parent.PaperImageViewer.open(payload);
+  document.addEventListener('click', (event) => {
+    const zoomEl = event.target.closest('[data-zoom-src]');
+    if(zoomEl && window.PaperImageViewer){
+      event.preventDefault();
+      trackPaperEvent('paper_image_open', { open_mode: 'page' });
+      window.PaperImageViewer.open({
+        src: zoomEl.dataset.zoomSrc,
+        fallbackSrc: zoomEl.dataset.zoomFallback || '',
+        alt: paperTitle,
+        caption: paperTitle,
+        returnFocus: zoomEl
+      });
+      return;
+    }
+    const analyticsEl = event.target.closest('[data-analytics-event]');
+    if(analyticsEl){
+      trackPaperEvent(analyticsEl.dataset.analyticsEvent);
+    }
+  });
+
+  // ---------- ←/→ 切换论文 ----------
+
+  const prevLinkEl = document.querySelector('.paper-nav-prev');
+  const nextLinkEl = document.querySelector('.paper-nav-next');
+
+  document.addEventListener('keydown', (event) => {
+    if(event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey){
+      return;
+    }
+    if(window.PaperImageViewer?.isOpen() || event.target.closest('input, textarea, select, [contenteditable="true"]')){
+      return;
+    }
+    const linkEl = event.key === 'ArrowLeft' ? prevLinkEl : event.key === 'ArrowRight' ? nextLinkEl : null;
+    if(linkEl){
+      event.preventDefault();
+      window.location.href = linkEl.href;
+    }
+  });
+
+  window.paperReadState?.mark(paperId);
+
+  // ---------- 目录高亮（目录由构建脚本生成） ----------
+
+  const tocLinks = new Map();
+  document.querySelectorAll('.article-toc a').forEach((linkEl) => {
+    tocLinks.set(decodeURIComponent(linkEl.hash.slice(1)), linkEl);
+  });
+
+  if(tocLinks.size && 'IntersectionObserver' in window){
+    let activeLinkEl = null;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const linkEl = tocLinks.get(entry.target.id);
+        if(!entry.isIntersecting || !linkEl || linkEl === activeLinkEl){
           return;
         }
-      } catch (error) {
-        console.warn('无法直接调用父页面图片预览，改用消息转发', error);
-      }
-      window.parent.postMessage({ type: 'paper-image-open', ...payload }, window.location.origin);
-      return;
-    }
-
-    if(window.PaperImageViewer){
-      window.PaperImageViewer.open({ ...payload, returnFocus: imageEl });
-    }
-  }
-
-  window.openPaperFigureImage = openPaperImage;
-
-  function initializeImageZoom(){
-    document.querySelectorAll('.paper-figure-image').forEach((imageEl) => {
-      imageEl.dataset.zoomable = 'true';
-      imageEl.tabIndex = 0;
-      imageEl.setAttribute('role', 'button');
-      imageEl.setAttribute('aria-label', `放大查看：${imageEl.alt || '论文图片'}`);
-      imageEl.addEventListener('keydown', (event) => {
-        if(event.key === 'Enter' || event.key === ' '){
-          event.preventDefault();
-          openPaperImage(imageEl);
-        }
+        activeLinkEl?.classList.remove('is-active');
+        activeLinkEl?.removeAttribute('aria-current');
+        linkEl.classList.add('is-active');
+        linkEl.setAttribute('aria-current', 'true');
+        activeLinkEl = linkEl;
       });
+    }, { rootMargin: '-15% 0px -60% 0px' });
+
+    tocLinks.forEach((linkEl, sectionId) => {
+      const sectionEl = document.getElementById(sectionId);
+      if(sectionEl){
+        observer.observe(sectionEl);
+      }
     });
   }
 
-  function initializeLinkAnalytics(){
-    document.querySelectorAll('[data-analytics-event]').forEach((linkEl) => {
-      linkEl.addEventListener('click', () => {
-        const eventName = linkEl.dataset.analyticsEvent;
-        if(eventName){
-          trackPaperEvent(eventName);
-        }
-      });
-    });
-  }
-
-  function initializeEmbeddedMode(){
-    if(!isEmbedded){
-      return;
-    }
-
-    document.body.classList.add('embedded-detail');
-    const backLinkEl = document.querySelector('.back-link');
-    if(backLinkEl){
-      backLinkEl.addEventListener('click', (event) => {
-        event.preventDefault();
-        window.parent.postMessage({ type: 'paper-modal-close' }, window.location.origin);
-      });
-    }
-
-    document.querySelectorAll('.paper-nav-link').forEach((linkEl) => {
-      linkEl.addEventListener('click', (event) => {
-        event.preventDefault();
-        const targetURL = new URL(linkEl.href, window.location.href);
-        targetURL.searchParams.set('embed', '1');
-        window.location.href = targetURL.href;
-      });
-    });
-
-    const standaloneURL = new URL(window.location.href);
-    standaloneURL.searchParams.delete('embed');
-    window.parent.postMessage({
-      type: 'paper-modal-ready',
-      paperId,
-      title: document.querySelector('.detail-page-title')?.textContent || document.title,
-      url: standaloneURL.href
-    }, window.location.origin);
-
-    window.addEventListener('keydown', (event) => {
-      if(event.defaultPrevented || event.key !== 'Escape'){
-        return;
-      }
-      event.preventDefault();
-      window.parent.postMessage({ type: 'paper-modal-close' }, window.location.origin);
-    });
-  }
-
-  function slugifyHeading(text, index){
-    const slug = (text || '')
-      .trim()
-      .toLowerCase()
-      .replace(/[^\w\u4e00-\u9fff]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-    return slug ? `section-${index}-${slug}` : `section-${index}`;
-  }
-
-  function buildDetailToc(){
-    if(!detailBody || !detailToc || !detailTocNav){
-      return;
-    }
-
-    detailTocNav.innerHTML = '';
-    const headings = Array.from(detailBody.querySelectorAll('.reading-card-section h2'));
-
-    if(!headings.length){
-      detailToc.classList.add('hidden');
-      return;
-    }
-
-    const links = new Map();
-
-    headings.forEach((heading, index) => {
-      if(!heading.id){
-        heading.id = slugifyHeading(heading.textContent, index + 1);
-      }
-
-      const link = document.createElement('a');
-      link.className = 'detail-toc-link';
-      link.href = `#${heading.id}`;
-      link.textContent = heading.textContent || `章节 ${index + 1}`;
-      detailTocNav.appendChild(link);
-      links.set(heading.id, link);
-    });
-
-    if('IntersectionObserver' in window){
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const link = links.get(entry.target.id);
-          if(link && entry.isIntersecting){
-            detailTocNav.querySelectorAll('.detail-toc-link').forEach((item) => item.classList.remove('is-active'));
-            link.classList.add('is-active');
-          }
-        });
-      }, {
-        rootMargin: '-18% 0px -58% 0px',
-        threshold: 0
-      });
-
-      headings.forEach((heading) => observer.observe(heading));
-    }
-
-    detailToc.classList.remove('hidden');
-  }
-
-  function getStorageKey(){
-    return paperId ? `paper-scroll:${paperId}` : '';
-  }
-
-  function restoreScroll(){
-    if(!paperId || window.location.hash){
-      return;
-    }
-
-    const storageKey = getStorageKey();
-    if(!storageKey){
-      return;
-    }
-
-    try{
-      const saved = window.localStorage.getItem(storageKey);
-      if(saved === null){
-        return;
-      }
-
-      const scrollY = Number(saved);
-      if(!Number.isFinite(scrollY) || scrollY <= 0){
-        return;
-      }
-
-      window.requestAnimationFrame(() => {
-        window.scrollTo(0, scrollY);
-      });
-    } catch (error) {
-      console.warn('恢复滚动进度失败', error);
-    }
-  }
+  // ---------- 阅读位置（按论文记录，下次打开回到上次位置） ----------
 
   function saveScroll(){
-    const storageKey = getStorageKey();
-    if(!storageKey){
+    if(!scrollStorageKey){
       return;
     }
-
-    try{
-      window.localStorage.setItem(storageKey, String(window.scrollY || 0));
+    try {
+      const scrollY = Math.round(window.scrollY || 0);
+      if(scrollY > 0){
+        window.localStorage.setItem(scrollStorageKey, String(scrollY));
+      } else {
+        window.localStorage.removeItem(scrollStorageKey);
+      }
     } catch (error) {
-      console.warn('保存滚动进度失败', error);
+      // 存储不可用时忽略
     }
   }
 
-  let ticking = false;
+  let saveScrollTimerId = null;
   window.addEventListener('scroll', () => {
-    if(ticking){
-      return;
-    }
-
-    ticking = true;
-    window.requestAnimationFrame(() => {
-      saveScroll();
-      ticking = false;
-    });
+    window.clearTimeout(saveScrollTimerId);
+    saveScrollTimerId = window.setTimeout(saveScroll, 250);
   }, { passive: true });
-
   window.addEventListener('pagehide', saveScroll);
 
-  initializeEmbeddedMode();
-  initializeImageZoom();
-  initializeLinkAnalytics();
-  buildDetailToc();
-  restoreScroll();
+  if(scrollStorageKey && !window.location.hash){
+    try {
+      const scrollY = Number(window.localStorage.getItem(scrollStorageKey));
+      if(Number.isFinite(scrollY) && scrollY > 0){
+        window.scrollTo({ top: scrollY, behavior: 'instant' });
+      }
+    } catch (error) {
+      console.warn('恢复阅读位置失败', error);
+    }
+  }
 })();

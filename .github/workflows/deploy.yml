@@ -114,8 +114,12 @@ jobs:
           
       - name: 准备精简部署产物
         run: |
-          # 排除 assets/paper-images/ 根目录下的全尺寸图（保留 thumbs/），文件数和体积都大幅减少
-          rsync -a --delete --exclude='/assets/paper-images/*.*' site/ _pages/
+          # 排除 assets/paper-images/ 根目录下的全尺寸图（保留 thumbs/），文件数和体积都大幅减少；
+          # paper-images.json 只是构建期的首图清单，前端不读取，也不必发布
+          rsync -a --delete \
+            --exclude='/assets/paper-images/*.*' \
+            --exclude='/assets/paper-images.json' \
+            site/ _pages/
           echo "完整站点: $(du -sh site | cut -f1), $(find site -type f | wc -l) 个文件"
           echo "部署产物: $(du -sh _pages | cut -f1), $(find _pages -type f | wc -l) 个文件"
 

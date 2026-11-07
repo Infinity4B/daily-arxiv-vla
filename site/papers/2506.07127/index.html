@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Robotic Policy Learning via Human-assisted Action Preference Optimization - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2506.07127">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,71 +57,44 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2506.07127.webp" alt="Robotic Policy Learning via Human-assisted Action Preference Optimization" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Robotic Policy Learning via Human-assisted Action Preference Optimization</h1>
-            <div class="detail-meta">2025-06-08 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2506.07127" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2506.07127" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2506.07127</span></div>
-            <p class="detail-summary">该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">中国人民大学高瓴人工智能学院、ByteDance Seed、下一代智能搜索与推荐教育部工程研究中心、大…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。</p>
-  <ul class="reading-intro-points"><li>该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。</li><li>提出了一种新的VLA模型优化范式——动作偏好优化（APO），它通过动作级别的偏好对齐，超越了行为克隆和强化学习的限制。</li><li>设计了一个用于可靠部署和交互轨迹收集的人-机器人协作框架，通过实时人工干预保证任务成功并提供修正轨迹。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2025-06-08">2025-06-08</time></p>
+        <h1 class="article-title">Robotic Policy Learning via Human-assisted Action Preference Optimization</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2506.07127" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2506.07127" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2506.07127.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2506.07127.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2506.07127.webp" alt="Robotic Policy Learning via Human-assisted Action Preference Optimization 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中国人民大学高瓴人工智能学院、ByteDance Seed、下一代智能搜索与推荐教育部工程研究中心、大…</p>
+        <ul class="article-facts"><li>arXiv 2506.07127</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><p>中国人民大学高瓴人工智能学院、ByteDance Seed、下一代智能搜索与推荐教育部工程研究中心、大型模型与智能治理北京市重点实验室。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><p>中国人民大学高瓴人工智能学院、ByteDance Seed、下一代智能搜索与推荐教育部工程研究中心、大型模型与智能治理北京市重点实验室。</p></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><p>该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><p>该论文提出了一种名为“动作偏好优化（APO）”的新方法，用于通过人类辅助的偏好对齐来优化视觉-语言-动作（VLA）模型。该方法旨在解决VLA模型在部署后难以通过失败经验进行持续优化的局限性。APO包含一个用于可靠部署和交互轨迹收集的人-机器人协作框架，以及一个利用二元可取性信号和自适应重新加权算法的优化过程。该算法能有效抑制失败动作并增强纠错能力，使VLA模型能够从失败中学习，实现迭代改进，从而在动态环境中可靠部署。实验在模拟和真实场景中验证了该方法的有效性。</p></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ol><li>提出了一种新的VLA模型优化范式——动作偏好优化（APO），它通过动作级别的偏好对齐，超越了行为克隆和强化学习的限制。</li><li>设计了一个用于可靠部署和交互轨迹收集的人-机器人协作框架，通过实时人工干预保证任务成功并提供修正轨迹。</li><li>针对机器人交互的不可逆性和VLA模型中动作标记与连续动作之间的概率失配问题，提出了一种自适应重新加权算法。该算法利用从交互中派生的二元可取性信号，引导模型有效学习。</li><li>APO使VLA模型具备了从失败中学习的关键能力，为机器人在真实世界中的持续迭代优化铺平了道路。</li><li>在多种模拟和真实世界的操作任务上进行了全面实验，证明了APO在泛化性和鲁棒性方面的优越性能。</li></ol></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ol><li>提出了一种新的VLA模型优化范式——动作偏好优化（APO），它通过动作级别的偏好对齐，超越了行为克隆和强化学习的限制。</li><li>设计了一个用于可靠部署和交互轨迹收集的人-机器人协作框架，通过实时人工干预保证任务成功并提供修正轨迹。</li><li>针对机器人交互的不可逆性和VLA模型中动作标记与连续动作之间的概率失配问题，提出了一种自适应重新加权算法。该算法利用从交互中派生的二元可取性信号，引导模型有效学习。</li><li>APO使VLA模型具备了从失败中学习的关键能力，为机器人在真实世界中的持续迭代优化铺平了道路。</li><li>在多种模拟和真实世界的操作任务上进行了全面实验，证明了APO在泛化性和鲁棒性方面的优越性能。</li></ol></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><p>该方法分为两个主要部分：</p>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><p>该方法分为两个主要部分：</p>
 <ol><li><strong>人-机器人协作部署</strong>：</li></ol>
 <p> - 首先，通过行为克隆（BC）在专家演示数据集上微调预训练的VLA模型，得到一个基础策略。</p>
 <p> - 部署该策略与环境交互。当策略执行失败时，人工操作员进行实时干预，确保任务完成并收集修正轨迹。</p>
@@ -135,51 +105,43 @@
 <p> - 采用一个损失函数，通过KL散度项约束优化过程，使模型在参考模型的基础上学习偏好对齐，避免灾难性遗忘。</p>
 <p> - 提出一种自适应重新加权方法：计算每个样本的连续动作L1损失并进行批次归一化，得到样本权重。然后动态调整可取和不可取样本在损失函数中的权重，使模型更关注预测误差大的样本（即失败相关的动作），从而弥合了离散标记预测和连续动作回归之间的差距。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>数据集</strong>：</li></ul>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：</li></ul>
 <p> - <strong>模拟</strong>：使用RoboMimic数据集，包含<code>Coffee_D0</code>、<code>StackThree_D0</code>、<code>ThreePieceAssembly_D0</code>和<code>Square_D0</code>等4个长时程操作任务。每个任务使用300个专家演示进行初始微调，并收集50条交互轨迹用于APO优化。</p>
 <p> - <strong>真实世界</strong>：设计了“将方块插入杆中”的精细操作任务。通过SpaceMouse设备收集了100条专家演示轨迹，并部署策略后收集了20条人工干预轨迹。此外，还在“挂杯子”和“放柠檬”等任务上进行了验证。</p>
 <ul><li><strong>训练资源</strong>：</li></ul>
 <p> - <strong>基础模型</strong>：主要对OpenVLA模型进行微调，并在π0-FAST模型上验证了泛化性。</p>
 <p> - <strong>硬件</strong>：初始微调使用8块NVIDIA A100 GPU（LoRA, rank=32, batch size=16），APO优化阶段使用4块NVIDIA A100 GPU（learning rate=5e-5, batch size=8）。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：</li></ul>
 <p> - <strong>模拟环境</strong>：RoboMimic模拟环境。</p>
 <p> - <strong>真实世界环境</strong>：使用真实机械臂执行操作任务。为了测试泛化能力，设计了多种扰动场景，包括位置扰动（改变物体初始位置）、背景扰动（更换背景颜色）和纹理扰动（更换物体纹理）。</p>
 <ul><li><strong>评估指标</strong>：</li></ul>
 <p> - 主要评估指标是<strong>任务平均成功率</strong>。在模拟环境中，每个任务在不同随机种子下进行50次试验并报告平均成功率。在真实世界中，对每种场景进行20次试验并报告平均成功率。</p>
 <p> - 在终身学习实验中，每20次交互后更新模型并进行50次评估，绘制成功率随迭代次数的变化曲线。</p>
 <p> - 通过比较不同方法在原始任务和扰动场景下的性能，评估模型的泛化和抗干扰能力。</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2506.07961/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">BridgeVLA: Input-Output Alignment for Efficient 3D Manipulation Learning with Vision-Language Models</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2506.05667/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">DriveAction: A Benchmark for Exploring Human-like Driving Decisions in VLA Models</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2506.07961/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">BridgeVLA: Input-Output Alignment for Efficient 3D Manipulation Learning with Vision-Language Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2506.05667/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">DriveAction: A Benchmark for Exploring Human-like Driving Decisions in VLA Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

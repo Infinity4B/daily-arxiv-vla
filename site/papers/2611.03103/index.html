@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>VLALagBench: Understanding When and Why VLA Inference Latency Matters - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出 VLALagBench，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准 解决的核心问题：VLA 模型推理延迟与机器人任务成功率之间的关系尚不清晰——现有基准多为静态环境，无法反映物理世界持续演化时策略能否及时响应 关键发现：即使是 100 ms 的适度推理延迟，也可能使移动物体上的任务成功率近乎减半，且敏感度因任务类型和 VLA 策略而异；基于校准数据构建的实证模型可预测任务成功率（RMS 误差仅 5.7–7.8%），用于指导系统特定的算法配置选择" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.03103">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.03103.webp" alt="VLALagBench: Understanding When and Why VLA Inference Latency Matters" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出 VLALagBench，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">VLALagBench: Understanding When and Why VLA Inference Latency Matters</h1>
-            <div class="detail-meta">2026-11-02 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.03103" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.03103" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.03103</span></div>
-            <p class="detail-summary">论文提出 VLALagBench，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准 解决的核心问题：VLA 模型推理延迟与机器人任务成功率之间的关系尚不清晰——现有基准多为静态环境，无法反映物理世界持续演化时策略能否及时响应 关键发现：即使是 100 ms 的适度推理延迟，也可能使移动物体上的任务成功率近乎减半，且敏感度因任务类型和 VLA 策略而异；基于校准数据构建的实证模型可预测任务成功率（RMS 误差仅 5.7–7.8%），用于指导系统特定的算法配置选择</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">National University of Singapore（新加坡国立大学）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出 VLALagBench，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准</p>
-  <ul class="reading-intro-points"><li>论文提出 VLALagBench，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准</li><li>解决的核心问题：VLA 模型推理延迟与机器人任务成功率之间的关系尚不清晰——现有基准多为静态环境，无法反映物理世界持续演化时策略能否及时响应</li><li>关键发现：即使是 100 ms 的适度推理延迟，也可能使移动物体上的任务成功率近乎减半，且敏感度因任务类型和 VLA 策略而异；基于校准数据构建的实证模型可预测任务成功率（RMS 误差仅 5.7–7.8%），用于指导系统特定的算法配置选择</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-02">2026-11-02</time></p>
+        <h1 class="article-title">VLALagBench: Understanding When and Why VLA Inference Latency Matters</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.03103" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.03103" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 VLALagBench，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.03103.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.03103.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.03103.webp" alt="VLALagBench: Understanding When and Why VLA Inference Latency Matters 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">National University of Singapore（新加坡国立大学）</p>
+        <ul class="article-facts"><li>arXiv 2611.03103</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>National University of Singapore（新加坡国立大学）</strong></li><li><strong>Nanyang Technological University（南洋理工大学）</strong></li><li><strong>Stanford University（斯坦福大学）</strong></li><li><strong>NVIDIA</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>National University of Singapore（新加坡国立大学）</strong></li><li><strong>Nanyang Technological University（南洋理工大学）</strong></li><li><strong>Stanford University（斯坦福大学）</strong></li><li><strong>NVIDIA</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>VLALagBench</strong>，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准</li><li>解决的核心问题：VLA 模型推理延迟与机器人任务成功率之间的关系尚不清晰——现有基准多为静态环境，无法反映物理世界持续演化时策略能否及时响应</li><li>关键发现：即使是 100 ms 的适度推理延迟，也可能使移动物体上的任务成功率近乎减半，且敏感度因任务类型和 VLA 策略而异；基于校准数据构建的实证模型可预测任务成功率（RMS 误差仅 5.7–7.8%），用于指导系统特定的算法配置选择</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出 <strong>VLALagBench</strong>，一个系统研究视觉-语言-动作模型推理延迟如何影响任务成功率的综合基准</li><li>解决的核心问题：VLA 模型推理延迟与机器人任务成功率之间的关系尚不清晰——现有基准多为静态环境，无法反映物理世界持续演化时策略能否及时响应</li><li>关键发现：即使是 100 ms 的适度推理延迟，也可能使移动物体上的任务成功率近乎减半，且敏感度因任务类型和 VLA 策略而异；基于校准数据构建的实证模型可预测任务成功率（RMS 误差仅 5.7–7.8%），用于指导系统特定的算法配置选择</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>VLALagBench</strong> 基准，系统性地评估 VLA 推理延迟对任务成功率的影响，涵盖任务类型、物体速度、执行模式（同步/异步）和 VLA 策略五个因素</li><li>揭示延迟敏感性的两个关键机制：<strong>观测滞后</strong>（stale observations）损害高精度任务，<strong>机器人暂停</strong>（robot pauses）破坏连续运动任务</li><li>对比同步执行与两种异步执行（lazy 和 continuous）的权衡：异步执行通过重叠推理与动作执行恢复部分成功率，但代价是更高频率的推理请求</li><li>开发实证模型（基于观测滞后和空闲时间的线性速度调整模型），从有限校准数据预测任务成功率，实现算法-系统协同设计</li><li>展示不同推理系统（机载 GPU、边缘服务器、共享服务器、云端）最优执行模式与执行时域配置各不相同</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>VLALagBench</strong> 基准，系统性地评估 VLA 推理延迟对任务成功率的影响，涵盖任务类型、物体速度、执行模式（同步/异步）和 VLA 策略五个因素</li><li>揭示延迟敏感性的两个关键机制：<strong>观测滞后</strong>（stale observations）损害高精度任务，<strong>机器人暂停</strong>（robot pauses）破坏连续运动任务</li><li>对比同步执行与两种异步执行（lazy 和 continuous）的权衡：异步执行通过重叠推理与动作执行恢复部分成功率，但代价是更高频率的推理请求</li><li>开发实证模型（基于观测滞后和空闲时间的线性速度调整模型），从有限校准数据预测任务成功率，实现算法-系统协同设计</li><li>展示不同推理系统（机载 GPU、边缘服务器、共享服务器、云端）最优执行模式与执行时域配置各不相同</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基准在 <strong>LIBERO + MuJoCo</strong> 上构建，遵循四大设计原则：静态场景零延迟下高成功率、多样化运动目标交互、精确可控的目标轨迹且不改变接触物理、多个公开权重的 VLA 模型可复现</li><li>设计四个运动目标任务：<strong>Release</strong>（放入移动篮子）、<strong>Set-down</strong>（放到移动盘子上）、<strong>Grasping</strong>（抓取移动柜子上的碗）、<strong>Articulated manipulation</strong>（拉动移动柜子的抽屉），目标以 0.001–0.2 m/s 恒速沿近似椭圆闭合路径运动</li><li>定义三种执行模式：<strong>同步执行</strong>（每 H 个动作后暂停 L 步推理）、<strong>惰性异步执行</strong>（最少推理频率、零空闲）、<strong>连续异步执行</strong>（最高推理频率、最低观测滞后 H=L）</li><li>延迟注入机制：将推理延迟转换为模拟器控制步数（20 Hz 下 100 ms = L=2 步）</li><li>实证模型：S_X(v) ≈ S_0(λ_X·v)，其中 λ_X = 1 + a·(s̄_X−s̄_0)/s̄_0 + b·I_X/H_X，系数 a、b 分别刻画对观测滞后和机器人暂停的敏感度，按策略-任务对分别拟合</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>基准在 <strong>LIBERO + MuJoCo</strong> 上构建，遵循四大设计原则：静态场景零延迟下高成功率、多样化运动目标交互、精确可控的目标轨迹且不改变接触物理、多个公开权重的 VLA 模型可复现</li><li>设计四个运动目标任务：<strong>Release</strong>（放入移动篮子）、<strong>Set-down</strong>（放到移动盘子上）、<strong>Grasping</strong>（抓取移动柜子上的碗）、<strong>Articulated manipulation</strong>（拉动移动柜子的抽屉），目标以 0.001–0.2 m/s 恒速沿近似椭圆闭合路径运动</li><li>定义三种执行模式：<strong>同步执行</strong>（每 H 个动作后暂停 L 步推理）、<strong>惰性异步执行</strong>（最少推理频率、零空闲）、<strong>连续异步执行</strong>（最高推理频率、最低观测滞后 H=L）</li><li>延迟注入机制：将推理延迟转换为模拟器控制步数（20 Hz 下 100 ms = L=2 步）</li><li>实证模型：S_X(v) ≈ S_0(λ_X·v)，其中 λ_X = 1 + a·(s̄_X−s̄_0)/s̄_0 + b·I_X/H_X，系数 a、b 分别刻画对观测滞后和机器人暂停的敏感度，按策略-任务对分别拟合</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主基准：<strong>LIBERO</strong>（MuJoCo 模拟器）上的四个改造任务；次基准：<strong>DynamicVLA 的 DOM 基准</strong>（Isaac Sim）用于跨模拟器验证；另有真实机器人实验</li><li>评估三个 VLA 策略（官方公开权重）：<strong>π0.5</strong>（chunk 大小 K=10）、<strong>GR00T N1.7</strong>（K=16）、<strong>MolmoAct2</strong>（K=10）；跨模拟器验证使用 <strong>DynamicVLA</strong></li><li>每个成功率基于 <strong>200 次 rollout</strong>，每回合 600 个动作预算，20 Hz 控制频率，执行时域 H=5</li><li>推理延迟扫描范围 0–250 ms（50 ms 步长）</li><li>系统部署场景涵盖 <strong>Jetson AGX Thor</strong>（机载，72.8 ms 延迟）、<strong>RTX 4090 + WiFi 7</strong>（边缘，37.8 ms）、<strong>H100 + 5G</strong>（共享服务器，42.9 ms、限 5 req/s）、<strong>H100 慢速云</strong>（217.9 ms 延迟）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>主基准：<strong>LIBERO</strong>（MuJoCo 模拟器）上的四个改造任务；次基准：<strong>DynamicVLA 的 DOM 基准</strong>（Isaac Sim）用于跨模拟器验证；另有真实机器人实验</li><li>评估三个 VLA 策略（官方公开权重）：<strong>π0.5</strong>（chunk 大小 K=10）、<strong>GR00T N1.7</strong>（K=16）、<strong>MolmoAct2</strong>（K=10）；跨模拟器验证使用 <strong>DynamicVLA</strong></li><li>每个成功率基于 <strong>200 次 rollout</strong>，每回合 600 个动作预算，20 Hz 控制频率，执行时域 H=5</li><li>推理延迟扫描范围 0–250 ms（50 ms 步长）</li><li>系统部署场景涵盖 <strong>Jetson AGX Thor</strong>（机载，72.8 ms 延迟）、<strong>RTX 4090 + WiFi 7</strong>（边缘，37.8 ms）、<strong>H100 + 5G</strong>（共享服务器，42.9 ms、限 5 req/s）、<strong>H100 慢速云</strong>（217.9 ms 延迟）</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估覆盖五个维度（任务类型、目标速度、策略、执行模式、延迟），0–250 ms 延迟、200 rollout/配置</li><li><strong>发现 1</strong>：目标速度 0.1 m/s 时，100 ms 延迟使 Set-down 成功率从 71.5% 降至 40.5%（保留 57%），而 Grasping 仅从 86.5% 降至 74.0%（保留 86%）</li><li><strong>发现 2</strong>：Set-down 需要 3 cm 放置精度（Release 容差 12.2 cm），对观测滞后敏感；Release 和铰链物体操作对机器人暂停敏感（200 ms 延迟使 π0.5 平均接近速度降低 34%）</li><li><strong>发现 3</strong>：异步执行在 200 ms 时将 π0.5 的 Release 成功率从 48.5% 恢复到 81.5%；50 ms 时连续异步使 Set-down 成功率从 51.5% 提升至 70.0%（甚至超过零延迟同步基线）</li><li><strong>发现 4</strong>：最优策略取决于任务和目标速度；如 π0.5 对初始位置鲁棒（Set-down 93.5%），而 GR00T N1.7 仅 56.0%</li><li>预测模型：跨任务和执行模式 RMS 误差 <strong>5.7%</strong>（π0.5），跨策略为 5.7–7.8%；少量校准数据下中位 RMS 误差 7.7%；中间执行时域（H=2/3/4）预测误差 2.8–3.3%</li><li>配置选择：使用 System A 的测量数据为 Systems B–D 预测最优配置，预测配置与实测最优配置全部匹配，预测误差 2.5–4.6%</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估覆盖五个维度（任务类型、目标速度、策略、执行模式、延迟），0–250 ms 延迟、200 rollout/配置</li><li><strong>发现 1</strong>：目标速度 0.1 m/s 时，100 ms 延迟使 Set-down 成功率从 71.5% 降至 40.5%（保留 57%），而 Grasping 仅从 86.5% 降至 74.0%（保留 86%）</li><li><strong>发现 2</strong>：Set-down 需要 3 cm 放置精度（Release 容差 12.2 cm），对观测滞后敏感；Release 和铰链物体操作对机器人暂停敏感（200 ms 延迟使 π0.5 平均接近速度降低 34%）</li><li><strong>发现 3</strong>：异步执行在 200 ms 时将 π0.5 的 Release 成功率从 48.5% 恢复到 81.5%；50 ms 时连续异步使 Set-down 成功率从 51.5% 提升至 70.0%（甚至超过零延迟同步基线）</li><li><strong>发现 4</strong>：最优策略取决于任务和目标速度；如 π0.5 对初始位置鲁棒（Set-down 93.5%），而 GR00T N1.7 仅 56.0%</li><li>预测模型：跨任务和执行模式 RMS 误差 <strong>5.7%</strong>（π0.5），跨策略为 5.7–7.8%；少量校准数据下中位 RMS 误差 7.7%；中间执行时域（H=2/3/4）预测误差 2.8–3.3%</li><li>配置选择：使用 System A 的测量数据为 Systems B–D 预测最优配置，预测配置与实测最优配置全部匹配，预测误差 2.5–4.6%</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.03163/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">FineCraft: Enhancing VLA Models for Fine-Grained Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.02777/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.03163/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FineCraft: Enhancing VLA Models for Fine-Grained Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.02777/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Beyond Policy Patches: Distilling RL Specialists into Vision-Language-Action Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

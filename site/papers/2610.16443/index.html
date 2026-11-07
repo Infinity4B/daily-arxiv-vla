@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>RAP-WAM: Learning World-Action Models through Predictive Rehearsal and Action Perturbations - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="提出 RAP-WAM 框架，通过预测排练（Predictive Rehearsal） 与动作扰动（Action Perturbations） 将视频生成先验适配到机器人控制策略学习。 解决核心问题：在未来观测与动作联合预测的世界动作模型中，未来预测应如何引导策略学习，即哪些视觉位置和未来动作步应获得额外训练强调。 引入以动作扰动引起的视频预测响应为核心信号，结合预测误差与排练先验，实现视觉监督与动作步监督的空间-时间信用分配。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2610.16443">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2610.16443.webp" alt="RAP-WAM: Learning World-Action Models through Predictive Rehearsal and Action Perturbations" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">提出 RAP-WAM 框架，通过预测排练（Predictive Rehearsal） 与动作扰动（Action Perturbations） 将视频生成先验适配到机器人控制策略学习。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">RAP-WAM: Learning World-Action Models through Predictive Rehearsal and Action Perturbations</h1>
-            <div class="detail-meta">2026-10-12 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.16443" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.16443" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2610.16443</span></div>
-            <p class="detail-summary">提出 RAP-WAM 框架，通过预测排练（Predictive Rehearsal） 与动作扰动（Action Perturbations） 将视频生成先验适配到机器人控制策略学习。 解决核心问题：在未来观测与动作联合预测的世界动作模型中，未来预测应如何引导策略学习，即哪些视觉位置和未来动作步应获得额外训练强调。 引入以动作扰动引起的视频预测响应为核心信号，结合预测误差与排练先验，实现视觉监督与动作步监督的空间-时间信用分配。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">北京大学（Peking University）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">提出 RAP-WAM 框架，通过预测排练（Predictive Rehearsal） 与动作扰动（Action Perturbations） 将视频生成先验适配到机器人控制策略学习。</p>
-  <ul class="reading-intro-points"><li>提出 RAP-WAM 框架，通过预测排练（Predictive Rehearsal） 与动作扰动（Action Perturbations） 将视频生成先验适配到机器人控制策略学习。</li><li>解决核心问题：在未来观测与动作联合预测的世界动作模型中，未来预测应如何引导策略学习，即哪些视觉位置和未来动作步应获得额外训练强调。</li><li>引入以动作扰动引起的视频预测响应为核心信号，结合预测误差与排练先验，实现视觉监督与动作步监督的空间-时间信用分配。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-10-12">2026-10-12</time></p>
+        <h1 class="article-title">RAP-WAM: Learning World-Action Models through Predictive Rehearsal and Action Perturbations</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2610.16443" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2610.16443" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 RAP-WAM 框架，通过预测排练（Predictive Rehearsal） 与动作扰动（Action Perturbations） 将视频生成先验适配到机器人控制策略学习。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2610.16443.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2610.16443.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2610.16443.webp" alt="RAP-WAM: Learning World-Action Models through Predictive Rehearsal and Action Perturbations 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">北京大学（Peking University）</p>
+        <ul class="article-facts"><li>arXiv 2610.16443</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>北京大学</strong>（Peking University）</li><li><strong>北京交通大学</strong>（Beijing Jiaotong University）</li><li><strong>澳门大学</strong>（University of Macau）</li><li><strong>PKU-PsiBot 联合实验室</strong>（PKU-PsiBot Joint Lab）</li><li>作者包括 <strong>Yuanpeng He</strong>、<strong>Ceyao Zhang</strong>、<strong>Fangjing Li</strong>、<strong>Kefei Zhu</strong>、<strong>Lijian Li</strong>、<strong>Yueheng Li</strong>、<strong>Tianjia He</strong>、<strong>Wenpin Jiao</strong>、<strong>Zhi Jin</strong>、<strong>Yaodong Yang</strong>、<strong>Yuanpei Chen</strong> 等</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>北京大学</strong>（Peking University）</li><li><strong>北京交通大学</strong>（Beijing Jiaotong University）</li><li><strong>澳门大学</strong>（University of Macau）</li><li><strong>PKU-PsiBot 联合实验室</strong>（PKU-PsiBot Joint Lab）</li><li>作者包括 <strong>Yuanpeng He</strong>、<strong>Ceyao Zhang</strong>、<strong>Fangjing Li</strong>、<strong>Kefei Zhu</strong>、<strong>Lijian Li</strong>、<strong>Yueheng Li</strong>、<strong>Tianjia He</strong>、<strong>Wenpin Jiao</strong>、<strong>Zhi Jin</strong>、<strong>Yaodong Yang</strong>、<strong>Yuanpei Chen</strong> 等</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>RAP-WAM</strong> 框架，通过<strong>预测排练（Predictive Rehearsal）</strong> 与<strong>动作扰动（Action Perturbations）</strong> 将视频生成先验适配到机器人控制策略学习。</li><li>解决核心问题：在未来观测与动作联合预测的世界动作模型中，未来预测应如何引导策略学习，即<strong>哪些视觉位置和未来动作步应获得额外训练强调</strong>。</li><li>引入以<strong>动作扰动引起的视频预测响应</strong>为核心信号，结合预测误差与排练先验，实现视觉监督与动作步监督的空间-时间信用分配。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>RAP-WAM</strong> 框架，通过<strong>预测排练（Predictive Rehearsal）</strong> 与<strong>动作扰动（Action Perturbations）</strong> 将视频生成先验适配到机器人控制策略学习。</li><li>解决核心问题：在未来观测与动作联合预测的世界动作模型中，未来预测应如何引导策略学习，即<strong>哪些视觉位置和未来动作步应获得额外训练强调</strong>。</li><li>引入以<strong>动作扰动引起的视频预测响应</strong>为核心信号，结合预测误差与排练先验，实现视觉监督与动作步监督的空间-时间信用分配。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>RAP-WAM</strong> 框架，通过<strong>未来监督的动作表示</strong>与<strong>预测排练</strong>适配视频先验；记录的帧塑造动作生成特征，排练使策略暴露于自身预测误差产生的观测。</li><li>设计<strong>动作响应驱动的时空信用机制</strong>：动作响应、当前预测误差和历史误差先验共同指导视觉监督，同时空间池化同一响应以分配未来动作步的监督强度。</li><li>将<strong>执行引导的后训练</strong>与<strong>任务特定策略保留</strong>整合，利用评估反馈优化示范采样并保留互补的任务专家，无需单独评分网络或部署时探测。</li><li>提供理论分析（附录 C），包括扰动响应的局部雅可比解释、信用重分配恒等式，以及"响应与预测误差不一定一致"的证明。</li><li>在 <strong>42 个 RoboDojo 任务</strong>与 <strong>15 个真实机器人任务</strong>上系统验证方法，并公开诊断协议与执行证据。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>RAP-WAM</strong> 框架，通过<strong>未来监督的动作表示</strong>与<strong>预测排练</strong>适配视频先验；记录的帧塑造动作生成特征，排练使策略暴露于自身预测误差产生的观测。</li><li>设计<strong>动作响应驱动的时空信用机制</strong>：动作响应、当前预测误差和历史误差先验共同指导视觉监督，同时空间池化同一响应以分配未来动作步的监督强度。</li><li>将<strong>执行引导的后训练</strong>与<strong>任务特定策略保留</strong>整合，利用评估反馈优化示范采样并保留互补的任务专家，无需单独评分网络或部署时探测。</li><li>提供理论分析（附录 C），包括扰动响应的局部雅可比解释、信用重分配恒等式，以及"响应与预测误差不一定一致"的证明。</li><li>在 <strong>42 个 RoboDojo 任务</strong>与 <strong>15 个真实机器人任务</strong>上系统验证方法，并公开诊断协议与执行证据。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>未来监督动作接口</strong>：在视频-动作预测器中附加 K=16 个可学习查询 token，通过余弦对齐损失将查询表示对齐到记录的<strong>未来视频潜变量</strong>，并设置方向性注意力掩码（禁止动作 token 直接读取视频 token key）。</li><li><strong>耦合动作投影（CAP）</strong>：将最终动作 token 特征通过紧凑 MLP 与时间调制头之和预测动作流匹配速度，零初始化新增分支避免初始扰动。</li><li><strong>预测排练</strong>：对相邻示范块，用无梯度生成的第一块未来视频/动作替换第二块初始观测（可选状态替换），保留记录目标进行监督；将重复出现的误差累积为空间先验 <strong>P</strong>（网格 14×14，衰减 ρ=0.9）。</li><li><strong>响应派生的时空信用</strong>：在同一噪声水平下对动作输入加扰动 δ∼N(0, τ²I)，计算响应 S 与误差 E，通过归一化组合得视觉损失权重 W=1+α_P·N(P)+α_S·N(S)+α_E·N(E)，并空间池化响应得到动作步权重 w_j。</li><li><strong>后训练与策略选择</strong>：智能体根据执行证据提出干预，回放策略由 50% 自然回放、20% 任务平衡、15% 失败边界、15% 后期进度窗口组成；按 SR/Score 评估保留任务专家，不平均策略参数。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>未来监督动作接口</strong>：在视频-动作预测器中附加 K=16 个可学习查询 token，通过余弦对齐损失将查询表示对齐到记录的<strong>未来视频潜变量</strong>，并设置方向性注意力掩码（禁止动作 token 直接读取视频 token key）。</li><li><strong>耦合动作投影（CAP）</strong>：将最终动作 token 特征通过紧凑 MLP 与时间调制头之和预测动作流匹配速度，零初始化新增分支避免初始扰动。</li><li><strong>预测排练</strong>：对相邻示范块，用无梯度生成的第一块未来视频/动作替换第二块初始观测（可选状态替换），保留记录目标进行监督；将重复出现的误差累积为空间先验 <strong>P</strong>（网格 14×14，衰减 ρ=0.9）。</li><li><strong>响应派生的时空信用</strong>：在同一噪声水平下对动作输入加扰动 δ∼N(0, τ²I)，计算响应 S 与误差 E，通过归一化组合得视觉损失权重 W=1+α_P·N(P)+α_S·N(S)+α_E·N(E)，并空间池化响应得到动作步权重 w_j。</li><li><strong>后训练与策略选择</strong>：智能体根据执行证据提出干预，回放策略由 50% 自然回放、20% 任务平衡、15% 失败边界、15% 后期进度窗口组成；按 SR/Score 评估保留任务专家，不平均策略参数。</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真评估基准：<strong>RoboDojo</strong>，共 <strong>42 个任务</strong>，覆盖 Generalization、Precision、Long-Horizon、Memory、Open 五类能力。</li><li>真实机器人评估：<strong>15 个真实机器人任务</strong>。</li><li>诊断分析：<strong>315 个固定输出仿真窗口</strong>（覆盖 35 个条件）。</li><li>基础模型：<strong>视频预训练骨干</strong>，不使用外部具身数据中间预训练（与多数对比方法不同）。</li><li>动作块长度 H_a=16，未来潜变量步数 T=4，每个时间系数对应 4 个连续动作。</li><li>训练超参数示例：τ=0.1，λ_z=0.5，λ_a=0.3，λ_q=0.1，p_P=0.5，λ_c=1。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>仿真评估基准：<strong>RoboDojo</strong>，共 <strong>42 个任务</strong>，覆盖 Generalization、Precision、Long-Horizon、Memory、Open 五类能力。</li><li>真实机器人评估：<strong>15 个真实机器人任务</strong>。</li><li>诊断分析：<strong>315 个固定输出仿真窗口</strong>（覆盖 35 个条件）。</li><li>基础模型：<strong>视频预训练骨干</strong>，不使用外部具身数据中间预训练（与多数对比方法不同）。</li><li>动作块长度 H_a=16，未来潜变量步数 T=4，每个时间系数对应 4 个连续动作。</li><li>训练超参数示例：τ=0.1，λ_z=0.5，λ_a=0.3，λ_q=0.1，p_P=0.5，λ_c=1。</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>RoboDojo 42 任务</strong>：RAP-WAM base 平均 SR <strong>12.85%</strong>、Score <strong>17.86</strong>；加入 refinement 后提升至 SR <strong>15.62%</strong>、Score <strong>20.59</strong>（分别提高 2.77 个百分点与 2.73 分）。</li><li><strong>能力分组增益</strong>：Precision 从 16.51%→21.03%，Memory 从 7.00%→9.33%，Generalization 从 7.50%→10.50%，Long-Horizon SR 从 32.50%→<strong>36.50%</strong>（Score 45.12→<strong>48.43</strong>）。</li><li><strong>真实机器人</strong>：15 个任务上完整系统达到 <strong>89.00%</strong> 任务宏平均成功率，<strong>超过最强基线 37.67 个百分点</strong>。</li><li><strong>信用信号诊断</strong>：315 个窗口中 <strong>45.21%</strong> 的 response-top20 位置落在 error-top20 之外，说明动作响应提供了预测误差之外的信息；归一化系数重分配中位数份额 P 为 5.47%、S 为 2.22%、0.5E 为 1.14%。</li><li><strong>局限</strong>：Open 任务成功率仍为 0.75%，random-Generalization 仍为 0，表明场景迁移鲁棒性尚未解决。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>RoboDojo 42 任务</strong>：RAP-WAM base 平均 SR <strong>12.85%</strong>、Score <strong>17.86</strong>；加入 refinement 后提升至 SR <strong>15.62%</strong>、Score <strong>20.59</strong>（分别提高 2.77 个百分点与 2.73 分）。</li><li><strong>能力分组增益</strong>：Precision 从 16.51%→21.03%，Memory 从 7.00%→9.33%，Generalization 从 7.50%→10.50%，Long-Horizon SR 从 32.50%→<strong>36.50%</strong>（Score 45.12→<strong>48.43</strong>）。</li><li><strong>真实机器人</strong>：15 个任务上完整系统达到 <strong>89.00%</strong> 任务宏平均成功率，<strong>超过最强基线 37.67 个百分点</strong>。</li><li><strong>信用信号诊断</strong>：315 个窗口中 <strong>45.21%</strong> 的 response-top20 位置落在 error-top20 之外，说明动作响应提供了预测误差之外的信息；归一化系数重分配中位数份额 P 为 5.47%、S 为 2.22%、0.5E 为 1.14%。</li><li><strong>局限</strong>：Open 任务成功率仍为 0.75%，random-Generalization 仍为 0，表明场景迁移鲁棒性尚未解决。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2610.16517/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Trust-Calibrated VLA Policy Post-Training with Evolving Imagination</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2610.16313/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Listen Before Act: Audio-Conditioned Robot Manipulation with ListenVLA</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2610.16517/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Trust-Calibrated VLA Policy Post-Training with Evolving Imagination</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2610.16313/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Listen Before Act: Audio-Conditioned Robot Manipulation with ListenVLA</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Future Representation Distillation for Imagination-Free World Action Models - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出 DreamFree，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测 解决现有 WAM 中迭代视频去噪成本高、视觉预测误差会影响动作预测的问题 核心假设是：预测性知识可以被压缩到当前观测的视觉表示中，从而在单次前向传播中支持动作预测" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.04527">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.04527.webp" alt="Future Representation Distillation for Imagination-Free World Action Models" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出 DreamFree，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Future Representation Distillation for Imagination-Free World Action Models</h1>
-            <div class="detail-meta">2026-11-03 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.04527" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.04527" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.04527</span></div>
-            <p class="detail-summary">论文提出 DreamFree，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测 解决现有 WAM 中迭代视频去噪成本高、视觉预测误差会影响动作预测的问题 核心假设是：预测性知识可以被压缩到当前观测的视觉表示中，从而在单次前向传播中支持动作预测</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">6 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">作者均来自 KAIST（韩国科学技术院）</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出 DreamFree，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测</p>
-  <ul class="reading-intro-points"><li>论文提出 DreamFree，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测</li><li>解决现有 WAM 中迭代视频去噪成本高、视觉预测误差会影响动作预测的问题</li><li>核心假设是：预测性知识可以被压缩到当前观测的视觉表示中，从而在单次前向传播中支持动作预测</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-03">2026-11-03</time></p>
+        <h1 class="article-title">Future Representation Distillation for Imagination-Free World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.04527" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.04527" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 DreamFree，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.04527.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.04527.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.04527.webp" alt="Future Representation Distillation for Imagination-Free World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者均来自 KAIST（韩国科学技术院）</p>
+        <ul class="article-facts"><li>arXiv 2611.04527</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者均来自 <strong>KAIST</strong>（韩国科学技术院）</li><li>标注了共同第一作者（Jaehyeong Jo 和 Sangwon Jang）与共同指导作者（Kimin Lee 和 Sung Ju Hwang）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li>作者均来自 <strong>KAIST</strong>（韩国科学技术院）</li><li>标注了共同第一作者（Jaehyeong Jo 和 Sangwon Jang）与共同指导作者（Kimin Lee 和 Sung Ju Hwang）</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>DreamFree</strong>，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测</li><li>解决现有 WAM 中迭代视频去噪成本高、视觉预测误差会影响动作预测的问题</li><li>核心假设是：预测性知识可以被压缩到当前观测的视觉表示中，从而在单次前向传播中支持动作预测</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出 <strong>DreamFree</strong>，一种“无想象”的世界动作模型（WAM），通过表示蒸馏从预训练视频扩散模型中提取预测性知识，无需生成未来视频即可进行动作预测</li><li>解决现有 WAM 中迭代视频去噪成本高、视觉预测误差会影响动作预测的问题</li><li>核心假设是：预测性知识可以被压缩到当前观测的视觉表示中，从而在单次前向传播中支持动作预测</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>未来表示蒸馏</strong>（Future Representation Distillation）方法，将冻结的视频扩散模型作为教师，训练视觉编码器仅从当前观测预测未来视频表示</li><li>在 <strong>LIBERO</strong>、<strong>RoboCasa-Kitchen</strong> 和真实世界 <strong>DROID</strong> 操作任务上，<strong>DreamFree</strong> 超越现有 VLA 和 WAM 基线，同时在 14B 视频骨干上实现 11Hz 的实时闭环控制</li><li>证明 <strong>DreamFree</strong> 能有效利用更大的视频骨干和额外的无动作标注视频数据提升机器人控制性能</li><li>展示从视频演示（包括不同实施例的视频）中学习新任务，无需对应动作标注，实现任务迁移</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出 <strong>未来表示蒸馏</strong>（Future Representation Distillation）方法，将冻结的视频扩散模型作为教师，训练视觉编码器仅从当前观测预测未来视频表示</li><li>在 <strong>LIBERO</strong>、<strong>RoboCasa-Kitchen</strong> 和真实世界 <strong>DROID</strong> 操作任务上，<strong>DreamFree</strong> 超越现有 VLA 和 WAM 基线，同时在 14B 视频骨干上实现 11Hz 的实时闭环控制</li><li>证明 <strong>DreamFree</strong> 能有效利用更大的视频骨干和额外的无动作标注视频数据提升机器人控制性能</li><li>展示从视频演示（包括不同实施例的视频）中学习新任务，无需对应动作标注，实现任务迁移</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>两阶段训练</strong>：第一阶段训练预测性视觉编码器，第二阶段训练动作模块</li><li><strong>预测性视觉编码器</strong>：以 Wan2.2 视频扩散模型为骨干，通过结构化注意力掩码限制当前帧 token 仅关注自身，并结合生成目标（flow matching）与蒸馏目标进行训练</li><li><strong>未来表示蒸馏</strong>：使用轻量级 Transformer 投影器将编码器当前帧表示对齐到冻结视频扩散模型的全视频表示（受 REPA 启发）</li><li><strong>动作模块</strong>：包含基于 Perceiver 的读出模块（提取动作相关 token）和 1B 参数的动作解码器（DiT），通过 flow matching 目标训练</li><li><strong>推理阶段</strong>：仅需一次视觉编码器前向传播和少量动作去噪步骤，无需迭代视频去噪</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>两阶段训练</strong>：第一阶段训练预测性视觉编码器，第二阶段训练动作模块</li><li><strong>预测性视觉编码器</strong>：以 Wan2.2 视频扩散模型为骨干，通过结构化注意力掩码限制当前帧 token 仅关注自身，并结合生成目标（flow matching）与蒸馏目标进行训练</li><li><strong>未来表示蒸馏</strong>：使用轻量级 Transformer 投影器将编码器当前帧表示对齐到冻结视频扩散模型的全视频表示（受 REPA 启发）</li><li><strong>动作模块</strong>：包含基于 Perceiver 的读出模块（提取动作相关 token）和 1B 参数的动作解码器（DiT），通过 flow matching 目标训练</li><li><strong>推理阶段</strong>：仅需一次视觉编码器前向传播和少量动作去噪步骤，无需迭代视频去噪</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：LIBERO（四个任务套件）、RoboCasa-Kitchen（24 个任务，每任务 50 个演示）</li><li><strong>真实世界基准</strong>：DROID（10 个任务，5 次 rollout/任务）、YAM 双臂操作（基于 ABC-130k 的 100 小时子集）</li><li><strong>视频迁移实验</strong>：RoboCasa365、RoboTwin（ALOHA-AgileX 目标机器人，Franka Panda 作为不同实施例源）</li><li><strong>模型规模</strong>：视频骨干采用 <strong>Wan2.2-5B</strong> 和 <strong>Wan2.2-A14B</strong>，动作解码器为 <strong>1B DiT</strong>，动作视野设为 32</li><li><strong>训练与推理资源</strong>：使用 <strong>NVIDIA H200 GPU</strong>；视频任务微调约需 10 分钟/任务（单 H200）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>仿真基准</strong>：LIBERO（四个任务套件）、RoboCasa-Kitchen（24 个任务，每任务 50 个演示）</li><li><strong>真实世界基准</strong>：DROID（10 个任务，5 次 rollout/任务）、YAM 双臂操作（基于 ABC-130k 的 100 小时子集）</li><li><strong>视频迁移实验</strong>：RoboCasa365、RoboTwin（ALOHA-AgileX 目标机器人，Franka Panda 作为不同实施例源）</li><li><strong>模型规模</strong>：视频骨干采用 <strong>Wan2.2-5B</strong> 和 <strong>Wan2.2-A14B</strong>，动作解码器为 <strong>1B DiT</strong>，动作视野设为 32</li><li><strong>训练与推理资源</strong>：使用 <strong>NVIDIA H200 GPU</strong>；视频任务微调约需 10 分钟/任务（单 H200）</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：平均成功率 <strong>98.6%</strong>，与最强基线相当（无需跨实施例预训练）</li><li><strong>RoboCasa-Kitchen</strong>：14B 视频骨干达到 <strong>71.7%</strong> 平均成功率，超过所有 VLA 和 WAM 基线；从 5B 扩展到 14B 带来 13.2 个百分点提升</li><li><strong>真实世界 DROID</strong>：平均成功率 <strong>64%</strong>（DreamZero 56%，π0.5 16%），平均任务进度 <strong>83%</strong>；在可变形物体和连续重排任务上优势显著</li><li><strong>效率</strong>：实现每动作块 <strong>11Hz</strong> 实时控制，比 DreamZero 推理快 <strong>17.8 倍</strong>，延迟约为 π0.5 的 1.1 倍</li><li><strong>任务迁移</strong>：从无动作标注视频学习复合任务，平均成功率从 0% 提升至 <strong>21.7%</strong>（同实施例）和 <strong>30%</strong>（跨实施例）；视频微调编码器后可进一步提升</li><li><strong>消融实验</strong>：移除蒸馏目标导致 LIBERO 成功率下降 4.0 个百分点、RoboCasa 下降 24.5 个百分点；移除生成目标也导致明显下降，证明两者均重要</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>LIBERO</strong>：平均成功率 <strong>98.6%</strong>，与最强基线相当（无需跨实施例预训练）</li><li><strong>RoboCasa-Kitchen</strong>：14B 视频骨干达到 <strong>71.7%</strong> 平均成功率，超过所有 VLA 和 WAM 基线；从 5B 扩展到 14B 带来 13.2 个百分点提升</li><li><strong>真实世界 DROID</strong>：平均成功率 <strong>64%</strong>（DreamZero 56%，π0.5 16%），平均任务进度 <strong>83%</strong>；在可变形物体和连续重排任务上优势显著</li><li><strong>效率</strong>：实现每动作块 <strong>11Hz</strong> 实时控制，比 DreamZero 推理快 <strong>17.8 倍</strong>，延迟约为 π0.5 的 1.1 倍</li><li><strong>任务迁移</strong>：从无动作标注视频学习复合任务，平均成功率从 0% 提升至 <strong>21.7%</strong>（同实施例）和 <strong>30%</strong>（跨实施例）；视频微调编码器后可进一步提升</li><li><strong>消融实验</strong>：移除蒸馏目标导致 LIBERO 成功率下降 4.0 个百分点、RoboCasa 下降 24.5 个百分点；移除生成目标也导致明显下降，证明两者均重要</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.04711/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Cycle WAM: Coupling Action and Video through Cycle Consistency</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.04522/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Action Intent as a Bridge: Transferring Manipulation Knowledge from Human-Centric Videos to Robots</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.04711/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Cycle WAM: Coupling Action and Video through Cycle Consistency</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.04522/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Action Intent as a Bridge: Transferring Manipulation Knowledge from Human-Centric Videos to Robots</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

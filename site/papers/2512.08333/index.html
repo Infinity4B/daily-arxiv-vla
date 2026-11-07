@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Robust Finetuning of Vision-Language-Action Robot Policies via Parameter Merging - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="提出一种通过模型参数合并实现鲁棒微调的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的过拟合问题。 目标是使微调后的单一策略既能稳健地学习新技能（泛化到未见过的任务变体），又能保留预训练模型广泛的通用能力。 该方法旨在弥合通用策略（大规模预训练）与有效适应新特定任务之间的差距，尤其是在数据有限（约100个演示）的情况下。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2512.08333">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,79 +57,48 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2512.08333.webp" alt="Robust Finetuning of Vision-Language-Action Robot Policies via Parameter Merging" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">提出一种通过模型参数合并实现鲁棒微调的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的过拟合问题。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">Robust Finetuning of Vision-Language-Action Robot Policies via Parameter Merging</h1>
-            <div class="detail-meta">2025-12-09 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2512.08333" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2512.08333" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2512.08333</span></div>
-            <p class="detail-summary">提出一种通过模型参数合并实现鲁棒微调的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的过拟合问题。 目标是使微调后的单一策略既能稳健地学习新技能（泛化到未见过的任务变体），又能保留预训练模型广泛的通用能力。 该方法旨在弥合通用策略（大规模预训练）与有效适应新特定任务之间的差距，尤其是在数据有限（约100个演示）的情况下。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">UC Berkeley (加州大学伯克利分校)</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">提出一种通过模型参数合并实现鲁棒微调的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的过拟合问题。</p>
-  <ul class="reading-intro-points"><li>提出一种通过模型参数合并实现鲁棒微调的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的过拟合问题。</li><li>目标是使微调后的单一策略既能稳健地学习新技能（泛化到未见过的任务变体），又能保留预训练模型广泛的通用能力。</li><li>该方法旨在弥合通用策略（大规模预训练）与有效适应新特定任务之间的差距，尤其是在数据有限（约100个演示）的情况下。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2025-12-09">2025-12-09</time></p>
+        <h1 class="article-title">Robust Finetuning of Vision-Language-Action Robot Policies via Parameter Merging</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2512.08333" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2512.08333" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出一种通过模型参数合并实现鲁棒微调的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的过拟合问题。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2512.08333.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2512.08333.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2512.08333.webp" alt="Robust Finetuning of Vision-Language-Action Robot Policies via Parameter Merging 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">UC Berkeley (加州大学伯克利分校)</p>
+        <ul class="article-facts"><li>arXiv 2512.08333</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>UC Berkeley</strong> (加州大学伯克利分校)</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>UC Berkeley</strong> (加州大学伯克利分校)</li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出一种通过<strong>模型参数合并</strong>实现<strong>鲁棒微调</strong>的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的<strong>过拟合</strong>问题。</li><li>目标是使微调后的单一策略既能<strong>稳健地学习新技能</strong>（泛化到未见过的任务变体），又能<strong>保留预训练模型广泛的通用能力</strong>。</li><li>该方法旨在弥合通用策略（大规模预训练）与有效适应新特定任务之间的差距，尤其是在<strong>数据有限</strong>（约100个演示）的情况下。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>提出一种通过<strong>模型参数合并</strong>实现<strong>鲁棒微调</strong>的简单方法，用于解决通用机器人策略在有限新任务数据上微调时的<strong>过拟合</strong>问题。</li><li>目标是使微调后的单一策略既能<strong>稳健地学习新技能</strong>（泛化到未见过的任务变体），又能<strong>保留预训练模型广泛的通用能力</strong>。</li><li>该方法旨在弥合通用策略（大规模预训练）与有效适应新特定任务之间的差距，尤其是在<strong>数据有限</strong>（约100个演示）的情况下。</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出了 <strong>RETAIN</strong> (<strong>R</strong>obust fin<strong>E</strong>-tuning wi<strong>T</strong>h p<strong>A</strong>rameter merg<strong>IN</strong>g) 方法，一种简单的策略微调方法，通过在<strong>权重空间</strong>内插值预训练和微调后的模型参数，生成鲁棒性更强的单一策略。</li><li>在广泛的<strong>真实世界（DROID）和仿真（LIBERO）机器人微调任务</strong>中进行了全面评估，证明了 RETAIN 在新任务上具有<strong>更好的分布外（OOD）泛化能力</strong>，同时<strong>保留了通用技能</strong>，显著优于现有基线方法。</li><li>分析了影响模型合并有效性的关键因素，发现：<strong>性能随预训练数据量的增加而提升</strong>；在多模态模型中，<strong>仅合并语言模型主干参数通常就足够</strong>。</li><li>展示了 RETAIN 能够实现<strong>新技能的持续顺序学习</strong>（持续学习），通过迭代合并，将多个技能融入单一策略而不遗忘之前的能力。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>提出了 <strong>RETAIN</strong> (<strong>R</strong>obust fin<strong>E</strong>-tuning wi<strong>T</strong>h p<strong>A</strong>rameter merg<strong>IN</strong>g) 方法，一种简单的策略微调方法，通过在<strong>权重空间</strong>内插值预训练和微调后的模型参数，生成鲁棒性更强的单一策略。</li><li>在广泛的<strong>真实世界（DROID）和仿真（LIBERO）机器人微调任务</strong>中进行了全面评估，证明了 RETAIN 在新任务上具有<strong>更好的分布外（OOD）泛化能力</strong>，同时<strong>保留了通用技能</strong>，显著优于现有基线方法。</li><li>分析了影响模型合并有效性的关键因素，发现：<strong>性能随预训练数据量的增加而提升</strong>；在多模态模型中，<strong>仅合并语言模型主干参数通常就足够</strong>。</li><li>展示了 RETAIN 能够实现<strong>新技能的持续顺序学习</strong>（持续学习），通过迭代合并，将多个技能融入单一策略而不遗忘之前的能力。</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>核心技术：<strong>模型权重插值/合并</strong>。将预训练策略权重 <code>θ_pre</code> 与目标任务微调后的权重 <code>θ_ft</code> 进行线性插值，得到最终策略权重 <code>θ̃ = (1 - α) * θ_pre + α * θ_ft</code>，其中 <code>α</code> 为可调合并系数。</li><li>两个关键改进：<strong>1. 协同微调</strong>：在微调阶段混合使用目标数据和预训练数据，以更好地保留通用性。<strong>2. 模态特定合并</strong>：为视觉-语言-动作（VLA）模型的不同组件（视觉编码器、语言模型主干、动作专家模块）使用不同的合并系数 <code>(α_v, α_l, α_a)</code>。</li><li>持续任务适应：通过迭代式合并，将顺序学习的多个任务技能累积到同一个策略中：<code>θ̃_n = (1 - α) * θ̃_{n-1} + α * θ_ft,n</code>。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>核心技术：<strong>模型权重插值/合并</strong>。将预训练策略权重 <code>θ_pre</code> 与目标任务微调后的权重 <code>θ_ft</code> 进行线性插值，得到最终策略权重 <code>θ̃ = (1 - α) * θ_pre + α * θ_ft</code>，其中 <code>α</code> 为可调合并系数。</li><li>两个关键改进：<strong>1. 协同微调</strong>：在微调阶段混合使用目标数据和预训练数据，以更好地保留通用性。<strong>2. 模态特定合并</strong>：为视觉-语言-动作（VLA）模型的不同组件（视觉编码器、语言模型主干、动作专家模块）使用不同的合并系数 <code>(α_v, α_l, α_a)</code>。</li><li>持续任务适应：通过迭代式合并，将顺序学习的多个任务技能累积到同一个策略中：<code>θ̃_n = (1 - α) * θ̃_{n-1} + α * θ_ft,n</code>。</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>使用的预训练数据集：</li></ul>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用的预训练数据集：</li></ul>
 <p> - <strong>DROID</strong>：大规模真实世界机器人操作数据集。实验中使用的预训练策略 <strong>π₀-FAST-DROID</strong> 使用了该数据集及来自 <strong>Physical Intelligence (PI)</strong> 的额外数据（约76k个轨迹）。</p>
 <p> - <strong>LIBERO</strong>：多任务机器人操作模拟基准套件。实验中使用的预训练策略是在 <strong>LIBERO-{object, spatial, goal, 90}</strong> 数据集（约5.3k个轨迹，117个任务）上微调过的 <strong>π₀</strong> 模型。</p>
 <ul><li>微调数据集：</li></ul>
@@ -140,13 +106,9 @@
 <p> - <strong>LIBERO 任务</strong>：<code>pot-on-stove</code>、<code>mugs-on-plates</code>、<code>items-into-basket</code>（每个任务约45个演示）。</p>
 <ul><li>模型规模和训练资源未在提供的片段中明确说明，但引用了大型通用策略（如 <strong>π₀</strong>、<strong>π₀-FAST-DROID</strong>），这些模型通常基于大型视觉语言模型主干构建，并在大规模GPU集群上进行训练。</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估环境：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：</li></ul>
 <p> - <strong>真实世界</strong>：DROID机器人设置（Franka机械臂）。</p>
 <p> - <strong>仿真环境</strong>：LIBERO模拟器。</p>
 <ul><li>评估指标：<strong>任务成功率</strong>。在三种设置下进行评估：</li></ul>
@@ -157,27 +119,27 @@
 <p> - <strong>更强的 OOD 泛化</strong>：RETAIN-co-FT 在 DROID 和 LIBERO 的 OOD 评估中显著优于所有基线方法（如 Task-FT, Co-FT, LoRA, Freeze-FT, Scratch）。在 DROID 的 <code>whiteboard</code> 任务上，OOD 成功率接近其 ID 成功率（约80%）。</p>
 <p> - <strong>保留通用能力</strong>：RETAIN 在通用任务评估上的表现与预训练模型相当或更好，表明其成功保留了预训练模型的通用能力。</p>
 <p> - <strong>性能与预训练数据规模正相关</strong>：使用更多、更多样化预训练数据的基模型进行合并，带来的 OOD 性能提升更大。</p>
-<p> - <strong>模态特定合并的洞见</strong>：在多模态合并中，<strong>语言模型主干参数的合并系数 <code>α_l</code> 对性能影响最大</strong>，且实验表明仅合并语言模型参数（<code>α_a = α_v = 1, α_l < 1</code>）即可达到与合并所有参数相似的效果。</p>
+<p> - <strong>模态特定合并的洞见</strong>：在多模态合并中，<strong>语言模型主干参数的合并系数 <code>α_l</code> 对性能影响最大</strong>，且实验表明仅合并语言模型参数（<code>α_a = α_v = 1, α_l &lt; 1</code>）即可达到与合并所有参数相似的效果。</p>
 <p> - <strong>支持持续学习</strong>：在顺序学习两个 DROID 任务后，RETAIN 在测试两个任务时，其 ID 和 OOD 性能均优于基线方法，展现了优秀的技能累积和保留能力。</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2512.08580/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Mind to Hand: Purposeful Robotic Control via Embodied Reasoning</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2512.07582/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">See Once, Then Act: Vision-Language-Action Model with Task Learning from One-Shot Video Demonstrations</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2512.08580/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Mind to Hand: Purposeful Robotic Control via Embodied Reasoning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2512.07582/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">See Once, Then Act: Vision-Language-Action Model with Task Learning from One-Shot Video Demonstrations</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

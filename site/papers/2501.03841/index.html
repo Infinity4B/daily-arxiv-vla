@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>OmniManip: Towards General Robotic Manipulation via Object-Centric Interaction Primitives as Spatial Constraints - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2501.03841">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,111 +57,76 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2501.03841.webp" alt="OmniManip: Towards General Robotic Manipulation via Object-Centric Interaction Primitives as Spatial Constraints" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">OmniManip: Towards General Robotic Manipulation via Object-Centric Interaction Primitives as Spatial Constraints</h1>
-            <div class="detail-meta">2025-01-07 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2501.03841" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2501.03841" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2501.03841</span></div>
-            <p class="detail-summary">该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">6 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">CFCS, School of CS, Peking University;</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</p>
-  <ul class="reading-intro-points"><li>该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</li><li>提出了一种新颖的以物体为中心的交互表示，有效桥接了VLM的高层常识推理与底层机器人操控之间的鸿沟。</li><li>首次提出了一个规划和执行双闭环的开放词汇操控系统，且整个过程无需对VLM进行微调。</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2025-01-07">2025-01-07</time></p>
+        <h1 class="article-title">OmniManip: Towards General Robotic Manipulation via Object-Centric Interaction Primitives as Spatial Constraints</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2501.03841" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2501.03841" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2501.03841.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2501.03841.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2501.03841.webp" alt="OmniManip: Towards General Robotic Manipulation via Object-Centric Interaction Primitives as Spatial Constraints 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">CFCS, School of CS, Peking University;</p>
+        <ul class="article-facts"><li>arXiv 2501.03841</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><p>CFCS, School of CS, Peking University; PKU-AgiBot Lab; AgiBot</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><p>CFCS, School of CS, Peking University; PKU-AgiBot Lab; AgiBot</p></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><p>该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><p>该论文提出了一种名为OmniManip的通用机器人操作系统，旨在解决非结构化环境下的机器人操控难题。现有视觉语言模型（VLM）虽擅长高层推理，但缺乏精细操控所需的细粒度3D空间理解能力，而将VLM微调为视觉-语言-动作模型（VLA）又面临数据成本高和泛化性差的问题。为应对这些挑战，论文提出了一种新颖的、以物体为中心的表示方法，通过将交互原语（点和方向）定义在物体的标准空间中，作为空间约束来桥接VLM的高层推理与底层操控。系统设计为一个双闭环架构：一个用于高层规划，通过原语重采样、交互渲染和VLM检查实现闭环；另一个用于底层执行，通过6D姿态跟踪实现闭环，从而在无需微调VLM的情况下实现鲁棒、实时的控制。</p></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ol><li>提出了一种新颖的以物体为中心的交互表示，有效桥接了VLM的高层常识推理与底层机器人操控之间的鸿沟。</li><li>首次提出了一个规划和执行双闭环的开放词汇操控系统，且整个过程无需对VLM进行微调。</li><li>通过大量实验证明了该方法在多样化操控任务上具有强大的零样本泛化能力，并展示了其在自动化大规模仿真数据生成方面的潜力。</li></ol></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ol><li>提出了一种新颖的以物体为中心的交互表示，有效桥接了VLM的高层常识推理与底层机器人操控之间的鸿沟。</li><li>首次提出了一个规划和执行双闭环的开放词汇操控系统，且整个过程无需对VLM进行微调。</li><li>通过大量实验证明了该方法在多样化操控任务上具有强大的零样本泛化能力，并展示了其在自动化大规模仿真数据生成方面的潜力。</li></ol></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><p>该方法将复杂的机器人任务分解为多个阶段，每个阶段由带有空间约束的物体交互原语来定义。</p>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><p>该方法将复杂的机器人任务分解为多个阶段，每个阶段由带有空间约束的物体交互原语来定义。</p>
 <ol><li><strong>任务分解与原语定义</strong>：利用视觉基础模型（VFM）和VLM从指令中识别相关物体并分解任务。交互原语被定义为物体标准空间中的交互点和交互方向。空间约束则定义了主动物体与被动物体之间交互原语的距离和角度关系。</li><li><strong>原语与约束提取</strong>：首先使用单视图3D生成网络和通用6D物体姿态估计模型对物体进行网格重建和标准化。然后，通过VLM结合视觉提示定位交互点（包括可见和不可见的点），并通过LLM对沿主轴采样的交互方向进行任务相关性评分，生成一个有序的、带有约束的交互原语列表。</li><li><strong>双闭环系统</strong>：</li></ol>
 <p> - <strong>闭环规划</strong>：引入了一个基于重采样、渲染和检查的自校正机制（RRC）。系统渲染当前交互配置，交由VLM验证。根据验证结果（成功、失败或需优化），系统决定接受、尝试下一个约束或进入细化阶段进行更精细的重采样，从而有效缓解VLM的幻觉问题。</p>
 <p> - <strong>闭环执行</strong>：当空间约束确定后，任务执行被表述为一个优化问题，目标是在满足空间约束、碰撞避免和路径平滑等损失函数的条件下，计算最优的末端执行器目标姿态。通过6D姿态跟踪器实时更新姿态，形成执行闭环。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><p>该方法不依赖于特定任务的训练数据集，采用零样本学习方式。它利用了多种预训练模型作为组件，包括：</p>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><p>该方法不依赖于特定任务的训练数据集，采用零样本学习方式。它利用了多种预训练模型作为组件，包括：</p>
 <ul><li>视觉语言模型（VLM）和大型语言模型（LLM）用于高层推理和验证。</li><li>Omni6DPose用于通用6D物体姿态估计。</li><li>单视图3D生成网络用于从单张图像生成物体网格。</li></ul>
 <p>实验中使用的机器人硬件包括Franka Emika和Kinova Gen3机械臂，以及各种日常物体。</p></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估环境</strong>：在真实世界的实验平台上进行评估，使用了Franka Emika和Kinova Gen3两种机械臂，并包含了12种不同的日常操作任务，涵盖了刚体物体操控（如倒茶、插花）和铰接物体操控（如开关抽屉）。</li><li><strong>评估指标</strong>：主要采用任务成功率作为核心量化指标。对于每个任务，记录在多次尝试中成功完成的次数，并计算总体的平均成功率。例如，在12项任务上，OmniManip的闭环版本总成功率为68.3%，显著优于其他基线方法。</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2501.05014/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">UAV-VLA: Vision-Language-Action System for Large Scale Aerial Mission Generation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2501.03565/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Bridged Semantic Alignment for Zero-shot 3D Medical Image Diagnosis</span></a></nav>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：在真实世界的实验平台上进行评估，使用了Franka Emika和Kinova Gen3两种机械臂，并包含了12种不同的日常操作任务，涵盖了刚体物体操控（如倒茶、插花）和铰接物体操控（如开关抽屉）。</li><li><strong>评估指标</strong>：主要采用任务成功率作为核心量化指标。对于每个任务，记录在多次尝试中成功完成的次数，并计算总体的平均成功率。例如，在12项任务上，OmniManip的闭环版本总成功率为68.3%，显著优于其他基线方法。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2501.05014/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">UAV-VLA: Vision-Language-Action System for Large Scale Aerial Mission Generation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2501.03565/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Bridged Semantic Alignment for Zero-shot 3D Medical Image Diagnosis</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>A DVDrive Approach for doScenes Instructed Driving Challenge - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="本论文是MIC Lab提交至doScenes Instructed Driving Challenge的方案，核心解决指令条件自车轨迹预测问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹 研究目标是通过改进多视角视觉-语言对齐与长时空间推理能力，降低长时轨迹预测的歧义性，提升预测精度 最终方案在挑战赛隐藏测试集Full Multimodal赛道中获得排名第一" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2606.21623">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,108 +57,73 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2606.21623.webp" alt="A DVDrive Approach for doScenes Instructed Driving Challenge" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">本论文是MIC Lab提交至doScenes Instructed Driving Challenge的方案，核心解决指令条件自车轨迹预测问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">A DVDrive Approach for doScenes Instructed Driving Challenge</h1>
-            <div class="detail-meta">2026-06-19 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2606.21623" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2606.21623" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2606.21623</span></div>
-            <p class="detail-summary">本论文是MIC Lab提交至doScenes Instructed Driving Challenge的方案，核心解决指令条件自车轨迹预测问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹 研究目标是通过改进多视角视觉-语言对齐与长时空间推理能力，降低长时轨迹预测的歧义性，提升预测精度 最终方案在挑战赛隐藏测试集Full Multimodal赛道中获得排名第一</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">7 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">论文作者所属团队为MIC Lab</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">本论文是MIC Lab提交至doScenes Instructed Driving Challenge的方案，核心解决指令条件自车轨迹预测问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹</p>
-  <ul class="reading-intro-points"><li>本论文是MIC Lab提交至doScenes Instructed Driving Challenge的方案，核心解决指令条件自车轨迹预测问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹</li><li>研究目标是通过改进多视角视觉-语言对齐与长时空间推理能力，降低长时轨迹预测的歧义性，提升预测精度</li><li>最终方案在挑战赛隐藏测试集Full Multimodal赛道中获得排名第一</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-06-19">2026-06-19</time></p>
+        <h1 class="article-title">A DVDrive Approach for doScenes Instructed Driving Challenge</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2606.21623" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2606.21623" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">本论文是MIC Lab提交至doScenes Instructed Driving Challenge的方案，核心解决指令条件自车轨迹预测问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2606.21623.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2606.21623.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2606.21623.webp" alt="A DVDrive Approach for doScenes Instructed Driving Challenge 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者所属团队为MIC Lab</p>
+        <ul class="article-facts"><li>arXiv 2606.21623</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者所属团队为<strong>MIC Lab</strong></li><li>第一作者 Zijian Fu 所属机构为<strong>北京邮电大学</strong>，曾在<strong>小米汽车（Xiaomi EV）</strong>实习</li><li>作者 Xiangyang Chu、Guanghao Zhang、Wei Li 所属机构为<strong>小米汽车（Xiaomi EV）</strong></li><li>作者 Mengshi Qi、Huadong Ma 所属机构为<strong>北京邮电大学</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li>论文作者所属团队为<strong>MIC Lab</strong></li><li>第一作者 Zijian Fu 所属机构为<strong>北京邮电大学</strong>，曾在<strong>小米汽车（Xiaomi EV）</strong>实习</li><li>作者 Xiangyang Chu、Guanghao Zhang、Wei Li 所属机构为<strong>小米汽车（Xiaomi EV）</strong></li><li>作者 Mengshi Qi、Huadong Ma 所属机构为<strong>北京邮电大学</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>本论文是MIC Lab提交至<strong>doScenes Instructed Driving Challenge</strong>的方案，核心解决<strong>指令条件自车轨迹预测</strong>问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹</li><li>研究目标是通过改进多视角视觉-语言对齐与长时空间推理能力，降低长时轨迹预测的歧义性，提升预测精度</li><li>最终方案在挑战赛隐藏测试集Full Multimodal赛道中获得排名第一</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>本论文是MIC Lab提交至<strong>doScenes Instructed Driving Challenge</strong>的方案，核心解决<strong>指令条件自车轨迹预测</strong>问题：需结合多视角视觉场景、历史运动信息与自然语言驾驶指令，预测未来6秒的自车轨迹</li><li>研究目标是通过改进多视角视觉-语言对齐与长时空间推理能力，降低长时轨迹预测的歧义性，提升预测精度</li><li>最终方案在挑战赛隐藏测试集Full Multimodal赛道中获得排名第一</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将<strong>OmniDrive</strong>视觉-语言-动作驾驶框架适配到doScenes指令驾驶场景，将原3秒轨迹监督窗口扩展至6秒，微调阶段随机采样场景关联的自然语言导航指令作为条件，实现语言意图与长时轨迹生成的对齐</li><li>提出<strong>DVDrive（分视角多视角感知模块）</strong>，受DVPE启发，将全局3D感知空间拆分为多个局部虚拟视角，仅让查询特征与同一局部视角内的视觉token交互，减少无关跨视角干扰</li><li>DVDrive模块支持局部视角内的可见性感知交叉注意力与时序记忆建模，强化了细粒度局部空间推理能力，更适配长时轨迹预测对车道边界、周边交通参与者等结构的捕捉需求</li><li>在doScenes验证集上一致优于带导航条件的OmniDrive基线，官方隐藏测试集上以显著优势获得Full Multimodal赛道第一名</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li>将<strong>OmniDrive</strong>视觉-语言-动作驾驶框架适配到doScenes指令驾驶场景，将原3秒轨迹监督窗口扩展至6秒，微调阶段随机采样场景关联的自然语言导航指令作为条件，实现语言意图与长时轨迹生成的对齐</li><li>提出<strong>DVDrive（分视角多视角感知模块）</strong>，受DVPE启发，将全局3D感知空间拆分为多个局部虚拟视角，仅让查询特征与同一局部视角内的视觉token交互，减少无关跨视角干扰</li><li>DVDrive模块支持局部视角内的可见性感知交叉注意力与时序记忆建模，强化了细粒度局部空间推理能力，更适配长时轨迹预测对车道边界、周边交通参与者等结构的捕捉需求</li><li>在doScenes验证集上一致优于带导航条件的OmniDrive基线，官方隐藏测试集上以显著优势获得Full Multimodal赛道第一名</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基础框架采用<strong>OmniDrive</strong> holistic视觉-语言-动作驾驶框架，该框架通过稀疏查询将多视角视觉表征压缩至紧凑的3D感知特征空间，具备3D感知、推理与规划能力</li><li>任务适配环节：针对doScenes要求将轨迹监督窗口从3秒扩展至6秒（对应12个2Hz采样的未来航点），监督微调时随机采样场景关联的自然语言导航指令拼接至文本提示，优化模型在视觉场景与语言意图双重条件下的长时轨迹生成能力</li><li>核心创新<strong>DVDrive</strong>模块：首先将多视角图像特征展平投影至Transformer特征空间，对每个图像token沿相机射线采样多个深度点并投影到自车坐标系获得3D几何表征；随后将全局3D空间划分为多个局部虚拟视角，查询特征与视觉token根据3D空间位置分配至对应局部视角，在局部视角内进行坐标变换生成视角特定的位置嵌入，最终执行可见性感知的局部交叉注意力，仅聚合当前局部视角内的有效视觉特征，同时保留时序记忆建模能力对齐历史场景信息</li><li>创新点：通过分视角局部交互替代全局跨视角注意力，减少无关视觉特征干扰，降低长时轨迹预测的优化难度，强化局部空间推理与语言-视觉对齐能力</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li>基础框架采用<strong>OmniDrive</strong> holistic视觉-语言-动作驾驶框架，该框架通过稀疏查询将多视角视觉表征压缩至紧凑的3D感知特征空间，具备3D感知、推理与规划能力</li><li>任务适配环节：针对doScenes要求将轨迹监督窗口从3秒扩展至6秒（对应12个2Hz采样的未来航点），监督微调时随机采样场景关联的自然语言导航指令拼接至文本提示，优化模型在视觉场景与语言意图双重条件下的长时轨迹生成能力</li><li>核心创新<strong>DVDrive</strong>模块：首先将多视角图像特征展平投影至Transformer特征空间，对每个图像token沿相机射线采样多个深度点并投影到自车坐标系获得3D几何表征；随后将全局3D空间划分为多个局部虚拟视角，查询特征与视觉token根据3D空间位置分配至对应局部视角，在局部视角内进行坐标变换生成视角特定的位置嵌入，最终执行可见性感知的局部交叉注意力，仅聚合当前局部视角内的有效视觉特征，同时保留时序记忆建模能力对齐历史场景信息</li><li>创新点：通过分视角局部交互替代全局跨视角注意力，减少无关视觉特征干扰，降低长时轨迹预测的优化难度，强化局部空间推理与语言-视觉对齐能力</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用数据集：基于<strong>doScenes</strong>数据集训练，该数据集在<strong>nuScenes</strong>基础上添加自然语言驾驶指令标注，专用于指令条件轨迹预测任务</li><li>模型规模：基于<strong>OmniDrive</strong>框架改进，未公开具体参数量</li><li>训练资源：使用8块<strong>NVIDIA RTX A6000 GPU</strong>训练，优化器为AdamW，初始学习率1×10⁻⁴，权重衰减1×10⁻⁴，采用余弦退火学习率调度（500次迭代预热，最低学习率比10⁻³），共训练6轮，batch size为每GPU 2，总训练时长约24小时</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li>使用数据集：基于<strong>doScenes</strong>数据集训练，该数据集在<strong>nuScenes</strong>基础上添加自然语言驾驶指令标注，专用于指令条件轨迹预测任务</li><li>模型规模：基于<strong>OmniDrive</strong>框架改进，未公开具体参数量</li><li>训练资源：使用8块<strong>NVIDIA RTX A6000 GPU</strong>训练，优化器为AdamW，初始学习率1×10⁻⁴，权重衰减1×10⁻⁴，采用余弦退火学习率调度（500次迭代预热，最低学习率比10⁻³），共训练6轮，batch size为每GPU 2，总训练时长约24小时</li></ul></div>
-</section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li>评估环境：因官方测试集标签未公开，先在doScenes验证集上开展消融实验，最终在官方隐藏测试集Full Multimodal赛道参与正式排名</li><li>评估指标：验证集采用<strong>ADE@1s、ADE@2s、ADE@3s、mADE（多时间步平均绝对位移误差）</strong>，数值越低代表轨迹预测性能越好；官方测试集采用<strong>ADE（平均位移误差）、FDE（最终位移误差）</strong>作为排名核心指标</li><li>关键实验结果：</li></ul>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：因官方测试集标签未公开，先在doScenes验证集上开展消融实验，最终在官方隐藏测试集Full Multimodal赛道参与正式排名</li><li>评估指标：验证集采用<strong>ADE@1s、ADE@2s、ADE@3s、mADE（多时间步平均绝对位移误差）</strong>，数值越低代表轨迹预测性能越好；官方测试集采用<strong>ADE（平均位移误差）、FDE（最终位移误差）</strong>作为排名核心指标</li><li>关键实验结果：</li></ul>
 <p> - 验证集上，相比带导航条件的OmniDrive基线（mADE 0.372），该方法mADE降至0.358，在1s、2s、3s三个时间步的ADE均一致优于基线，验证了导航条件训练与分视角感知设计的有效性</p>
 <p> - 官方隐藏测试集Full Multimodal赛道中，团队以ADE 2.0913、FDE 5.5946的成绩获得<strong>第一名</strong>，显著优于官方历史基线（ADE 7.1086）和指令基线（ADE 7.2046），也优于第二名团队的ADE 2.6774</p></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2606.22136/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Wh0: Generative World Models as Scalable Sources of Egocentric Human Hand Manipulation Data</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2606.21501/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">UniviewVLA: A Unified Multiview Vision-Language-Action Model with World Modeling</span></a></nav>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2606.22136/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Wh0: Generative World Models as Scalable Sources of Egocentric Human Hand Manipulation Data</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2606.21501/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">UniviewVLA: A Unified Multiview Vision-Language-Action Model with World Modeling</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>

@@ -2,9 +2,32 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>From Pixels to Actions - Towards Native Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
     <meta name="description" content="论文提出 NEO-VLA，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式 核心问题：动作策略应该只继承固定的视觉终点（编码器输出），还是应直接访问骨干网络中逐层演化的视觉计算？操作任务恰恰依赖最易被编码器抽象压缩掉的细粒度信号（局部几何、边界、深度、状态变化） 论文发现动作关键信号往往在最终视觉表征之前就已达到峰值， embodied 控制受益于访问整个计算层级中的视觉表征，而非固定的编码器输出" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,41 +35,15 @@
   gtag('js', new Date());
   gtag('config', 'G-WZ2KCV5P7B');
 </script>
-    <script>
-      (function() {
-        try {
-          var themePreference = window.localStorage.getItem('color-theme') || 'system';
-          var systemUsesDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var resolvedTheme = themePreference === 'system'
-            ? (systemUsesDarkTheme ? 'dark' : 'light')
-            : themePreference;
-          document.documentElement.dataset.theme = resolvedTheme;
-          document.documentElement.dataset.themePreference = themePreference;
-          document.documentElement.style.colorScheme = resolvedTheme;
-        } catch (error) {
-          document.documentElement.dataset.theme = 'light';
-          document.documentElement.dataset.themePreference = 'system';
-        }
-      })();
-    </script>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/style.css" />
   </head>
   <body class="detail-page" data-paper-id="2611.06918">
-    <div class="page-noise"></div>
-    <div class="page-blur page-blur-a"></div>
-    <div class="page-blur page-blur-b"></div>
-
-    <header class="header detail-page-header">
-      <div class="container">
-        <div class="detail-page-topbar">
-          <a class="back-link" href="../../index.html">返回列表</a>
-          <div class="detail-topbar-actions">
-            <span class="detail-site-name">VLA / World Action Model 每日论文卡</span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="当前主题：设备，点击切换主题" title="当前主题：设备">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
   <span class="theme-toggle-icons" aria-hidden="true">
     <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
@@ -60,106 +57,71 @@
       <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </span>
-  <span class="theme-toggle-label" data-theme-toggle-label>设备</span>
 </button>
-          </div>
-        </div>
-
-        <div class="detail-hero-grid">
-          <div class="detail-hero-cover"><figure class="paper-figure-card paper-figure-card-detail">
-  <img class="paper-figure-image" src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.06918.webp" alt="From Pixels to Actions - Towards Native Vision-Language-Action Policies" loading="lazy" onclick="window.openPaperFigureImage && window.openPaperFigureImage(this)" />
-  <figcaption class="paper-figure-caption">论文提出 NEO-VLA，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式</figcaption>
-</figure></div>
-          <div class="detail-hero-copy">
-            <p class="eyebrow">论文详情</p>
-            <h1 class="detail-page-title">From Pixels to Actions - Towards Native Vision-Language-Action Policies</h1>
-            <div class="detail-meta">2026-11-04 · <a data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.06918" target="_blank" rel="noopener noreferrer">原文</a> · <a data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.06918" target="_blank" rel="noopener noreferrer">翻译</a> · <span class="meta-pill">2611.06918</span></div>
-            <p class="detail-summary">论文提出 NEO-VLA，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式 核心问题：动作策略应该只继承固定的视觉终点（编码器输出），还是应直接访问骨干网络中逐层演化的视觉计算？操作任务恰恰依赖最易被编码器抽象压缩掉的细粒度信号（局部几何、边界、深度、状态变化） 论文发现动作关键信号往往在最终视觉表征之前就已达到峰值， embodied 控制受益于访问整个计算层级中的视觉表征，而非固定的编码器输出</p>
-            <div class="detail-micro-meta">
-              <span class="meta-pill">8 分钟读完</span>
-              <span class="meta-pill">6 张阅读卡</span>
-              <span class="meta-pill">S-Lab, Nanyang Technological University（南洋理工大学 S-La…</span>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <main class="container detail-layout">
-      <div class="detail-shell">
-        <article id="detail-body" class="reading-flow"><section class="reading-card reading-card-intro">
-  <div class="reading-card-topline">
-    <span class="reading-badge">一眼看懂</span>
-  </div>
-  <p class="reading-intro-hook">论文提出 NEO-VLA，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式</p>
-  <ul class="reading-intro-points"><li>论文提出 NEO-VLA，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式</li><li>核心问题：动作策略应该只继承固定的视觉终点（编码器输出），还是应直接访问骨干网络中逐层演化的视觉计算？操作任务恰恰依赖最易被编码器抽象压缩掉的细粒度信号（局部几何、边界、深度、状态变化）</li><li>论文发现动作关键信号往往在最终视觉表征之前就已达到峰值， embodied 控制受益于访问整个计算层级中的视觉表征，而非固定的编码器输出</li></ul>
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-04">2026-11-04</time></p>
+        <h1 class="article-title">From Pixels to Actions - Towards Native Vision-Language-Action Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.06918" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.06918" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 NEO-VLA，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.06918.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.06918.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.06918.webp" alt="From Pixels to Actions - Towards Native Vision-Language-Action Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">S-Lab, Nanyang Technological University（南洋理工大学 S-La…</p>
+        <ul class="article-facts"><li>arXiv 2611.06918</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>S-Lab, Nanyang Technological University</strong>（南洋理工大学 S-Lab）</li><li><strong>SenseTime Research</strong>（商汤科技研究院）</li><li><strong>Ropedia</strong></li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 01</span>
-    <span class="reading-step-note">研究单位</span>
-  </div>
-  <h2>研究单位</h2>
-  <div class="reading-card-content"><ul><li><strong>S-Lab, Nanyang Technological University</strong>（南洋理工大学 S-Lab）</li><li><strong>SenseTime Research</strong>（商汤科技研究院）</li><li><strong>Ropedia</strong></li></ul></div>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>NEO-VLA</strong>，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式</li><li>核心问题：动作策略应该只继承固定的视觉终点（编码器输出），还是应直接访问骨干网络中逐层演化的视觉计算？操作任务恰恰依赖最易被编码器抽象压缩掉的细粒度信号（局部几何、边界、深度、状态变化）</li><li>论文发现动作关键信号往往在最终视觉表征之前就已达到峰值， embodied 控制受益于访问整个计算层级中的视觉表征，而非固定的编码器输出</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 02</span>
-    <span class="reading-step-note">论文概述</span>
-  </div>
-  <h2>论文概述</h2>
-  <div class="reading-card-content"><ul><li>论文提出 <strong>NEO-VLA</strong>，一个结构上原生的视觉-语言-动作（VLA）框架，质疑现有 VLA 模型依赖预训练视觉编码器（如 CLIP、SigLIP、DINOv2）固定输出作为动作策略输入的传统范式</li><li>核心问题：动作策略应该只继承固定的视觉终点（编码器输出），还是应直接访问骨干网络中逐层演化的视觉计算？操作任务恰恰依赖最易被编码器抽象压缩掉的细粒度信号（局部几何、边界、深度、状态变化）</li><li>论文发现动作关键信号往往在最终视觉表征之前就已达到峰值， embodied 控制受益于访问整个计算层级中的视觉表征，而非固定的编码器输出</li></ul></div>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>结构原生的 VLA 策略</strong>：提出 NEO-VLA，结合轻量级像素到 token 嵌入器、共享视觉-语言骨干，以及可配置访问不同骨干层（视觉层级）的 flow-matching 动作专家，无需独立预训练的视觉编码器、图像码本或自编码器</li><li><strong>动作读取深度的系统性实证研究</strong>：通过匹配专家容量的层映射对比与附着点干预实验，证明早期视觉表征对控制非常有效（尤其在骨干冻结时），动作关键信息在最终表征之前即已出现</li><li><strong>跨骨干家族与操作基准的评估</strong>：在相同动作专家设计和机器人训练语料下对比原生与基于编码器的骨干（<strong>Qwen3-VL-2B</strong>、<strong>Gemma-3-4B</strong>），在 <strong>LIBERO</strong>、<strong>LIBERO-plus</strong>、<strong>RoboTwin 2.0</strong> 上取得强性能</li><li><strong>揭示深度依赖规律</strong>：冻结骨干时包含早期层的读取一致优于仅后期层；全微调后早晚特征组合最佳；早期层激活交换引起显著更大的预测误差</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 03</span>
-    <span class="reading-step-note">核心贡献</span>
-  </div>
-  <h2>核心贡献</h2>
-  <div class="reading-card-content"><ul><li><strong>结构原生的 VLA 策略</strong>：提出 NEO-VLA，结合轻量级像素到 token 嵌入器、共享视觉-语言骨干，以及可配置访问不同骨干层（视觉层级）的 flow-matching 动作专家，无需独立预训练的视觉编码器、图像码本或自编码器</li><li><strong>动作读取深度的系统性实证研究</strong>：通过匹配专家容量的层映射对比与附着点干预实验，证明早期视觉表征对控制非常有效（尤其在骨干冻结时），动作关键信息在最终表征之前即已出现</li><li><strong>跨骨干家族与操作基准的评估</strong>：在相同动作专家设计和机器人训练语料下对比原生与基于编码器的骨干（<strong>Qwen3-VL-2B</strong>、<strong>Gemma-3-4B</strong>），在 <strong>LIBERO</strong>、<strong>LIBERO-plus</strong>、<strong>RoboTwin 2.0</strong> 上取得强性能</li><li><strong>揭示深度依赖规律</strong>：冻结骨干时包含早期层的读取一致优于仅后期层；全微调后早晚特征组合最佳；早期层激活交换引起显著更大的预测误差</li></ul></div>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>无编码器原生视觉接口</strong>：轻量卷积 patch 嵌入器将原始像素直接映射到骨干 token 空间，图像块与指令文本在单一整体架构中联合处理；保留原生宽高比，每视图动态 patch 化（预算上限 88 个视觉 token）</li><li><strong>多模态前缀</strong>：机器人观测转化为统一前缀（多视角图像、相机几何、结构化语言、机器人状态），相机内参与旋转由轻量几何 MLP 编码，使用时间/高度/宽度三维旋转位置编码</li><li><strong>跨视觉深度的动作读取</strong>：动作专家从可配置骨干层子集读取缓存的 keys/values，层映射包括 first-28、skip-28、end-28、full-40 等配置，使视觉读取深度成为显式架构选择</li><li><strong>连续动作策略建模</strong>：流匹配动作专家预测连续动作块（每臂 R^(2×30×26)、本体 R^(30×8)），以 10 步 Euler 积分求解学习到的流，训练时按四个动作组（末端执行器、臂关节、手关节、身体）加权平衡损失</li><li><strong>三阶段训练</strong>：先冻结骨干训练动作专家，再解冻全模型共训多模态理解数据，最后用自研动作数据继续全参数微调</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 04</span>
-    <span class="reading-step-note">方法描述</span>
-  </div>
-  <h2>方法描述</h2>
-  <div class="reading-card-content"><ul><li><strong>无编码器原生视觉接口</strong>：轻量卷积 patch 嵌入器将原始像素直接映射到骨干 token 空间，图像块与指令文本在单一整体架构中联合处理；保留原生宽高比，每视图动态 patch 化（预算上限 88 个视觉 token）</li><li><strong>多模态前缀</strong>：机器人观测转化为统一前缀（多视角图像、相机几何、结构化语言、机器人状态），相机内参与旋转由轻量几何 MLP 编码，使用时间/高度/宽度三维旋转位置编码</li><li><strong>跨视觉深度的动作读取</strong>：动作专家从可配置骨干层子集读取缓存的 keys/values，层映射包括 first-28、skip-28、end-28、full-40 等配置，使视觉读取深度成为显式架构选择</li><li><strong>连续动作策略建模</strong>：流匹配动作专家预测连续动作块（每臂 R^(2×30×26)、本体 R^(30×8)），以 10 步 Euler 积分求解学习到的流，训练时按四个动作组（末端执行器、臂关节、手关节、身体）加权平衡损失</li><li><strong>三阶段训练</strong>：先冻结骨干训练动作专家，再解冻全模型共训多模态理解数据，最后用自研动作数据继续全参数微调</li></ul></div>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>预训练数据</strong>：9 个公开数据集家族——<strong>AgiBot-World</strong>、<strong>Bimanual YAM</strong>、<strong>RoboCOIN</strong>、<strong>Open X-Embodiment</strong>、<strong>Galaxea Open-World</strong>、<strong>RH20T</strong>、<strong>RoboMIND</strong>、<strong>InternData-A1</strong>（仿真）、<strong>DROID</strong>，共 2,231,583 个 episode、约 9,927 小时、9.28 亿行数据</li><li><strong>模型规模</strong>：40 层无编码器视觉-语言骨干，<strong>2B 参数</strong>；比较骨干包括 <strong>Qwen3-VL-2B</strong> 与 <strong>Gemma-3-4B</strong></li><li><strong>训练配置</strong>：全局 batch size 8192；动作专家峰值学习率 2×10⁻⁴，视觉-语言参数 5×10⁻⁵；AdamW 优化器、bfloat16 混合精度（论文 HTML 原文未列出具体 GPU/TPU 数量）</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 05</span>
-    <span class="reading-step-note">数据集与资源</span>
-  </div>
-  <h2>数据集与资源</h2>
-  <div class="reading-card-content"><ul><li><strong>预训练数据</strong>：9 个公开数据集家族——<strong>AgiBot-World</strong>、<strong>Bimanual YAM</strong>、<strong>RoboCOIN</strong>、<strong>Open X-Embodiment</strong>、<strong>Galaxea Open-World</strong>、<strong>RH20T</strong>、<strong>RoboMIND</strong>、<strong>InternData-A1</strong>（仿真）、<strong>DROID</strong>，共 2,231,583 个 episode、约 9,927 小时、9.28 亿行数据</li><li><strong>模型规模</strong>：40 层无编码器视觉-语言骨干，<strong>2B 参数</strong>；比较骨干包括 <strong>Qwen3-VL-2B</strong> 与 <strong>Gemma-3-4B</strong></li><li><strong>训练配置</strong>：全局 batch size 8192；动作专家峰值学习率 2×10⁻⁴，视觉-语言参数 5×10⁻⁵；AdamW 优化器、bfloat16 混合精度（论文 HTML 原文未列出具体 GPU/TPU 数量）</li></ul></div>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：LIBERO（Spatial/Object/Goal/Long 四套件）、LIBERO-plus（相机、机器人、语言、光照、背景、噪声、布局七种扰动轴）、RoboTwin 2.0，以及真实世界机器人评估</li><li><strong>骨干对比</strong>：冻结骨干下 <strong>NEO-VLA</strong> 平均成功率 <strong>90.9%</strong>，显著超过 <strong>Qwen3-VL-2B</strong>（79.5%）和 <strong>Gemma-3-4B</strong>（84.5%）；LIBERO-Long 上达 85.4%，超过两者全微调结果；全微调后达 <strong>95.3%</strong></li><li><strong>层映射消融</strong>：冻结骨干时 first-28 达 94.9%、skip-28 达 90.9%、end-28 仅 86.7%，证明早期层对控制至关重要；全微调后 skip-28 最佳（95.3%）</li><li><strong>干预实验</strong>：在层 0–10 交换缓存 keys/values 导致最大平移误差，且效应取决于被替换内容而非扰动幅度；腕部图像敏感性在层 6–10 最强，指令敏感性在层 0 峰值</li><li><strong>鲁棒性</strong>：LIBERO-plus 上在相机扰动（94.5）和图像噪声（96.9）轴上表现尤为突出，总体优于 <strong>π₀</strong>、<strong>StarVLA</strong>、<strong>ABot-M0</strong>、<strong>π₀.5</strong> 等对比方法，显示对分布偏移的更强鲁棒性</li></ul></div>
 </section>
-<section class="reading-card reading-card-section">
-  <div class="reading-card-topline">
-    <span class="reading-step">Card 06</span>
-    <span class="reading-step-note">评估与结果</span>
-  </div>
-  <h2>评估与结果</h2>
-  <div class="reading-card-content"><ul><li><strong>评估基准</strong>：LIBERO（Spatial/Object/Goal/Long 四套件）、LIBERO-plus（相机、机器人、语言、光照、背景、噪声、布局七种扰动轴）、RoboTwin 2.0，以及真实世界机器人评估</li><li><strong>骨干对比</strong>：冻结骨干下 <strong>NEO-VLA</strong> 平均成功率 <strong>90.9%</strong>，显著超过 <strong>Qwen3-VL-2B</strong>（79.5%）和 <strong>Gemma-3-4B</strong>（84.5%）；LIBERO-Long 上达 85.4%，超过两者全微调结果；全微调后达 <strong>95.3%</strong></li><li><strong>层映射消融</strong>：冻结骨干时 first-28 达 94.9%、skip-28 达 90.9%、end-28 仅 86.7%，证明早期层对控制至关重要；全微调后 skip-28 最佳（95.3%）</li><li><strong>干预实验</strong>：在层 0–10 交换缓存 keys/values 导致最大平移误差，且效应取决于被替换内容而非扰动幅度；腕部图像敏感性在层 6–10 最强，指令敏感性在层 0 峰值</li><li><strong>鲁棒性</strong>：LIBERO-plus 上在相机扰动（94.5）和图像噪声（96.9）轴上表现尤为突出，总体优于 <strong>π₀</strong>、<strong>StarVLA</strong>、<strong>ABot-M0</strong>、<strong>π₀.5</strong> 等对比方法，显示对分布偏移的更强鲁棒性</li></ul></div>
-</section></article>
-        <aside id="detail-toc" class="detail-toc hidden" aria-label="内容目录">
-          <p class="detail-toc-title">阅读目录</p>
-          <nav id="detail-toc-nav" class="detail-toc-nav"></nav>
-        </aside>
-      </div>
-      <nav class="paper-nav"><a class="paper-nav-link paper-nav-prev" href="../../papers/2611.07229/"><span class="paper-nav-label">← 上一篇</span><span class="paper-nav-title">Spatial-UMI-Dream: Scaling World Action Models with Metric Geometry for UMI Manipulation</span></a>
-      <a class="paper-nav-link paper-nav-next" href="../../papers/2611.06817/"><span class="paper-nav-label">下一篇 →</span><span class="paper-nav-title">Open-HumanScale: An Open Recipe for Scaling Human and Robot Experience for Embodied Foundation Models</span></a></nav>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.07229/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Spatial-UMI-Dream: Scaling World Action Models with Metric Geometry for UMI Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.06817/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Open-HumanScale: An Open Recipe for Scaling Human and Robot Experience for Embodied Foundation Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
     </main>
 
     <footer class="footer">
       <div class="container">
-        <p>内容来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a>，阅读卡片由静态站点生成器构建。</p>
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
       </div>
     </footer>
-
-    <script src="../../assets/theme.js"></script>
-    <script src="../../assets/media.js"></script>
-    <script src="../../assets/analytics.js"></script>
-    <script src="../../assets/paper.js"></script>
   </body>
 </html>
