@@ -42,6 +42,9 @@ DEFAULT_ARXIV_QUERY = (
     'all:"action world model"'
 )
 DEFAULT_ARXIV_KEYWORD_LABEL = "VLA / World Action Model"
+# 全尺寸首图的外部地址前缀（指向仓库中的 site/ 目录，如 raw.githubusercontent.com）。
+# 设置后页面从该地址加载全尺寸图，部署时可把全尺寸图排除在 Pages 产物之外，只保留缩略图。
+PAPER_IMAGE_REMOTE_BASE = os.getenv("PAPER_IMAGE_REMOTE_BASE", "").strip().rstrip("/")
 
 COVER_THEMES = [
     {
@@ -483,6 +486,15 @@ def load_paper_image_manifest() -> Dict[str, Dict[str, object]]:
     return data if isinstance(data, dict) else {}
 
 
+def resolve_full_image_src(relative_path: str, local_prefix: str = "") -> str:
+    """返回全尺寸首图的引用地址：配置了外部前缀时用外部地址，否则用站内相对路径。"""
+    if not relative_path:
+        return ""
+    if PAPER_IMAGE_REMOTE_BASE:
+        return f"{PAPER_IMAGE_REMOTE_BASE}/{relative_path}"
+    return f"{local_prefix}{relative_path}"
+
+
 def get_paper_image_path(manifest: Dict[str, Dict[str, object]], arxiv_id: str) -> str:
     if not arxiv_id:
         return ""
@@ -644,8 +656,9 @@ def build_list_data(records: List[Dict[str, object]], thumb_map: Dict[str, str] 
             "arxiv_id": record["arxiv_id"],
             "detail_path": record["detail_path"],
             "cover_path": record["cover_path"],
-            "paper_image_path": thumb_map.get(str(record["paper_image_path"]), record["paper_image_path"]),
-            "paper_image_full_path": record["paper_image_path"],
+            "paper_image_path": thumb_map.get(str(record["paper_image_path"]))
+            or resolve_full_image_src(str(record["paper_image_path"])),
+            "paper_image_full_path": resolve_full_image_src(str(record["paper_image_path"])),
             "preview_text": record["preview_text"],
             "research_unit": record["research_unit"],
             "hook_text": record["hook_text"],
@@ -872,7 +885,7 @@ def generate_paper_html(record: Dict[str, object], prev_record: Dict[str, object
     page_title = str(record["title"])
     page_description = str(record["preview_text"] or f"{keyword} 论文详情")
     meta_html = render_detail_meta(record)
-    figure_src = f"../../{record['paper_image_path']}" if record["paper_image_path"] else ""
+    figure_src = resolve_full_image_src(str(record["paper_image_path"]), "../../")
     cover_html = (
         render_paper_figure(record, figure_src, "detail")
         if figure_src

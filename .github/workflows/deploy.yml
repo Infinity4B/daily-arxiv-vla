@@ -95,6 +95,8 @@ jobs:
         env:
           ARXIV_QUERY_KEYWORD: 'all:"VLA" OR all:"Vision-Language-Action" OR all:"World Action Model" OR all:"World-Action Model" OR all:"action world model"'
           GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID || secrets.GA_MEASUREMENT_ID }}
+          # 全尺寸首图已随 site/ 提交进仓库，直接从仓库 raw 地址加载，不再放进 Pages 产物
+          PAPER_IMAGE_REMOTE_BASE: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/site
 
       - name: 提交更改
         run: |
@@ -110,13 +112,20 @@ jobs:
             git push
           fi
           
+      - name: 准备精简部署产物
+        run: |
+          # 排除 assets/paper-images/ 根目录下的全尺寸图（保留 thumbs/），文件数和体积都大幅减少
+          rsync -a --delete --exclude='/assets/paper-images/*.*' site/ _pages/
+          echo "完整站点: $(du -sh site | cut -f1), $(find site -type f | wc -l) 个文件"
+          echo "部署产物: $(du -sh _pages | cut -f1), $(find _pages -type f | wc -l) 个文件"
+
       - name: 设置 Pages
         uses: actions/configure-pages@v6
         
       - name: 上传构建产物
         uses: actions/upload-pages-artifact@v5
         with:
-          path: './site'
+          path: './_pages'
 
   deploy:
     environment:
@@ -124,7 +133,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
     needs: build
+    timeout-minutes: 40
     steps:
       - name: 部署到 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # 默认 10 分钟；Pages 同步文件偶尔较慢，放宽到 30 分钟
+          timeout: 1800000
