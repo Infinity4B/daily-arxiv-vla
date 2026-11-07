@@ -1,6 +1,8 @@
-# ArXiv Papers 网站
+# VLA / World Action Model 每日论文卡
 
-这是一个展示ArXiv论文精选的静态网站，支持搜索和独立详情页查看功能。项目会自动爬取包含 VLA / Vision-Language-Action 以及 World Action Model 相关关键词的论文，并使用 AI 生成摘要。
+一个自动更新的 arXiv 论文精选静态网站：每天检索 VLA（Vision-Language-Action）与 World Action Model 相关论文，用大模型生成中文摘要，并为每篇论文生成独立的阅读页面，部署在 GitHub Pages 上。
+
+在线访问：<https://infinity4b.github.io/daily-arxiv-vla/>
 
 > [!IMPORTANT]
 > **仓库历史改写说明（2026-11-07）**
@@ -16,93 +18,116 @@
 
 ## 功能特性
 
-- 🤖 **自动爬取**: 每日自动从 ArXiv 爬取 VLA 与 World Action Model 相关最新论文
-- 🧠 **AI摘要生成**: 使用ModelScope API自动为论文生成中文摘要
-- 📚 从 `papers.md` 自动解析论文信息
-- 🔍 实时搜索功能
+- 🤖 **自动爬取**：每天从 arXiv 检索 VLA / World Action Model 相关新论文，只保留主类目为 cs.CV、cs.AI、cs.CL、cs.LG、cs.MM、cs.RO 的论文，并按链接去重
+- 🧠 **AI 中文摘要**：读取论文的 arXiv HTML 全文，通过 ModelScope API 生成中文摘要；支持配置多个模型，某个模型被限流时自动切换到下一个
+- 🖼️ **论文首图**：自动从论文 HTML 中提取首图作为卡片封面；原图无法直接下载时，用 Playwright 截取页面中的第一个 figure 兜底
+- 🗜️ **图片优化**：构建时把首图统一转为 WebP，并生成 600px 宽的缩略图供首页卡片使用
+- 🔍 首页实时搜索，点击卡片可在浮窗中阅读详情
+- 📄 每篇论文生成独立的静态详情页，附 arXiv 原文和中文翻译链接
+- 🌗 浅色 / 深色 / 跟随系统三种主题
+- 💾 记住首页滚动位置，详情页按 arXiv ID 分别记住阅读进度
 - 📱 响应式设计，支持移动端
-- 🎨 现代化暗色主题界面
-- 📄 每篇论文生成独立静态详情页
-- 🖼️ 自动从论文 HTML 提取首图，优先作为论文卡封面
-- 🎭 当 HTML 原图不可直接下载时，自动使用 Playwright 截取页面里的首个 figure 作为兜底封面
-- 💾 按 arXiv ID 独立记录论文页滚动进度
-- ⏰ **定时任务**: 每日中午12点自动更新内容
+- 📊 可选接入 Google Analytics 4
 
 ## 本地开发
 
-### 环境配置
+### 安装依赖
 
-首先需要配置环境变量：
-
-```bash
-# 复制示例配置文件
-cp .env.example .env
-
-# 编辑 .env 文件，填入你的 API 密钥
-# MODELSCOPE_ACCESS_TOKEN=你的API密钥
-```
-
-可配置的环境变量：
-
-**必需配置：**
-- `MODELSCOPE_ACCESS_TOKEN`: ModelScope API 密钥
-
-**可选配置：**
-- `MODELSCOPE_BASE_URL`: API 基础 URL（默认：https://api-inference.modelscope.cn/v1/）
-- `MODELSCOPE_MODEL`: 使用的模型（默认：deepseek-ai/DeepSeek-V3.2）
-- `ARXIV_QUERY_KEYWORD`: 搜索关键词，支持 arXiv 查询语法（默认同时检索 VLA 与 World Action Model 相关短语）
-- `ARXIV_INIT_RESULTS`: 初始化抓取数量（默认：500）
-- `ARXIV_DAILY_RESULTS`: 每日抓取数量（默认：20）
-- `ARXIV_MAX_RETRIES`: arXiv 搜索重试次数（默认：3）
-- `HTTP_MAX_RETRIES`: HTTP 请求重试次数（默认：3）
-- `HTTP_TIMEOUT`: HTTP 请求超时时间（秒，默认：30）
-- `HTML_MAX_CHARS`: HTML 内容最大字符数（默认：180000）
-- `API_MAX_RETRIES`: API 调用重试次数（默认：3）
-- `BATCH_WRITE_SIZE`: 批量写入大小，每生成 N 篇摘要写入一次文件（默认：5）
-- `GA_MEASUREMENT_ID`: Google Analytics 4 的 Measurement ID（例如 `G-XXXXXXXXXX`，未配置时不加载 GA）
-
-### 爬取论文数据
+需要 Python 3.9+；如需运行 Playwright 截图兜底，还需要 Node.js（CI 使用 Node.js 24）。
 
 ```bash
-# 初始化爬取（首次运行）
-python scripts/arxiv_crawler.py
+pip install -r requirements.txt
 
-# 生成论文摘要
-python scripts/generate_summaries.py
-
-# 抓取论文首图（可选，GitHub Actions 会自动执行）
-python scripts/fetch_paper_images.py --max-items 30
-
-# 为剩余缺图论文生成 Playwright 截图兜底队列
-python scripts/build_paper_image_fallback_queue.py --max-items 20
-
-# 安装 Playwright 并执行截图兜底
+# 仅截图兜底需要
 npm install
 npx playwright install chromium
-npm run paper-image:fallbacks
-
-# 将截图结果注册进 manifest
-python scripts/register_paper_image_fallbacks.py
 ```
 
-### 构建网站
+### 环境配置
 
 ```bash
+cp .env.example .env
+# 编辑 .env，填入 MODELSCOPE_ACCESS_TOKEN
+```
+
+> 注意：只有 `generate_summaries.py` 会自动读取 `.env`。爬虫和网站构建脚本只读取系统环境变量，如需修改它们的配置（例如检索关键词），请在运行前 `export`，例如 `export ARXIV_QUERY_KEYWORD='all:"VLA"'`。
+
+**摘要生成**（`generate_summaries.py`）：
+
+| 变量 | 说明 | 默认值 |
+|---|---|---|
+| `MODELSCOPE_ACCESS_TOKEN` | ModelScope API 密钥（**必需**） | — |
+| `MODELSCOPE_BASE_URL` | API 基础 URL | `https://api-inference.modelscope.cn/v1/` |
+| `MODELSCOPE_MODELS` | 逗号分隔的模型列表，按顺序尝试，被限流时切换下一个 | 空 |
+| `MODELSCOPE_MODEL` | 未设置 `MODELSCOPE_MODELS` 时使用的单个模型 | `deepseek-ai/DeepSeek-V3.2` |
+| `API_MAX_RETRIES` | 单个模型的调用次数，最多 2 次，超过 2 按 2 处理 | `3`（实际为 2） |
+| `HTTP_MAX_RETRIES` | 抓取论文 HTML 的重试次数 | `3` |
+| `HTTP_TIMEOUT` | 抓取论文 HTML 的超时时间（秒） | `30` |
+| `HTML_MAX_CHARS` | 论文 HTML 送入模型前截断的最大字符数 | `180000` |
+| `BATCH_WRITE_SIZE` | 每生成 N 篇摘要写入一次 `papers.md` | `5` |
+
+**arXiv 爬虫**（`arxiv_crawler.py`）：
+
+| 变量 | 说明 | 默认值 |
+|---|---|---|
+| `ARXIV_QUERY_KEYWORD` | 检索语句，支持 arXiv 查询语法 | 见下方「默认检索语句」 |
+| `ARXIV_INIT_RESULTS` | 首次运行（`papers.md` 不存在或为空）时抓取的数量 | `500` |
+| `ARXIV_DAILY_RESULTS` | 每日增量更新时抓取的数量 | `20` |
+| `ARXIV_PAGE_SIZE` | 每次请求 arXiv API 的分页大小 | `20` |
+| `ARXIV_DELAY_SECONDS` | 两次 arXiv 请求之间的间隔（秒），避免被限流 | `10` |
+| `ARXIV_MAX_RETRIES` | 检索失败时的重试次数 | `3` |
+| `ARXIV_RETRY_BASE_SECONDS` | 重试等待的基础时间（秒） | `30` |
+
+默认检索语句：
+
+```
+all:"VLA" OR all:"Vision-Language-Action" OR all:"World Action Model" OR all:"World-Action Model" OR all:"action world model"
+```
+
+**网站构建**（`build_site.py`）：
+
+| 变量 | 说明 | 默认值 |
+|---|---|---|
+| `ARXIV_QUERY_KEYWORD` | 同上，用于生成网站标题 | 默认检索语句 |
+| `GA_MEASUREMENT_ID` | Google Analytics 4 的 Measurement ID（如 `G-XXXXXXXXXX`），未配置或格式不对时不加载 GA | 空 |
+| `PAPER_IMAGE_REMOTE_BASE` | 全尺寸首图的外部地址前缀，设置后详情页和图片放大从该地址加载全尺寸图（见「部署产物精简」） | 空（使用站内相对路径） |
+
+### 运行流程
+
+```bash
+# 1. 爬取论文：papers.md 不存在或为空时做初始化抓取，否则做每日增量更新
+python scripts/arxiv_crawler.py
+
+# 2. 为「待生成」的论文生成摘要
+python scripts/generate_summaries.py
+
+# 3. 抓取论文首图（已下载过的会自动跳过）
+python scripts/fetch_paper_images.py --max-items 30
+
+# 4.（可选）为仍缺图的论文执行 Playwright 截图兜底
+python scripts/build_paper_image_fallback_queue.py --max-items 20
+npm run paper-image:fallbacks
+python scripts/register_paper_image_fallbacks.py
+
+# 5. 构建网站
 python scripts/build_site.py
 ```
 
-这将在 `site/` 目录下生成静态网站文件，包括首页、轻量数据文件、论文首图资源，以及每篇论文对应的独立静态详情页。
+`build_site.py` 会在 `site/` 下生成首页、`data.json`、每篇论文的详情页和封面卡页面，并把首图转为 WebP、生成缩略图。
+
+辅助脚本：
+
+- `scripts/clean_summaries.py`：规范化 `papers.md` 中的摘要（去掉代码块标记、调整标题层级，删除缺少「论文概述」的摘要）
+- `scripts/clear_summaries.py`：把所有摘要重置为「待生成」，用于整体重新生成
 
 ### Google Analytics 4
 
-如需统计页面浏览、搜索和论文阅读行为，在本地构建前设置 Measurement ID：
+如需统计页面浏览、搜索和论文阅读行为，在构建前设置 Measurement ID：
 
 ```bash
 export GA_MEASUREMENT_ID=G-XXXXXXXXXX
 python scripts/build_site.py
 ```
-
-未配置或格式不正确时，生成的页面不会加载 Google Analytics，也不会发送自定义统计事件。
 
 验证时可以打开浏览器开发者工具的 **Network** 面板，搜索 `googletagmanager` 或 `collect`；GA4 后台的实时报告通常会有几分钟延迟。
 
@@ -110,133 +135,114 @@ python scripts/build_site.py
 
 ### 本地预览
 
-可以使用任何静态文件服务器预览网站：
-
 ```bash
-# 使用Python内置服务器
 cd site
 python -m http.server 8000
-
-# 或使用Node.js serve
-npx serve site
+# 或：npx serve site
 ```
 
 ## GitHub Pages 部署
 
 ### 1. 配置仓库
 
-1. 确保你的仓库是公开的
-2. 在仓库设置中启用 GitHub Pages
-3. 选择 "GitHub Actions" 作为部署源
+1. 使用公开仓库。私有仓库使用 GitHub Pages 需要付费计划，而且全尺寸首图从 `raw.githubusercontent.com` 加载，私有仓库无法访问。
+2. 在 `Settings → Pages` 中，把部署来源（Source）设为 **GitHub Actions**。
 
-### 2. 配置环境变量
+### 2. 配置密钥和变量
 
-在仓库设置中添加以下Secret：
-- `MODELSCOPE_ACCESS_TOKEN`: 你的ModelScope API密钥（必需）
+- **Secret** `MODELSCOPE_ACCESS_TOKEN`（必需）：在 `Settings → Secrets and variables → Actions → Secrets` 中添加。
+- **Variable** `GA_MEASUREMENT_ID`（可选）：在同一页面的 **Variables** 中添加。Measurement ID 本来就会出现在网页 HTML 中，放在 Variables 即可；工作流也兼容同名 Secret。
 
-如需启用 Google Analytics 4，在 `Settings → Secrets and variables → Actions → Variables` 中新增仓库变量 `GA_MEASUREMENT_ID`，值填写类似 `G-XXXXXXXXXX` 的 Measurement ID。当前工作流会自动把它注入网站构建；也兼容在 **Secrets** 中配置同名变量。不设置或格式不正确时不会加载 GA。Measurement ID 会出现在客户端 HTML 中，因此优先使用 **Variables** 即可。
+检索关键词、抓取数量、模型列表等都直接写在 `.github/workflows/deploy.yml` 各步骤的 `env` 中，按需修改即可。当前工作流的设置是：每日抓取 80 篇（`ARXIV_DAILY_RESULTS`），分页 10，请求间隔 15 秒；摘要模型通过 `MODELSCOPE_MODELS` 配置多个候选。
 
-**可选配置：** 如果需要修改默认配置（如搜索关键词、模型等），可以在 `.github/workflows/deploy.yml` 中添加环境变量：
+### 3. 自动运行
 
-```yaml
-- name: 运行 arXiv 爬虫
-  run: python scripts/arxiv_crawler.py
-  env:
-    MODELSCOPE_ACCESS_TOKEN: ${{ secrets.MODELSCOPE_ACCESS_TOKEN }}
-    ARXIV_QUERY_KEYWORD: "your_keyword"  # 可选：修改搜索关键词
-    ARXIV_DAILY_RESULTS: "30"            # 可选：修改每日抓取数量
-```
+工作流 `.github/workflows/deploy.yml` 在以下两种情况触发：
 
-默认配置：
-- 搜索关键词：`all:"VLA" OR all:"Vision-Language-Action" OR all:"World Action Model" OR all:"World-Action Model" OR all:"action world model"`
-- 每日抓取：20篇（GitHub Actions 中可覆盖）
-- 模型：deepseek-ai/DeepSeek-V3.2
-- 其他配置见 `.env.example`
+- 推送到 `master` 或 `main` 分支
+- 定时任务：cron `0 4 * * *`，即北京时间每天 12:00。GitHub 的定时任务在高峰期经常延迟，实际开始时间可能晚几个小时。
 
-### 3. 自动部署
+每次运行依次执行：
 
-每次推送到 `master` 或 `main` 分支时，GitHub Actions 会自动：
+1. 爬取 arXiv 新论文
+2. 为待生成的论文生成 AI 摘要
+3. 抓取论文首图，对仍缺图的论文执行 Playwright 截图兜底（失败不影响后续步骤）
+4. 构建网站
+5. 把 `papers.md` 和 `site/` 的变化提交回仓库（提交信息带 `[skip ci]`，不会再次触发工作流）
+6. 生成精简后的部署产物，部署到 GitHub Pages
 
-1. 检出代码
-2. 爬取新论文并生成摘要
-3. 抓取最新论文的首图
-4. 对无法直接下载原图的论文执行 Playwright 截图兜底
-5. 运行构建脚本
-6. 部署到 GitHub Pages
+### 4. 部署产物精简
 
-### 4. 定时任务
+全尺寸首图数量多、体积大，全部放进 Pages 产物会让部署变慢甚至超时。因此工作流：
 
-GitHub Actions 还会在每日中午12点自动执行：
-
-1. 爬取ArXiv上的新论文
-2. 为待生成的论文生成AI摘要
-3. 抓取最新论文的首图
-4. 对无法直接下载原图的论文执行 Playwright 截图兜底
-5. 提交更改到仓库
-6. 重新构建和部署网站
+- 构建时设置 `PAPER_IMAGE_REMOTE_BASE=https://raw.githubusercontent.com/<仓库>/<分支>/site`，详情页和图片放大改为从仓库的 raw 地址加载全尺寸图（这些图片已随 `site/` 提交进仓库）；
+- 上传 Pages 产物前，从 `site/` 复制出 `_pages/`，排除 `assets/paper-images/` 下的全尺寸图，只保留缩略图；
+- `deploy-pages` 的超时放宽到 30 分钟。
 
 ### 5. 访问网站
 
-部署完成后，你的网站将在以下地址可访问：
-```
-https://你的用户名.github.io/仓库名
-```
-
-例如：`https://username.github.io/arxiv`
+部署完成后，网站地址为 `https://<用户名>.github.io/<仓库名>/`，例如本项目：<https://infinity4b.github.io/daily-arxiv-vla/>。
 
 ## 自定义配置
 
 ### 修改网站标题
 
-编辑 `scripts/build_site.py` 中的 `generate_index_html()` 函数来修改网站标题。
+网站标题为「<关键词标签> 每日论文卡」。使用默认检索语句时，关键词标签取 `scripts/build_site.py` 中的 `DEFAULT_ARXIV_KEYWORD_LABEL`（当前为 `VLA / World Action Model`）；设置了自定义的 `ARXIV_QUERY_KEYWORD` 时，标签直接显示检索语句本身。如需修改，编辑 `DEFAULT_ARXIV_KEYWORD_LABEL` 或 `get_arxiv_keyword_label()`。
+
+### 修改样式
+
+页面样式由 `scripts/build_site.py` 生成，并合并 `scripts/modern_ui.css` 中的样式。
 
 ## 项目结构
 
 ```
-arxiv/
-├── papers.md                    # 论文数据源文件
+daily-arxiv-vla/
+├── papers.md                              # 论文数据源（Markdown 表格）
+├── requirements.txt                       # Python 依赖
+├── package.json                           # Playwright 依赖与截图脚本
 ├── scripts/
-│   ├── arxiv_crawler.py         # ArXiv论文爬虫
-│   ├── generate_summaries.py    # AI摘要生成脚本
-│   ├── fetch_paper_images.py    # 从论文HTML提取首图
-│   ├── build_paper_image_fallback_queue.py
-│   ├── register_paper_image_fallbacks.py
-│   ├── render_paper_image_fallbacks.mjs
-│   └── build_site.py            # 网站构建脚本
-├── site/                        # 生成的静态网站
+│   ├── arxiv_crawler.py                   # arXiv 爬虫
+│   ├── generate_summaries.py              # AI 摘要生成
+│   ├── fetch_paper_images.py              # 从论文 HTML 提取首图
+│   ├── build_paper_image_fallback_queue.py  # 生成截图兜底队列（tmp/）
+│   ├── render_paper_image_fallbacks.mjs   # Playwright 截图兜底
+│   ├── register_paper_image_fallbacks.py  # 把截图结果写入首图 manifest
+│   ├── build_site.py                      # 网站构建
+│   ├── modern_ui.css                      # 附加样式
+│   ├── clean_summaries.py                 # 规范化摘要
+│   └── clear_summaries.py                 # 重置全部摘要
+├── site/                                  # 生成的静态网站（由工作流提交进仓库）
 │   ├── index.html
-│   ├── papers/
-│   │   └── <arxiv-id>/
-│   │       └── index.html
+│   ├── papers/<arxiv-id>/index.html       # 论文详情页
+│   ├── covers/<arxiv-id>/index.html       # 论文封面卡
 │   └── assets/
-│       ├── paper-images/        # 下载到本地的论文首图
-│       ├── paper-images.json    # 论文首图 manifest
-│       ├── style.css
-│       ├── analytics.js
-│       ├── app.js
-│       ├── paper.js
-│       └── data.json
-└── .github/
-    └── workflows/
-        └── deploy.yml           # GitHub Actions 部署配置
+│       ├── paper-images/                  # 全尺寸首图（WebP）
+│       │   └── thumbs/                    # 缩略图
+│       ├── paper-images.json              # 首图 manifest
+│       ├── data.json                      # 首页数据
+│       ├── app.js / paper.js / media.js / theme.js / analytics.js
+│       └── style.css
+└── .github/workflows/deploy.yml           # 爬取、构建与部署工作流
 ```
 
 ## 数据格式
 
-`papers.md` 文件应包含以下格式的表格：
+`papers.md` 是一个 Markdown 表格，每行一篇论文：
 
 ```markdown
 | 日期 | 标题 | 链接 | 简要总结 |
-|------|------|------|----------|
-| 2024-01-01 | 论文标题 | https://arxiv.org/abs/xxx | <details><summary>点击查看</summary>详细内容...</details> |
+| --- | --- | --- | --- |
+| 2026-11-05 | 论文标题 | http://arxiv.org/abs/2611.08462 | <details><summary>展开</summary>## 研究单位<br>- ...</details> |
 ```
+
+- 新爬取的论文，摘要列为 `<details><summary>展开</summary>待生成</details>`，`generate_summaries.py` 只处理含「待生成」的行。
+- 摘要内容是 Markdown，换行用 `<br>` 表示。
 
 ## 技术栈
 
-- **后端**: Python 3.9+
-- **爬虫**: arxiv Python库
-- **AI摘要**: ModelScope API
-- **前端**: 原生 HTML/CSS/JavaScript
-- **部署**: GitHub Pages + GitHub Actions
-- **定时任务**: GitHub Actions Cron
-- **字体**: Google Fonts (Inter)
+- **语言**：Python 3.9+，Node.js（仅截图兜底）
+- **爬虫**：[arxiv](https://pypi.org/project/arxiv/) Python 库
+- **AI 摘要**：ModelScope API（OpenAI 兼容接口）
+- **图片处理**：Pillow（WebP 转换与缩略图）、Playwright（截图兜底）
+- **前端**：原生 HTML / CSS / JavaScript，字体 Manrope + Noto Sans SC（Google Fonts）
+- **部署**：GitHub Actions + GitHub Pages
