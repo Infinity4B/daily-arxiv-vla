@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SURE:Spatiotemporal Uncertainty Representation for Efficient Vision-Language-Action Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 SURE，一个数据高效的视觉-语言-动作（VLA）训练框架，显式建模机器人操作任务动作空间中的空间不确定性和时间不确定性 解决的核心问题：标准逐点监督将每个演示动作视为精确目标，但操作任务中存在多个邻近动作/轨迹均可成功完成任务、语义等价的演示以不同速度执行等结构性不确定性，给策略学习带来不必要的负担 目标是让 VLA 策略从更少的演示数据和更少的训练步数中学习到有效的操作行为，提升训练与数据效率" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.09684">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">SURE:Spatiotemporal Uncertainty Representation for Efficient Vision-Language-Action Learning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.09684" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.09684" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 SURE，一个数据高效的视觉-语言-动作（VLA）训练框架，显式建模机器人操作任务动作空间中的空间不确定性和时间不确定性</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.09684.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.09684.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.09684.webp" alt="SURE:Spatiotemporal Uncertainty Representation for Efficient Vision-Language-Action Learning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">清华大学（Tsinghua University）</p>
+        <ul class="article-facts"><li>arXiv 2611.09684</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>清华大学</strong>（Tsinghua University）</li><li>作者包括 Jingye Zhang、Choo Sin Wai、Dake Zhong（共同一作）、Zhifang Liu、Yuhong Zhang、Siyao Xiao、Guorui Song、Guocun Wang、Dongbin Zhang、Peng Jiao、Haoqian Wang（通讯作者）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>SURE</strong>，一个数据高效的视觉-语言-动作（VLA）训练框架，显式建模机器人操作任务动作空间中的<strong>空间不确定性</strong>和<strong>时间不确定性</strong></li><li>解决的核心问题：标准逐点监督将每个演示动作视为精确目标，但操作任务中存在多个邻近动作/轨迹均可成功完成任务、语义等价的演示以不同速度执行等结构性不确定性，给策略学习带来不必要的负担</li><li>目标是让 VLA 策略从更少的演示数据和更少的训练步数中学习到有效的操作行为，提升训练与数据效率</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>轻量级转置卷积概率动作解码器</strong>，通过邻近动作 bin 之间的局部相关性建模空间不确定性，支持快速并行的期望解码，无需迭代去噪</li><li>引入 <strong>Soft-DTW 对齐监督</strong>，使预测与演示动作块在执行速度不同（但语义一致）时仍能有效对齐，应对时间不确定性</li><li>设计联合训练目标：以 L1 动作损失为主、轻权重 KL 分布损失为辅，结合 Soft-DTW 散度损失与端点损失</li><li>在 <strong>LIBERO、RoboTwin 2.0 和真实世界基准</strong>上验证，仅用 10% 演示数据或 20% 训练步数即可达到或超越基线 VLA 的成功率</li><li>消融实验验证空间与时间不确定性建模的互补性，推理效率分析显示动作头仅 16.93M 参数，比 π₀.₅ 快 12.7×–28.8×</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>OpenVLA-7B</strong> 骨干网络，骨干输出动作 token 块后接入两个不确定性感知组件</li><li><strong>概率动作解码器</strong>：将平移和旋转的归一化动作范围 [-1,1] 离散化为 <strong>R=256</strong> 个有序 bin，使用分组 1×1 卷积融合特征后，通过转置卷积（Deconv Block，深度可分离转置卷积+逐点残差层）从 1→R/4→R 上采样，softmax 归一化后按 bin 中心期望解码为连续动作；卷积权重共享使相邻 bin 获得相关证据，提供空间不确定性的归纳偏置；夹爪维度用轻量 MLP 解码</li><li><strong>Soft-DTW 对齐</strong>：将预测与演示动作块转换为累积轨迹，用可微的 soft-min 动态时间规整（温度系数 γ 控制平滑度）计算对齐代价，并采用 Soft-DTW 散度消除自相似偏差，容忍局部时序偏移</li><li><strong>监督设计</strong>：L1 损失为主要空间监督；弱 KL 约束（λ_KL=0.05，以演示动作为中心的高斯分布 q 作为目标）作正则化；λ_DTW=0.5 结合端点损失保持最终任务进度；训练中 γ 从大值退火到目标值，实现从平滑对齐到精确时序匹配的过渡</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>（四个任务套件：LIBERO-Spatial、LIBERO-Object、LIBERO-Goal、LIBERO-Long）</li><li><strong>RoboTwin 2.0</strong>（双臂操作基准，评估 5 个任务，每任务 50 条干净专家演示）</li><li><strong>真实世界基准</strong>：6 个桌面操作任务（Water Bottle、AAA Battery、Screwdriver、Toy Duck、Stack Bowls Two、Pour Water），使用 <strong>LeRobot SO-101</strong> 机械臂，每任务 50 条演示</li><li>骨干模型：<strong>OpenVLA-7B</strong>；动作解码器仅 <strong>16.93M 参数</strong>、10.96G FLOPs</li><li>训练规模：LIBERO 10k 步（batch size 48）、RoboTwin 2.0 20k 步（BS 16）、真实世界 20k 步；具体 GPU 资源在附录中说明（正文未列出）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：仅 10k 步训练达到 <strong>97.0%</strong> 平均成功率，超过同预算 OpenVLA-OFT（87.1%）9.9%，超过 50k 步 OpenVLA-OFT（94.3%）2.7%，在四个任务套件（Spatial 99.0%、Object 99.2%、Goal 98.8%、Long 91.0%）均取得最佳</li><li><strong>RoboTwin 2.0</strong>：平均成功率 <strong>72.2%</strong>，超过最强基线 π₀（60.2%）12.0%；Click Alarm Clock 达 100%、Lift Pot 达 98.0%；比 OpenVLA-OFT 高 13.0% 且训练步数仅为其 1/5（20k vs 100k）</li><li><strong>真实世界</strong>：平均成功率 <strong>57.5%</strong>，超过 OpenVLA-OFT（41.7%）15.8%，且仅用 40% 的训练步数；Toy Duck 任务从 45% 提升至 95%</li><li><strong>数据效率</strong>：仅用 25% 的 LIBERO-Spatial 数据即达 95.0%，超过全数据训练的 OpenVLA-OFT（94.4%）；仅用 10% 数据达 93.8%</li><li><strong>推理效率</strong>：动作头仅 16.93M 参数（π₀.₅ 的 3.9%）、10.96G FLOPs（π₀.₅ 的 13.8%），标准实现延迟 1.57ms（12.7× 加速），JAX 版本 0.69ms（28.8× 加速）</li><li><strong>消融</strong>（LIBERO-Spatial）：完整 SURE 99.0%；去掉 Soft-DTW 降至 97.4%；去掉概率解码器降至 96.8%；两者均去除降至 94.4%，证明两个组件互补有效</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.09892/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">On Agentic Manipulation Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.09672/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ODEAction: From Predicting Chunks to Evolving Actions</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

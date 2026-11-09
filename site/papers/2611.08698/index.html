@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>VICTR: Value-Informed In-Context Learning for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 VICTR 框架，旨在解决视觉-语言-动作（VLA）模型中基于检索的上下文学习（ICL）依赖视觉相似性、无法准确捕捉任务执行阶段的问题 核心思想是利用 任务相对进度（task-relative progress） 作为检索信号，通过参考演示视频估计当前观测的执行进度，从而选择与当前阶段对齐的演示片段作为上下文 在真实世界未见过的领域外（OOD）操作任务上，VICTR 显著提升了微调 π0.5 基线的成功率和任务进度率" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.08698">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-05">2026-11-05</time></p>
+        <h1 class="article-title">VICTR: Value-Informed In-Context Learning for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.08698" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.08698" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 VICTR 框架，旨在解决视觉-语言-动作（VLA）模型中基于检索的上下文学习（ICL）依赖视觉相似性、无法准确捕捉任务执行阶段的问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.08698.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.08698.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.08698.webp" alt="VICTR: Value-Informed In-Context Learning for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">所有作者均隶属于 纽约大学（New York University）</p>
+        <ul class="article-facts"><li>arXiv 2611.08698</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>所有作者均隶属于 <strong>纽约大学（New York University）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>VICTR</strong> 框架，旨在解决视觉-语言-动作（VLA）模型中基于检索的上下文学习（ICL）依赖视觉相似性、无法准确捕捉任务执行阶段的问题</li><li>核心思想是利用 <strong>任务相对进度（task-relative progress）</strong> 作为检索信号，通过参考演示视频估计当前观测的执行进度，从而选择与当前阶段对齐的演示片段作为上下文</li><li>在真实世界未见过的领域外（OOD）操作任务上，VICTR 显著提升了微调 <strong>π0.5</strong> 基线的成功率和任务进度率</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>In-Context Value Function Estimator (IC-VFE)</strong>：以参考演示视频、语言指令和当前观测为条件，估计任务相对进度，无需任务特定微调</li><li>提出 <strong>VICTR</strong> 框架：基于 <strong>π0.5</strong> 的 ICL 方法，通过进度对齐检索演示片段来指导动作生成</li><li>在 <strong>8 个域内任务和 8 个域外任务</strong> 上进行真实机器人评估，证明进度感知检索将 OOD 成功率从 2.7%（微调 π0.5）和 15.0%（视觉相似性检索）提升至 25.0%</li><li>验证 IC-VFE 与人类进度标注的一致性优于现有在线价值估计器（RECAP、Robometer），并证明更好的进度估计可转化为更好的策略性能</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>IC-VFE 结构</strong>：使用 <strong>Gemma 3 4B</strong> 的冻结视觉编码器处理当前和参考观测，<strong>Gemma 3 270M</strong> 解码器进行进度预测；参考演示被压缩为每视图 16 个摘要 token，当前观测保留 256 个细节 token</li><li><strong>混合注意力机制</strong>：大多数层使用块内双向注意力，在特定层（第 6、12、18 层）使用块因果注意力实现参考演示的时间聚合；引入可学习的块索引嵌入编码顺序信息</li><li><strong>进度预测头</strong>：将输出映射到 201 个离散 bin（支持 -1 到 0），通过 softmax 后取期望并平移至 [0,1] 得到连续进度值</li><li><strong>检索与策略</strong>：演示池被索引为键值存储，键包含 IC-VFE 估计的进度和 DINOv2 视觉嵌入；检索时选择进度距离最小的示范块；IC-VLA 将检索到的上下文块、当前观测和指令拼接后预测动作块</li><li><strong>训练监督</strong>：IC-VFE 使用 <strong>Robo-Dopamine</strong> 生成的离线进度伪标签训练；IC-VLA 基于 <strong>π0.5</strong> 官方 checkpoint 微调，训练时使用 oracle 进度值采样上下文，部署时使用 IC-VFE 估计</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>自建真实机器人数据集</strong>：28 个任务，1,180 条 episodes，总计 7.5 小时（7 小时训练，30 分钟演示池）</li><li><strong>演示池</strong>：每个评估任务提供 10 条上下文演示，其中最短的作为 IC-VFE 的参考演示</li><li><strong>机器人平台</strong>：<strong>YOR 双手机器人</strong>，头部 ZED 相机和两个腕部鱼眼相机，两个 7-DoF AgileX Piper 机械臂</li><li><strong>模型规模</strong>：IC-VFE 使用 Gemma 3 4B 视觉编码器 + 270M 解码器；IC-VLA 基于 <strong>π0.5</strong>（参数规模未具体说明）</li><li><strong>训练资源</strong>：使用 <strong>NVIDIA RTX 6000 Ada GPUs</strong>（由 NVIDIA Academic Grant Program 提供）；计算支持来自 NYU IT 高性能计算资源</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：真实机器人，8 个域内任务和 8 个域外任务（包含新物体替换、技能组合、语义相似但未见任务）；每任务 10 次 rollout</li><li><strong>主要指标</strong>：二值成功率（binary success rate）和任务进度率（task progress rate，基于预定义里程碑）</li><li><strong>主结果（OOD）</strong>：微调 π0.5 基线成功率 6.2%、进度率 28.9%；RICL-π0.5（无插值）成功率 15.0%、进度率 42.1%；VICTR 成功率 23.8%、进度率 55.5%；VICTR+vision 成功率 21.2%、进度率 47.8%</li><li><strong>域内结果</strong>：所有检索方法进度率 87.5%-90%，对比 π0.5 的 82.2%，差异较小</li><li><strong>IC-VFE 质量</strong>：在 16 个评估任务上与人类标注的 Kendall τb 和 Pearson r 均优于 RECAP、Robometer 及无上下文/无块嵌入消融基线</li><li><strong>VFE 部署影响</strong>：使用 IC-VFE 检索的 OOD 进度率达 62.7%，远高于 Robometer（29.2%）等替代方案</li><li><strong>消融研究</strong>：演示池大小从 1 增至 5 时性能提升并趋于饱和；训练与部署使用相同检索信号时性能最佳，但交换后仍具一定泛化能力</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.08827/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ActPrune: Action-Grounded Visual Token Pruning for Efficient Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.08577/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Meituan-Robotics-0: A Vision-Language-Action Foundation Model for Desktop Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

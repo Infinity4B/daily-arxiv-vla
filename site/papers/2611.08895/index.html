@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Localizing and Editing the Goal Representation of a Vision-Language-Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究 Vision-Language-Action (VLA) 模型（以 OpenVLA-7B 为代表）如何表示和执行其“目标”，特别是当指令包含安全禁止（如“不要把碗放在炉子上”）时是否得到遵循。 核心问题：VLA 在接收到否定指令（prohibitions）时是否真的改变行为，以及目标表示在哪里编码、能否被编辑。 通过 LIBERO-Goal 基准（10 个任务共享同一场景）结合激活修补、线性探针、激活引导和运行时监控，揭示 OpenVLA 基本忽略否定指令，并且目标表示存在清晰的层级定位。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.08895">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">Localizing and Editing the Goal Representation of a Vision-Language-Action Model</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.08895" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.08895" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究 Vision-Language-Action (VLA) 模型（以 OpenVLA-7B 为代表）如何表示和执行其“目标”，特别是当指令包含安全禁止（如“不要把碗放在炉子上”）时是否得到遵循。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.08895.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.08895.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.08895.webp" alt="Localizing and Editing the Goal Representation of a Vision-Language-Action Model 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University of Louisville（作者：Sudhanshu Srivastava、Fa…</p>
+        <ul class="article-facts"><li>arXiv 2611.08895</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of Louisville</strong>（作者：Sudhanshu Srivastava、Faisal Aqlan）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究 <strong>Vision-Language-Action (VLA) 模型</strong>（以 <strong>OpenVLA-7B</strong> 为代表）如何表示和执行其“目标”，特别是当指令包含安全禁止（如“不要把碗放在炉子上”）时是否得到遵循。</li><li>核心问题：VLA 在接收到否定指令（prohibitions）时是否真的改变行为，以及目标表示在哪里编码、能否被编辑。</li><li>通过 <strong>LIBERO-Goal</strong> 基准（10 个任务共享同一场景）结合激活修补、线性探针、激活引导和运行时监控，揭示 <strong>OpenVLA 基本忽略否定指令</strong>，并且目标表示存在清晰的层级定位。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>实证发现 <strong>OpenVLA 在否定指令下仍执行被禁止任务</strong>：在 79% 的否定 rollout 中执行了被禁任务，与普通指令的成功率（78%）无明显差异（McNemar p=0.30）。</li><li>定位 <strong>目标表示的关键层</strong>：激活修补显示，指令 token 在 <strong>第 8 层</strong> 几乎完全决定首个动作（ρ=0.94），之后逐渐减弱；决策 token 从 <strong>第 16 层</strong> 起主导目标表示（ρ=0.77），形成明显的“层 12–16 过渡”。</li><li>证明 <strong>编辑目标的有效窗口</strong>：在过渡前（层 8）可以用固定转向向量重定向 12/18 个 rollout；过渡后（层 12–20）固定向量和 prefill 修补几乎无效；只有对 <strong>每个解码动作 token</strong> 进行 decode-stream 修补才能在层 24 重定向 15/18 个 rollout。</li><li>提出 <strong>基于目标读出的规范感知监控器</strong>：在指令切换过程中，层 32 目标读出对违规检测的 AUROC 达 0.88，优于成功探针（0.74）和动作熵（0.59）；外部 <strong>DINOv2 + 文本</strong> 探针表现与之相当（0.87），说明无需内部访问也能实现监控。</li><li>给出对机器人安全的实践建议：<strong>禁止应在指令之外强制执行</strong>，并监控目标读出与规范的一致性；目标编辑应作用于层 12 之前或修补每个动作 token。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>执行目标标签</strong>：对每步评估 LIBERO-Goal 的 10 个符号目标谓词，以首个连续 5 步满足的谓词作为该 rollout 的执行目标；无目标称为 stall。</li><li><strong>激活修补（Activation Patching）</strong>：将指令 token、模板 token 或决策 token 的残差流替换为另一任务指令下的值，计算归一化 logit 差（ρ）和逐动作维度转移。</li><li><strong>线性探针（Linear Probes）</strong>：对标准化后投影到 256 主成分的残差流拟合多分类逻辑回归，预测最终执行目标；构建规范感知得分（s_t = 禁止目标的最大 log p − 允许目标的最大 log p）。</li><li><strong>编辑与转向</strong>：比较 prefill 修补、decode-stream 修补、类均值向量、反事实均值向量、位置反事实均值和指令跨度向量等方法在不同层和位置的效果。</li><li><strong>运行时监控</strong>：使用 split-conformal 校准阈值，比较目标探针、成功探针、动作熵、外部视觉+文本探针、对象姿态探针和 pair+time 先验在重定向违规检测上的表现。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO-Goal</strong>（10 个任务共享同一场景）；自建条件包括 <strong>nominal</strong>（352 rollouts）、<strong>negation</strong>（120 rollouts，5 种否定表达）、<strong>redirect</strong>（285 rollouts，6 对共享对象的任务对切换）和 <strong>novel compositions</strong>（24 rollouts）。</li><li><strong>模型</strong>：<strong>OpenVLA-7B</strong>（基于 Llama-2 主干），已在 LIBERO-Goal 上微调；名义成功率为 78%（95% CI [73, 82]）。</li><li><strong>训练资源</strong>：所有实验均在 <strong>单块 RTX A6000</strong> 上运行。</li><li>代码与数据已公开在 GitHub（<code>https://github.com/sudsho/vla-goal-representation</code>）并归档于 Zenodo（DOI: 10.5281/zenodo.23871372）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO-Goal 仿真场景；评价指标包括执行目标匹配率、归一化 logit 差（ρ）、转移率、AUROC、TPR、FA、Wilson 区间和 cluster bootstrap CI。</li><li><strong>否定指令下</strong>：被禁任务执行率 79%（95% CI [71, 85]）；目标探针在“not X”与“X”指令下对 X 的读出相似（均≥0.73 到层 28）。</li><li><strong>定位结果</strong>：指令 token 在层 8 的 ρ=0.94，层 12 为 0.69，层 16 起降为 0.18；决策 token 在层 8 为 0.04，层 16 起升至 0.77；线性探测器在层 4 对“not”的检测准确率为 1.00，层 16 为 0.87，层 28 为 0.76。</li><li><strong>编辑结果</strong>：层 8 指令跨度向量重定向 12/18（67%）；层 12–20 固定向量/prefill 重定向 0/158；层 16 的 decode-stream 重定向 7/18（39%），层 24 达 15/18（83%）。</li><li><strong>监控结果</strong>：层 32 目标探针对重定向不遵循的 AUROC 为 0.94（整体）和 0.88（within-pair）；TPR 0.88，FA 0.13；外部 DINOv2+文本探针 within-pair AUROC 0.87，与层 32 探针差异不显著（+0.02, 95% CI [-0.02, +0.06]）。</li><li><strong>失败检测对比</strong>：动作熵对禁止执行的 TPR 仅 0.21，成功探针 TPR 0.46，而目标探针 TPR 0.88–1.00，显示失败检测器不适合检测规范违反。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.08917/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">PRISM: Primitive Routing via In-context Skill Mixing for Retentive VLA Adaptation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.08827/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ActPrune: Action-Grounded Visual Token Pruning for Efficient Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

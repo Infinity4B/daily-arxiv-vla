@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>HiMEM: Hippocampus-Inspired Memory Consolidation, Pruning, and Composition for Vision-Language-Action Models in 3D Scenes - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 HiMEM，一个面向 3D 场景中 VLA（Vision-Language-Action）模型的海马体启发的长期记忆框架，包含情景记忆巩固、剪枝与组合机制 解决的核心问题是现有 VLA 记忆机制中的“记忆噪声”：存储的情景记忆包含大量与场景布局、物体配置和机器人特定状态相关的冗余细节，掩盖了可泛化的操作原理，阻碍跨任务迁移 该论文是对其 NeurIPS 2026 会议论文 ECHO 的实质性扩展，针对 3D 环境中的长时程、复杂空间操作任务" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.09355">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">HiMEM: Hippocampus-Inspired Memory Consolidation, Pruning, and Composition for Vision-Language-Action Models in 3D Scenes</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.09355" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.09355" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 HiMEM，一个面向 3D 场景中 VLA（Vision-Language-Action）模型的海马体启发的长期记忆框架，包含情景记忆巩固、剪枝与组合机制</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.09355.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.09355.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.09355.webp" alt="HiMEM: Hippocampus-Inspired Memory Consolidation, Pruning, and Composition for Vision-Language-Action Models in 3D Scenes 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">西安交通大学 软件学院（Boran Zhao, Yanbin Hu, Jun Ye, Zhenxian…</p>
+        <ul class="article-facts"><li>arXiv 2611.09355</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>西安交通大学</strong> 软件学院（Boran Zhao, Yanbin Hu, Jun Ye, Zhenxian Hu, Yuxin Zhai）</li><li><strong>西安交通大学</strong> 人工智能学院（Jin Cui, Pengju Ren）</li><li>所有作者同时隶属于<strong>人机混合增强智能全国重点实验室</strong>（西安交通大学人工智能与机器人研究所）</li><li>通讯作者：<strong>Pengju Ren</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>HiMEM</strong>，一个面向 3D 场景中 VLA（Vision-Language-Action）模型的海马体启发的长期记忆框架，包含情景记忆巩固、剪枝与组合机制</li><li>解决的核心问题是现有 VLA 记忆机制中的“记忆噪声”：存储的情景记忆包含大量与场景布局、物体配置和机器人特定状态相关的冗余细节，掩盖了可泛化的操作原理，阻碍跨任务迁移</li><li>该论文是对其 NeurIPS 2026 会议论文 <strong>ECHO</strong> 的实质性扩展，针对 3D 环境中的长时程、复杂空间操作任务</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出受海马体与新皮层互补机制启发的<strong>元语义记忆巩固方法</strong>（meta-semantic memory consolidation），通过跨场景统计分析从操作经验中提取共享模式，将环境条件、物体特性、操作策略及成功概率组织为紧凑的语义知识</li><li>提出<strong>情景记忆剪枝机制</strong>（semantic-conditioned diversity-preserving pruning, SCDP），在建立可泛化语义记忆后移除内容相似的冗余情景记忆，提高长期记忆的存储效率与容量</li><li>提出任务条件化的<strong>记忆组合与利用机制</strong>，整合情景记忆与元语义记忆，通过逐步任务规划为动作生成提供指导，支持新任务组合和操作条件下的经验复用</li><li>在 LIBERO 四个标准测试套件上，将三个主流记忆无关 VLA 模型（<strong>π₀</strong>、<strong>π₀.₅</strong>、<strong>OpenVLA-OFT</strong>）的平均成功率分别提升 6.32、3.65 和 2.15 个百分点；相比 ECHO 进一步提升 0.90、1.17 和 0.57 个百分点</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>情景记忆构建与组织</strong>：使用 <strong>Qwen2-VL-7B-Instruct</strong> 提出任务分解与子目标边界，将执行切分为可复用的操作片段，通过双曲自编码器将骨干网络隐状态映射到 512 维 Lorentz 空间，组织为从一般到具体的超边记忆树</li><li><strong>跨情景元语义巩固</strong>：受海马体-新皮层互补机制启发，使用 VLM 对比不同条件下相关操作的视频与状态，提出包含条件（C）、操作（A）和成功率估计（基于 Beta 先验）的规则 R=(C, A, P̂)</li><li><strong>语义条件化剪枝（SCDP）</strong>：通过条件签名分组、Lorentz 空间中最远点采样选择代表性情景记忆，保护独特失败案例与条件边界案例，删除被语义规则覆盖且冗余的记忆</li><li><strong>分层检索与语义调节</strong>：从 VLM 前缀 token 获取查询状态，beam 搜索（k=3）结合 Lorentz 相似度进行由粗到细的树检索；语义规则基于成功率、支持度和匹配度计算系数，加强、削弱或屏蔽候选经验</li><li><strong>几何记忆组合</strong>：沿 Lorentz 测地线插值合成候选向量，仅用于当前推理，不写入永久记忆</li><li><strong>记忆融合与策略注入</strong>：在 Lorentz 空间中将语义加权的长期记忆先验与短期表示融合，解码为残差向量并以受限强度注入 VLA 动作生成路径（如 π₀ 的 Action Expert 后缀 token）</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主要仿真基准：<strong>LIBERO</strong>（Spatial、Object、Goal、Long 四个套件）与 <strong>LIBERO-Plus</strong>（鲁棒性测试）</li><li>真实世界评估：<strong>Franka Emika Panda</strong> 机械臂</li><li>VLA 骨干模型：<strong>π₀</strong>、<strong>π₀.₅</strong>、<strong>OpenVLA-OFT</strong></li><li>辅助模型：<strong>Qwen2-VL-7B-Instruct</strong>（任务分解、子目标边界检测与规则归纳，使用 LoRA 微调）</li><li>记忆初始化：每任务 10 个成功演示；仿真验证基于 <strong>MuJoCo</strong> 状态与 BDDL 谓词</li><li>每个任务使用 50 个 episode，种子为 7、123、2024；LIBERO 各套件最大步数分别为 220、280、300、520</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>LIBERO</strong> 四个套件（Spatial/Object/Goal/Long）为主基准，<strong>LIBERO-Plus</strong> 测试扰动鲁棒性，<strong>Franka Emika Panda</strong> 真实机器人进行迁移与物理评估</li><li>主要指标：任务成功率，每个 LIBERO 任务 50 个 episode，种子为 7、123、2024</li><li>关键结果：π₀ + HiMEM 在 LIBERO 上平均成功率从 91.88% 提升至 <strong>98.20%</strong>；π₀.₅ + HiMEM 达到 <strong>98.70%</strong>（LIBERO-Plus 95.8%）；OpenVLA-OFT + HiMEM 达到 <strong>98.95%</strong>（LIBERO-Plus 74.2%）</li><li>LIBERO-Plus 零样本鲁棒性：π₀ + HiMEM 达到 <strong>59.6%</strong>（基线 π₀ 为 54.2%），超过 ECHO 的 56.9%</li><li>真实世界操作：基础任务平均成功率从 ECHO 的 70.0% 提升至 HiMEM 的 <strong>78.3%</strong>；复合任务平均从 ECHO 的 47.0% 提升至 <strong>61.0%</strong>（骨干网络基线仅 37.0%）</li><li>实验还验证了留出经验迁移（held-out transfer）、跨测试套件组合泛化、效率与记忆规模等方面的表现</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.09376/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Can LLMs Debug Robots by Editing Their Weights?</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.09293/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">MDF++: Visuo-Tactile World Action Model with End-to-end Representation Learning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

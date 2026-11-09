@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Meituan-Robotics-0: A Vision-Language-Action Foundation Model for Desktop Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了 Meituan-Robotics-0 (MR0)，一个面向桌面操作的视觉-语言-动作（VLA）基础模型与具身智能体系统。 旨在解决异构机器人数据难以对齐、策略缺乏错误恢复能力、反应式策略无法保存长期任务状态等关键问题。 通过大规模多模态数据、三阶段训练配方、真实世界后训练和事件驱动记忆机制，实现通用、可迁移、长时程的桌面操作。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.08577">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-05">2026-11-05</time></p>
+        <h1 class="article-title">Meituan-Robotics-0: A Vision-Language-Action Foundation Model for Desktop Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.08577" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.08577" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 Meituan-Robotics-0 (MR0)，一个面向桌面操作的视觉-语言-动作（VLA）基础模型与具身智能体系统。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.08577.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.08577.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.08577.webp" alt="Meituan-Robotics-0: A Vision-Language-Action Foundation Model for Desktop Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">美团机器人团队（Meituan Robotics Team），论文中未列出具体作者姓名，仅以团队署名。</p>
+        <ul class="article-facts"><li>arXiv 2611.08577</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>美团机器人团队（Meituan Robotics Team）</strong>，论文中未列出具体作者姓名，仅以团队署名。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>Meituan-Robotics-0 (MR0)</strong>，一个面向桌面操作的视觉-语言-动作（VLA）基础模型与具身智能体系统。</li><li>旨在解决异构机器人数据难以对齐、策略缺乏错误恢复能力、反应式策略无法保存长期任务状态等关键问题。</li><li>通过大规模多模态数据、三阶段训练配方、真实世界后训练和事件驱动记忆机制，实现通用、可迁移、长时程的桌面操作。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>构建了 <strong>147M 视觉-语言样本 + 15,060 小时机器人轨迹</strong> 的跨本体数据基础，并设计了数据策展管线（静态边界过滤、运动学一致性校验、视觉缺陷过滤、跨本体动作规范化、层级任务标注）。</li><li>提出 <strong>三阶段渐进训练配方</strong>：离散动作令牌预训练、连续流匹配跨本体中期训练、真实世界策略优化（含 HG-DAgger、RECAP、CFG-DAgger）。</li><li>引入 <strong>Rollback 数据收集机制</strong>，将失败策略片段与人类修正配对，为 CFG-DAgger 提供直接正负样本，避免价值学习和优势标注。</li><li>设计 <strong>异步动作块合并</strong> 算法，在可变推理延迟下保持平滑连续控制。</li><li>提出 <strong>事件驱动的具身智能体系统</strong>，将视觉观察转化为持久任务事件，仅在任务进展或可行性变化时触发高级重规划，实现跨任务事件检索和条件任务恢复。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>策略架构</strong>：共享视觉-语言骨干（基于 Qwen3.5-4B）配合阶段化输出头；预训练使用 FAST 离散令牌头，中期及以后使用 MMDiT 连续动作头，通过流匹配生成动作块。</li><li><strong>统一动作表示</strong>：将异构本体的末端执行器位姿规范到统一的肩中心坐标系，采用 10 维单臂 / 20 维双臂动作格式，通过二进制掩码处理不同本体维度。</li><li><strong>渐进训练</strong>：第一阶段联合优化 VLA 动作池和 VLM 池，使用交叉熵损失；第二阶段引入 MMDiT 头，使用 JiT 流匹配和掩码损失，并采用 langmix 策略混合语言粒度；第三阶段结合人类介入数据（HG-DAgger、Rollback、RECAP、CFG-DAgger）进行真实世界策略优化。</li><li><strong>异步执行</strong>：基于 EVA-Client 的底层栈解耦策略推理和控制循环，通过时间对齐、重叠插值和后缀拼接实现动作块的无缝更新。</li><li><strong>事件驱动智能体</strong>：Monitor 将短观察窗口转换为结构化描述，Memory Manager 构建事件记忆，Planner 仅在事件改变任务进展或可行性时介入，其他时间低层 VLA 策略连续执行。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>视觉-语言数据</strong>：147M 样本，包含通用 VQA、空间推理、视觉定位、计数等（78%）和具身场景描述、任务规划、可供性定位等（22%）。</li><li><strong>机器人数据</strong>：15,060 小时轨迹，涵盖 12 种本体，包括 <strong>RoboDesk</strong>（开源真实数据，3,235 小时）、许可真实机器人数据（7,530 小时）、开源仿真数据（4,295 小时）。</li><li><strong>模型规模</strong>：共享骨干 <strong>Qwen3.5-4B</strong>，连续动作头 <strong>MMDiT</strong>，动作块宽度固定为 20 维（双臂）或 10 维（单臂）。</li><li><strong>训练资源</strong>：预训练使用 <strong>256 GPUs</strong>，训练 500,000 步；中期训练使用 <strong>128 GPUs</strong>，优化器为 AdamW 配合余弦学习率衰减。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：RoboTwin 2.0 上 50 个任务、每个任务 100 个回合，在 Clean 和 Randomized 两个 split 上分别评估；MR0 达到 <strong>93.6% 平均成功率</strong>。RoboDojo VLA track 中，历史增强策略按平均成功率排名第五。</li><li><strong>真实机器人评估</strong>：在三种真实任务上，匹配 HG-DAgger 后训练的条件下，MR0 的平均成功率和进度分数均高于 π0.5。以太网线插入任务上，使用 Rollback 数据的 CFG-DAgger 达到 <strong>70% 成功率</strong> 和 <strong>0.90 进度分数</strong>，优于 HG-DAgger 和 RECAP。</li><li><strong>定性部署</strong>：展示了跨任务事件检索和在临时条件不满足后恢复任务的能力。</li><li><strong>消融研究</strong>：在 CALVIN ABC→D 设置中验证了视觉-语言监督类型对策略性能的影响，确定 2D 目标可供性定位和场景描述为最优监督信号。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.08698/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">VICTR: Value-Informed In-Context Learning for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.08576/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Q-OIL: Optimistic Exploration in Learning from Human Interventions</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

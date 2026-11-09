@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>VLA Handover: Failure-Prediction-Based Switching from On-Robot to Server VLA Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 VLA handover 方法：机器人本地运行小规模 VLA（S-VLA），仅在预估 S-VLA 可能失败时切换至服务器端大规模 VLA（L-VLA） 针对大型视觉-语言-动作模型在机器人端实时运行困难、小型模型泛化差，以及远程逐块查询导致服务器可服务机器人数量受限的问题 目标是在满足所需任务成功概率的前提下最小化远程请求成本" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.08987">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">VLA Handover: Failure-Prediction-Based Switching from On-Robot to Server VLA Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.08987" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.08987" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 VLA handover 方法：机器人本地运行小规模 VLA（S-VLA），仅在预估 S-VLA 可能失败时切换至服务器端大规模 VLA（L-VLA）</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.08987.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.08987.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.08987.webp" alt="VLA Handover: Failure-Prediction-Based Switching from On-Robot to Server VLA Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者 Takayuki Nishio 隶属于 Institute of Science Tokyo（东…</p>
+        <ul class="article-facts"><li>arXiv 2611.08987</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者 <strong>Takayuki Nishio</strong> 隶属于 <strong>Institute of Science Tokyo</strong>（东京科学大学），School of Engineering</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>VLA handover</strong> 方法：机器人本地运行小规模 VLA（S-VLA），仅在预估 S-VLA 可能失败时切换至服务器端大规模 VLA（L-VLA）</li><li>针对大型视觉-语言-动作模型在机器人端实时运行困难、小型模型泛化差，以及远程逐块查询导致服务器可服务机器人数量受限的问题</li><li>目标是在满足所需任务成功概率的前提下最小化远程请求成本</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将切换决策形式化为约束优化问题：在任务成功概率不低于需求值下最小化期望请求成本（Sec. II）</li><li>提出三模块启发式框架：<strong>失败分数估计器</strong>（基于 FIPER 的 RND 和 ACE 分数）、<strong>切换决策器</strong>（双阈值触发）、<strong>切换处理器</strong>（手臂重置与模型切换），且无需重训练任何 VLA</li><li>在 <strong>LIBERO</strong> 四个套件中验证，其中三个套件证明 VLA handover 以约 1/4 至 1/2 的请求量接近 server-only 的成功率，并大幅提升单服务器可容纳的机器人数量</li><li>深入分析请求来源，指出失败切换实例贡献了 32%–63% 的请求量，并讨论停止无望恢复的切换作为未来方向</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>失败分数估计</strong>：采用 FIPER 的两个互补分数——观察分数（随机网络蒸馏 RND，衡量观察新颖性）和动作分数（动作块熵 ACE，衡量动作不确定性），均基于成功 rollouts 训练/计算</li><li><strong>切换决策</strong>：当两个滑动窗口分数同时超过各自阈值时触发唯一一次切换；阈值通过成功 rollouts 的 conformal 分位数校准（δ=0.1），并引入缩放因子 κ 调节敏感度</li><li><strong>切换处理器</strong>：先执行手臂重置（打开夹爪、垂直移动至初始高度、回到初始位姿），然后切换至 L-VLA 并采用流水线执行远程推理结果</li><li><strong>关键创新</strong>：区别于现有每个动作块均请求服务器的协作方案，仅在失败预测触发时切换，大幅减少请求数量，且无需重训练模型</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用的数据集/基准：<strong>LIBERO</strong> 的四个套件：<strong>LIBERO-Spatial</strong>、<strong>LIBERO-Object</strong>、<strong>LIBERO-Goal</strong>、<strong>LIBERO-Long</strong></li><li>模型：S-VLA 使用 <strong>HuggingFaceVLA/smolvla_libero</strong>（32 层 SmolVLM2-500M），L-VLA 使用 <strong>lerobot/pi05_libero_finetuned</strong>（π_0.5）</li><li>训练资源：无需重训练模型；仅利用成功 rollouts 校准失败分数阈值和选择窗口；推理在 <strong>NVIDIA GB10</strong> 上进行，π_0.5 吞吐约 4.4 inferences/s（单次推理 229ms）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：仿真环境中使用 <strong>LIBERO</strong> 套件，延迟模拟为 log-normal 分布（中位数 0.25s，CV 0.3），场景准静态</li><li>主要评估指标：成功率（95% Wilson 区间）、每 episode 请求数、服务器控制步数占比、完成时间</li><li>关键实验结果（<strong>LIBERO-Object</strong>）：VLA handover 成功率 <strong>94.4%</strong>（device-only 83.8%，server-only 96.8%），请求 <strong>3.40/episode</strong>（server-only 14.99），减少 <strong>77.3%</strong>；单服务器约可容纳 <strong>12 台</strong>机器人（server-only 约 2 台）</li><li><strong>LIBERO-Goal</strong> 和 <strong>LIBERO-Spatial</strong>：成功率分别提升 <strong>14.7</strong> 和 <strong>22.4</strong> 个百分点，请求减少 <strong>60%</strong> 和 <strong>49%</strong></li><li><strong>LIBERO-Long</strong> 表现不足：成功率仅 <strong>63.6%</strong>（server-only 93.2%），因 S-VLA 成功率仅 35%，大量切换后失败导致请求仍多</li><li>延迟影响：VLA handover 完成时间随延迟从 0.1s 到 1.0s 增加小于 <strong>1.2s</strong>，而 server-only 增加 <strong>3.6–5.0s</strong>；成功率在延迟 ≥ 0.5s 时下降 1–5 个百分点</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.09041/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DobotTrack: Target-Grounded Vision-Language-Action Learning for Embodied Person Tracking</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.08917/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">PRISM: Primitive Routing via In-context Skill Mixing for Retentive VLA Adaptation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

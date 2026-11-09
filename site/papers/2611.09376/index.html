@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Can LLMs Debug Robots by Editing Their Weights? - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文将“权重空间编程”引入机器人基础策略调试：让 LLM（GPT-6 Astra）直接读取并修改机器人策略的网络权重，无需梯度更新或新演示数据 核心问题是：当机器人已有操作技能但因“词法指令接地失败”而无法执行（如把“activate the cooking appliances heat source”误解为拿盘子），LLM 能否通过权重编辑修复这一连接 论文同时检验编辑器的能力边界：既测试其能否找到有效干预，也测试其能否主动拒绝无法通过自身验证的干预" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.09376">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">Can LLMs Debug Robots by Editing Their Weights?</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.09376" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.09376" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文将“权重空间编程”引入机器人基础策略调试：让 LLM（GPT-6 Astra）直接读取并修改机器人策略的网络权重，无需梯度更新或新演示数据</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.09376.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.09376.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.09376.webp" alt="Can LLMs Debug Robots by Editing Their Weights? 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Stanford University（斯坦福大学）</p>
+        <ul class="article-facts"><li>arXiv 2611.09376</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Stanford University</strong>（斯坦福大学）</li><li><strong>X-Era AI</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文将“权重空间编程”引入机器人基础策略调试：让 LLM（<strong>GPT-6 Astra</strong>）直接读取并修改机器人策略的网络权重，无需梯度更新或新演示数据</li><li>核心问题是：当机器人已有操作技能但因“词法指令接地失败”而无法执行（如把“activate the cooking appliances heat source”误解为拿盘子），LLM 能否通过权重编辑修复这一连接</li><li>论文同时检验编辑器的能力边界：既测试其能否找到有效干预，也测试其能否主动拒绝无法通过自身验证的干预</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>对 VLA（<strong>π₀.₅</strong>）的可复现词法修复：三个独立编辑会话均提升 held-out 改写指令成功率，且结果变化严格局限于含被编辑 token 的指令</li><li>系统控制实验：分离编辑方向与编辑规模、完整替换与编辑器插值，并明确词典对照可解释的部分</li><li>跨 <strong>16 个会话</strong>的完整记录（保留与拒绝的编辑），其中 13 个非语言修复会话中 12 个拒绝其候选编辑</li><li>单独发现：基准指令元数据使 <strong>FastWAM</strong> 成功率从 70.0% 降至 48.6%，而被评估 VLA 的总体成功率不受影响</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>编辑器（GPT-6 Astra）接收策略权重、tokenizer 和持久化 CPU Python 内核（禁止梯度更新、训练循环、目标网络执行），配合预算化的模拟器前向工具进行 practice rollout 与激活探测</li><li>成功编辑仅改动 token 嵌入表：对选定源 token 行按公式 E′ᵢ = (1−αᵢ)Eᵢ + αᵢ·Ē(Tᵢ) 向任务锚点嵌入（如 stove、bowl、wine）做插值重映射，强度 0.5–1.0</li><li>最佳编辑 C 仅改 <strong>65 个嵌入行</strong>（132,768 个标量，占导出参数的 0.00367%），不改任何视觉、注意力或动作专家张量</li><li>具有结构化局部性保证：指令不含被编辑 token 时，固定输入下动作完全不变；候选值在配对 held-out 评估前冻结，held-out 结果不反馈给编辑器</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>目标模型：openpi 发布的 <strong>π₀.₅ pi05_libero</strong> 检查点，<strong>3.62B 参数</strong>（SigLIP 视觉编码 + PaliGemma 风格 VLM 前缀 + flow-matching 动作专家）；另测试 <strong>FastWAM</strong> 检查点</li><li>评估套件：<strong>LIBERO</strong> 系列（含 LIBERO-Plus、LIBERO-PRO、LIBERO-RECOVER），765 个 held-out 语言改写变体、4,986 个 practice 变体</li><li>复现对象：Takehi 等人发布的 <strong>Qwen3.5-0.8B</strong> p50c 编辑（MATH-500 上得 49.4%，对应原报告 48.1%）</li><li>计算资源：CPU Python 工作区（最高 900 秒、96 GB 内存）；每个机器人会话 40–50 次模拟器前向请求，语言修复会话各 50 次；无额外策略训练</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>统计方法：同变体、同种子、同初始状态的配对比较，精确双侧 McNemar 检验及 Holm 校正</li><li>三个独立会话均改善 held-out 成功率（765 个变体）：A 从 86.3%→89.4%（p=1.82×10⁻⁴）、B 86.3%→88.0%（p=0.0106）、最佳 C 86.3%→<strong>92.0%</strong>（48 修复/4 回退，p=1.31×10⁻¹⁰）</li><li>局部性验证：含编辑 token 的 335 条指令成功率从 74.3%→<strong>87.5%</strong>（+13.13pp），其余 430 条指令<strong>零结果变化</strong>；最难改写级别（level 5）从 59.8%→78.2%</li><li>控制实验：随机方向、匹配范数的编辑无帮助（p=0.134）；使用编辑器自身词典的全替换解释大部分增益但回退更多，与编辑器直接差异不显著（p=0.0614）</li><li>界限证据：另外 13 个机器人会话（FastWAM、相机/背景/语言扰动、恢复、LIBERO-PRO）中 <strong>12 个拒绝</strong>最终候选；唯一保留的 FastWAM 候选 held-out 增益不显著（p=0.542）</li><li>独立发现：LIBERO-Plus 指令元数据使 FastWAM 成功率从 70.0% 降至 <strong>48.6%</strong>（p=4.36×10⁻¹²），而 π₀.₅ 两种格式下均为 88.6%</li><li>结论支持精确词法修复这一狭窄能力，而非一般性缺失技能获取；所有实验均在仿真中完成，未证明物理机器人迁移或语言泛化</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.09672/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ODEAction: From Predicting Chunks to Evolving Actions</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.09355/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">HiMEM: Hippocampus-Inspired Memory Consolidation, Pruning, and Composition for Vision-Language-Action Models in 3D Scenes</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

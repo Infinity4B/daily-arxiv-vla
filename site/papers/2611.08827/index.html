@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ActPrune: Action-Grounded Visual Token Pruning for Efficient Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 ActPrune，一种免训练的视觉 token 剪枝方法，旨在降低视觉-语言-动作（VLA）模型的推理成本 利用机器人自身执行的动作（前一步预测的动作块）在视觉编码器之前进行剪枝，无需等待当前观测编码 解决闭环控制中 VLA 模型推理延迟高、响应速度受限的问题" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.08827">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">ActPrune: Action-Grounded Visual Token Pruning for Efficient Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.08827" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.08827" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 ActPrune，一种免训练的视觉 token 剪枝方法，旨在降低视觉-语言-动作（VLA）模型的推理成本</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.08827.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.08827.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.08827.webp" alt="ActPrune: Action-Grounded Visual Token Pruning for Efficient Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者均来自 韩国梨花女子大学（Ewha Womans University）</p>
+        <ul class="article-facts"><li>arXiv 2611.08827</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者均来自 <strong>韩国梨花女子大学</strong>（Ewha Womans University）</li><li>具体隶属于 <strong>Human-Centered Artificial Intelligence Research Institute</strong> 和 <strong>Division of Artificial Intelligence &amp; Software</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>ActPrune</strong>，一种免训练的视觉 token 剪枝方法，旨在降低视觉-语言-动作（VLA）模型的推理成本</li><li>利用机器人自身执行的动作（前一步预测的动作块）在视觉编码器之前进行剪枝，无需等待当前观测编码</li><li>解决闭环控制中 VLA 模型推理延迟高、响应速度受限的问题</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ActPrune</strong> 框架，将剪枝决策从编码后提前到编码前，利用动作几何先验减少视觉计算</li><li>识别出同一动作在固定第三视角和腕部视角产生不同的冗余模式，并设计<strong>视角特定剪枝策略</strong></li><li>在 <strong>LIBERO</strong> 和 <strong>VLABench</strong> 上实现最高 <strong>1.61 倍加速</strong>和 <strong>59.5% FLOPs 减少</strong>，性能损失可忽略</li><li>在真实 <strong>7-DoF Franka Research 3</strong> 机器人上验证了方法的实用性</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>第三视角剪枝</strong>：将前一步动作预测的末端执行器轨迹投影到图像平面，保留轨迹附近的 patch，同时使用语义锚点补充任务相关区域</li><li><strong>腕部视角剪枝</strong>：利用动作引起的相机运动，通过深度图重投影补偿运动，将冗余 patch 合并为粗略上下文 token，减少编码器计算</li><li><strong>嵌入级剪枝</strong>：将部分保留预算推迟到编码器之后，根据编码器注意力对 token 进行排序剪枝</li><li>剪枝预算分为<strong>块级比例</strong>和<strong>嵌入级比例</strong>，仅保留整体 token 的一部分送入 LLM 骨干</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真环境：<strong>LIBERO</strong>（Spatial、Object、Goal、Long 四个任务子集）和 <strong>VLABench</strong></li><li>真实机器人：<strong>Franka Research 3</strong>（配备 UMI 式指尖、第三视角相机和腕部相机）</li><li>基础模型：<strong>OpenVLA-OFT</strong> 和 <strong>π0.5</strong></li><li>方法无需训练，无需额外训练资源</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估指标：任务成功率、FLOPs（T）、端到端延迟（ms）、加速比</li><li>在 <strong>LIBERO</strong> 上以 25% token 保留率，ActPrune 结合 OpenVLA-OFT 达到平均成功率 <strong>96.1%</strong>，FLOPs 从 4.739T 降至 1.921T，延迟从 86.173ms 降至 53.61ms，加速 <strong>1.61 倍</strong></li><li>在 <strong>π0.5</strong> 上同样表现出最佳效率，12.5% token 保留时平均成功率为 <strong>74.0%</strong>，FLOPs 从 4.975T 降至 2.734T</li><li>在 <strong>VLABench</strong> 上 ActPrune 在大多数任务上保持或优于基线</li><li>真实机器人四个操作任务验证了方法的有效性，保持性能的同时显著降低计算量</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.08895/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Localizing and Editing the Goal Representation of a Vision-Language-Action Model</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.08698/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">VICTR: Value-Informed In-Context Learning for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

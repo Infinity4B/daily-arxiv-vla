@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>On Agentic Manipulation Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出并系统分析“智能体操纵策略”（Agentic Manipulation Policies, AMPs）：让通用前沿 AI 模型保持在控制回路中，直接指挥机械臂并随任务展开动态调整动作 旨在解决现有方法的局限：技能编排受限于预定义技能的控制粒度，离线程序合成则无法在执行中重新审视控制策略 展示通用模型凭借记忆、推理和问题解决能力，可以比专用策略（VLA、WAM）更可靠地完成操纵任务" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.09892">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">On Agentic Manipulation Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.09892" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.09892" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出并系统分析“智能体操纵策略”（Agentic Manipulation Policies, AMPs）：让通用前沿 AI 模型保持在控制回路中，直接指挥机械臂并随任务展开动态调整动作</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.09892.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.09892.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.09892.webp" alt="On Agentic Manipulation Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Apple（作者包括 Vladlen Koltun、Matthias Müller 等研究人员，多位作…</p>
+        <ul class="article-facts"><li>arXiv 2611.09892</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Apple</strong>（作者包括 Vladlen Koltun、Matthias Müller 等研究人员，多位作者同等贡献）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出并系统分析“智能体操纵策略”（<strong>Agentic Manipulation Policies, AMPs</strong>）：让通用前沿 AI 模型保持在控制回路中，直接指挥机械臂并随任务展开动态调整动作</li><li>旨在解决现有方法的局限：技能编排受限于预定义技能的控制粒度，离线程序合成则无法在执行中重新审视控制策略</li><li>展示通用模型凭借记忆、推理和问题解决能力，可以比专用策略（VLA、WAM）更可靠地完成操纵任务</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>AMP1</strong> 参考框架，无需修改即可跨单臂、双臂和移动操纵运行，在 <strong>RoboLab-120</strong> 和 <strong>CaP-Gym</strong> 基准上取得最先进的零样本结果</li><li>真实世界实验中 108 次试验成功 104 次，相较 WAM 基线 <strong>FLUX 3 Action</strong> 和 VLA 基线 <strong>π0.5</strong> 分别降低失败率 15 倍和 20 倍</li><li>记录了大量涌现行为：寻找隐藏物体、将物体当工具使用、铲起过宽物体、推动以创造可抓握姿态、自我校正相机标定等，均未在提示或框架技能中指定</li><li>提出基于持久记忆的免梯度经验学习（<strong>AMP1+</strong>）：无专家演示、无梯度更新，在 <strong>RoboDojo</strong> 上 few-shot 学习将成功率从 26.4% 提升至 84.1%，超越排行榜所有条目</li><li>通过受控实验分离模型与框架的贡献：模型选择影响最大，推理增强对所有模型有益，辅助例程帮助弱模型但妨碍强模型，图像输入远优于文本描述（与先前工作结论相反）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>AMP1 框架</strong>：为通用模型提供视觉观测、代码执行和对机械臂运动的直接控制；智能体直接命令带时间戳的末端执行器位姿轨迹，可预览轨迹，框架拒绝不可达或过快运动但将碰撞检查留给模型</li><li>框架不含抓取、放置或推动等原语技能，智能体在每个回合内通过代码生成自行构建操纵技能，将几何推理、视觉反馈和物理交互转化为任务特定程序</li><li><strong>AMP1+</strong>：增加持久记忆库 M（典型为 Markdown 笔记和 Python 代码库），智能体在反思成功与失败后写入经验；模型权重固定，学习完全免梯度</li><li>Few-shot 学习采用批量练习轮次，由反思智能体根据二值奖励和转录更新记忆；Continual 学习在顺序执行 42 个任务过程中持续更新记忆</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真基准：<strong>RoboLab-120</strong>（120 个任务，三种指令条件共 3,600 回合）、<strong>CaP-Gym</strong>（LIBERO-PRO 共 3,000 回合、robosuite 共 700 回合、BEHAVIOR-1K 共 50 回合）、<strong>RoboDojo</strong>（42 个双臂任务）</li><li>真实世界硬件：7 自由度 <strong>Franka Research 3</strong> 机械臂、<strong>Robotiq 2F-85</strong> 夹爪、类 DROID 三相机系统（左右肩部视角加腕部相机）</li><li>评估 13 个模型：闭源包括 <strong>Gemini 4 Argon</strong> 及六个 Claude 模型（Opus 5.5、Opus 5、Opus 4.5、Sonnet 5.5、Sonnet 5、Haiku 5.5），开源包括 Qwen3.6/3.8 系列、GLM-5.3 Flash、DeepSeek V4.1 Flash、Kimi K3</li><li>论文未训练模型，仅进行推理与智能体部署（计算资源细节在截断部分）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>RoboLab-120</strong>：Gemini 4 Argon 达 85.6%、Opus 5.5 达 82.8%，为该基准最高报告结果（最强排行榜条目 SenseNova-RoboRSI 为 57.1%，最强 VLA 49.2%，最强 WAM 42.9%）；对指令措辞变化鲁棒（三种条件仅约 3 个百分点波动）</li><li><strong>CaP-Gym</strong>：LIBERO-PRO 95.2%（对比 CaP-Agent0 的 18.2%）；robosuite 零样本 100.0%（超过人类专家程序的 82.6%）；BEHAVIOR-1K 96.0%</li><li><strong>真实世界</strong>：12 项任务总体成功率 96.3%，对比 FLUX 3 Action 的 45.4% 和 π0.5 的 27.8%；在 95 个无基准伪影的任务上成功率达 96.2%</li><li><strong>RoboDojo 经验学习</strong>：few-shot 练习后成功率 26.4% → <strong>84.1%</strong>（超过排行榜最强 Q0-Preview 的 68.9%）；continual 学习单次遍历后翻倍至 <strong>57.6%</strong>，学习可迁移到未见过任务且不遗忘已学任务；带记忆的智能体模型调用次数减少约 35%</li><li>感官消融：Opus 5.5 在完整感知下 82.8%，去除深度后 81.1%，再去掉相机标定后 75.8%（成功率受损有限但效率下降，模型调用从 34.8 次增至 53.5 次）；Haiku 5.5 在相同条件下从 51.6% 崩溃至 10.7%；用文本替换图像使 Opus 5.5 成功率从 82.8% 骤降至 36.8%</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.09684/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SURE:Spatiotemporal Uncertainty Representation for Efficient Vision-Language-Action Learning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

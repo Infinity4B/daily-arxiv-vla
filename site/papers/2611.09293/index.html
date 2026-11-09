@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>MDF++: Visuo-Tactile World Action Model with End-to-end Representation Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 MDF++，一种端到端学习多模态潜在表示的视觉-触觉世界动作模型，用于机器人接触丰富操作任务 针对现有 WAM 两个关键局限：一是主要依赖视觉观测，忽略触觉、力觉等信息；二是依赖以重建为目标的冻结预训练编码器，其表示与机器人控制目标不匹配 解决朴素端到端微调导致的特征坍塌问题（编码器与扩散骨干共同适应出易于去噪但不利控制的潜在空间），学习物理接地、控制相关的表示" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.09293">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-06">2026-11-06</time></p>
+        <h1 class="article-title">MDF++: Visuo-Tactile World Action Model with End-to-end Representation Learning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.09293" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.09293" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 MDF++，一种端到端学习多模态潜在表示的视觉-触觉世界动作模型，用于机器人接触丰富操作任务</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.09293.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.09293.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.09293.webp" alt="MDF++: Visuo-Tactile World Action Model with End-to-end Representation Learning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">密歇根大学安娜堡分校机器人系</p>
+        <ul class="article-facts"><li>arXiv 2611.09293</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>密歇根大学安娜堡分校</strong>机器人系</li><li>作者：Zixuan Huang、Jinhao Yu、Zachary Charlick、Dmitry Berenson</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>MDF++</strong>，一种端到端学习多模态潜在表示的视觉-触觉世界动作模型，用于机器人接触丰富操作任务</li><li>针对现有 WAM 两个关键局限：一是主要依赖视觉观测，忽略触觉、力觉等信息；二是依赖以重建为目标的<strong>冻结预训练编码器</strong>，其表示与机器人控制目标不匹配</li><li>解决朴素端到端微调导致的<strong>特征坍塌</strong>问题（编码器与扩散骨干共同适应出易于去噪但不利控制的潜在空间），学习物理接地、控制相关的表示</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>MDF++</strong>：基于扩散的视觉-触觉 WAM，通过跨模态预测以端到端方式学习任务相关的多模态表示</li><li>提出<strong>选择性梯度流</strong>策略：阻断各模态自身去噪损失对其编码器的梯度更新，仅用跨模态预测损失更新编码器，避免特征坍塌并稳定联合训练</li><li>采用多任务结构化查询训练（策略学习、世界动作建模、前向/逆动力学、随机掩码），将模型容量聚焦于控制相关的条件分布</li><li>在 <strong>7 个接触丰富操作任务</strong>（含 2 个毫米级精度的真实穿线任务）上验证，仿真中超越冻结编码器基线 <strong>28%</strong>、朴素联合训练 <strong>22%</strong>，真实世界超越视频 WAM（UWM）<strong>29%</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>以 <strong>Multimodal Diffusion Forcing（MDF）</strong> 为基础，将噪声视为连续掩码，通过 2D 时间-模态噪声水平矩阵支持多种条件查询（策略、世界动作建模、前向动力学、逆动力学、随机掩码）</li><li><strong>关键创新</strong>：采用选择性梯度流规则——每个模态编码器仅由其他模态流的去噪损失更新，而非自身损失，从而通过跨模态预测压力学习任务相关表示，避免特征坍塌</li><li>RGB 与触觉图像用预训练 <strong>ViT-Tiny/16</strong> 编码为 CLS token；力、本体感觉和动作等低维流用线性层投影；所有模态 token 与噪声水平嵌入拼接后送入扩散 Transformer</li><li>训练技巧：采样多种训练模式、对高度损坏 token 截断编码器梯度、编码器使用余弦学习率并先于扩散骨干冷却</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真任务</strong>：来自 <strong>Isaac Lab Factory</strong> 的 PegInsert、GearMesh、NutThread（改造自 Forge，加入 <strong>GelSight Mini</strong> 触觉传感器），及 <strong>ManiFeel</strong> 的 BallSorting、ObjectSearch，每任务用 RL 专家策略收集 <strong>1,000 条演示</strong></li><li><strong>真实任务</strong>：在真实汽车发动机上的 <strong>Bolt Screwing</strong>（300 条演示）和 <strong>Nut Mating</strong>（255 条演示），使用定制 <strong>UMI</strong> 采集，通过残差校正将跟踪误差从约 4mm 降至 1.2mm</li><li><strong>硬件</strong>：Franka Research 3 机器人 + WSG-50 夹爪，GelSight Mini 触觉传感器，Realsense 405 腕部相机</li><li><strong>模型规模</strong>：12 层扩散 Transformer（隐藏维度 512，8 注意力头），ViT-Tiny/16 图像编码器（输出 192 维）</li><li><strong>训练配置</strong>：AdamW，batch size 64，bf16 混合精度，200,000 步，DDIM 推理 10 步</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>仿真</strong>：5 个视觉-触觉任务，每方法 150 次试验；MDF++ 平均成功率 <strong>86.9%</strong>，超越冻结编码器基线（frozen-ViT 58.7%、frozen-Sparsh 58.9%）、<strong>UWM</strong>（74.2%）、扩散策略基线 DP w/ tactile（68.7%）、adapted MDF（68.4%）及朴素端到端训练（64.1%）</li><li><strong>真实世界</strong>：MDF++ 在 Bolt Screwing 成功率 <strong>80%</strong>（16/20）、Nut Mating <strong>40%</strong>（8/20），而 UWM 为 50%/25%，frozen-ViT 为 30%/15%；MDF++ 能适应多样初始位姿并从轻微错位中恢复</li><li><strong>表示分析</strong>：MDF++ 的 RGB 动作线性探针 MSE 为 <strong>0.043</strong>，远低于预训练 ViT（0.163）、朴素端到端（0.520）和自去噪训练（0.574）；触觉有效秩达 33.34（朴素端到端仅 5.99），证明跨模态监督既防止坍塌又使动作信息更线性可访问</li><li><strong>自去噪梯度消融</strong>：λ_self 从 0 增至 1 时平均成功率从 86.9% 单调降至 64.1%，支持抑制自去噪编码器梯度</li><li><strong>局限</strong>：低频力信号可能遗漏高频接触动态；需手动调节各模态损失权重；阻断自身去噪梯度可能限制潜在空间的可扩散性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.09355/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">HiMEM: Hippocampus-Inspired Memory Consolidation, Pruning, and Composition for Vision-Language-Action Models in 3D Scenes</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.09124/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Toward the Era of Agentic Embodied Intelligence</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
