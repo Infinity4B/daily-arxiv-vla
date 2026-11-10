@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Thermo-VLA: A Thermal-Aware Vision-Language-Action Model with Gated Residual Modulation for Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Thermo-VLA，一种面向机器人操作的热感知视觉-语言-动作（VLA）模型，旨在解决现有方法将热图像作为普通视觉输入、缺乏温度相关关系推理的问题。 通过设计 ThermoRes Encoder，将热观测分解为冷、热属性表示，并以语言条件残差方式注入 RGB token，实现温度驱动的目标选择与连续操控。 在 Unitree G1 双足人形机器人上构建六个真实世界操作任务，覆盖基础 RGB 接地、温度感知、温度接地、相对温度排序及排除推理等能力。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.11981">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">Thermo-VLA: A Thermal-Aware Vision-Language-Action Model with Gated Residual Modulation for Robotic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.11981" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.11981" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Thermo-VLA，一种面向机器人操作的热感知视觉-语言-动作（VLA）模型，旨在解决现有方法将热图像作为普通视觉输入、缺乏温度相关关系推理的问题。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.11981.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.11981.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.11981.webp" alt="Thermo-VLA: A Thermal-Aware Vision-Language-Action Model with Gated Residual Modulation for Robotic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者包括 Jingxuan Chen、Junshi Luo、Chencheng Dong、Xiao…</p>
+        <ul class="article-facts"><li>arXiv 2611.11981</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者包括 <strong>Jingxuan Chen</strong>、<strong>Junshi Luo</strong>、<strong>Chencheng Dong</strong>、<strong>Xiaojian Nie</strong>、<strong>Tongge Huang</strong> 和 <strong>Qiang Huang</strong>，但提供的 HTML 原文中未明确标注作者所属的大学或研究机构。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Thermo-VLA</strong>，一种面向机器人操作的热感知视觉-语言-动作（VLA）模型，旨在解决现有方法将热图像作为普通视觉输入、缺乏温度相关关系推理的问题。</li><li>通过设计 <strong>ThermoRes Encoder</strong>，将热观测分解为冷、热属性表示，并以语言条件残差方式注入 RGB token，实现温度驱动的目标选择与连续操控。</li><li>在 <strong>Unitree G1</strong> 双足人形机器人上构建六个真实世界操作任务，覆盖基础 RGB 接地、温度感知、温度接地、相对温度排序及排除推理等能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>构建真实世界热感知机器人操作基准，包含四个温度相关任务和两个 RGB 任务，共收集 <strong>1,307 个专家演示</strong>。</li><li>提出 <strong>Thermo-VLA</strong> 框架及核心组件 <strong>ThermoRes Encoder</strong>，利用<strong>双分支属性分解</strong>和<strong>门控残差注入</strong>将温度信息与 RGB 表示协同融合。</li><li>实验证明 Thermo-VLA 在所提基准上取得最佳总体性能，在四个温度相关任务上平均成功率 <strong>0.86</strong>，较直接 RGB-热输入的 <strong>π0.5</strong> 基线高出 <strong>18 个百分点</strong>。</li><li>在未见物体、属性重分配、光照变化和桌布更换等泛化场景下保持平均成功率 <strong>0.78</strong>，展现出最强的泛化能力。</li><li>进一步将残差调制机制迁移至色彩属性（<strong>RGBRes Encoder</strong>），在仿真和真实机器人实验中均获得一致性提升，表明该方法具有超越温度属性的潜力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>双分支属性分解</strong>：将热图像按背景参考进行校准，分解为互补的 <strong>cold</strong> 和 <strong>hot</strong> 属性视图，分别使用共享的 SigLIP 热编码器和 RGB 投影器转换为与 RGB token 同维度的属性 token。</li><li><strong>门控残差注入</strong>：首先通过<strong>文本门控跨注意力</strong>（Text-Gate Cross-Attention）以语言指令为查询、冷/热 token 为键值，动态生成冷、热分支的权重 α 和 β；然后以残差方式将加权温度 token 注入头部 RGB token，形成冷/热增强的 RGB 表示。</li><li><strong>动作生成</strong>：温度增强后的视觉 token 与文本 token、离散机器人状态拼接构成多模态前缀，输入 <strong>Gemma 骨干</strong>，并采用 <strong>flow-matching</strong> 机制生成连续动作块，动作维度为 8（7 个手臂关节 + 1 个手部开合）。</li><li>残差公式可表达为 y = x + f(a; l)，其中 x 为 RGB 表示，a 为属性观测，l 为语言条件；谱分析表明残差呈近似低秩结构，支持低维子空间建模。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>构建六个真实世界操作任务：<strong>任务 I</strong>（位置引导瓶选择）、<strong>任务 II</strong>（温度引导瓶选择）、<strong>任务 III</strong>（身份引导物体选择）、<strong>任务 IV</strong>（温度引导物体选择）、<strong>任务 V</strong>（温度感知咖啡服务）、<strong>任务 VI</strong>（异常动物笼移除），共收集 <strong>1,307 个专家演示</strong>（各任务 99–340 个）。</li><li>模型在 <strong>Unitree G1</strong> 双足人形机器人平台上进行训练与评估，配备头戴 RGB 和热成像相机，以及手腕 RGB 相机。</li><li>基线模型为 <strong>π0.5</strong>（VLA），Thermo-VLA 在其基础上引入 ThermoRes Encoder；具体模型参数量和训练 GPU 资源未在论文 HTML 中明确说明。</li><li>额外仿真与真实任务：<strong>任务 VII</strong> 基于 <strong>LIBERO</strong> 仿真环境（Franka 机械臂颜色选择），<strong>任务 VIII</strong> 为真实双机械臂彩色杯选择任务，用于验证 RGBRes Encoder（颜色残差）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>比较方法包括 <strong>ACT</strong>、<strong>π0.5</strong>（RGB-only）、<strong>π0.5(RGBT)</strong>（直接融合 RGB 与热图像）以及 <strong>ThermoAct</strong>。</li><li>在六项真实操作任务上，Thermo-VLA 与 π0.5 和 ThermoAct 在 RGB-only 任务（I 和 III）上保持竞争性表现；在温度相关任务上优势显著，例如 <strong>Task II</strong> 成功率达 <strong>1.00</strong>，<strong>Task IV</strong> 平均 <strong>0.86</strong>，<strong>Task VI</strong> 实现 <strong>1.00</strong> 的成功率。</li><li>四个温度相关任务的平均成功率为 <strong>0.86</strong>，比 π0.5(RGBT) 高出 18 个百分点，比 ThermoAct 提升更为明显。</li><li>泛化实验：未见物体设置下平均成功率 <strong>0.79</strong>，光照变化下 <strong>0.76</strong>，未见桌布下 <strong>0.79</strong>，四种泛化设置总体平均 <strong>0.78</strong>，均优于对比方法。</li><li>消融实验表明，移除门控残差注入在 Task VI（小型未见目标）上成功率从 0.85 降至 0.60；移除双分支分解导致场景扰动下性能下降；当热残差置零时，温度相关任务成功率均接近 0.5，说明温度残差主要用于目标选择的温度调制。</li><li>颜色迁移实验（RGBRes）在四个测试中平均成功率从 <strong>0.572</strong> 提升至 <strong>0.775</strong>，验证残差调制机制对非温度属性的通用性。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.12113/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Motion Belief Action: From a Visual Scene Map to Physical Decisions</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.11894/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Distilling Instructions into Weights: Closed-Form Edits Fix a Robot Policy&#x27;s Misreading</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

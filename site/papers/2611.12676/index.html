@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>VLA Adaptation with Real and Simulated Data: A Case Study on Robotic Chess - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究 VLA 模型在下游机器人任务中微调的实际问题：需要多少数据与训练更新、如何选择检查点、仿真能否降低真实数据收集成本 采用一项需要精确操作与空间理解的任务：SO-101 机械臂根据指令（如“将国王从 e4 移到 a5”）在棋盘上移动国王棋子 微调 π0.5 模型，利用遥操作演示和来自随机化脚本专家的仿真演示，并对仿真与真实机械臂进行评估" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.12676">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">VLA Adaptation with Real and Simulated Data: A Case Study on Robotic Chess</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.12676" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.12676" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究 VLA 模型在下游机器人任务中微调的实际问题：需要多少数据与训练更新、如何选择检查点、仿真能否降低真实数据收集成本</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.12676.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.12676.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.12676.webp" alt="VLA Adaptation with Real and Simulated Data: A Case Study on Robotic Chess 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者 Matěj Kripner 和 Milan Straka 所属机构为 Charles Unive…</p>
+        <ul class="article-facts"><li>arXiv 2611.12676</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者 <strong>Matěj Kripner</strong> 和 <strong>Milan Straka</strong> 所属机构为 <strong>Charles University, Faculty of Mathematics and Physics</strong>（捷克布拉格）</li><li>计算资源由 <strong>VSB – Technical University of Ostrava, IT4Innovations National Supercomputing Center</strong> 通过 <strong>LUMI</strong> 超级计算机提供</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究 VLA 模型在下游机器人任务中微调的实际问题：需要多少数据与训练更新、如何选择检查点、仿真能否降低真实数据收集成本</li><li>采用一项需要精确操作与空间理解的任务：<strong>SO-101</strong> 机械臂根据指令（如“将国王从 e4 移到 a5”）在棋盘上移动国王棋子</li><li>微调 <strong>π0.5</strong> 模型，利用遥操作演示和来自随机化脚本专家的仿真演示，并对仿真与真实机械臂进行评估</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>仿真实验表明成功率随数据和更新量双轴扩展；<strong>学习率冷却</strong>（或 SWA）对检查点比较至关重要，冷却可带来最多 31 个百分点提升；验证损失和开环动作误差不可靠于模型选择</li><li>真实机械臂上，仿真预训练显著提升性能，尤其在真实数据稀缺时（如 128 演示时仿真初始化 18/25 vs 基础 2/25；32 演示时仿真初始化 7/25 vs 基础 0 抓取）</li><li>负面结果：在策略自身 rollout 上使用 <strong>filtered BC</strong>、<strong>RECAP 式优势条件</strong>、<strong>自动教练修正</strong>或<strong>残差强化学习</strong>均未产生超出普通行为克隆的可测量改进</li><li>发布模拟器、随机化脚本专家和真实遥操作演示数据集，并将真实评估记录贡献给 <strong>Oopsie Data</strong> 集合</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>从 <strong>π0.5</strong> 预训练 VLA 模型出发，该模型结合视觉-语言模型与 flow-matching 动作专家；微调动作专家和语言模型（<strong>2.7B</strong>/<strong>4.1B</strong> 参数），冻结视觉编码器</li><li>策略输入两路矫正相机图像、六个关节位置、文本指令与当前阶段；输出 50 步关节目标块（15Hz），执行 10 步后重新规划；语言模型同时预测阶段 token 用于自动阶段推进</li><li>仿真环境为 <strong>MuJoCo</strong> 构建的实机数字孪生，配有随机化脚本专家生成多样演示；训练采用行为克隆，并系统研究学习率冷却与 SWA</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>真实演示数据集：<strong>261</strong> 次遥操作国王移动演示（259 成功），约半小时动作数据，来自 <strong>SO-101</strong> 手臂</li><li>仿真演示集：约 <strong>11.4k</strong> 专家回合（93% 成功率），训练子集规模为 100、316、1k、3.2k 和 10k 演示</li><li>模型规模：<strong>π0.5</strong> 总参数约 <strong>4.1B</strong>，微调 <strong>2.7B</strong> 参数</li><li>计算资源：利用 <strong>LUMI</strong> 超级计算机（通过 EuroHPC JU 和捷克 e-INFRA CZ 项目）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>仿真评估：每个模型在固定 <strong>1,000</strong> 次闭环试验上评估，指标包括成功率、严格成功率及各里程碑达成率</li><li>关键结果：成功率从最差 0% 到最佳 <strong>64%</strong>（10k 演示、237k 更新、冷却后）；冷却期使 10k 演示 165k 更新模型从 29% 提升至 60%；验证损失最低点对应成功率 0%，动作误差在 79k 更新时不同数据集大小差异仅 22-24mm 却对应 8%-48% 成功率</li><li>真实机械臂评估：每个模型 25 次试验（固定前 25 个简单移动），十个模型完全评估；仿真初始化策略在全部五个对比点均领先，尤其 128 演示时 <strong>18/25</strong> vs <strong>2/25</strong></li><li>负面结果：学习自有 rollout 的各变体（filtered BC、RECAP 三种标签、自动教练、残差 RL）与仅演示行为克隆无显著差异，最佳 filtered BC 仅高约 3 个百分点且不稳定</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.12806/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Learning Heterogeneous Tactile Representation for General Dexterous Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.12382/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">AutoVLA-D: Learn a Trajectory-Geometric Condition from Reasoning for Autonomous Driving VLA</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

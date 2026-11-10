@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DexForesight: Grounding Dexterous Policies with Implicit Spatial Foresight - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 DexForesight 框架，解决灵巧操作中需要同时感知手部与场景动态的问题 核心思想：在训练阶段利用动作条件空间世界模型从离线深度、运动学手部几何和演示轨迹中学习空间预见，再将其隐式地转移到策略潜在空间，使部署时仅依赖 RGB、语言和机器人状态即可具备预测性表征" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.11166">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-08">2026-11-08</time></p>
+        <h1 class="article-title">DexForesight: Grounding Dexterous Policies with Implicit Spatial Foresight</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.11166" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.11166" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 DexForesight 框架，解决灵巧操作中需要同时感知手部与场景动态的问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.11166.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.11166.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.11166.webp" alt="DexForesight: Grounding Dexterous Policies with Implicit Spatial Foresight 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者所属研究机构未在 HTML 中明确列出，但通讯作者 Zhijie Deng 的邮箱为 zhij…</p>
+        <ul class="article-facts"><li>arXiv 2611.11166</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者所属研究机构未在 HTML 中明确列出，但通讯作者 Zhijie Deng 的邮箱为 zhijied@sjtu.edu.cn，推断作者来自 <strong>上海交通大学</strong>（Shanghai Jiao Tong University）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>DexForesight</strong> 框架，解决灵巧操作中需要同时感知手部与场景动态的问题</li><li>核心思想：在训练阶段利用动作条件空间世界模型从离线深度、运动学手部几何和演示轨迹中学习空间预见，再将其隐式地转移到策略潜在空间，使部署时仅依赖 RGB、语言和机器人状态即可具备预测性表征</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>DexForesight</strong>，通过查询对齐将冻结世界模型的预测性特征注入策略潜变量，实现隐式空间预见，部署时无需世界模型执行、深度重建或显式未来生成</li><li>开发一个动作条件空间世界模型，利用约 <strong>370 小时</strong>、<strong>60 个任务</strong>、<strong>5 个类别</strong>的演示数据，结合离线深度与运动学手部几何，同时预测 3D 手部点云位移和视觉特征变化，覆盖被遮挡手指的运动</li><li>在 <strong>11 个 DexJoCo 仿真任务</strong>和 <strong>三个真实机器人任务</strong>（Close Box、Insert Battery、Screw On Lid）上验证，总体成功率分别达到 <strong>60.5%</strong> 和 <strong>58.3%</strong>，分别超越最强基线 9.6 和 8.3 个百分点</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>空间世界模型以 <strong>RynnBrain</strong> 为骨干，输入多视角 RGB、语言、机器人状态历史，以及通过 <strong>Point-BERT</strong> 编码的手部几何点云和通过 <strong>OmniVGGT</strong> 编码的离线深度特征</li><li>深度采用跨层融合策略：在骨干的多个层后通过交叉注意力注入几何 token，并利用 <strong>Attention Residuals</strong> 的跨层聚合机制进行路由，使模型学习如何组合不同层的深度信息</li><li>使用 <strong>K=4</strong> 个未来时隙对演示动作进行条件化，生成动作条件世界查询；两个预测专家分别预测手部点云位移（Hand Flow Expert）和 DINOv3 视觉特征残差（Visual Dynamics Expert），并采用未来时域 dropout</li><li>世界模型训练完成后冻结，将策略 VLM（仿真用 <strong>GR00T N1.7</strong>，真实机器人用 <strong>QwenVLA</strong>）中的策略查询与世界查询进行对齐，使用 token 损失和关系损失，对齐后的查询作为额外的条件 token 输入动作专家，辅助动作生成</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>真实机器人数据：约 <strong>370 小时</strong>演示，涵盖 <strong>60 个任务</strong>、<strong>5 个类别</strong>（空间排列、装配与接触、旋转与关节、可变形物体、工具使用）；其中 <strong>100 小时</strong>子集使用 <strong>StereoAnyVideo</strong> 离线估计深度</li><li>仿真数据：<strong>11 个 DexJoCo 任务</strong>（单臂和双臂），深度由 MuJoCo 直接渲染，无需立体深度估计</li><li>模型组件：世界模型骨干基于 <strong>RynnBrain</strong>，视觉特征提取使用 <strong>DINOv3</strong>，深度编码使用 <strong>OmniVGGT</strong>，手部几何编码使用 <strong>Point-BERT</strong>；策略分别基于 <strong>GR00T N1.7</strong>（仿真）和 <strong>QwenVLA</strong>（真实机器人）</li><li>HTML 原文未明确给出模型参数量和训练使用的 GPU/TPU 资源，仅提及训练分为 warmup、dynamics pretraining、depth injection 三个阶段</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>仿真：在 11 个 DexJoCo 任务上，DexForesight 总体成功率 <strong>60.5%</strong>，相比最强基线 Fast-WAM 的 50.9% 提升 9.6 个百分点，相比 GR00T N1.7 的 49.4% 提升 11.1 个百分点；单臂成功率 76.3%，双臂 41.6%</li><li>真实机器人：三个任务总体成功率 <strong>58.3%</strong>，对比 WLA 50.0%、GR00T N1.7 48.3%、Cosmos3 30.0%、Fast-WAM 10.0%；推理时间仅增加 <strong>3.0 ms</strong>（1.3%）</li><li>线性探针实验显示，冻结的 DexForesight 策略特征对未来手部运动预测误差低于基线，0.54 秒时预测误差从 13.59 mm 降至 10.01 mm，降低 <strong>26.3%</strong>，证明隐式空间预见成功转移</li><li>消融实验表明：去除离线深度导致仿真成功率下降 10.8 个百分点（真实机器人下降 15.0 个百分点）；将跨层融合替换为上下文深度 token 导致大幅下降；用未来动作目标替代手部点云位移监督也导致下降，验证各组件重要性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.11438/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">When Coding Agents Get Arms: Safety Risks Across the Digital-Physical Boundary</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.11136/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">From Game Generation to Game Playing: Fully Automated Ability Training for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

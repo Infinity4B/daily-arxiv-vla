@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Kimodo-Policy: Learning Kinematic Action Models for Humanoid Loco-Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对人形机器人全身移动操作（loco-manipulation）中的核心挑战：如何生成高维、连续、耦合的全身运动，并使其与环境感知和任务理解协调一致。 指出现有视觉-语言-动作模型（VLA）和世界动作模型（WAM）的预训练先验主要来自视觉语义或视觉动力学，但不一定捕捉机器人运动空间的结构规律，因此难以直接迁移到全身控制。 提出运动学动作模型（Kinematic Action Models, KAMs）范式，将全身运动本身作为直接预训练目标，并实现 Kimodo-Policy 作为首个实例，验证运动生成预训练可作为人形机器人动作学习的基础。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.11554">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-08">2026-11-08</time></p>
+        <h1 class="article-title">Kimodo-Policy: Learning Kinematic Action Models for Humanoid Loco-Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.11554" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.11554" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对人形机器人全身移动操作（loco-manipulation）中的核心挑战：如何生成高维、连续、耦合的全身运动，并使其与环境感知和任务理解协调一致。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.11554.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.11554.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.11554.webp" alt="Kimodo-Policy: Learning Kinematic Action Models for Humanoid Loco-Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">香港科技大学（广州）（HKUST(GZ)）</p>
+        <ul class="article-facts"><li>arXiv 2611.11554</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>香港科技大学（广州）</strong>（HKUST(GZ)）</li><li><strong>京东探索研究院</strong>（JD Explore Academy）</li><li><strong>北京工业大学</strong>（BJUT）</li><li><strong>剑桥大学</strong>（Cambridge）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对人形机器人全身移动操作（loco-manipulation）中的核心挑战：如何生成高维、连续、耦合的全身运动，并使其与环境感知和任务理解协调一致。</li><li>指出现有视觉-语言-动作模型（VLA）和世界动作模型（WAM）的预训练先验主要来自视觉语义或视觉动力学，但不一定捕捉机器人运动空间的结构规律，因此难以直接迁移到全身控制。</li><li>提出<strong>运动学动作模型（Kinematic Action Models, KAMs）</strong>范式，将全身运动本身作为直接预训练目标，并实现 <strong>Kimodo-Policy</strong> 作为首个实例，验证运动生成预训练可作为人形机器人动作学习的基础。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>引入 <strong>KAMs 范式</strong>：将全身运动作为生成式预训练的直接目标，把预训练运动生成器作为动作生成的主干网络，为机器人策略学习提供运动结构先验。</li><li>开发 <strong>Kimodo-Policy</strong>：结合冻结的 <strong>Kimodo 文本到运动扩散模型</strong>与轻量级 <strong>ControlNet 视觉适配器</strong>，设计三阶段 <strong>root–body–hand</strong> 生成架构，支持闭环人形移动操作。</li><li>通过大规模机器人交互数据预训练（419 小时）和运动历史条件机制，实现仅 <strong>92M 可训练参数</strong>（总参数 678M）的紧凑策略，在多个基准上取得领先结果。</li><li>在 <strong>HumanoidArena</strong> 多任务基准上取得 <strong>72.14%</strong> 的总体成功率，优于所有对比基线；在 <strong>SIMPLE</strong> 基准上表现有竞争力；在真实世界八项任务中平均成功率达到 <strong>60%</strong>。</li><li>消融实验证明预训练运动骨干对下游控制性能具有关键贡献，并表明不同运动先验的选择会影响最终表现。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>以 <strong>Kimodo</strong> 预训练运动生成器为骨干，冻结其参数，利用其已学到的全身协调运动先验。</li><li>使用 <strong>ControlNet</strong> 分支注入 <strong>DINOv3</strong> 提取的自我中心视觉特征，实现对当前场景的感知条件。</li><li>三阶段生成架构：首先生成全局根轨迹（root），然后基于根轨迹生成身体关节运动（body），最后通过专用的 <strong>HandNet</strong> 预测双手开合控制信号。</li><li>采用<strong>运动历史条件</strong>机制：将已执行的运动历史作为约束前缀，在去噪过程中保持不变，仅生成未来动作块，实现闭环滚动优化。</li><li>训练目标为监督去噪损失，包含根运动、身体运动、手部控制和手部状态转移的加权 MSE/ℓ₁ 损失；使用 DDIM 采样，执行部分预测块后重新规划。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>预训练数据集</strong>：混合 <strong>HIW-500</strong>、<strong>UniFoLM-WBT</strong>（14 个任务子集）和 <strong>Humanoid Everyday</strong>，总计约 <strong>419 小时</strong> 的人形机器人演示数据。</li><li><strong>微调数据集</strong>：<strong>HumanoidArena SONIC</strong>（700 条演示）、<strong>SIMPLE</strong> 基准任务、以及自采的真实世界遥操作数据（8 个任务，每任务 25–30 条演示）。</li><li><strong>模型规模</strong>：总参数量 <strong>678M</strong>，其中可训练参数 <strong>92M</strong>（冻结 Kimodo 骨干和 DINOv3 编码器）。</li><li><strong>训练资源</strong>：预训练使用 <strong>16 个 NVIDIA H200 GPU</strong>，约 60 小时；微调使用 4 个 GPU；推理使用单个 <strong>NVIDIA RTX 4090</strong>，10 步 DDIM 去噪。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：HumanoidArena 基准（7 个任务）、SIMPLE 基准（8 个任务）、真实人形机器人（8 个任务）。</li><li><strong>主要指标</strong>：成功率（Success Rate, SR）和平均跌倒率（Average Fall Rate, AFR）。</li><li><strong>HumanoidArena 单任务</strong>：Kimodo-Policy 取得 <strong>69.76%</strong> 总体成功率，超过最强基线 DP 9.76 个百分点，AFR 仅 <strong>4.29%</strong>（最低）。</li><li><strong>HumanoidArena 多任务</strong>：Kimodo-Policy（带预训练）取得 <strong>72.14%</strong> 总体成功率，超过 GR00T N1.7（69.70%）和 GigaWorld-Policy（68.39%），AFR 约 4.3%。</li><li><strong>SIMPLE 基准</strong>：在 8 个任务上表现具有竞争力，展示出对接触丰富全身控制的鲁棒性。</li><li><strong>真实世界</strong>：在 8 项真实任务上实现 <strong>60%</strong> 平均成功率，优于所评估的基线方法。</li><li><strong>消融实验</strong>：验证了预训练运动骨干、策略预训练阶段以及不同运动先验选择对下游性能的贡献。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.11688/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Streaming Failure Forecasting: VLA Failure Monitors That Keep Learning After Deployment</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.11500/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ForeAct: Geometry-Guided Action Learning from World Representations</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Motion Belief Action: From a Visual Scene Map to Physical Decisions - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Motion Belief Action (MBA)，一种部署在场景地图上的决策层，使机器人能够从视觉场景地图做出物理决策。 解决机器人无法直接观察的“隐藏物理状态”问题：物体是否仍在原处、门/抽屉需要多大的力、能否承受负载、是否被阻塞。 将所有选择（再看、轻推、打开、支撑、拒绝）统一为在任务成本下的期望效用最大化，使风险由任务成本而非人工固定阈值决定。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.12113">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">Motion Belief Action: From a Visual Scene Map to Physical Decisions</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.12113" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.12113" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Motion Belief Action (MBA)，一种部署在场景地图上的决策层，使机器人能够从视觉场景地图做出物理决策。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.12113.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.12113.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.12113.webp" alt="Motion Belief Action: From a Visual Scene Map to Physical Decisions 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者为 Dibyendu Ghosh；所提供的 HTML 原文中未明确列出作者所属研究机构。</p>
+        <ul class="article-facts"><li>arXiv 2611.12113</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者为 <strong>Dibyendu Ghosh</strong>；所提供的 HTML 原文中未明确列出作者所属研究机构。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Motion Belief Action (MBA)</strong>，一种部署在场景地图上的决策层，使机器人能够从视觉场景地图做出物理决策。</li><li>解决机器人无法直接观察的“隐藏物理状态”问题：物体是否仍在原处、门/抽屉需要多大的力、能否承受负载、是否被阻塞。</li><li>将所有选择（再看、轻推、打开、支撑、拒绝）统一为在任务成本下的期望效用最大化，使风险由任务成本而非人工固定阈值决定。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>MBA 决策层</strong>：在真实门/抽屉拉拽数据中，地图力估计决策优于部件类型平均；在仿真中通过拒绝拉拽提升 <strong>SmolVLA</strong> 和 <strong>Octo</strong> 策略得分。</li><li><strong>Still-in-place 预测</strong>：结合一个共享的快速拾取过程与每个物体自身的慢速率，在真实厨房活动中决策“再看”的成本低于 <strong>FreMEn</strong>、<strong>Perpetua</strong> 和 persistence filter。</li><li><strong>任务驱动的风险评估</strong>：将风险由任务成本推导（经典 reject rule），优于在固定风险级别上运行的已发布风险规则。</li><li><strong>全面评估与消融</strong>：在真实拉拽、真实厨房活动和仿真中与已发表方法对比；报告哪些设计无帮助（开力与支撑力链接、轻推探测、相机追踪先验）。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>MBA 建立在 <strong>VLMM</strong> 场景地图之上，为每个可动物体维护信念分布：移动频率 \(\lambda_i\)、打开力 \(F_i^o\)、闭方向支撑力 \(F_i^c\)、阻塞状态 \(\chi_i\)。</li><li>力先验来自 <strong>PhysVLMM</strong> 的层次模型，通过相似部件组共享；引入一对标准化力误差的二元正态相关（link）建模开力与支撑力的关联。</li><li>触摸更新：轻推/支撑作为阈值事件更新力信念；失败拉拽耦合阻塞状态与过高的打开力。</li><li>Still-in-place 模型：每个物体的静止间隔生存函数由两个指数混合（共享快速拾取 + 物体自身慢速率）建模，通过贝叶斯更新预测物体仍在原处的概率。</li><li>规划器：在五种动作（再看、轻推、打开、支撑、拒绝）之间选择，最大化任务效用期望；在力限制 \(F_{\max}\) 下决定是否行动。</li><li>相机追踪：在动作期间估计相机旋转 \(\mathbf{R}_t\)，使用动作先验处理随腕部相机移动的抽屉等刚体。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>HD-EPIC</strong>：真实厨房活动数据，用于训练和评估 Still-in-place 模型（9 个厨房，涉及物体的拾取和放下）。</li><li><strong>Hoi!</strong>：17 个地点的真实门/抽屉拉拽数据，由带力传感夹具的人员收集，用于力信念和决策评估。</li><li><strong>仿真环境</strong>：使用 <strong>SmolVLA</strong> 和 <strong>Octo</strong> 视觉-语言-动作策略，MBA 作为决策层进行评估。</li><li>模型规模：MBA 本身为轻量概率决策层，未给出显式参数量；依赖 <strong>VLMM</strong> 和 <strong>PhysVLMM</strong> 提供的先验与场景地图。</li><li>训练资源：论文未明确提及 GPU/TPU；训练主要通过最大似然和重新采样位置完成，计算成本低。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>厨房活动</strong>：MBA 预测物体是否仍在原处优于 <strong>FreMEn</strong> 和 <strong>Perpetua</strong>；其“再看”决策成本低于这些方法及 persistence filter，因为约四分之一的放下在 30 秒内被再次拾取。</li><li><strong>真实拉拽</strong>：在 17 个地点门/抽屉上，地图力估计决策优于部件类型平均；从任务成本推导的风险规则优于固定风险级别的已发布规则。</li><li><strong>仿真</strong>：以训练部件中位力为力限制，MBA 通过拒绝拉拽提升 <strong>SmolVLA</strong> 与 <strong>Octo</strong> 得分；被拒绝的门拉拽大多会失败，抽屉上则有更多本可打开；部件类型平均获得约一半增益。</li><li><strong>辅助设计消融</strong>：开力与支撑力链接、轻推探测、相机追踪的动作先验在主要设置中无帮助；在真实拉拽扫描中轻推略有成本。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.12136/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">LHNav: Long-Horizon Humanoid Navigation via Multirate Coordination and Physics-Grounded Action Data</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.11981/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Thermo-VLA: A Thermal-Aware Vision-Language-Action Model with Gated Residual Modulation for Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Latent-WAM++: Shaping World and Action Representations for End-to-End Autonomous Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Latent-WAM++，一种以表示为中心的端到端自动驾驶世界动作模型（WAM）。 现有 WAM 主要监督未来状态或最终动作，中间世界表示与动作表示仅被间接约束；本文旨在按规划角色匹配各表示的监督信号，联合塑造世界与动作表示。 通过 WoRC、TrajMF、VARA 三个组件解决表示退化、动作表示未对齐与规划效率低等问题。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.10632">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-07">2026-11-07</time></p>
+        <h1 class="article-title">Latent-WAM++: Shaping World and Action Representations for End-to-End Autonomous Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.10632" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.10632" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Latent-WAM++，一种以表示为中心的端到端自动驾驶世界动作模型（WAM）。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #177e89; --cover-to: #5ec2a8; --cover-spot: #c5f0de; --cover-ink: #f5fffb" aria-hidden="true">
+  <p class="note-cover-title">Latent-WAM++: Shaping World and Action Representations for End-to-End Autonomous Driving</p>
+</div></figure>
+        <p class="article-unit">中国科学院自动化研究所（Institute of Automation, Chinese Academ…</p>
+        <ul class="article-facts"><li>arXiv 2611.10632</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国科学院自动化研究所</strong>（Institute of Automation, Chinese Academy of Sciences）</li><li><strong>重庆长安科技有限公司</strong>（Chongqing Changan Technology Co., Ltd.）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Latent-WAM++</strong>，一种以表示为中心的端到端自动驾驶世界动作模型（WAM）。</li><li>现有 WAM 主要监督未来状态或最终动作，中间世界表示与动作表示仅被间接约束；本文旨在按规划角色匹配各表示的监督信号，联合塑造世界与动作表示。</li><li>通过 <strong>WoRC</strong>、<strong>TrajMF</strong>、<strong>VARA</strong> 三个组件解决表示退化、动作表示未对齐与规划效率低等问题。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出角色匹配的表示学习原则：世界表示应编码场景动态、保持非退化分布并保留几何信息；动作表示应直接参数化轨迹；显式正则化视觉-动作接口。</li><li>设计 <strong>World Representation Construction (WoRC)</strong>：结合场景-未来预测、<strong>SIGReg</strong> 分布稳定化和冻结几何先验，无需 EMA 目标编码器即可学习时序可预测、非退化、几何感知的世界表示。</li><li>设计 <strong>Trajectory MeanFlow Planner (TrajMF)</strong>：直接预测多模态轨迹提议，并采用 <strong>Improved MeanFlow</strong> 速度空间目标实现一步采样生成。</li><li>设计 <strong>Visual-Action Representation Alignment (VARA)</strong>：将动作表示与当前视觉语义进行非对称对齐，提升规划相关特征的表达能力。</li><li>在 <strong>NAVSIM v2</strong> 和零样本 <strong>HUGSIM</strong> 上取得最优结果，并将端到端规划器训练成本降低 <strong>88.1%</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>WoRC</strong>：使用 <strong>DINOv2</strong> 编码多视图图像为视觉 token；利用冻结的 <strong>WorldMirror</strong> 教师进行几何蒸馏；通过冻结的 occupancy 提取器提供占用 token；动态世界模型预测未来场景-ego 隐状态；<strong>SIGReg</strong> 对视觉 token 分布进行无 target 正则化。</li><li><strong>TrajMF</strong>：在轨迹空间中使用条件流匹配，采用多峰高斯混合先验；网络直接预测去噪轨迹，并通过 JVP 在诱导速度空间中计算瞬时速度进行监督；采样时一次前向生成多个轨迹提议，再由 refiner 聚合。</li><li><strong>VARA</strong>：将轨迹提议特征投影并平均，与 stop-gradient 的当前视觉平均特征进行余弦相似度对齐，保持语义一致性而不强制逐元素相等。</li><li>训练损失由 world、action、align 三部分加权组成；推理时仅使用模态编码器和 TrajMF，不依赖额外传感器。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主要数据集：<strong>NAVSIM v2</strong>（开环轨迹规划评估）</li><li>零样本数据集：<strong>HUGSIM</strong>（闭环多难度评估）</li><li>视觉编码器：<strong>DINOv2</strong>；几何教师：<strong>WorldMirror</strong>；占用信息来自冻结 occupancy 提取器</li><li>训练硬件：<strong>H20 GPU</strong>；端到端训练规划器约 <strong>190 GPU-hours</strong></li><li>采用 <strong>SIGReg</strong> 替代 EMA target encoder，避免约 <strong>86.6M</strong> 额外参数（EMA 变体需 +86.6M 参数）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 <strong>NAVSIM v2</strong> 上取得 <strong>90.1 EPDMS</strong>，超过 <strong>Latent-WAM</strong> 的 89.3、<strong>MeanFuser</strong> 的 89.5、<strong>Drive-JEPA</strong> 的 87.8 等 SOTA 方法。</li><li>在 <strong>HUGSIM</strong> 零样本闭环评估中，平均 <strong>RC 47.0</strong>、平均 <strong>HD-Score 30.1</strong>，均优于 <strong>Latent-WAM</strong> 的 45.9/28.9。</li><li>消融实验表明 <strong>SIGReg</strong> 比无稳定器和 EMA 更有效防止视觉 token 分布退化；<strong>VARA</strong> 能改善动作表示与视觉语义的一致性。</li><li>端到端训练规划器成本从 <strong>1600 GPU-hours</strong> 降至 <strong>190 GPU-hours</strong>，降低 <strong>88.1%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.10769/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Look Ahead: Search-Driven Reasoning in Embodied AI</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.10523/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Action Transfer Across Character Body Plans in Latent-Action World Models: An Empirical Study of Animated Characters</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

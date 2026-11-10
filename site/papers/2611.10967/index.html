@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>BAT-WAM: Bridging Action and Touch in World-Action Models for Dexterous Hands - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究世界动作模型（WAMs）在灵巧手操作中的多模态表示问题，特别是联合建模视觉（RGB）、手部关节状态（Joint）和全手触觉（Touch）信息。 现有方法中关节状态和触觉观测可能部分或完全缺失，而仅靠 RGB 图像难以可靠恢复这些模态；论文观察到手部配置与触觉接触之间存在强相关性，并据此提出桥接两者的表征框架。 目标是通过跨模态桥接，使触觉与关节状态能相互监督、相互补全，从而提升 WAM 在缺失模态下的重建与预测能力，并最终改善真实机器人灵巧操作性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.10967">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-07">2026-11-07</time></p>
+        <h1 class="article-title">BAT-WAM: Bridging Action and Touch in World-Action Models for Dexterous Hands</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.10967" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.10967" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究世界动作模型（WAMs）在灵巧手操作中的多模态表示问题，特别是联合建模视觉（RGB）、手部关节状态（Joint）和全手触觉（Touch）信息。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">BAT-WAM: Bridging Action and Touch in World-Action Models for Dexterous Hands</p>
+</div></figure>
+        <p class="article-unit">复旦大学（Fudan University）</p>
+        <ul class="article-facts"><li>arXiv 2611.10967</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>复旦大学</strong>（Fudan University）</li><li><strong>Rimbot</strong></li><li><strong>东南大学</strong>（Southeast University）</li><li><strong>清华大学</strong>（Tsinghua University）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究世界动作模型（WAMs）在灵巧手操作中的多模态表示问题，特别是联合建模<strong>视觉（RGB）、手部关节状态（Joint）和全手触觉（Touch）</strong>信息。</li><li>现有方法中关节状态和触觉观测可能部分或完全缺失，而仅靠 RGB 图像难以可靠恢复这些模态；论文观察到<strong>手部配置与触觉接触之间存在强相关性</strong>，并据此提出桥接两者的表征框架。</li><li>目标是通过跨模态桥接，使触觉与关节状态能相互监督、相互补全，从而提升 WAM 在缺失模态下的重建与预测能力，并最终改善真实机器人灵巧操作性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>发现灵巧手<strong>关节状态与触觉观测之间的强相关性</strong>，此前这一跨模态关系被忽视。</li><li>提出 <strong>BAT-WAM</strong>，一种新颖的跨模态表示框架，将离散触觉和状态表示与连续 RGB 上下文通过<strong>多模态桥接 Transformer</strong> 集成，支持双向条件重建。</li><li>在 <strong>HT-Bench</strong> 基准上，BAT-WAM 在<strong>全掩码触觉重建、局部掩码补全和条件未来触觉预测</strong>任务中均取得最先进性能。</li><li>在<strong>真实机器人灵巧操作</strong>（7 个任务）中，BAT-WAM 平均成功率显著优于 <strong>OpenWAM-α</strong> 和 <strong>OpenWAM-α + HandTouch</strong> 基线。</li><li>在<strong>零样本泛化</strong>（物体颜色、大小、形状、场景布局、姿态变化）评估中，BAT-WAM 在所有未见设置下均优于基线模型。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>模态特定分词器</strong>：触觉（Touch）和关节状态（Joint）各使用独立的编码器、投影层、码本（codebook）和解码器。Touch 被编码为 196 个空间网格 token，Joint 编码为 8 个 token；RGB 通过冻结的 <strong>SigLIP</strong> 编码器提取连续上下文特征，不进行量化或重建监督。</li><li><strong>跨模态桥接</strong>：共享 Transformer 将掩码触觉特征、可见关节状态特征、RGB 特征以及任务/掩码提示拼接，并通过可控注意力（visibility mask）防止访问缺失信息；通过静态训练目标（锚定重建 + 掩码预测 + 码本与对齐损失）学习模态间的条件依赖。</li><li><strong>多模态时间预测</strong>：在静态桥接基础上扩展时序建模，以历史触觉、历史关节状态和目标时间 RGB 为条件，预测目标时间的触觉观测，目标时间触觉仅用于监督。</li><li>桥接输出作为额外前缀 token 输入到 <strong>π₀.₅</strong> 世界动作模型骨干，用于动作生成。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>离线基准</strong>：<strong>HT-Bench</strong>，包含自我中心视觉与全手触觉数据的多任务灵巧操作基准，提供掩码触觉重建、视觉-触觉合成、时序预测等评估协议。</li><li><strong>真机实验数据</strong>：7 个多样任务（抓取放置、堆叠、拉推、长时操作），每个任务采集 <strong>200 条演示</strong>。</li><li><strong>机器人平台</strong>：6 自由度 <strong>AgileX PiPER</strong> 机械臂，配备 <strong>Linker Hand L6</strong> 灵巧手和 <strong>Juqiao Industrial</strong> 全手触觉手套；视觉传感器为 <strong>Intel RealSense D435</strong>（顶视）和 <strong>D405</strong>（腕视）。</li><li><strong>骨干模型</strong>：基于 <strong>π₀.₅</strong> 架构的 WAM 接口，桥接模块输出作为附加 token 条件。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：HT-Bench 离线评测 + 真实桌面机器人实验。</li><li><strong>全掩码触觉重建</strong>（F-RMSE↓ / F-cIoU↑）：BAT-WAM（Action+Image）达到 <strong>0.0145 / 0.8933</strong>，相比 HandTouch 的 0.0221 / 0.8316，RMSE 降低 <strong>34.73%</strong>。</li><li><strong>局部掩码触觉补全</strong>（H-RMSE↓ / H-cIoU↑）：BAT-WAM（Action+Image）达到 <strong>0.0137 / 0.8984</strong>，相比 HandTouch 的 0.0224 / 0.8211，RMSE 降低约 <strong>38.84%</strong>。</li><li><strong>条件未来触觉预测</strong>（RMSE↓ / cIoU↑）：BAT-WAM 达到 <strong>0.0157 / 0.8901</strong>，相比 HandTouch（0.0211 / 0.8486），RMSE 降低 <strong>25.59%</strong>；摘要中报告相对于 OpenWAM + HandTouch 降低 <strong>85.56%</strong>。</li><li><strong>真机成功率</strong>（平均）：BAT-WAM <strong>79.3%</strong>，OpenWAM-α 66.4%，OpenWAM-α + HandTouch 69.3%；在擦白板任务上优势最大（45% vs 15% vs 25%）。</li><li><strong>零样本泛化成功率</strong>（未见设置平均）：BAT-WAM <strong>54.5%</strong>，OpenWAM-α 38.5%，OpenWAM-α + HandTouch 42.0%；在未见布局和颜色场景下 BAT-WAM 均达 <strong>80.0%</strong> 成功率，但未见尺寸和形状仍较困难（37.5% 和 27.5%）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.11023/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Where Should Models Run? A Collaborative Inference Framework for Embodied Intelligence in 6G</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.10894/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Zero-Shot VLA Adaptation with Retrieved Guidance</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DreamVLA: From Generated Human Motions to Humanoid Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 DreamVLA 框架，利用生成的人体运动轨迹引导仿真中的强化学习，将仿真生成的交互轨迹用于训练人形机器人视觉-语言-动作（VLA）策略。 解决传统 VLA 训练依赖大量人工遥操作演示的问题，通过生成式运动模型和 RL 专家在仿真中自动产生任务演示，避免为新任务收集特定遥操作数据。 核心挑战在于将运动学意图转化为可重复的物体交互，并将专家能力蒸馏到仅依赖视觉和语言输入的 VLA 策略中。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.10872">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-07">2026-11-07</time></p>
+        <h1 class="article-title">DreamVLA: From Generated Human Motions to Humanoid Vision-Language-Action Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.10872" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.10872" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 DreamVLA 框架，利用生成的人体运动轨迹引导仿真中的强化学习，将仿真生成的交互轨迹用于训练人形机器人视觉-语言-动作（VLA）策略。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #177e89; --cover-to: #5ec2a8; --cover-spot: #c5f0de; --cover-ink: #f5fffb" aria-hidden="true">
+  <p class="note-cover-title">DreamVLA: From Generated Human Motions to Humanoid Vision-Language-Action Policies</p>
+</div></figure>
+        <p class="article-unit">Kevin Park：Princeton University</p>
+        <ul class="article-facts"><li>arXiv 2611.10872</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Kevin Park</strong>：<strong>Princeton University</strong></li><li><strong>Izat Rasyad</strong>：<strong>University of California, Berkeley</strong></li><li><strong>Dvij Kalaria</strong>：<strong>University of California, Berkeley</strong></li><li><strong>Shankar Sastry</strong>：<strong>University of California, Berkeley</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>DreamVLA</strong> 框架，利用生成的人体运动轨迹引导仿真中的强化学习，将仿真生成的交互轨迹用于训练人形机器人视觉-语言-动作（VLA）策略。</li><li>解决传统 VLA 训练依赖大量人工遥操作演示的问题，通过生成式运动模型和 RL 专家在仿真中自动产生任务演示，避免为新任务收集特定遥操作数据。</li><li>核心挑战在于将运动学意图转化为可重复的物体交互，并将专家能力蒸馏到仅依赖视觉和语言输入的 VLA 策略中。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>生成式演示框架</strong>：通过 <strong>DreamControl</strong> 生成任务条件的人体运动参考，结合 <strong>SONIC</strong> 骨干上的残差 RL 训练专家，在仿真中自动收集自然、类人的交互演示，无需任务级人工遥操作。</li><li><strong>基于 DAgger 的 VLA 蒸馏方法</strong>：提出参考条件恢复 DAgger 程序——在 VLA 失败后，从学习者状态重启 RL 专家并沿用相同参考后缀，仅聚合成功的恢复轨迹，以解决离线模仿留下的分布偏移。</li><li><strong>四任务仿真研究与受控消融</strong>：在平台拾取、开抽屉、按按钮、行走并拾取四个任务上，系统消融 DAgger 迭代次数、残差 RL 的作用以及生成数据集规模的影响。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>参考生成</strong>：使用 <strong>DreamControl</strong> 中的 <strong>OmniControl</strong> 在文本和时空约束下生成人体运动，经 <strong>OmniRetarget</strong> 重定向至 <strong>Unitree G1</strong>，并利用 <strong>HumanoidMimicGen</strong> 增强接触点。</li><li><strong>残差 RL 专家</strong>：在 <strong>SONIC</strong> 预训练骨干上学习残差 token 修正，将生成运动编码的标称 token 与残差相加，再解码为机器人控制命令；专家同时观测人体参考、物体参考和机器人状态。</li><li><strong>成功轨迹收集</strong>：成功满足任务成功谓词的专家 rollout 导出为 <strong>LeRobot</strong> 格式数据集，包含同步图像、本体感觉、动作、时间戳和语言指令。</li><li><strong>蒸馏与 DAgger</strong>：先离线微调 <strong>GR00T</strong> VLA，然后迭代进行参考条件恢复 DAgger——失败的学习者轨迹中随机采样状态，复用相同参考后缀启动专家，仅保留成功的恢复片段加入数据集，再进行下一轮微调。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：全部为仿真生成数据，初始数据集由 200 条成功专家轨迹构成，DAgger 每轮增加 200 条成功恢复轨迹，最多至 800 条；导出为 <strong>LeRobot</strong> v3 格式。</li><li><strong>模型</strong>：微调预训练的 <strong>GR00T</strong> VLA 骨干（具体参数量未在论文中明确说明）；专家策略为残差 RL 训练的 <strong>SONIC</strong> token 接口模型。</li><li><strong>机器人</strong>：仿真中的 <strong>Unitree G1</strong> 人形机器人。</li><li><strong>仿真环境与训练资源</strong>：使用模拟环境（具体仿真器名称未明确提及，但参考了 <strong>Isaac-GR00T</strong> 数据准备指南）；训练 GPU/TPU 等硬件资源未在论文中报告。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：四个模拟交互任务——平台拾取、开抽屉、按按钮、行走并拾取；每项任务用 100 次随机环境 rollout 报告成功率。</li><li><strong>评估指标</strong>：任务成功率、专家成功率、学习器相对专家的性能差距、MPJPE（平均每关节位置误差）。</li><li><strong>DAgger 迭代消融</strong>：离线初始化（0 轮）在拾取和行走拾取上为 0%，经过 3 轮 DAgger 后拾取成功率升至 54%，开抽屉 60%，按按钮 69%，行走拾取 18%；匹配数据量的纯离线对比（800 条）在拾取上仍为 0%，证明纠正性聚合的价值。</li><li><strong>残差 RL 有效性</strong>：残差 token RL 在四任务上的专家成功率分别为 88.6%、74.0%、81.0%、75.95%，显著优于标称 SONIC（拾取 0%）和绝对 token RL（所有任务均接近 0%）。</li><li><strong>数据规模扩展</strong>：生成参考数从 10 增至 200 时，开抽屉成功率从 13% 提升至 51%，按按钮从 0% 提升至 59%，但拾取和行走拾取仍保持 0%。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.10894/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Zero-Shot VLA Adaptation with Retrieved Guidance</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.10769/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Look Ahead: Search-Driven Reasoning in Embodied AI</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

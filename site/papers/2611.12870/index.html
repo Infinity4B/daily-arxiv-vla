@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SWAM: Scaling World Action Models with Cross-Modal Alignment - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 SWAM，一种通过跨模态对齐扩展世界动作模型（World Action Model, WAM）的方法，目标是在引入动作学习时保留视频预训练获得的语言–视频能力，并将其泛化到机器人控制。 核心问题是：现有工作通常把视频预训练中的语言–视频对齐视为既定基础，但动作学习可能破坏该对齐，缺乏关于数据与监督设计的系统性指导。 论文构建约 47,000 小时多源数据池，系统研究语言–视频监督、语言–视频–动作监督及二者联合训练对 WAM 性能和泛化能力的影响。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.12870">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">SWAM: Scaling World Action Models with Cross-Modal Alignment</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.12870" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.12870" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 SWAM，一种通过跨模态对齐扩展世界动作模型（World Action Model, WAM）的方法，目标是在引入动作学习时保留视频预训练获得的语言–视频能力，并将其泛化到机器人控制。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.12870.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.12870.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.12870.webp" alt="SWAM: Scaling World Action Models with Cross-Modal Alignment 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">主要研究机构：上海交通大学、上海创新研究院、Noematrix Ltd.</p>
+        <ul class="article-facts"><li>arXiv 2611.12870</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要研究机构：<strong>上海交通大学</strong>、<strong>上海创新研究院</strong>、<strong>Noematrix Ltd.</strong></li><li>其他参与机构：<strong>西湖大学</strong>、<strong>同济大学</strong></li><li>多位作者为共同一作，<strong>Yanwei Li</strong> 为通讯作者</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>SWAM</strong>，一种通过跨模态对齐扩展世界动作模型（World Action Model, WAM）的方法，目标是在引入动作学习时保留视频预训练获得的语言–视频能力，并将其泛化到机器人控制。</li><li>核心问题是：现有工作通常把视频预训练中的语言–视频对齐视为既定基础，但动作学习可能破坏该对齐，缺乏关于数据与监督设计的系统性指导。</li><li>论文构建约 <strong>47,000 小时</strong>多源数据池，系统研究语言–视频监督、语言–视频–动作监督及二者联合训练对 WAM 性能和泛化能力的影响。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>构建并发布约 <strong>47,000 小时</strong>多源预训练数据池，涵盖通用视频、自我中心视频、UMI 人类操作演示和机器人演示。</li><li>发现详细、准确的语言描述，结合环境和子任务级标注，能更好地保持语言–视频对齐并提升下游控制泛化。</li><li>证明 <strong>UMI 人类操作演示</strong>中的动作监督可有效增强语言–视频–动作对齐，提升仿真与真实机器人控制性能。</li><li>提出双流世界动作模型架构：视频与动作分支保持独立残差流，视频到动作单向注意力，动作分支仅通过视频特征获取语言信息。</li><li>在 <strong>RoboTwin</strong> 和真实机器人上验证多源预训练可扩展性，Hard 场景下平均成功率 <strong>40.00%</strong>，超过最强基线 <strong>OpenWAM</strong> 的 <strong>23.33%</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将视频和动作预测统一为条件流匹配目标：视频分支预测视频潜空间流速度，动作分支预测动作空间流速度，总损失为视频损失与动作损失之和。</li><li>模型基于 <strong>MoT 架构</strong>，视频分支由 <strong>Wan2.2-TI2V-5B</strong> 初始化，动作分支随机初始化；视频和动作各保持独立残差流，通过共享 masked attention 单向从视频流向动作。</li><li>语言仅通过视频分支的 cross-attention 注入，动作分支不直接做文本 cross-attention，从而复用视频预训练学到的语言–视觉对应。</li><li>多源经验提供不同监督形式：通用/自我中心视频提供语言–视频监督；UMI 和机器人演示额外提供动作监督；无效动作目标不参与动作损失。</li><li>数据整理流程包括质量过滤、VLM 内容审核、子任务分割、多级 caption 生成（Brief/Medium/Detailed + 环境/光照信息）。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>预训练数据总规模约 <strong>47,016.7 小时</strong>、<strong>4,407,996 条 episode</strong>、<strong>5,071.5M 帧</strong>。</li><li>通用视频：<strong>OpenVid</strong>（822.1h）、<strong>Panda-70M</strong>（10,087.4h），合计约 10,909.6h。</li><li>自我中心视频：<strong>EgoSuite</strong>（8,600.6h）、<strong>Ego4D</strong>（1,339.7h）、<strong>EgoVerse</strong>（1,046.0h），合计约 10,986.3h。</li><li>UMI 演示：<strong>RoboPocket</strong> 采集的 in-house UMI 数据，约 15,284.9h、411,754 条轨迹。</li><li>机器人演示：<strong>ABC</strong>、<strong>AgiBot World</strong>、<strong>InternData-A1</strong>、<strong>Galaxea</strong>、<strong>RoboCOIN</strong>、<strong>RoboMIND</strong>，合计约 9,836.0h。</li><li>模型视频主干为 <strong>Wan2.2-TI2V-5B</strong>（约 5B 参数），动作分支额外随机初始化；具体总参数量未在片段中给出。</li><li>训练优化：<strong>AdamW</strong>，初始学习率 <strong>4e-5</strong>，预训练默认全局 batch size <strong>256</strong>；仿真后训练 20k 步/batch 128，真实后训练 50k 步/batch 128；具体 GPU/TPU 型号未在提供的 HTML 片段中说明。</li><li>同时发布数据、训练代码和模型权重。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>仿真基准：<strong>RoboTwin 2.0</strong>，50 个双手操作任务，仅使用 Clean 演示后训练；评估 <strong>Easy（Clean-to-Clean）</strong> 与 <strong>Hard（Clean-to-Random）</strong> 两种设置。</li><li>真实机器人：<strong>Flexiv Rizon 4</strong> 双臂平台，评测杯子堆叠、毛巾折叠、礼物装盒 3 个任务；每个任务/设置 10 个布局 × 3 次试验。</li><li>对比基线：VLA 基线 <strong>StarVLA</strong>、<strong>π0.5</strong>、<strong>Xiaomi Robotics-0</strong>、<strong>X-VLA</strong>；WAM 基线 <strong>Fast-WAM</strong>、<strong>LingBot-VA</strong>、<strong>OpenWAM</strong>、<strong>X-WAM</strong>、<strong>4D-WAM</strong>。</li><li>语言–视频对齐消融：<strong>Subtask Detailed + Env.</strong> 配置达到 Easy <strong>83.92%</strong>、Hard <strong>55.04%</strong>；打乱 caption–视频对应使 Hard 从 53.52% 降至 52.00%。</li><li>动作监督消融：UMI 动作标签覆盖率从 0% 到 100%，Hard SR 从 <strong>46.72%</strong> 提升到 <strong>51.28%</strong>。</li><li>多源整合：等比例 Ego:UMI 采样 Hard SR <strong>53.84%</strong> 最高；过渡性通用视频预训练 +25k 步使 Hard 从 53.84% 提升到 <strong>56.48%</strong>；最终架构 Hard SR <strong>57.36%</strong>，超过 Single-stream 的 52.56% 和标准 Dual-stream 的 52.48%。</li><li>最终模型：RoboTwin Easy <strong>88.10%</strong>、Hard <strong>61.56%</strong>；真实机器人 Hard 平均 SR <strong>40.00%</strong>，显著优于 OpenWAM 的 <strong>23.33%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.12806/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Learning Heterogeneous Tactile Representation for General Dexterous Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

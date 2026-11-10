@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Control-Aware Command Generation for Asynchronous Control and Action Inference with Vision-Based Policies towards Fast Execution - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对基于视觉的控制策略（包括视觉-语言-动作模型）在执行任务时推理计算成本高、执行速度受限的问题，提出一种在控制层面加速任务执行的方法 研究目标是在不修改底层策略学习过程的前提下，通过异步推理与控制框架实现快速、平滑且稳定的机器人运动 论文将不连续模型预测转换为连续目标位置的生成问题，并引入基于预测方差的适应度动作跳过机制来进一步加速执行" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.11089">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-08">2026-11-08</time></p>
+        <h1 class="article-title">Control-Aware Command Generation for Asynchronous Control and Action Inference with Vision-Based Policies towards Fast Execution</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.11089" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.11089" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对基于视觉的控制策略（包括视觉-语言-动作模型）在执行任务时推理计算成本高、执行速度受限的问题，提出一种在控制层面加速任务执行的方法</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff" aria-hidden="true">
+  <p class="note-cover-title">Control-Aware Command Generation for Asynchronous Control and Action Inference with Vision-Based Policies towards Fast Execution</p>
+</div></figure>
+        <p class="article-unit">RIKEN Center for Advanced Intelligence Project</p>
+        <ul class="article-facts"><li>arXiv 2611.11089</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>RIKEN</strong> Center for Advanced Intelligence Project</li><li><strong>The University of Tokyo</strong> Graduate School of Engineering</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对基于视觉的控制策略（包括视觉-语言-动作模型）在执行任务时推理计算成本高、执行速度受限的问题，提出一种在控制层面加速任务执行的方法</li><li>研究目标是在不修改底层策略学习过程的前提下，通过异步推理与控制框架实现快速、平滑且稳定的机器人运动</li><li>论文将不连续模型预测转换为连续目标位置的生成问题，并引入基于预测方差的适应度动作跳过机制来进一步加速执行</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>控制感知命令生成（Control-Aware Command Generation, CAC）</strong> 方法，将策略输出的不连续期望位置序列转化为满足加速度约束的平滑目标位置序列</li><li>设计 <strong>异步推理与多线程控制架构</strong>，将控制循环与推理循环分离，有效容忍推理延迟，提高控制频率</li><li>提出 <strong>基于方差的自适应动作跳过机制</strong>，根据预测动作的方差动态调整执行速度，在动作可靠时跳过步骤加速，在不可靠时减速跟踪更新</li><li>通过实验证明所提框架在不修改策略模型的情况下，显著提升执行速度并保持任务成功率，适用于 <strong>ACT</strong>（84M参数）和 <strong>OpenVLA-OFT</strong>（7B参数）等非扩散/非流匹配模型</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将模型推理得到的动作序列视为期望关节位置，通过跟踪控制问题生成满足加速度约束的目标位置序列，核心更新公式为：目标位置增量 = 期望位置增量 + 反馈修正项（带饱和函数）</li><li>采用前馈-反馈控制结构，前馈项跟踪期望位置变化，反馈项使用饱和函数修正跟踪误差，类似滑模控制，保证误差在有限时间内收敛</li><li>使用多线程分离控制循环与推理循环，控制线程周期性检查新动作块，推理线程异步生成动作序列；每个观测和动作块带时间戳</li><li>根据同一时间步多次预测的方差计算动作可靠性，当方差低于阈值时跳过当前命令（时间步+2），否则正常更新（时间步+1），实现自适应执行速度</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>ACT（Action Chunking Transformer）</strong> 模型，参数量为 <strong>84M</strong></li><li>使用 <strong>OpenVLA</strong> 模型（<strong>7B</strong> 参数）并基于 <strong>OpenVLA-OFT</strong> 方法进行微调</li><li>真实机器人实验基于 <strong>ALOHA</strong> 平台，包含三个任务：盒子交接、箱子堆叠、笔存放</li><li>每个任务使用 <strong>50 次演示</strong>训练，3 个随机种子，每个种子重复测试 10 次</li><li>训练和推理在配备 <strong>Intel Xeon w5-2455X CPU</strong> 和 <strong>NVIDIA RTX A5000 GPU</strong> 的工作站上进行</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境为真实 <strong>ALOHA</strong> 双臂机器人，使用离散速度、加速度、jerk 等指标衡量运动平滑性</li><li>主要评估指标：任务成功率、任务执行时间、最大加速度、最大 jerk</li><li>在 ACT 实验中，<strong>ACT +CAC +Async +Adaptive</strong> 将任务执行时间缩短至 <strong>53%–63%</strong>（相对同步执行），其中笔存放任务成功率从 30% 提升至 83%</li><li>在 OpenVLA-OFT 实验中，异步执行将推理等待时间从每次约 18.5 秒降至不足 0.8 秒，任务执行时间从 49.0 秒降至 44.7 秒，同时成功率和同步模式相当</li><li>消融实验表明，仅使用异步推理而不加 CAC 会导致加速度和 jerk 增大，可能产生振动；均匀跳过动作会导致运动精度下降甚至任务失败</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.11123/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">HARP-Bench: Benchmarking Robot Manipulation Around Active Humans</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.11023/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Where Should Models Run? A Collaborative Inference Framework for Embodied Intelligence in 6G</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

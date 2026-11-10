@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Look Ahead: Search-Driven Reasoning in Embodied AI - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究 具身智能中的搜索驱动推理：在视觉-语言-动作（VLA）模型背景下，利用测试时搜索让机器人在执行动作前评估候选未来。 使用 PushT 模拟平面推动任务和一个冻结的 ACT（Action Chunking with Transformers） 策略，研究对动作块（action chunks）的选择性搜索。 提出一种基于覆盖度变化的门控机制，在保持或提升成功率的同时减少推理计算开销。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.10769">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-07">2026-11-07</time></p>
+        <h1 class="article-title">Look Ahead: Search-Driven Reasoning in Embodied AI</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.10769" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.10769" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究 具身智能中的搜索驱动推理：在视觉-语言-动作（VLA）模型背景下，利用测试时搜索让机器人在执行动作前评估候选未来。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">Look Ahead: Search-Driven Reasoning in Embodied AI</p>
+</div></figure>
+        <p class="article-unit">Yildiz Technical University, Department of Computer…</p>
+        <ul class="article-facts"><li>arXiv 2611.10769</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Yildiz Technical University</strong>, Department of Computer Engineering, Istanbul, Türkiye</li><li>作者：<strong>Ahmed Zeer</strong>、<strong>Osama Shbib</strong>、<strong>Muzaffer Kaan Yuce</strong>、<strong>Himmet Toprak Kesgin</strong>、<strong>Mehmet Fatih Amasyali</strong></li><li>通讯作者邮箱：ahmed.zeer@std.yildiz.edu.tr</li><li>标注为共同贡献（Equal contribution）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究 <strong>具身智能中的搜索驱动推理</strong>：在视觉-语言-动作（VLA）模型背景下，利用测试时搜索让机器人在执行动作前评估候选未来。</li><li>使用 <strong>PushT</strong> 模拟平面推动任务和一个冻结的 <strong>ACT（Action Chunking with Transformers）</strong> 策略，研究对动作块（action chunks）的选择性搜索。</li><li>提出一种基于覆盖度变化的门控机制，在保持或提升成功率的同时减少推理计算开销。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出一个 <strong>基于束搜索（beam search）的 PushT 控制器</strong>：通过在 ACT 预测动作块上添加局部扰动生成候选动作块，并利用从克隆模拟器状态出发的 rollout 对候选进行评分，从而无需重新训练策略即可提升任务成功率。</li><li>提出 <strong>One Step Ahead（OSA）</strong> 门控方法：先模拟名义策略动作块，仅当预测的覆盖度下降超过阈值时才触发完整束搜索，从而降低计算成本。</li><li>在 <strong>50 个评估 episode</strong> 上系统评估了树结构、重规划频率和 OSA 的影响，并报告成功率、奖励、替代动作选择率（ASR）和运行时间。</li><li>实验表明束搜索将任务成功率从 <strong>0% 提升到 18%</strong>，平均累积奖励从 <strong>39.44 提升到 103.2</strong>；OSA 在保持或提升成功率的同时将运行时间减少约 <strong>3 倍</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>策略与动作表示</strong>：冻结的 ACT 策略根据 RGB 图像和智能体位置预测长度为 \(L\) 的 2D 动作块；控制器仅执行前 \(H \leq L\) 个动作后进行重规划。</li><li><strong>基于模拟器的束搜索</strong>：在规划时保存模拟器状态快照；候选动作块由名义预测加扰动并经裁剪生成；每个候选从父状态模拟得到子状态，并用覆盖度评分；束搜索保留每层得分最高的 \(BW\) 个节点，直至深度 \(D\) 或成功。</li><li><strong>One Step Ahead</strong>：先模拟名义动作块并比较当前覆盖度与预测覆盖度；若差距大于阈值 \(\delta = 0.05\)，才触发完整束搜索，否则直接执行名义动作块。</li><li><strong>替代动作选择率（ASR）</strong>：用于衡量搜索替代名义动作块的频率。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>任务与基准</strong>：PushT 模拟平面推动任务（目标为至少 95% 覆盖度）</li><li><strong>策略模型</strong>：预训练 ACT 检查点 <strong>aadarshram/act_pusht</strong>（冻结参数）</li><li><strong>模型规模</strong>：论文未提供 ACT 的具体参数量</li><li><strong>训练资源</strong>：论文未明确说明 GPU/TPU 等训练硬件；实验为推理时搜索评估</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估设置</strong>：每个配置在 <strong>50 个 PushT episode</strong> 上评估，最大长度为 300 步</li><li><strong>主要指标</strong>：平均累积奖励、平均最大奖励、任务成功率、ASR、运行时间</li><li><strong>关键结果</strong>：</li></ul>
+<p> - <strong>ACT 基线</strong>：成功率为 0%，平均累积奖励为 39.44，平均最大奖励为 0.36</p>
+<p> - <strong>最优束搜索配置</strong>（\(D=4, C=8, BW=4\)）：成功率 18%，平均累积奖励 103.2，平均最大奖励 0.81，运行时间 47 秒</p>
+<p> - <strong>节点树结构影响</strong>：更大树结构不一定带来更好表现；例如 \(BW\) 从 4 增至 8 时运行时间从 47 秒增至 87 秒，但成功率从 18% 降至 10%</p>
+<p> - <strong>重规划频率</strong>：更频繁重规划通常提升累积奖励</p>
+<p> - <strong>OSA 消融</strong>：在展示的设置中成功率保持或提升，运行时间减少约 <strong>3 倍</strong>，但累积奖励可能下降</p>
+<ul><li><strong>局限性</strong>：实验未在语言条件 VLA 或真实机器人上进行验证；定量结果未报告置信区间或多种子变异性。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.10872/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DreamVLA: From Generated Human Motions to Humanoid Vision-Language-Action Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.10632/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Latent-WAM++: Shaping World and Action Representations for End-to-End Autonomous Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Distilling Instructions into Weights: Closed-Form Edits Fix a Robot Policy&#x27;s Misreading - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究零样本视觉-语言-动作（VLA）机器人策略中因指令误读导致的单步失败，并提出无需梯度、训练数据或修改指令的权重编辑修复方法 针对 π0.5 模型在 RoboLab 仿真环境中“把立方体然后香蕉放进碗里”任务中出现的提前释放立方体问题，发现其根因是策略将“放进碗里”错误绑定到香蕉而非立方体 核心问题是：对于策略已在其他指令下掌握技能但当前指令失败的情况，能否通过直接编辑权重来纠正计算，而非重新训练" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.11894">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">Distilling Instructions into Weights: Closed-Form Edits Fix a Robot Policy&#x27;s Misreading</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.11894" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.11894" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究零样本视觉-语言-动作（VLA）机器人策略中因指令误读导致的单步失败，并提出无需梯度、训练数据或修改指令的权重编辑修复方法</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.11894.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.11894.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.11894.webp" alt="Distilling Instructions into Weights: Closed-Form Edits Fix a Robot Policy&#x27;s Misreading 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Ali-Adeeb Abbas：RIVeR Laboratory, Northeastern Univ…</p>
+        <ul class="article-facts"><li>arXiv 2611.11894</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Ali-Adeeb Abbas</strong>：<strong>RIVeR Laboratory, Northeastern University</strong>（波士顿，美国）及 <strong>General Motors</strong>（山景城，美国）</li><li><strong>Esmaeil Seraj</strong>：<strong>General Motors</strong>（山景城，美国）</li><li>项目主页：<strong>https://ali-adeeb.com/weightsmith/</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究<strong>零样本视觉-语言-动作（VLA）机器人策略</strong>中因<strong>指令误读</strong>导致的单步失败，并提出<strong>无需梯度、训练数据或修改指令</strong>的权重编辑修复方法</li><li>针对 <strong>π0.5</strong> 模型在 <strong>RoboLab</strong> 仿真环境中“把立方体然后香蕉放进碗里”任务中出现的<strong>提前释放立方体</strong>问题，发现其根因是策略将“放进碗里”错误绑定到香蕉而非立方体</li><li>核心问题是：对于策略已在其他指令下掌握技能但当前指令失败的情况，能否通过直接编辑权重来纠正计算，而非重新训练</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>闭式指令蒸馏（Closed-Form Instruction Distillation）</strong>：将显式改写指令的内部效应以多键闭式更新写入 VLM 的 MLP 权重，修复误读绑定错误</li><li>在 <strong>128 个保留种子上</strong>，将任务成功率从 27/128 提升到 106/128（81 个修复，2 个破坏，p=7×10⁻²²），且同规模的随机方向更新无效果</li><li>证明编辑位置至关重要：仅在 <strong>VLM</strong> 中编辑才能有效修复并将能力迁移到其他任务；写入动作专家或动作头时帮助有限或不帮助</li><li>发布端到端复现工具 <strong><code>weightsmith distill</code></strong>，在新保留种子上将成功率从 8/64 提升至 36/64</li><li>通过<strong>七名盲态 Claude Opus 编辑器</strong>受控实验表明：只有获得已知良好指令的编辑器才能通过保留评估；并系统度量了配对评估的<strong>噪声地板</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>诊断阶段</strong>：重放失败决策并改变指令重述，找到能消除失败的“已知良好指令”，确认是语言绑定错误；通过注意力分析进一步定位误读</li><li><strong>蒸馏编辑</strong>：对 VLM 每层构建 72 个键（原始指令下 MLP 输入均值）和值（显式改写与原始指令的残差增量），用正则化最小范数更新 <strong>ΔW = Kᵀ(KKᵀ+λI)⁻¹V</strong> 映射键到值；编辑秩最高 72/层</li><li><strong>离线检查</strong>：编辑消除了全部 21 个提前释放决策，且不破坏正确携带和第二阶段决策</li><li><strong>配对评估协议</strong>：在<strong>相同仿真器种子</strong>上比较编辑前后策略，区分固定/破坏/双成功/双失败四种结果；使用精确 McNemar 检验和 Bootstrap 置信区间，并通过重跑未编辑策略评估噪声</li><li><strong>创新点</strong>：首次将指令改写效果以闭式权重编辑形式蒸馏到机器人策略，无需任何训练；利用已知良好内部状态复制正确计算</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>模型</strong>：OpenPI <strong>π0.5 DROID 关节位置检查点</strong>，约 <strong>3.35 亿参数</strong>，由 18 层 PaliGemma VLM 和 18 层 Gemma 动作专家组成</li><li><strong>数据/环境</strong>：<strong>RoboLab</strong> 16 个任务，在 <strong>Isaac Sim</strong> 中运行，每评估 16 个并行环境；模型在 DROID 数据上训练，未在评估任务上微调，全部为零样本</li><li><strong>编辑资源</strong>：编辑由 <strong>Claude Opus</strong> 和 <strong>GPT-6 Astra</strong> 在 NumPy 沙盒中头less运行完成，不涉及梯度、优化器或搜索；训练/评估硬件未明确说明 GPU/TPU 具体型号</li><li><strong>代码与数据</strong>：已发布 weightsmith 代码库及配对情节数据</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>主要任务</strong>：立方体然后香蕉放入碗；保留 128 个起始状态上成功率从 27/128 升至 106/128，Wilons 区间不重叠，大规模显著性</li><li><strong>规模控制</strong>：随机方向同尺寸更新在同批种子上得分 9/64，与未编辑策略无差异；蒸馏编辑得分 50/64，接近显式改写的 57/64</li><li><strong>更小变体</strong>：0.16% 参数（530 万参数）变体保留大部分效果，在 128 个种子上 102/128，与完整编辑相比略低</li><li><strong>迁移</strong>：同一编辑提升拾眼镜任务（22→44/64）和立方体放碗左任务（8→36/64），其他 13 个任务无显著损害</li><li><strong>位置比较</strong>：VLM 编辑得分 55/64（未编辑 5/64），动作专家 20/64，动作头最差 0/64；只有 VLM 编辑在迁移任务上有效</li><li><strong>盲编辑实验</strong>：七名编辑中仅立方体然后香蕉任务编辑通过保留评估（11→27/64）；其他编辑在噪声内或无候选提交</li><li><strong>其他失败级别</strong>：感知、缺失能力、接触物理、抓手阈值等编辑均未产生成功提升</li><li><strong>噪声地板</strong>：重新运行未编辑策略在相同种子上约 30% 配对结果翻转；检测能力曲线表明 16 集筛选仅为过滤而非证据</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.11981/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Thermo-VLA: A Thermal-Aware Vision-Language-Action Model with Gated Residual Modulation for Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.11856/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">DeltaForge: A Post-hoc Mixture-of-Experts VLA for Multi-Domain Autonomous Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

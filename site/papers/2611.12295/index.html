@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Be My Eye: Learning to See Beyond a Robot&#x27;s Own Perspective - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出一种用于多机器人协作的主动上下文共享框架，解决机器人自身视角部分可观测性问题，使机器人能够利用伙伴的互补观测进行决策。 核心思想是让机器人选择和编码任务相关的信息进行共享，而非被动传输原始观测或通用视觉特征，从而在有限通信预算下支持紧密耦合的协作操作。 采用两阶段训练范式：第一阶段进行任务导向的上下文压缩，第二阶段将紧凑上下文集成到预训练视觉-语言-动作（VLA）策略，并通过下游动作监督联合优化共享表征与策略。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.12295">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">Be My Eye: Learning to See Beyond a Robot&#x27;s Own Perspective</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.12295" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.12295" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出一种用于多机器人协作的主动上下文共享框架，解决机器人自身视角部分可观测性问题，使机器人能够利用伙伴的互补观测进行决策。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.12295.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.12295.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.12295.webp" alt="Be My Eye: Learning to See Beyond a Robot&#x27;s Own Perspective 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者所属研究机构为 Astribot Team（Astribot，邮箱 research@astrib…</p>
+        <ul class="article-facts"><li>arXiv 2611.12295</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者所属研究机构为 <strong>Astribot Team</strong>（Astribot，邮箱 research@astribot.com），未列出独立学术机构。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出一种用于多机器人协作的<strong>主动上下文共享</strong>框架，解决机器人自身视角部分可观测性问题，使机器人能够利用伙伴的互补观测进行决策。</li><li>核心思想是让机器人选择和编码任务相关的信息进行共享，而非被动传输原始观测或通用视觉特征，从而在有限通信预算下支持紧密耦合的协作操作。</li><li>采用两阶段训练范式：第一阶段进行任务导向的上下文压缩，第二阶段将紧凑上下文集成到预训练视觉-语言-动作（VLA）策略，并通过下游动作监督联合优化共享表征与策略。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>主动上下文共享框架</strong>：两阶段训练，将每个机器人局部观测编码为紧凑的、任务条件的潜在表示，并集成到伙伴的动作策略中，通过下游动作监督联合优化。</li><li>提出<strong>任务导向的多机位上下文编码</strong>：使用可学习查询聚合多相机视觉特征，结合任务指令生成固定预算的上下文 token；采用任务导向的未来预测和软任务进度对应学习，保留预测性视觉信息并促进任务间判别性和任务内时间连续性。</li><li>提出<strong>联合上下文优化与协作策略学习</strong>：将压缩上下文通过投影集成到预训练 VLA 策略的前缀中，支持可变 token 预算和双向共享；接收方的动作监督反向优化发送方的编码器，使共享表征适应协作决策需求。</li><li>进行<strong>真实世界双机器人实验验证</strong>：在两个核心任务（遮挡目标选择、交替领导者-跟随者标记检索）及三个定性任务上系统评估，与不共享、通用视觉特征共享等基线对比，并进行通信预算和组件消融分析。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用<strong>两阶段训练</strong>：Stage 1 训练上下文编码器（Encoder）将多相机视觉特征和语言指令压缩为 K 个潜在 token；目标包括任务导向未来特征预测（加权预测误差，权重来自视觉-语言模型计算的任务相关 patch 相似度）和软任务进度对比学习（基于任务身份和执行进度构建亲和矩阵，进行双向软标签对比损失）。</li><li>Stage 2 将上下文 token 通过投影模块映射到 VLA 策略隐藏空间，作为附加条件与本地观测、任务指令、本体感受状态一起输入策略；策略输出动作序列。</li><li>联合优化时，下游动作损失通过共享 token 反向传播到发送方的编码器，同时保留 Stage 1 辅助目标，实现表征与策略协调优化；对称双向共享，无需预先定义主从角色。</li><li>视觉和文本编码器保持冻结；未来预测解码器和对比投影头仅用于训练，推理时丢弃，仅交换上下文 token。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>论文未使用公开数据集，使用自收集的<strong>真实机器人演示数据</strong>，涵盖遮挡目标选择、交替领导者-跟随者标记检索等任务；训练时将双机器人演示整合为统一数据集。</li><li>机器人平台为两台 <strong>Astribot S1</strong> 机器人（双机协作操作）。</li><li>模型基于预训练 <strong>VLA 策略 π0.5</strong>（具体参数量未披露）；上下文编码器 token 预算默认 <strong>K=32</strong>，每个 token 维度 1152（FP32 4字节），据此计算通信成本。</li><li>训练资源未在论文中明确提及（无 GPU/TPU 细节）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境为真实世界双机器人协作任务：<strong>遮挡目标选择</strong>（18 次试验）和<strong>交替领导者-跟随者标记检索</strong>（48 次试验，覆盖所有颜色组合和双向领导角色），另有三个定性任务（冰箱补货、盒子组装、毯子折叠打包）。</li><li>主要指标包括目标箱选择准确率、颜色匹配准确率（双向）、正确触发率、序列成功率以及归一化过程得分（Process Score）。</li><li>遮挡目标选择：<strong>Ours-Joint 达到 88.9% 准确率</strong>，显著优于 No Sharing（38.9%）和 Generic SigLIP（72.2%），且仅用 32 个 token（对比 SigLIP 160 token，通信量降低 80%）。</li><li>交替领导者-跟随者：<strong>Ours-Joint 和 Generic SigLIP 均达到 100%</strong>（颜色匹配、触发、序列成功率全满分），No Sharing 仅 16.7%/33.3% 颜色匹配、0% 序列成功；Ours-Joint 以 32 token 匹配 SigLIP 160 token 性能。</li><li>消融实验：移除对比学习目标导致 Process Score 从 100% 降至 68.9%，移除未来预测降至 96.7%，表明任务进度对比学习在该任务中贡献更大。</li><li>联合优化 vs 冻结上下文：<strong>Ours-Frozen 为 83.3%，Ours-Joint 为 100%</strong>，证明下游动作监督进一步提升了共享表征质量。</li><li>通信预算实验：K=4/16/32 时 Process Score 分别为 90.5%、97.6%、100%，说明任务相关信息可高度压缩，且 32 token 是匹配高带宽参考的最小预算。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.12353/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">QCC-WM: Linking Macro-State Dynamics and Visual Generation via Quotient Causal Construction</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.12286/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">VLA-MOPD: On-Policy Distillation for Multi-Task VLA Policy Consolidation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DeltaForge: A Post-hoc Mixture-of-Experts VLA for Multi-Domain Autonomous Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 DeltaForge，据论文所述是首个面向自动驾驶的后验混合专家（post-hoc MoE）VLA 模型 将多个独立微调的域专家模型仅通过其权重和少量代理数据（约 1%）整合为一个多域统一模型 解决数据隐私、域异质性、效率与灵活性四大挑战，支持新增域低成本加入" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.11856">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">DeltaForge: A Post-hoc Mixture-of-Experts VLA for Multi-Domain Autonomous Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.11856" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.11856" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 DeltaForge，据论文所述是首个面向自动驾驶的后验混合专家（post-hoc MoE）VLA 模型</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.11856.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.11856.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.11856.webp" alt="DeltaForge: A Post-hoc Mixture-of-Experts VLA for Multi-Domain Autonomous Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">NVIDIA Corporation, Santa Clara, CA, USA</p>
+        <ul class="article-facts"><li>arXiv 2611.11856</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>NVIDIA Corporation</strong>, Santa Clara, CA, USA</li><li><strong>University of Washington</strong>, Seattle, WA, USA</li><li>作者：<strong>Bingzhang Wang</strong>、<strong>Mo Poorsartep</strong>、<strong>Yasaman Esfandiari</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>DeltaForge</strong>，据论文所述是首个面向自动驾驶的后验混合专家（post-hoc MoE）VLA 模型</li><li>将多个独立微调的域专家模型仅通过其权重和少量代理数据（约 1%）整合为一个多域统一模型</li><li>解决数据隐私、域异质性、效率与灵活性四大挑战，支持新增域低成本加入</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>DeltaForge</strong>：首个驾驶场景后验 MoE VLA，从权重和 1% 代理集构建多域模型</li><li>提出 <strong>Post-hoc Expert Factorization (PEF)</strong>：通过联合 SVD 将各域微调增量分解为冻结共享技能基和低秩核心，实现参数高效路由</li><li>设计 <strong>双层级技能混合路由</strong>：输入级路由 VLM 推理专家，中间级路由 flow-matching 动力学专家，在 clip 级混合低秩核心</li><li>在六个异构域（城市、越野、高速；轿车、卡车、ATV）上验证，性能接近单域专家并超越所有基线</li><li>展示对新域的组合泛化与无需端到端重训的新域 onboarding 能力</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基座模型为 <strong>Alpamayo 1.5 (10B)</strong>，含 8B VLM 骨干和 2B flow-matching 动作专家</li><li><strong>PEF</strong>：对每个权重矩阵计算任务向量 Δᵢ = Wᵢ - W₀，对所有增量拼接做联合 SVD 得到冻结共享基 (U,V)，每域保留低秩核心 Cᵢ = UᵀΔᵢV（秩 r=256）</li><li><strong>路由</strong>：输入级 VLM 路由器以 ViT 视觉特征 + 运动学统计为输入；中间动力学路由器以 VLM 隐藏状态 + 运动学为输入；两者均输出 top-k 核心混合权重，在参数空间一次混合</li><li><strong>代理训练</strong>：用专家自身误差生成软 oracle 标签，以 KL 散度训练路由器；随后冻结路由器和共享基，仅微调低秩核心以修复 SVD 截断损失</li><li><strong>新域 onboarding</strong>：将新域增量投影到冻结基得到新核心，经 anchor repair 后刷新路由器，无需端到端重训</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>训练域数据集：<strong>ONCE</strong>（中国城市）、<strong>CoVLA</strong>（日本城市）、<strong>TartanDrive</strong>（越野 ATV）、<strong>ORAD-3D</strong>（越野轿车）、<strong>TruckScenes</strong>（欧洲高速卡车）、<strong>PhysicalAI-AV</strong>（基座域，四摄像头）</li><li>留出数据集：<strong>Torc TruckDrive</strong>（美国高速卡车）、<strong>ParkRecon3D</strong>（地下停车场）、<strong>BeVIS</strong>（室内停车场）</li><li>代理集：每域 <strong>200 clips</strong>（约 1% 训练数据）</li><li>模型规模：基座 10B，DeltaForge（N=5）总参数 <strong>12.55B</strong>，其中可训练参数仅 <strong>122.7M（1%）</strong></li><li>每域新增核心仅 <strong>42M</strong> 参数（基座的 0.3%）</li><li>训练资源：<strong>8 张 H100 GPU</strong>；PEF 秩 r=256，温度 τ=0.3，路由器训练 200 步，核心微调 500 步</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估指标：<strong>minADE@5s（米）</strong>，best-of-6，值越低越好</li><li>主要结果：DeltaForge top-1 路由平均 minADE@5s 为 <strong>1.0157</strong>，top-2 为 <strong>1.0170</strong>；单域专家上界为 <strong>0.9798</strong>，零样本基座下界为 <strong>2.9646</strong></li><li>显著超越所有权重合并与路由基线：<strong>Centralized SFT 1.1129</strong>、<strong>FedAdam 1.1086</strong>、<strong>Model soup 1.6298</strong>、<strong>Task arithmetic 1.7333</strong>、<strong>TIES 1.9308</strong>、<strong>DARE 1.6010</strong>、<strong>EMR-Merging 1.2732</strong>、<strong>Twin-Merging 1.3510</strong>、<strong>BTX 1.2398</strong></li><li>效率：top-1 推理约 <strong>23.5 GFLOPs/token</strong>（基座 20.9），参数随域数仅线性增加 0.042B/域，远优于分离专家和 BTX 的线性增长</li><li>零样本泛化：<strong>Torc TruckDrive</strong> 误差从 8.99 降至 <strong>1.06（top-1）</strong>，无需任何目标域训练数据</li><li>Onboarding：<strong>ParkRecon3D</strong> 误差从 0.75 降至 <strong>0.65</strong>，现有六域平均性能仅变化 <strong>+1.5%</strong></li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.11894/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Distilling Instructions into Weights: Closed-Form Edits Fix a Robot Policy&#x27;s Misreading</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.11854/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Decoupled Asynchronous System for Humanoids (DASH): Latency-Agnostic Scaling of Vision-Language-Action Models for Humanoid Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
