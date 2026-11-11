@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RoboACE: Adversarial Co-Evolution for Robot Self-Improvement - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 RoboACE（Robot Adversarial Co-Evolution）框架，通过对抗性协同进化实现机器人自我改进 解决固定实践源导致机器人难以发现新弱点的问题，使练习选择程序和执行软件同时可修订 在 LIBERO 家族基准上验证，最终部署显著优于初始部署和现有系统" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.13034">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">RoboACE: Adversarial Co-Evolution for Robot Self-Improvement</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.13034" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.13034" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 RoboACE（Robot Adversarial Co-Evolution）框架，通过对抗性协同进化实现机器人自我改进</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.13034.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.13034.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.13034.webp" alt="RoboACE: Adversarial Co-Evolution for Robot Self-Improvement 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">MMLab @ SIAT（作者：Delin Zhao, Zhengrong Yue, Junlin H…</p>
+        <ul class="article-facts"><li>arXiv 2611.13034</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>MMLab @ SIAT</strong>（作者：Delin Zhao, Zhengrong Yue, Junlin He, Yali Wang）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>RoboACE</strong>（Robot Adversarial Co-Evolution）框架，通过对抗性协同进化实现机器人自我改进</li><li>解决固定实践源导致机器人难以发现新弱点的问题，使练习选择程序和执行软件同时可修订</li><li>在 <strong>LIBERO</strong> 家族基准上验证，最终部署显著优于初始部署和现有系统</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>RoboACE</strong> 框架，联合演化课程 harness（选择练习）和执行 harness（组织执行），围绕冻结基础模型</li><li>设计交替更新协议：课程侧固定执行时提出挑战，执行侧固定课程时测试修订，确保公平比较</li><li>引入 <strong>Strategic Advisor</strong> 进行长程战略审查，识别重复失败和停滞模式，提出调查方向</li><li>在四个 LIBERO-family 面板（<strong>LIBERO</strong>, <strong>LIBERO-Plus</strong>, <strong>LIBERO-PRO</strong>, <strong>LIBERO-X</strong>）上实现最先进成功率</li><li>通过案例研究展示课程修订改变证据使用、执行修订澄清技能基础、战略审查连接跨局部修订的失败</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用两个 harness：课程 harness（选择练习条件）和执行 harness（组织规划、代码技能和预训练控制）</li><li>交替更新：课程阶段使用先前能力证据提出挑战，执行阶段在固定任务快照上评估和修订</li><li>外部优化器基于证据安装修订，独立代理在运行时做决策；所有基础模型权重保持冻结</li><li>使用 <strong>Experience Consolidator</strong> 将执行结果转化为能力概况，反馈给课程侧</li><li>引入 <strong>Strategic Advisor</strong> 定期审查长期历史，提供战略指导但不直接安装更改</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>开发使用 <strong>LIBERO</strong> 底部条件，评估使用 <strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>LIBERO-PRO</strong>、<strong>LIBERO-X</strong> 四个面板（每个 200 条件）</li><li>使用 <strong>GPT-6.1 (Terra)</strong> 作为高层 LLM，<strong>SAM 3</strong> 用于分割，<strong>π0.5</strong> 作为 VLA 控制器</li><li>无 LLM 或 VLA 权重训练/微调；每个 episode 预算 8000 环境控制步骤（20 Hz，6 分 40 秒仿真时间）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估在四个 LIBERO-family 面板上，使用环境原生任务谓词，成功率（%）为指标</li><li>最终部署成功率：<strong>LIBERO</strong> 99.0%，<strong>LIBERO-Plus</strong> 94.5%，<strong>LIBERO-PRO</strong> 74.0%，<strong>LIBERO-X</strong> 30.5%</li><li>相比初始部署提升：<strong>LIBERO</strong> +35.5 个百分点，<strong>LIBERO-Plus</strong> +30.0 个百分点，<strong>LIBERO-PRO</strong> +15.0 个百分点，<strong>LIBERO-X</strong> +11.0 个百分点</li><li>相比直接 <strong>π0.5</strong> 控制：<strong>LIBERO-PRO</strong> +13.5 个百分点，<strong>LIBERO-X</strong> +19.0 个百分点</li><li>相比最强代理基线：<strong>LIBERO</strong> +1.5 个百分点，<strong>LIBERO-Plus</strong> +4.5 个百分点，<strong>LIBERO-PRO</strong> +13.5 个百分点，<strong>LIBERO-X</strong> +18.0 个百分点</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.13039/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Robo-MLT: Dual-System Robotic Manipulation for Long-Horizon Medical Laboratory Tasks</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.13030/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">APS-VLA: Action-Guided and Future-Aware Token Pruning for Efficient Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

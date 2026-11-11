@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DexSeed: Expanding Human Hand-Object Interactions into Robot Demonstrations for Dexterous Policy Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究如何从人类手-物交互数据中低成本生成多样化、物理可执行的机器人演示，用于灵巧视觉-语言-动作（VLA）学习 解决现有演示生成依赖昂贵遥操作、人类数据难以扩展到多样物体/位置及物理执行的问题 提出 DexSeed 框架：按抓取模式组织人类交互，保持抓取关系并利用物理仿真实现可执行动作" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.14092">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-10">2026-11-10</time></p>
+        <h1 class="article-title">DexSeed: Expanding Human Hand-Object Interactions into Robot Demonstrations for Dexterous Policy Learning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.14092" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.14092" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究如何从人类手-物交互数据中低成本生成多样化、物理可执行的机器人演示，用于灵巧视觉-语言-动作（VLA）学习</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.14092.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.14092.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.14092.webp" alt="DexSeed: Expanding Human Hand-Object Interactions into Robot Demonstrations for Dexterous Policy Learning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">主要研究机构：香港大学（The University of Hong Kong）、Robbyant、浙…</p>
+        <ul class="article-facts"><li>arXiv 2611.14092</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要研究机构：<strong>香港大学（The University of Hong Kong）</strong>、<strong>Robbyant</strong>、<strong>浙江大学</strong></li><li>部分作者在 <strong>蚂蚁集团（Ant Group）</strong> 完成实习研究</li><li>项目负责人：<strong>Taku Komura</strong>；通讯作者：<strong>Taku Komura</strong> 等</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究如何从人类手-物交互数据中低成本生成多样化、物理可执行的机器人演示，用于<strong>灵巧视觉-语言-动作（VLA）</strong>学习</li><li>解决现有演示生成依赖昂贵遥操作、人类数据难以扩展到多样物体/位置及物理执行的问题</li><li>提出 <strong>DexSeed</strong> 框架：按抓取模式组织人类交互，保持抓取关系并利用物理仿真实现可执行动作</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出按抓取模式聚类人类交互，并将单个序列扩展为带语言描述的多样化机器人演示</li><li>开发基于 <strong>InteractionMesh</strong> 的跨形态与跨物体重定向方法，在重定向和迁移中保持手-物交互</li><li>设计物理仿真模仿策略，在机械臂跟踪动力学下学习手指残差控制，提高整臂执行可靠性</li><li>从 19 条人类序列构建 <strong>25270</strong> 条机器人轨迹数据集，涵盖 8 种代表性抓取模式</li><li>证明仅用生成数据微调的 VLA 可在真实机器人上执行语言指定的抓取，无需真实机器人动作演示</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>抓取库构建</strong>：从 GRAB 数据集组织抓取模式，计算 170 维描述子（手指弯曲、关节位置、手对象关系等）聚类并生成语言描述</li><li><strong>InteractionMesh 重定向</strong>：利用 3D Delaunay 三角网格和 Laplacian 坐标保持手-物局部接触关系，实现人到 Wuji 灵巧手及跨物体迁移</li><li><strong>整臂轨迹增强</strong>：采样不同初始位姿、物体位置和放置目标，生成接近、抓取、搬运、放置、撤离的完整轨迹</li><li><strong>物理仿真模仿</strong>：机械臂用 PD 控制跟踪参考轨迹，RL 策略控制 20 自由度手指残差，奖励平衡物体跟踪、接触保持和动作平滑</li><li><strong>机器人中心渲染</strong>：使用 <strong>3D Gaussian Splatting</strong> 重建真实场景，渲染头视角和腕部相机图像，并进行光照/纹理/相机扰动增强</li><li><strong>VLA 学习</strong>：用生成数据微调 <strong>LingBot-VLA</strong>，输入双视角图像、机器人状态和抓取语言指令，联合输出 7 个臂关节和 20 个手指关节动作</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>源数据集：<strong>GRAB</strong>，选择 19 条人类手-物交互序列，覆盖 17 个物体类别</li><li>生成数据集：<strong>25270</strong> 条物理验证机器人轨迹，8 种抓取模式 G1-G8</li><li>机器人：<strong>Franka</strong> 机械臂（7 自由度）+ <strong>Wuji</strong> 灵巧手（20 自由度）</li><li>仿真环境：<strong>IsaacLab</strong>，4096 个并行环境，控制频率 30 Hz，仿真频率 120 Hz</li><li>模仿策略：MLP，4 个隐藏层各 1024 单元，学习率 2e-5，训练 1500 轮</li><li>VLA：<strong>LingBot-VLA</strong>，微调 55000 步，批量 256，学习率 5e-5，使用 8 块 H20 GPU</li><li>渲染：3D Gaussian Splatting 真实场景重建</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>重定向评估</strong>：与 Dex-Retargeting、SPIDER、Wuji official 对比，接触误差 <strong>3.326 mm</strong>，角度误差 <strong>7.636°</strong>，均优于基线；穿透深度 3.371 mm</li><li><strong>物理仿真模仿</strong>：在 FR3 臂跟踪下，成功率 <strong>95.50%</strong>，接触召回 78.75%，物体距离/旋转误差显著低于 ManipTrans 和 Dexplore</li><li><strong>仿真 VLA 性能</strong>：看到因素成功率 <strong>97.50%</strong>，未见布局 <strong>95.00%</strong>，未见布局+几何 <strong>91.25%</strong>，未见布局+几何+外观 <strong>91.25%</strong>，优于所有基线</li><li><strong>消融实验</strong>：移除几何增强、渲染增强或抓取语言描述均导致成功率下降；语言指令可控制同一物体采用不同抓取模式（MAE 更接近对应参考）</li><li><strong>数据规模</strong>：从 1% 到 100% 数据量，仿真成功率由 38.75% 提升至 95% 以上（未见布局）</li><li><strong>真实机器人部署</strong>：8 种抓取模式成功率分别为 G1 60%、G2 40%、G3 70%、G4 70%、G5 20%、G6 50%、G7 50%、G8 80%，无需真实动作演示</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.14257/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Elastic-WAM: Adaptive Spatiotemporal Imagination for Efficient Robot Control</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.14048/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">LaST0.5: A Generalist World Action Model with Interaction-Centric Latent Reasoning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

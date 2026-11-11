@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>How Much of Your VLA Is kNN - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文《How Much of Your VLA is kNN》研究 VLA（视觉-语言-动作）模型在 LIBERO 基准上的高性能有多少可归因于从演示中检索，而非真正的泛化能力。 提出一种无需策略训练的 kNN 检索策略，通过检索邻近演示状态并复用其动作块，在 LIBERO 上达到 91.7% 成功率。 通过检索视角分析九个公开 VLA 的视觉-语言骨干与动作头，揭示微调主要使骨干成为更好的检索键，且 VLA 的动作仍接近演示动作。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.13160">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-09">2026-11-09</time></p>
+        <h1 class="article-title">How Much of Your VLA Is kNN</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.13160" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.13160" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文《How Much of Your VLA is kNN》研究 VLA（视觉-语言-动作）模型在 LIBERO 基准上的高性能有多少可归因于从演示中检索，而非真正的泛化能力。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.13160.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.13160.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.13160.webp" alt="How Much of Your VLA Is kNN 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Sereact GmbH（德国斯图加特）：Denis Grachev、Damien LaRocque、…</p>
+        <ul class="article-facts"><li>arXiv 2611.13160</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Sereact GmbH</strong>（德国斯图加特）：Denis Grachev、Damien LaRocque、Omar Moured</li><li><strong>Karlsruher Institut für Technologie</strong>（德国卡尔斯鲁厄）：Omar Moured（双重隶属）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文《How Much of Your VLA is kNN》研究 <strong>VLA（视觉-语言-动作）模型</strong>在 <strong>LIBERO</strong> 基准上的高性能有多少可归因于从演示中检索，而非真正的泛化能力。</li><li>提出一种无需策略训练的 <strong>kNN 检索策略</strong>，通过检索邻近演示状态并复用其动作块，在 LIBERO 上达到 <strong>91.7%</strong> 成功率。</li><li>通过检索视角分析九个公开 VLA 的视觉-语言骨干与动作头，揭示微调主要使骨干成为更好的检索键，且 VLA 的动作仍接近演示动作。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>量化了仅靠检索演示可恢复的基准性能：kNN 策略在 <strong>LIBERO</strong> 与 <strong>LIBERO-Plus</strong> 上达到与多个 VLA 相当或更优的水平。</li><li>用检索评估九个公开 VLA 的骨干在 LIBERO 微调前后的变化，并与完整策略对比，发现微调通常提升骨干的检索质量，但并非所有模型都如此。</li><li>提出离线指标 <strong>LAC</strong>，用于衡量表征空间中近邻观测是否具有相似未来动作，并可指导训练检索键。</li><li>揭示在密集演示的 LIBERO 基准上，部分 VLA 成功可能主要来自动作记忆而非泛化。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>构建离线记忆：将演示中每个观测与其后续长度为 H 的动作块配对，LIBERO 使用约 <strong>137k</strong> 条记忆项（每两帧采样）。</li><li>检索距离为视觉、机器人状态、语言指令、时间步和观测历史的多模态加权距离，各模态按任务内距离中位数归一化。</li><li>对当前观测检索 k 个最近邻（限制每个演示最多一个），用 softmax 权重组合对应动作块并执行加权动作。</li><li>提出 <strong>LAC</strong> 指标：比较 k 近邻动作块与同任务所有记忆动作块之间的平均距离比，值越高表示表征越适合检索。</li><li>采用三种 kNN 变体：<strong>kNN (ResNet)</strong>、<strong>kNN (multimodal)</strong> 和 <strong>kNN (LAC key)</strong>；后者用 LAC 的可微代理训练一个线性投影。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：Spatial、Object、Goal、Long 四个套件共 40 个任务，1693 条训练演示，2000 次闭环测试。</li><li><strong>LIBERO-Plus</strong>：七类扰动，固定选取 420 个变体（每类 60 个），用于鲁棒性评估。</li><li>评估九个来自 <strong>LeRobot</strong> 的公开 VLA checkpoint：<strong>π0.5、MolmoAct2、GR00T N1.7、VLA-JEPA、Evo-1、X-VLA、π0、SmolVLA、π0-FAST</strong>。</li><li>视觉编码使用冻结的 ImageNet 预训练 <strong>ResNet-18</strong>，语言编码使用 <strong>CLIP</strong> embedding。</li><li>论文未报告具体 GPU/TPU 训练资源；kNN 策略本身无需训练，仅 <strong>LAC key</strong> 训练轻量线性投影。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO 成功率</strong>：kNN (ResNet) <strong>88.7%</strong>；kNN (multimodal) <strong>91.7%</strong>；kNN (LAC key) <strong>93.0%</strong>；π0.5 最高 <strong>97.7%</strong>。</li><li><strong>LIBERO-Plus 成功率</strong>：kNN (multimodal) <strong>82.4%</strong>，优于 7/9 个 VLA，且性能下降最小（仅 <strong>9.3 %pt</strong>）。</li><li><strong>消融</strong>：仅用 10% 演示成功率降至 <strong>77.4%</strong>；原始像素替代嵌入降至 <strong>57.2%</strong>；移除语言 prompt 下降 <strong>27.1 %pt</strong>；k=1 时降至 <strong>78.6%</strong>。</li><li><strong>骨干分析</strong>：LIBERO 微调使 5/8 个 VLA 在 LIBERO、7/8 在 LIBERO-Plus 上的检索质量提升；π0 骨干从 <strong>86.9%</strong> 骤降至 <strong>17.9%</strong>。</li><li><strong>动作空间</strong>：VLA 动作块与 kNN 预测的 R² 为 <strong>0.63–0.93</strong>，且比 held-out 真值更接近训练动作块。</li><li><strong>LAC 有效性</strong>：与闭环检索成功率 Pearson r=<strong>0.78</strong>；训练 LAC key 使 kNN 查找从 <strong>88.7%</strong> 提升至 <strong>93.0%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.13818/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">WAM is capable in BEHAVIOR-1K: the 2nd-place solution to the 2026 BEHAVIOR Challenge</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.13039/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Robo-MLT: Dual-System Robotic Manipulation for Long-Horizon Medical Laboratory Tasks</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

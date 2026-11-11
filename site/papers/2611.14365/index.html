@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>From Video Frames to Robot Meta-Frames: A Unified Latent Interface for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 MetaWAM，一种面向世界动作模型（World Action Models, WAMs）的统一潜在接口，将低维机器人信号（本体感觉、动作、值等）打包到单个 meta-frame 中 解决的问题：现有 WAMs 注入机器人信号的方式（为每个信号分配单独潜在帧或添加专用编码器/解码器）导致序列膨胀、计算开销大或修改预训练骨干，且忽视了信号表示与预训练视频扩散模型（VDM）先验的分布对齐 核心目标：设计一种 分布感知 的潜在接口，使机器人信号能够以兼容预训练 VDM 先验的方式高效进入扩散去噪过程" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.14365">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-10">2026-11-10</time></p>
+        <h1 class="article-title">From Video Frames to Robot Meta-Frames: A Unified Latent Interface for World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.14365" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.14365" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 MetaWAM，一种面向世界动作模型（World Action Models, WAMs）的统一潜在接口，将低维机器人信号（本体感觉、动作、值等）打包到单个 meta-frame 中</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.14365.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.14365.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.14365.webp" alt="From Video Frames to Robot Meta-Frames: A Unified Latent Interface for World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">National University of Singapore (NUS)</p>
+        <ul class="article-facts"><li>arXiv 2611.14365</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>National University of Singapore (NUS)</strong></li><li><strong>NUS Guangzhou Research Translation and Innovation Institute</strong> (Guangzhou, Guangdong, China)</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>MetaWAM</strong>，一种面向世界动作模型（World Action Models, WAMs）的统一潜在接口，将低维机器人信号（本体感觉、动作、值等）打包到单个 <strong>meta-frame</strong> 中</li><li>解决的问题：现有 WAMs 注入机器人信号的方式（为每个信号分配单独潜在帧或添加专用编码器/解码器）导致序列膨胀、计算开销大或修改预训练骨干，且忽视了信号表示与预训练视频扩散模型（VDM）先验的分布对齐</li><li>核心目标：设计一种 <strong>分布感知</strong> 的潜在接口，使机器人信号能够以兼容预训练 VDM 先验的方式高效进入扩散去噪过程</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将机器人信号注入重新定义为 <strong>分布对齐问题</strong>，并提出用冻结 VDM 去噪器的相对重建误差作为衡量指标</li><li>通过诊断实验证明 <strong>频域打包</strong>（DCT 编码）比空间复制、VAE 编码及空间区域打包更接近预训练 VDM 先验</li><li>提出 <strong>统一频域 meta-frame</strong>：将不同信号分配到不相交的频域通道带，经反 DCT 提升到空间潜在表示，无需额外模块或架构改动</li><li>引入 <strong>槽感知路由</strong>（slot-aware routing），使同一 meta-frame 支持策略、世界模型和值预测的联合训练</li><li>在多个仿真基准和真实机器人上验证有效性，同时大幅降低推理延迟（39%）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>动机分析</strong>：利用冻结的 Cosmos-Predict2 去噪器，测量不同信号注入方案（空间复制、VAE 编码、DCT 编码；多信号打包包括分离空间复制、Meta-Quadrants、Meta-Compact）在不同噪声水平下的相对重建误差，发现 DCT 编码和统一 meta-frame 最接近先验</li><li><strong>统一 meta-frame 设计</strong>：为每个信号分配固定的频域通道带，将信号值写入 DCT 系数槽位，再通过正交 2D 反 DCT 生成空间潜在帧；输出信号从去噪后的 meta-frame 经 DCT 变换和槽位读取恢复，无需学习解码器</li><li><strong>槽感知任务路由</strong>：定义波段级掩码，根据任务（策略/世界模型/值）决定哪些频段作为干净条件输入，哪些作为去噪目标；采用 <strong>双粒度掩码</strong>，细粒度掩码承载任务语义，粗粒度掩码保持与预训练骨干的兼容</li><li><strong>训练目标</strong>：标准扩散去噪损失加上动作、未来本体感觉、值的 Huber 损失，以及带外系数惩罚项，所有损失通过可微的 DCT/槽位读取端到端反向传播</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：</li></ul>
+<p> - <strong>RoboCasa</strong>：24 个静态厨房任务，每任务 50 个演示</p>
+<p> - <strong>LIBERO</strong>：四个操作套件（Spatial, Object, Goal, Long）</p>
+<p> - <strong>LIBERO-Plus</strong>：七类鲁棒性扰动评估</p>
+<p> - <strong>真实世界 Franka 任务</strong>：Sweep, Place Cup, Build Block</p>
+<ul><li><strong>模型规模</strong>：基于 <strong>Cosmos-Predict2-2B-Video2World</strong> 骨干（约 2B 参数）</li><li><strong>训练资源</strong>：使用 AdamW 优化器，学习率 10⁻⁶，批量大小 64/GPU，4 步梯度累积，在 <strong>4 张 NVIDIA H200 GPU</strong> 上训练</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：RoboCasa 仿真、LIBERO 与 LIBERO-Plus 基准、真实 Franka 机器人桌台操作</li><li><strong>主要评估指标</strong>：平均成功率（SR）、推理延迟、信号恢复指标（目标方向增益、相对 L2）、未来视图 PSNR、未来本体感觉归一化误差、值 MAE</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - RoboCasa：<strong>MetaWAM 达到 68.9%</strong> 平均成功率，仅用 50 演示/任务，超越同数据设置下的 Cosmos Policy（67.1%），并优于多数需要更多演示的基线</p>
+<p> - LIBERO：<strong>98.1%</strong> 平均成功率（原始基准）</p>
+<p> - LIBERO-Plus：总体 <strong>83.44%</strong> 成功率，优于 Cosmos Policy 的 82.2%，在相机、语言、光照、噪声、布局等扰动类别中领先</p>
+<p> - 真实世界：ID 设定 <strong>85.0%</strong>，OOD 设定 <strong>68.3%</strong>，分别超过 Cosmos Policy 的 78.3% 和 63.3%</p>
+<p> - 消融实验：统一 meta-frame 在成功率（68.9%）和信号恢复上均优于分离空间复制（67.1%）和空间区域打包（65.9% / 68.1%），推理延迟从 0.479s 降至 0.291s（降低 39%），且世界模型和值预测指标也最优</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.14432/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">One Policy for 100 Household Tasks: Our Solution for the 2026 BEHAVIOR Challenge</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.14257/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Elastic-WAM: Adaptive Spatiotemporal Imagination for Efficient Robot Control</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

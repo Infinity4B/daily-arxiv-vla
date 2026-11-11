@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>LaST0.5: A Generalist World Action Model with Interaction-Centric Latent Reasoning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了 LaST0.5，一种通用世界动作模型（WAM），旨在弥合全局场景建模与精细机器人-物体交互推理之间的差距。 现有 WAM 直接将全局物理表示迁移到动作生成，容易忽视局部交互动态；LaST0.5 通过引入 交互中心潜在推理（ICLR） 框架解决这一不匹配问题。 在大规模超过 14k 小时机器人数据上预训练，在仿真和真实世界任务中取得领先性能，验证了交互中心物理推理作为可扩展范式的有效性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.14048">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-10">2026-11-10</time></p>
+        <h1 class="article-title">LaST0.5: A Generalist World Action Model with Interaction-Centric Latent Reasoning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.14048" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.14048" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 LaST0.5，一种通用世界动作模型（WAM），旨在弥合全局场景建模与精细机器人-物体交互推理之间的差距。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.14048.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.14048.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.14048.webp" alt="LaST0.5: A Generalist World Action Model with Interaction-Centric Latent Reasoning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">北京大学 多媒体信息处理国家重点实验室，计算机学院</p>
+        <ul class="article-facts"><li>arXiv 2611.14048</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>北京大学</strong> 多媒体信息处理国家重点实验室，计算机学院</li><li><strong>香港中文大学</strong></li><li><strong>Simplexity Robotics</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>LaST0.5</strong>，一种通用世界动作模型（WAM），旨在弥合全局场景建模与精细机器人-物体交互推理之间的差距。</li><li>现有 WAM 直接将全局物理表示迁移到动作生成，容易忽视局部交互动态；LaST0.5 通过引入 <strong>交互中心潜在推理（ICLR）</strong> 框架解决这一不匹配问题。</li><li>在大规模超过 14k 小时机器人数据上预训练，在仿真和真实世界任务中取得领先性能，验证了交互中心物理推理作为可扩展范式的有效性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>LaST0.5</strong>，首个在全局世界建模与动作生成之间引入紧凑交互中心潜在空间的通用世界动作模型。</li><li>设计 <strong>交互中心潜在推理（ICLR）</strong>，利用视觉运动线索和物体可供性边界框监督潜在专家，将全局场景表征转化为面向操作的交互抽象。</li><li>提出 <strong>自适应世界到动作转移（AWAT）</strong> 机制，通过联合预测未来表征和任务进度值，基于进度一致性动态调整动作执行长度并触发未来重采样。</li><li>在超过 <strong>14k 小时</strong> 的异构机器人数据上预训练，在 <strong>LIBERO</strong>（99.5%）和 <strong>RLBench</strong>（88.0%）上达到 SOTA，并在真实世界双手操作中展示长时程执行和精确操控能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 <strong>Mixture-of-Transformers (MoT)</strong> 架构统一三个专家：<strong>世界专家</strong>（基于 Cosmos-Predict2.5-2B 预测未来视频）、<strong>潜在专家</strong>（从 Janus 初始化，学习交互中心潜在表征）、<strong>动作专家</strong>（采用流匹配目标生成动作块）。</li><li>通过 <strong>块级因果注意力</strong>（blockwise-causal attention）强制层级推理流程：视频预测 → 交互潜在推理 → 动作生成，并阻止梯度从后续专家回传到世界专家以保护预训练物理先验。</li><li><strong>交互中心潜在目标构建</strong>：对每个未来片段取最后一帧，叠加投影的 2D 末端执行器运动曲线和由 Grounding DINO 生成的目标物体边界框，再用冻结 SigLIP 编码并聚合为潜在 token，训练潜在专家通过余弦相似度对齐这些目标。</li><li><strong>自适应世界到动作转移（AWAT）</strong>：在冻结模型上附加轻量 MLP 价值头预测未来片段的任务进度；当预测进度下降时截断动作执行，否则执行整个动作块；若初始进度低于上一周期，则并行采样多个未来并选择最高价值候选。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>预训练数据</strong>：超过 <strong>14k 小时</strong> 的异构机器人演示数据，包含遥操作、UMI 手持夹爪采集和人类自我中心数据（来源包括多个大规模机器人数据集）。</li><li><strong>仿真微调数据</strong>：<strong>RLBench</strong>（10 个任务，每任务 100 条轨迹）和 <strong>LIBERO</strong>（四个官方套件：Spatial、Object、Goal、Long）。</li><li><strong>真实世界数据</strong>：自收集 4 个双手任务（Bag Pulling、Object Organization、Screw Fastening、Parcel-Box Packing），每任务 150 条轨迹，使用 <strong>PICO VR</strong> 遥操作，部署于 <strong>Tianji Marvin</strong> 双机械臂。</li><li><strong>模型规模</strong>：世界专家基于 <strong>Cosmos-Predict2.5-2B</strong>（2B 参数），潜在专家和动作专家初始化自 Janus/语言骨干；视频输入 256×256，VLM 分支图像 224×224。</li><li><strong>训练资源</strong>：使用 <strong>8× NVIDIA H20 GPU</strong> 集群，AdamW 优化器；LIBERO 训练 100 轮，RLBench 训练 300 轮。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：仿真基准 <strong>RLBench</strong>（10 个任务）和 <strong>LIBERO</strong>（四个套件）；真实世界 4 个双手任务（20 次 rollout/任务）。</li><li><strong>主要评估指标</strong>：任务成功率（Success Rate %）；RLBench 报告三次独立运行的平均成功率 ± 标准差，LIBERO 报告训练期最佳成功率。</li><li><strong>关键实验结果</strong>：LaST0.5 在 <strong>LIBERO</strong> 上平均成功率 <strong>99.5%</strong>（Spatial 99.7%，Object 100.0%，Goal 99.1%，Long 99.3%），在 <strong>RLBench</strong> 上平均 <strong>88.0%</strong>，显著超越基线（如 π0.5 65.0%、LaST0 82.0%）。</li><li><strong>真实世界性能</strong>：平均成功率 <strong>63.8%</strong>，优于 π0.5（52.5%）和 Cosmos Policy（43.8%）；在长时程打包任务（S3 30.0% vs 20.0%）和高精度螺丝拧紧（S2 50.0% vs 30.0%）中优势明显。</li><li><strong>消融实验</strong>：移除世界专家或潜在专家分别导致 LIBERO-Spatial 成功率下降 3.6% 和 1.8%；移除交互线索（运动曲线或物体框）均造成性能退化；AWAT 将 RLBench 成功率从 85.0% 提升至 88.0%。</li><li><strong>泛化能力</strong>：在未见物体位置、物体实例和背景变化下，位置偏移下平均成功率 <strong>40.0%</strong>（约为 π0.5 的 2.7 倍），背景偏移下平均 <strong>72.5%</strong>（物体整理任务达 90.0%）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.14092/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DexSeed: Expanding Human Hand-Object Interactions into Robot Demonstrations for Dexterous Policy Learning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.13818/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">WAM is capable in BEHAVIOR-1K: the 2nd-place solution to the 2026 BEHAVIOR Challenge</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

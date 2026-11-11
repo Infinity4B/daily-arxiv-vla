@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Is Your Robot&#x27;s Memory Just a Clock? Temporal Shortcuts in Memory-Augmented VLA Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究记忆增强型 视觉-语言-动作（VLA） 策略中“按时间填充记忆”的设计缺陷：时间流逝会被误认为任务进展 通过在 RoboMME 计数任务中注入 null events（暂停、腕部空摆、空抓），发现策略会因“未发生任何有效事件”而提前停止，作者称其为 phantom progress 论文目标是揭示该现象的原因，并验证不同修复策略（改变数据 vs 改变记忆索引）的有效性" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.14488">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-10">2026-11-10</time></p>
+        <h1 class="article-title">Is Your Robot&#x27;s Memory Just a Clock? Temporal Shortcuts in Memory-Augmented VLA Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.14488" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.14488" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究记忆增强型 视觉-语言-动作（VLA） 策略中“按时间填充记忆”的设计缺陷：时间流逝会被误认为任务进展</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.14488.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.14488.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.14488.webp" alt="Is Your Robot&#x27;s Memory Just a Clock? Temporal Shortcuts in Memory-Augmented VLA Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者 Chubin Zhang 与 Bo An（通讯作者）均来自 Nanyang Technologi…</p>
+        <ul class="article-facts"><li>arXiv 2611.14488</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者 <strong>Chubin Zhang</strong> 与 <strong>Bo An</strong>（通讯作者）均来自 <strong>Nanyang Technological University</strong>（南洋理工大学）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究记忆增强型 <strong>视觉-语言-动作（VLA）</strong> 策略中“按时间填充记忆”的设计缺陷：时间流逝会被误认为任务进展</li><li>通过在 <strong>RoboMME</strong> 计数任务中注入 <strong>null events</strong>（暂停、腕部空摆、空抓），发现策略会因“未发生任何有效事件”而提前停止，作者称其为 <strong>phantom progress</strong></li><li>论文目标是揭示该现象的原因，并验证不同修复策略（改变数据 vs 改变记忆索引）的有效性</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>Phantom progress 现象</strong>：短暂的 null events 会使按时间填充记忆的 VLA 策略提前停止，且损害仅通过记忆路径产生；通过 visible/hidden 对比和时间戳缩放可区分策略是在追踪事件还是时间</li><li><strong>时间捷径位于记忆索引</strong>：失败根源于时间捷径，而非仅时间戳；即使移除时间编码，null frames 仍占用记忆槽位，脆弱性取决于记忆如何被索引</li><li><strong>诊断指导修复</strong>：训练时注入停留（pause augmentation）不能消除失败且损害计数能力；而 <strong>事件索引（event index）</strong> 在测试阶段无需重训练即可恢复大部分成功</li><li><strong>跨策略验证</strong>：在 RoboMME 发布的多种记忆设计中，脆弱性跟随索引方式：按时间索引的帧采样策略崩溃，按像素变化或子目标索引的策略表现不同</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>在 <strong>RoboMME</strong> 的两个计数任务 <strong>PickXtimes</strong> 和 <strong>SwingXtimes</strong> 上，注入三类 null events：<strong>pause</strong>（静止 100 环境步/5秒）、<strong>wrist fidget</strong>（腕部 ±0.3 rad 摆动）、<strong>air-grasp</strong>（空抓后返回原姿态）</li><li>使用 <strong>visible vs hidden</strong> 对照：两种条件下物理事件相同，但 hidden 条件不让事件帧进入记忆、时间戳也不前进，用于隔离记忆的影响</li><li>通过 <strong>时间戳缩放</strong>（对记忆帧时间戳乘以因子 s）在无 null events 时干预时钟速度，观察策略是早停还是额外重复</li><li>训练 <strong>Clock</strong> 与 <strong>NoClock</strong> 两个模型，二者基于 <strong>π0.5</strong> 并按 RoboMME 配方训练 30k 步，唯一差异是是否使用时间编码</li><li>提出 <strong>event index</strong>：在测试时检测“世界返回先前状态”的片段并折叠为单帧，重新计算时间位置，使记忆只随事件推进而不重训练</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主要基准：<strong>RoboMME</strong> 模拟环境，重点关注 <strong>PickXtimes</strong> 和 <strong>SwingXtimes</strong> 两个计数任务</li><li>真实数据：<strong>Open X-Embodiment</strong> 中的两个真实遥操作数据集，以及 <strong>stanford_hydra</strong>、<strong>FMB</strong>、<strong>LIBERO-10</strong> 等用于分析“时间预测任务进展”现象</li><li>模型：基于 <strong>π0.5</strong> 的 <strong>MME-VLA</strong> 系列，包含 <strong>FrameSamp-Modul/Expert/Context</strong>、<strong>TokenDrop</strong>、<strong>MemER-style</strong>、<strong>Text sub-goals</strong>、<strong>TTT</strong> 等发布策略；另评估 <strong>SimpleMemVLA</strong> 和 <strong>LTM-π</strong></li><li>记忆规模：FrameSamp 系列保持 32 帧，按整段 episode 均匀采样，并附正弦时间戳</li><li>训练资源：论文未明确披露 GPU/TPU 类型、数量及模型参数量</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估协议：每个条件运行 50 个配对 rollouts，采用精确双侧 <strong>McNemar 检验</strong>；失败分为 <strong>early stop</strong>（提前按按钮）和 <strong>extra</strong>（多做重复）</li><li>主要结果：两次 5 秒暂停使 <strong>PickXtimes</strong> 成功率从 47/50 降至 16/50，使 <strong>SwingXtimes</strong> 从 44/50 降至 10/50；腕部空摆造成类似损害，隐藏事件后成功率基本恢复</li><li>时间戳缩放：快时钟（s=1.5）使 PickXtimes 成功率从 47 降至 18 且全部为早停；慢时钟（s=0.5）导致策略做额外重复</li><li><strong>NoClock</strong> 在暂停下成功率仍降至 21/50 和 14/50，证明即使去掉时间戳，null frames 占据记忆槽位仍造成损害</li><li>记忆设计对比：时间索引的 FrameSamp 系列在 null events 下崩溃；TokenDrop 对静止暂停损害较小，但受腕部空摆影响更大；子目标索引记忆不受影响；LTM-π 在暂停下从 50/50 降至 7/50</li><li>修复效果：pause augmentation 未能消除失败并损害无事件情况下的计数；事件索引在测试时不重训练至少使 null events 下的成功率翻倍，SwingXtimes 空抓从 13/50 提升到 43/50，但对微停顿等短暂随机中断恢复有限</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.14432/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">One Policy for 100 Household Tasks: Our Solution for the 2026 BEHAVIOR Challenge</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
