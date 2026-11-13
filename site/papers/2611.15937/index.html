@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>MOSAIC: Modular Obstacle and Spatial-Aware Framework for Manipulation In Cluttered Scenes - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型主要依赖 2D 视觉与语言指令、在杂乱场景中空间推理不足的问题，提出 MOSAIC 模块化框架。 MOSAIC 可集成到预训练 VLA 策略中，通过显式语义掩码、物体级深度信息和障碍物感知注意力来增强物体理解与动作生成。 重点解决杂乱场景下因空间误差导致意外接触或碰撞的问题，提升操作安全性与鲁棒性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.15937">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-11">2026-11-11</time></p>
+        <h1 class="article-title">MOSAIC: Modular Obstacle and Spatial-Aware Framework for Manipulation In Cluttered Scenes</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.15937" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.15937" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对视觉-语言-动作（VLA）模型主要依赖 2D 视觉与语言指令、在杂乱场景中空间推理不足的问题，提出 MOSAIC 模块化框架。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.15937.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.15937.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.15937.webp" alt="MOSAIC: Modular Obstacle and Spatial-Aware Framework for Manipulation In Cluttered Scenes 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">主要完成机构：华为诺亚方舟实验室（Huawei Noah’s Ark Lab）</p>
+        <ul class="article-facts"><li>arXiv 2611.15937</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要完成机构：<strong>华为诺亚方舟实验室（Huawei Noah’s Ark Lab）</strong></li><li>通讯作者 <strong>Amir Rasouli</strong> 同时隶属于 <strong>华为诺亚方舟实验室</strong>、<strong>多伦多大学（University of Toronto）</strong> 和 <strong>西蒙菲莎大学（Simon Fraser University）</strong></li><li>其余作者 <strong>Richard Shi、Mohammad Mahdavian、Mehrdad Momeni Zadeh、Mohammed Elmahgiubi</strong> 均属于 <strong>华为诺亚方舟实验室</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对视觉-语言-动作（VLA）模型主要依赖 2D 视觉与语言指令、在杂乱场景中空间推理不足的问题，提出 <strong>MOSAIC</strong> 模块化框架。</li><li>MOSAIC 可集成到预训练 VLA 策略中，通过显式语义掩码、物体级深度信息和障碍物感知注意力来增强物体理解与动作生成。</li><li>重点解决杂乱场景下因空间误差导致意外接触或碰撞的问题，提升操作安全性与鲁棒性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>MOSAIC</strong> 模块化框架，将目标物体、目的地和周围障碍物分离为不同语义角色，增强 VLA 的物体中心理解与空间推理。</li><li>利用 VLA 自身骨干网络生成角色特定掩码，同时将语义物体级深度信息注入动作专家，显式建模障碍物与空间关系。</li><li>引入接触感知的注意力引导策略，引导 VLA 在目标物体和目的地之外关注周围障碍物，改善杂乱场景中的动作生成。</li><li>在 <strong>RoboPRO</strong> 基准和真实机器人上验证有效性，杂乱场景成功率提升 <strong>5.1%</strong>，视觉扰动下提升 <strong>9.7%</strong>，最困难环境提升高达 <strong>25.0%</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>语义掩码生成</strong>：在 VLM 骨干中引入目标、目的地、障碍物三类角色令牌，通过掩码头预测对应语义掩码，并将角色令牌加入前缀供动作专家隐式条件化。</li><li><strong>物体深度注入</strong>：使用冻结的 <strong>VGGT-Ω</strong> 进行 3D 场景重建，结合预测掩码生成统计量 token 和 4×4 网格几何 token，将目标与目的地深度信息注入动作专家最后六层。</li><li><strong>障碍物感知注意力引导</strong>：利用物体 OOBB 与机器人关键点的距离，构造接触感知的注意力真值热图，以 KL 散度监督动作专家前几层，并将注意力特征通过残差交叉注意力注入后续层。</li><li><strong>两阶段训练</strong>：首先在基座 <strong>π0.5</strong> 上使用 LoRA 微调掩码模块，随后全模型联合微调，结合流匹配动作预测、掩码监督与注意力监督。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主要仿真基准：<strong>RoboPRO</strong>，包含 Office、Study、Kitchen-S、Kitchen-L 四个环境、80 个任务、每任务 200 条示范（100 干净 + 100 杂乱），杂乱场景含 6–15 个干扰物。</li><li>真实机器人数据：使用 <strong>UR5e</strong> 机械臂和 <strong>Robotiq 2F-85</strong> 夹爪，采集 <strong>1000</strong> 条标注 episodes，覆盖杯子入碗、碗上架、杯子放杯垫、两方块堆叠、三杯入三碗等任务。</li><li>传感器配置：仿真使用 320×240 RGB-D 观测（台面和双腕相机），真实世界使用三台 <strong>Intel RealSense</strong> 相机，模型输入为 224×224 三视角，预测 50 步动作块。</li><li>基础模型：基于开源 VLA 模型 <strong>π0.5</strong>，在 RoboPRO 上预微调 30K 步；MOSAIC 全局批量大小 64，Stage 1 使用 rank-32 LoRA，Stage 2 全模型微调两个 epoch；论文未披露模型参数量与具体 GPU/TPU 资源。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评测指标：<strong>成功率（SR）</strong>、<strong>硬成功率（HSR，无碰撞成功）</strong> 与 <strong>碰撞率（CR）</strong>。</li><li>干净场景：基线 <strong>π0.5</strong> 平均 SR 66.0%，HSR 61.0%；完整 MOSAIC 达到 SR 70.1%，HSR 64.8%，SR 提升 4.1 个百分点。</li><li>杂乱场景：基线 SR 52.7%，HSR 39.7%；完整 MOSAIC 达到 SR 57.8%，HSR 41.3%，SR 提升 <strong>5.1%</strong>；Office 环境提升最大（SR +9.9%，HSR +7.1%）。</li><li>消融实验：掩码单独带来干净 +1.0% / 杂乱 +2.7% 的 SR；去除障碍物掩码使杂乱 SR 从 55.4% 降至 52.7%；注意力引导额外增加 0.5% 干净 / 1.5% 杂乱；深度注入带来总计 +4.1% 干净 / +5.1% 杂乱。</li><li>视觉扰动鲁棒性：在光照、模糊和逐帧像素偏移扰动下，MOSAIC 将平均 SR 从 65.2% 提升到 74.9%（<strong>+9.7%</strong>），HSR 从 63.4% 提升到 72.7%（+9.3%）；Office 环境 SR 提升高达 <strong>+25.0%</strong>（51.7% → 76.7%）。</li><li>真实机器人验证：论文使用 UR5e 在五个真实任务上进行验证，体现了仿真到真实的迁移能力（具体量化结果未在提供的 HTML 片段中给出）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.16246/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">What Can a VLA Learn from the Agent That Calls It? Task-Level Experience Distillation for Embodied Navigation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.15651/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Recover, Don&#x27;t Just Continue: Learning from Feedback for Physical Failure Understanding and Correction</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

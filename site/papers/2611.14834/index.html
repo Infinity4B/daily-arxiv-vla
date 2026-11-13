@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Learning Low-Latency Action Verification for Frozen Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 HDH（Hindsight Decision Model with History）框架，旨在为冻结的视觉-语言-动作（VLA）模型提供低延迟的动作验证与选择机制。 解决 VLA 模型采样动作序列可能无效，而使用大型验证器会增加推理延迟的问题。 通过利用策略自身部署产生的终端成功/失败结果（hindsight）训练轻量级验证器，在保持低延迟的同时提升任务成功率。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.14834">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-10">2026-11-10</time></p>
+        <h1 class="article-title">Learning Low-Latency Action Verification for Frozen Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.14834" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.14834" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 HDH（Hindsight Decision Model with History）框架，旨在为冻结的视觉-语言-动作（VLA）模型提供低延迟的动作验证与选择机制。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.14834.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.14834.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.14834.webp" alt="Learning Low-Latency Action Verification for Frozen Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University of California, Berkeley（主要作者单位：Wen-Han H…</p>
+        <ul class="article-facts"><li>arXiv 2611.14834</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of California, Berkeley</strong>（主要作者单位：Wen-Han Hsieh、Ken Jiankun Zheng、David M. Chan、Trevor Darrell）</li><li><strong>National Tsing Hua University</strong>（作者 Chia-Chien Chen）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>HDH</strong>（Hindsight Decision Model with History）框架，旨在为冻结的视觉-语言-动作（VLA）模型提供低延迟的动作验证与选择机制。</li><li>解决 VLA 模型采样动作序列可能无效，而使用大型验证器会增加推理延迟的问题。</li><li>通过利用策略自身部署产生的终端成功/失败结果（hindsight）训练轻量级验证器，在保持低延迟的同时提升任务成功率。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>问题设定</strong>：将 VLA 部署形式化为实时候选选择问题，监督信号仅来自冻结策略自身的 rollout 终端结果。</li><li><strong>验证器与选择机制</strong>：引入轻量级、历史条件化的验证器（HDH），在无需更新策略参数的情况下对原生 VLA 候选动作进行排序和选择。</li><li><strong>全面评估</strong>：在仿真（LIBERO-10）和真实世界（Franka Panda 机器人）实验证明，基于事后监督的动作选择能显著提升闭环操作成功率，且推理成本远低于基于大型 VLM 的验证器。</li><li><strong>开源与可复现性</strong>：提供了详细的实现细节、训练设置和评估协议，便于复现。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>三阶段框架</strong>：先部署冻结 VLA 收集自主 rollout；利用每条轨迹的终端成功/失败标签训练紧凑动作验证器；部署时从冻结 VLA 采样多个候选动作块，选择验证器预测成功率最高的候选执行。</li><li><strong>验证器架构</strong>：使用冻结的 SigLIP 视觉特征（来自骨干网络早期层），将图像区域池化为 128 个视觉 token；动作序列通过线性投影和时间嵌入引入，使用四头自注意力与交叉注意力与视觉 token 交互，输出失败 logit，进而转为任务成功分数。</li><li><strong>历史条件化</strong>：HDH 引入一个因果历史 token，通过 GRU 编码器对过去最多 3 个查询的观察、本体感受和执行动作进行总结，增强对任务进度的判别能力。</li><li><strong>候选采样与选择</strong>：每个决策步骤采样 K=2 个候选（独立 flow-matching 噪声），选择验证器得分最高者执行前 H 个动作（H=8），随后重新查询。</li><li><strong>训练目标</strong>：采用蒙特卡洛（MC）目标，使用二元交叉熵对终端失败标签（1 - 成功）进行监督，数据按 episode 级别划分训练/验证集。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真数据集</strong>：<strong>LIBERO-10</strong> 中的四个多阶段操作任务（放置物体到篮子、抽屉、盘子等）。</li><li><strong>真实世界数据集</strong>：使用 <strong>DROID</strong> 接口在 <strong>Franka Panda</strong> 机器人上采集的 80 个遥操作演示（4 个任务），验证器训练使用 150 条 rollout。</li><li><strong>基座模型</strong>：<strong>π0.5</strong>（包含 Gemma-2B 语言骨干和 300M 动作专家），使用 LoRA 微调（骨干 rank 16，专家 rank 32）。</li><li><strong>验证器规模</strong>：HDM 约 <strong>481K</strong> 可训练参数，HDH 约 <strong>845K</strong> 可训练参数。</li><li><strong>训练资源</strong>：策略推理在单块 <strong>NVIDIA H100 80GB GPU</strong> 上进行；验证器训练使用的计算资源未明确列出，但属于轻量级模型。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：仿真采用 LIBERO-10 基准，每个任务 50 个 held-out 初始状态，3 次随机运行共 600 episodes；真实世界在 Franka Panda 机器人上每个任务 50 次试验。</li><li><strong>主要评估指标</strong>：任务成功率（平均成功率）和端到端查询延迟（p50、p95）。</li><li><strong>仿真结果</strong>：HDH 在四个 LIBERO 任务上平均成功率达 <strong>82.3%</strong>，优于基线策略（78.8%）和随机选择（77.5%），且在每个任务上均优于基线。</li><li><strong>历史条件化效果</strong>：加入执行历史（HDH vs. HDM）将平均成功率从 <strong>80.3% 提升到 82.3%</strong>，在多对象协调任务上增益最大（如 Soup+Sauce 提升 6.7%）。</li><li><strong>与 VLM 验证器对比</strong>：HDH 在保持最高成功率的同时，中位数查询延迟仅 <strong>718 ms</strong>（基线 681 ms，开销 5.4%），远低于 GPT-5（27,674 ms）和 GPT-6（7,403 ms）。</li><li><strong>真实世界结果</strong>：HDH 将平均成功率从 <strong>44.7% 提升到 67.3%</strong>，其中“放置毛绒玩具到盘子”任务从 64% 提升到 <strong>94%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.14969/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Scaling VLA Serving Under Robotic Execution Constraints</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.14488/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Is Your Robot&#x27;s Memory Just a Clock? Temporal Shortcuts in Memory-Augmented VLA Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

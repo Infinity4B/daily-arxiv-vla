@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SALA: Semantically Aligned Latent Actions Enable Dual-Axis Scaling of Embodied Foundation Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 SALA，旨在解决具身基础模型（VLA）依赖昂贵的机器人交互数据的问题，通过自我中心人类视频作为补充性经验来源 指出现有潜在动作模型（LAM）仅通过视频重建学习潜在动作，导致表征按视觉外观（场景）聚类而非按动作语义聚类，难以将人类动作与机器人动作对齐 核心目标是建立跨具身（human-to-robot）的语义对应，使人类视频成为可扩展的策略学习监督信号，实现预训练（通用人类视频）与后训练（任务特定人类视频）两条轴线上的扩展" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.17110">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-12">2026-11-12</time></p>
+        <h1 class="article-title">SALA: Semantically Aligned Latent Actions Enable Dual-Axis Scaling of Embodied Foundation Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.17110" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.17110" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 SALA，旨在解决具身基础模型（VLA）依赖昂贵的机器人交互数据的问题，通过自我中心人类视频作为补充性经验来源</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.17110.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.17110.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.17110.webp" alt="SALA: Semantically Aligned Latent Actions Enable Dual-Axis Scaling of Embodied Foundation Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Sharpa Robotics（夏厦机器人）</p>
+        <ul class="article-facts"><li>arXiv 2611.17110</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Sharpa Robotics</strong>（夏厦机器人）</li><li><strong>SJTU-Sharpa Joint Lab for Embodied AI, Shanghai Jiao Tong University（上海交通大学）</strong></li><li><strong>Tsinghua University（清华大学）</strong></li><li>作者包括 Jiachun Jin、Zetong Zhou、Haonan Wang、Xiao Yang、Jun Zhu、Zhijie Deng 等</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>SALA</strong>，旨在解决具身基础模型（VLA）依赖昂贵的机器人交互数据的问题，通过<strong>自我中心人类视频</strong>作为补充性经验来源</li><li>指出现有潜在动作模型（LAM）仅通过视频重建学习潜在动作，导致表征按<strong>视觉外观（场景）聚类</strong>而非按动作语义聚类，难以将人类动作与机器人动作对齐</li><li>核心目标是建立<strong>跨具身（human-to-robot）的语义对应</strong>，使人类视频成为可扩展的策略学习监督信号，实现预训练（通用人类视频）与后训练（任务特定人类视频）两条轴线上的扩展</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>以语言作为关系监督</strong>：利用未配对人类与机器人视频的原子动作语言描述，估计语义相似度来监督跨具身对应，无需配对数据</li><li><strong>机器人锚定的语义迁移</strong>：机器人潜在动作通过动作重建 grounded 在控制中，作为锚点；对齐仅将人类潜在动作移向机器人锚点（stop-gradient）</li><li><strong>双轴扩展</strong>：人类视频成为同一动作专家的潜在动作监督，预训练时通用人类视频（最多 2,678 小时）持续降低下游动作预测误差，后训练时任务特定人类视频大幅提升真实机器人成功率（53.75% → 72.5%）</li><li>在仿真（RoboTwin 2.0）和 63-DoF 真实双灵巧手机器人上验证，平均成功率超越已有 LAM 与 WAM 方法</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>潜在动作分词器</strong>：共享视觉编码器、<strong>SoftVQ</strong> 量化器（8 个潜在 token，码本 256）与视觉解码器（重建目标为冻结 <strong>DINOv2</strong> 特征）；仅机器人片段训练动作解码器（动作重建损失 $\mathcal{L}_{\mathrm{act}}$）将潜在动作 grounded 在控制中</li><li><strong>语义对齐损失</strong>：将原子动作描述的语言相似度转化为软邻域结构 $P$（softmax over 语言相似度），监督潜在空间邻域 $Q$，采用交叉熵损失，梯度不回传到机器人锚点</li><li>选择 <strong>SoftVQ</strong> 而非硬 VQ：token 表示为码本上的类别分布，可平滑表达分级语义差异，使对齐损失有效下降</li><li><strong>策略学习</strong>：π0 风格架构（VLM + 动作专家 + flow matching），在动作专家中加入可学习的潜在动作查询（latent queries），通过 KL 损失 $\mathcal{L}_{\mathrm{LA}}$ 预测教师分词器给出的 token 分布；人类视频仅用潜在动作损失，机器人数据额外使用流匹配损失</li><li>分阶段训练：预训练（纯人类视频、仅潜在动作损失）→ 中期训练（机器人遥操作数据）→ 可选后训练（任务特定遥操作 + 人类演示）</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真</strong>：RoboTwin 2.0 双臂操作基准（50 个任务、5 种机器人本体），目标本体 Aloha-AgileX（2,500 条轨迹 / 9.2 小时），非目标本体 ARX-X5（27,000 条轨迹 / 68.0 小时）</li><li><strong>真实世界</strong>：71,582 条自我中心人类视频轨迹（2,678 等效小时，其中 983 小时用于分词器训练并标注原子动作）、888 小时机器人遥操作数据（Sharpa North 平台，70,859 条轨迹）</li><li><strong>真实机器人平台</strong>：Sharpa North 轮式人形机器人，配备两个 22-DoF Sharpa Wave 灵巧手，63 维关节空间动作</li><li><strong>模型规模</strong>：VLM 采用 <strong>Qwen3-VL-4B</strong>（预训练权重初始化），动作专家为 0.6B 参数的 Qwen3 风格 transformer（从头训练）；文本编码器仿真用 <strong>CLIP ViT-B/32</strong>，真实世界用 <strong>Qwen3-Embedding-4B</strong></li><li>训练资源（GPU/TPU 具体配置在提供文本中未完整给出）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>仿真评估</strong>：RoboTwin 2.0 上以 Aloha-AgileX 为目标，每任务 100 次滚动、50 个任务平均成功率；对比 VLAs（π0.5、X-VLA）、WAMs（FastWAM、LingBot-VA、InternVLA-A1.5、OpenWAM）和 LAMs（UniVLA、UniT、RotVLA）</li><li><strong>仿真结果</strong>：SALA 平均成功率 <strong>64.4%</strong>（Clean 80.2% / Random 48.6%），超过 π0.5（58.7%）、X-VLA（44.4%）、所有 WAM（LingBot-VA 57.1%、InternVLA-A1.5 54.0% 等）与 LAMs（UniVLA 27.1%、UniT 27.4%、RotVLA 51.2%），在域随机化场景中优势最大</li><li><strong>真实世界</strong>：63-DoF 双灵巧手机器人上评估 4 个下游任务（齿轮装配、双手倒水、花朵插接、勺子舀取，每任务 20 次试验）</li><li><strong>扩展性结果</strong>：预训练人类视频增加至 2,678 小时时持续降低机器人动作预测误差（无需额外机器人数据）；固定遥操作演示下，后训练加入任务特定人类视频使平均真实成功率从 <strong>53.75% 提升至 72.5%</strong></li><li><strong>消融分析</strong>：验证语义对齐使潜在动作按原子动作语义（而非场景）组织、跨具身检索能力、stop-gradient 与 SoftVQ 量化器的必要性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.16589/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">STVLA: Spatial-aware and Temporal-memory forVision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

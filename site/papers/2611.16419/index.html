@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>I See What You Want: Decoding Hierarchical Operator Intent from Visual Teleoperation History - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究如何仅从视觉遥操作历史中解码人类操作者的意图，无需显式指令，并将其形式化为层次化意图预测：同时推断当前正在执行的原子动作（OA）和它服务的任务使命（OM） 提出VI AMO数据集，包含 6,600 个遥操作片段、13,653 个动作标注和 9,702 个使命标注，支持训练和基准评估 通过微调视觉语言模型得到VIM，在开放词汇设置下联合生成正在进行动作和使命描述，并应用于共享自主机器人以接管操作者的中途任务" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.16419">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-12">2026-11-12</time></p>
+        <h1 class="article-title">I See What You Want: Decoding Hierarchical Operator Intent from Visual Teleoperation History</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.16419" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.16419" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究如何仅从视觉遥操作历史中解码人类操作者的意图，无需显式指令，并将其形式化为层次化意图预测：同时推断当前正在执行的原子动作（OA）和它服务的任务使命（OM）</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.16419.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.16419.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.16419.webp" alt="I See What You Want: Decoding Hierarchical Operator Intent from Visual Teleoperation History 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">ETH Zurich（苏黎世联邦理工学院）</p>
+        <ul class="article-facts"><li>arXiv 2611.16419</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>ETH Zurich</strong>（苏黎世联邦理工学院）</li><li><strong>Chinese University of Hong Kong</strong>（香港中文大学）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究如何仅从视觉遥操作历史中解码人类操作者的意图，无需显式指令，并将其形式化为<strong>层次化意图预测</strong>：同时推断当前正在执行的<strong>原子动作（OA）</strong>和它服务的<strong>任务使命（OM）</strong></li><li>提出<strong>VI AMO</strong>数据集，包含 6,600 个遥操作片段、13,653 个动作标注和 9,702 个使命标注，支持训练和基准评估</li><li>通过微调视觉语言模型得到<strong>VIM</strong>，在开放词汇设置下联合生成正在进行动作和使命描述，并应用于共享自主机器人以接管操作者的中途任务</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>形式化<strong>层次化意图预测</strong>问题，联合预测进行中动作和使命作为开放词汇自然语言，并发布 VI AMO 数据集</li><li>提出 <strong>VIM</strong>（Vision-Intention Model），基于 Qwen3.5-27B 微调，在动作和使命预测上显著超越 GPT-4o、GPT-5.6 Luna、两个具身基础模型及未微调骨干</li><li>在 VI AMO 测试集上，VIM 达到 <strong>0.825/0.821</strong> 的 Sentence-BERT 相似度（动作/使命），而最佳基线为 0.581/0.564；在 35.4% 的未见标签样本上仍保持 0.726/0.717</li><li>将 VIM 作为共享自主系统的意图模块，在五个真实世界任务中使人类遥操作时间相对 GPT-4o 减少 <strong>34.6%</strong>，相对 GPT-5.6 Luna 减少 <strong>39.8%</strong>，且单次意图预测延迟约 <strong>0.7 秒</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>VI AMO 数据集构建</strong>：五阶段标注流水线，包括动作分解、使命分组、粗时间定位、细边界优化和人工审查，将机器人演示分割为原子动作并关联使命</li><li><strong>VIM 训练</strong>：使用 Qwen3.5-27B 作为骨干，通过 LoRA 微调视觉和语言模块；输入为多视图视觉历史（每视图采样 4 帧）和文本执行上下文，输出格式为“Ongoing action: &lt;action&gt; / Ongoing mission: &lt;mission&gt;”，在单个自回归序列中生成，仅对响应 token 计算交叉熵损失</li><li><strong>共享自主集成</strong>：VIM 预测的使命作为语言指令传给经过微调的 VLA 策略（π0.5），实现从遥操作到自主执行的中途切换</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>VI AMO</strong> 数据集：来自 11 个机器人源（如 Bridge V2、DROID、RH20T 等），共 <strong>6,600 个片段</strong>、<strong>13,653 个动作标注</strong>、<strong>9,702 个使命标注</strong>；训练/验证/测试划分为 5,500/550/550 片段</li><li><strong>模型规模</strong>：VIM 基于 <strong>Qwen3.5-27B</strong>（约 27B 参数），LoRA 秩 r=16，训练时响应序列限制 2048 token；另外基线包括 Qwen3.5-9B、RynnBrain 1.1-9B、RoboBrain 2.5-8B</li><li><strong>训练资源</strong>：VIM 微调使用 <strong>1 张 NVIDIA A100 80GB GPU</strong>，约 13.44 GPU 小时；VLA 策略微调使用 <strong>4 张 NVIDIA A100 80GB GPU</strong>，10,000 步；部署在 <strong>RTX 5090 GPU</strong> 上（TensorRT-Edge-LLM，NVFP4 量化）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：VI AMO 测试集（550 个片段，1,091 个动作，781 个使命实例），在 9 个相对动作进度点（0% 到 95%）采样评估；真实世界实验使用 Franka Emika Panda 机器人执行五个任务</li><li><strong>主要指标</strong>：Token F1、Sentence-BERT（SBERT）相似度、SigLIP 余弦相似度、Top-10 标签检索准确率（%）</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - VIM 在 VI AMO 测试集上动作/使命 SBERT 为 <strong>0.825/0.821</strong>，相比最佳基线 GPT-5.6 Luna/未调 Qwen 分别提升约 42%/45%；Top-10 检索准确率达 <strong>76.59%/78.77%</strong></p>
+<p> - 在训练中未见过的标签上，VIM 的 OA/OM SBERT 为 <strong>0.726/0.717</strong>，仍显著高于最强基线（0.570/0.564）</p>
+<p> - 消融研究表明，移除腕部视角、文本上下文或视觉历史均会导致 OA 和 OM 性能下降</p>
+<p> - 真实世界共享自主任务中，VIM 使人类遥操作时间相对 GPT-4o 减少 <strong>34.6%</strong>，相对 GPT-5.6 Luna 减少 <strong>39.8%</strong>；VIM 平均预测延迟 <strong>0.70–0.81 秒</strong>，比 GPT-4o（3.09–3.53 秒）快约 77%，比 Luna（1.92–2.27 秒）快约 64%</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.16589/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">STVLA: Spatial-aware and Temporal-memory forVision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.16246/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">What Can a VLA Learn from the Agent That Calls It? Task-Level Experience Distillation for Embodied Navigation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

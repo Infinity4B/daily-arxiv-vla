@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ActionCodec2: A Streaming Action Tokenizer - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 ActionCodec2，一种非神经的流式动作分词器，用于自回归视觉-语言-动作（VLA）模型，逐步释放动作而非等待整个动作块解码完成。 解决现有块式动作分词器无法在块内利用状态反馈、轨迹误差累积导致漂移的问题。 目标是在保证轨迹重构误差有界的前提下，实现高效的流式动作离散化，并提升 VLA 在仿真和真实机器人任务中的性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.15490">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-11">2026-11-11</time></p>
+        <h1 class="article-title">ActionCodec2: A Streaming Action Tokenizer</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.15490" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.15490" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 ActionCodec2，一种非神经的流式动作分词器，用于自回归视觉-语言-动作（VLA）模型，逐步释放动作而非等待整个动作块解码完成。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.15490.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.15490.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.15490.webp" alt="ActionCodec2: A Streaming Action Tokenizer 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">清华大学（Tsinghua University）</p>
+        <ul class="article-facts"><li>arXiv 2611.15490</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>Galaxea AI</strong></li><li><strong>复旦大学</strong>（Fudan University）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>ActionCodec2</strong>，一种非神经的流式动作分词器，用于自回归视觉-语言-动作（VLA）模型，逐步释放动作而非等待整个动作块解码完成。</li><li>解决现有块式动作分词器无法在块内利用状态反馈、轨迹误差累积导致漂移的问题。</li><li>目标是在保证轨迹重构误差有界的前提下，实现高效的流式动作离散化，并提升 VLA 在仿真和真实机器人任务中的性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>将有界误差流式动作分词形式化为覆盖问题</strong>，证明“固定运动基元”在单符号每步解码器中的最优性，给出平移情形的精确解和旋转情形的常数因子紧界。</li><li><strong>提出 Set-BPE 算法</strong>，无损合并跨坐标和相邻步共现的基元符号，不依赖固定坐标顺序，相比标准 BPE 在 held-out 数据上降低 token 数 6.6%–10.7%。</li><li><strong>在相同 VLA 骨干（G0.5）下取得领先结果</strong>：LIBERO 成功率 98.2%，SimplerEnv 93.8%，LIBERO-Plus 79.5%，并在四个零射击 Franka 任务上平均任务进展 73.9%，优于 FAST、OAT、X-Tokenizer 和 ActionCodec。</li><li><strong>展示流式表示的优势</strong>：允许策略在动作块内纳入状态反馈，在随机化动力学、外部扰动和移动物体等闭环设置下显著优于开环执行。</li><li><strong>验证 ActionCodec2 tokens 可作为 VLM 智能体的直接控制接口</strong>，智能体可将成功 token 序列组合为可复用的宏，减少控制决策和思考 token 使用，并迁移到新任务。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>流式量化与误差反馈</strong>：编码器维护与解码器相同的重构状态，每步基于当前跟踪误差选择运动基元，将残差误差纠正到容差范围内，避免独立量化导致的误差累积。</li><li><strong>最小基元集推导</strong>：将有界误差流式编码转化为集合覆盖问题（\(\mathcal{E}\mathcal{A} \subseteq \bigcup_{u\in\mathcal{U}} u\mathcal{E}\)），对平移得到闭式解 \(K^*_{\rm trans} = \prod_j \lceil 1 + \Delta a_j/(2\epsilon_j) \rceil\)，对旋转利用测地体体积给出紧界。</li><li><strong>Set-BPE 无损打包</strong>：在基元原子序列上执行顺序无关的字节对编码，先合并步内共现原子，再合并相邻步模式，不固定坐标顺序，从而捕获协调运动模式。</li><li><strong>非梯度拟合</strong>：基元集合由运动边界和容差解析确定；Set-BPE 通过统计符号共现学习合并，无需反向传播或学习式码本。</li><li><strong>通用版本</strong>：在约 20k 小时、24 种 embodiment 的数据上拟合 universal ActionCodec2，适用于不同机器人和任务。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：LIBERO、LIBERO-Plus、SimplerEnv-WidowX、DROID-Franka（用于零射击真实机器人评估）。</li><li><strong>训练数据规模</strong>：通用 tokenizer 使用约 <strong>20,000 小时</strong>、来自 <strong>24 种 embodiment</strong> 的机器人数据。</li><li><strong>模型骨干</strong>：G0.5 VLA（具体参数量未在正文明确给出）。</li><li><strong>训练硬件</strong>：论文未明确列出 GPU/TPU 配置，仅说明非神经 tokenizer 的拟合无需梯度优化，因此主要计算成本来自 VLA 训练。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>重放保真度测试</strong>（LIBERO 演示数据）：原始演示成功率 100%；FAST 单步重构误差 1mm 但累计漂移约 40mm，成功率仅 90%；其余块式基线≤80%；ActionCodec2 漂移低于 5mm，成功率 97%。</li><li><strong>仿真基准成功率</strong>：</li></ul>
+<p> - LIBERO: <strong>98.2%</strong></p>
+<p> - SimplerEnv: <strong>93.8%</strong></p>
+<p> - LIBERO-Plus: <strong>79.5%</strong></p>
+<p> - 对比方法：FAST、OAT、X-Tokenizer、ActionCodec</p>
+<ul><li><strong>零射击真实机器人（Franka 任务）</strong>：平均任务进展 <strong>73.9%</strong>。</li><li><strong>闭环反馈性能</strong>：在随机物理参数、随机外力与随机运动、移动物体等环境下，流式反馈显著优于开环执行；支持在动作块内每步融入新观测。</li><li><strong>Token 效率</strong>：15Hz 末端执行器控制平均 <strong>8.8 tokens/s</strong>，关节控制 <strong>10.8 tokens/s</strong>。</li><li><strong>VLM 智能体控制实验</strong>：ActionCodec2 tokens 作为控制接口，智能体构建的宏可跨尝试复用并迁移到 held-out 任务，减少控制决策和思考 token 使用。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.15491/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">What Makes a VLA Reactive? A Study of Execution Strategies for Dynamic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.15381/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Low-Cost Mobile Bimanual Manipulation for Long-Horizon Toilet Cleaning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

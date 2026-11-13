@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>What Can a VLA Learn from the Agent That Calls It? Task-Level Experience Distillation for Embodied Navigation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究导航智能体中 大语言模型（LLM）规划器 与 视觉-语言-动作模型（VLA） 的分工协作问题：规划器调用 VLA 完成每一步导航，但测试阶段仍需持续调用 LLM，带来高昂的 token 成本和时间延迟 提出 任务级经验蒸馏方法 H2E（Task-Level Experience Distillation），将 LLM 智能体在训练场景中成功完成任务的经验蒸馏到其调用的 VLA 中，使 VLA 在测试时脱离 LLM 独立导航 解决 agent 会话数据难以直接用于 VLA 训练的挑战：会话中包含规划器工具动作、子指令以及绕路等噪声，不能直接作为 VLA 的演示数据" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.16246">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-12">2026-11-12</time></p>
+        <h1 class="article-title">What Can a VLA Learn from the Agent That Calls It? Task-Level Experience Distillation for Embodied Navigation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.16246" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.16246" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究导航智能体中 大语言模型（LLM）规划器 与 视觉-语言-动作模型（VLA） 的分工协作问题：规划器调用 VLA 完成每一步导航，但测试阶段仍需持续调用 LLM，带来高昂的 token 成本和时间延迟</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.16246.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.16246.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.16246.webp" alt="What Can a VLA Learn from the Agent That Calls It? Task-Level Experience Distillation for Embodied Navigation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者所属机构：清华大学深圳国际研究生院（Tsinghua Shenzhen International…</p>
+        <ul class="article-facts"><li>arXiv 2611.16246</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者所属机构：<strong>清华大学深圳国际研究生院（Tsinghua Shenzhen International Graduate School, Tsinghua University）</strong></li><li>通讯作者：<strong>Xiaojun Zhu</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究导航智能体中 <strong>大语言模型（LLM）规划器</strong> 与 <strong>视觉-语言-动作模型（VLA）</strong> 的分工协作问题：规划器调用 VLA 完成每一步导航，但测试阶段仍需持续调用 LLM，带来高昂的 token 成本和时间延迟</li><li>提出 <strong>任务级经验蒸馏方法 H2E（Task-Level Experience Distillation）</strong>，将 LLM 智能体在训练场景中成功完成任务的经验蒸馏到其调用的 VLA 中，使 VLA 在测试时脱离 LLM 独立导航</li><li>解决 agent 会话数据难以直接用于 VLA 训练的挑战：会话中包含规划器工具动作、子指令以及绕路等噪声，不能直接作为 VLA 的演示数据</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>蒸馏对象创新</strong>：首次将前沿 LLM 导航智能体的成功经验蒸馏到其调用的 VLA 中，而不是蒸馏规划器，使 VLA 在测试时独立运行，无需 LLM</li><li><strong>提出 H2E 方法</strong>：包含三条规则——① 任务级标签（将每次运动都标注为原始指令下的 VLA 动作，无论动作执行者）；② 进度掩码（屏蔽远离目标的步骤损失）；③ 停止标签（将目标 1 米内的状态标记为停止）。并从理论上证明 <strong>L1 损失</strong> 配合停止规则能教会 VLA 精确停止</li><li><strong>显著性能提升</strong>：在 REVERIE-CE val-unseen 全部 3189 个 episode 上，将 <strong>8B NavGPT VLA</strong> 的成功率从 <strong>35.0% 提升至 44.9%</strong>（+9.9 个百分点），且优于 geodesic adaptation 基线</li><li><strong>成本效率验证</strong>：蒸馏后的 VLA 以零 LLM token 和约四分之一的时间达到高于完整 LLM 智能体的成功率</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>数据采集</strong>：在训练场景上运行 LLM 智能体（规划器为 gpt-6-astra，VLA 为 8B NavGPT），保留成功到达目标的会话，共获得 <strong>2395 个会话</strong>，覆盖 57 个场景</li><li><strong>三条转换规则</strong>：</li></ul>
+<p> - ① <strong>任务级标签</strong>：将每个步骤的下一组 8 个位姿作为标签，使用原始任务指令，忽略动作来源（VLA 或规划器工具）和子指令</p>
+<p> - ② <strong>进度掩码</strong>：对远离目标的步骤（满足 \(d(p_{t+K}) \le d(p_t) + 0.25\) 或接近目标的状态）设置掩码 \(m_t=1\)，这些步骤不参与损失计算但保留在历史中</p>
+<p> - ③ <strong>停止标签</strong>：将目标 1 米半径内的所有访问状态标记为停止（\(y_t = \mathbf{0}\)），比成功判定的 3 米更严格，使停止位置更准确</p>
+<ul><li><strong>训练目标</strong>：混合三类数据源——agent 会话（权重 0.60）、DART 噪声的 geodesic 专家数据（权重 0.25）、R2R-CE 路径跟随数据（权重 0.15），使用掩码 <strong>L1 损失</strong> 进行回归训练</li><li><strong>参数高效微调</strong>：使用 <strong>LoRA</strong>（rank \(r=16\)，scale \(\alpha=32\)），仅训练 LoRA 适配器和动作头部，视觉编码器与 LLM 主体保持冻结；LoRA 权重可合并回原模型，测试时无额外开销</li><li><strong>部署</strong>：蒸馏后的 VLA 独立运行，不再调用 LLM；每步时间仅为 VLA 推理时间，且能更快停止，进一步缩短 episode 长度</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>基准环境</strong>：REVERIE-CE 基准，基于 Habitat 仿真器，使用 <strong>MP3D（Matterport3D）</strong> 场景</li><li><strong>训练数据</strong>：2395 个 agent 会话（来自 57 个训练场景），共 <strong>332,405 个标记步骤</strong>；另混入 DART geodesic 专家数据和 R2R-CE 路径跟随数据</li><li><strong>开发集</strong>：100 个 episode，来自 26 个额外场景</li><li><strong>验证集</strong>：REVERIE-CE val-unseen 全部 <strong>3189 个 episode</strong>，来自 10 个未见场景</li><li><strong>模型规模</strong>：基础 VLA 为 <strong>8B 参数的 NavGPT 视频 VLA</strong>，输入 4 路 RGB 视图，预测 8 个航点</li><li><strong>训练资源</strong>：<strong>4 块 NVIDIA L40 GPU</strong>，数据并行；训练 <strong>9000 次更新</strong>，约 <strong>28 小时</strong></li><li><strong>优化设置</strong>：LoRA 学习率 \(10^{-4}\)，头部学习率 \(2\times10^{-5}\)，warm-up 540 步后余弦调度，梯度裁剪 norm 1</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估指标</strong>：成功率（SR）、oracle 成功率（OSR）、路径加权成功率（SPL）、导航误差（NE）</li><li><strong>主要结果</strong>：</li></ul>
+<p> - <strong>H2E</strong> 将 VLA 的 SR 从 <strong>35.0% 提高到 44.9%</strong>（+9.9 点），95% 置信区间跨场景增益为 3.9 到 16.3 点</p>
+<p> - <strong>Geodesic adaptation</strong> 仅用 DART + R2R 数据无增益（SR 34.9%），证明 agent 会话是关键</p>
+<p> - 仅用 <strong>504 个会话</strong> 训练，H2E 即可达到 <strong>43.2% SR</strong>，远超 geodesic adaptation 的 34.9%</p>
+<p> - <strong>LoRA rank 16</strong> 在 861 个 episode 子集上达到 45.6% SR，rank 64 仅为 33.2%，小适配器足够吸收经验</p>
+<p> - H2E 同时将 <strong>SPL 提升 11.9 点</strong>，NE 降低 <strong>1.6 米</strong></p>
+<ul><li><strong>与完整 LLM 智能体对比</strong>（100 个 episode，26 个场景）：LLM 智能体 SR 53%，时间 423 秒，70k tokens；H2E 蒸馏后的 VLA 在无 LLM tokens、时间约四分之一的情况下达到 <strong>更高的成功率</strong>（超过 53%）</li><li><strong>技能分析</strong>：蒸馏 VLA 学会两项关键技能——① 在目标处正确停止（基础 VLA 常走过目标区域后停在区域外）；② 找到基础 VLA 从未到达过的新目标。在按起始距离划分的长距离 episode 子集上，H2E 领先优势从短距离的 4.4 点扩大到长距离的 <strong>17.5 点</strong></li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.16419/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">I See What You Want: Decoding Hierarchical Operator Intent from Visual Teleoperation History</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.15937/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">MOSAIC: Modular Obstacle and Spatial-Aware Framework for Manipulation In Cluttered Scenes</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

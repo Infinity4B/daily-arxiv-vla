@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Bind-WAM: Binding-Uncertainty-Guided Selective Future Imagination in World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Bind-WAM，一种基于绑定不确定性引导的选择性未来想象框架，用于世界动作模型（World Action Models, WAMs） 解决 WAMs 在每个重规划步骤都生成未来视觉状态导致计算开销大的问题，核心问题是“机器人策略何时应该想象未来？” 引入语言-物体绑定不确定性作为可解释信号，在绑定不稳定时联合生成未来视觉与动作，在绑定稳定时直接预测动作" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.15368">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-11">2026-11-11</time></p>
+        <h1 class="article-title">Bind-WAM: Binding-Uncertainty-Guided Selective Future Imagination in World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.15368" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.15368" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Bind-WAM，一种基于绑定不确定性引导的选择性未来想象框架，用于世界动作模型（World Action Models, WAMs）</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.15368.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.15368.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.15368.webp" alt="Bind-WAM: Binding-Uncertainty-Guided Selective Future Imagination in World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">复旦大学（Chenhao Qiu、Songen Gu、Shufeng Nan、Tianyu Wang、…</p>
+        <ul class="article-facts"><li>arXiv 2611.15368</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>复旦大学</strong>（Chenhao Qiu、Songen Gu、Shufeng Nan、Tianyu Wang、Siyu Lin、Yifan Li、Bingwen Zhu、Yanwei Fu）</li><li><strong>同济大学</strong>（Shuyi Chen）</li><li><strong>上海创新研究院</strong>（Tianyu Wang、Yifan Li、Bingwen Zhu）</li><li><strong>ROBOTOPIA</strong>（Chenhao Qiu、Tianyu Wang、Siyu Lin）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Bind-WAM</strong>，一种基于绑定不确定性引导的选择性未来想象框架，用于世界动作模型（World Action Models, WAMs）</li><li>解决 WAMs 在每个重规划步骤都生成未来视觉状态导致计算开销大的问题，核心问题是“机器人策略何时应该想象未来？”</li><li>引入语言-物体绑定不确定性作为可解释信号，在绑定不稳定时联合生成未来视觉与动作，在绑定稳定时直接预测动作</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>首次将 WAM 中的选择性未来想象形式化为状态相关问题，提出语言-物体绑定不确定性作为可解释的路由信号</li><li>开发 <strong>Bind-WAM</strong> 框架，包含离线不确定性标注管道和轻量级预测器（6.65M 参数），在线路由共享 WAM 在直接路径与联合路径之间切换</li><li>提出三种绑定失败检测信号：参考不匹配、不可见性、身份漂移，并由 Qwen3-VL、SAM 3.1、DINOv3 自动生成伪标签</li><li>在 LIBERO、RoboTwin 2.0 和真实机器人平台上验证有效性，证明绑定不确定性可识别真正需要未来想象的状态</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>离线标注管道</strong>：利用 Qwen3-VL-32B 识别任务相关物体和关系锚点，SAM 3.1 生成跟踪掩码，DINOv3 提取特征计算身份一致性，生成二元绑定不确定性标签</li><li><strong>绑定不确定性预测器</strong>：轻量级 ViT 架构，从当前 RGB 观测（224×224）和语言指令预测不确定性值 U_t，使用加权 BCE 和 Brier 项作为损失</li><li><strong>双路径 WAM 路由</strong>：直接路径（仅当前帧注意力）与联合路径（全视频帧注意力）共享参数，仅在动作-视频注意力掩码上不同</li><li><strong>选择性未来想象</strong>：同时监测不确定性绝对值 U_t 和帧间变化 ΔU_t，当任一超过阈值时触发联合路径</li><li><strong>训练目标</strong>：基于流匹配（flow-matching）同时去噪动作块和未来视频潜变量，使用 Wan2.2-5B 作为视频骨干</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：LIBERO（Spatial、Object、Goal、Long 四套件，共 1,712 条演示）和 RoboTwin 2.0（7 个双臂任务，每任务 50 干净演示 + 500 随机化演示）</li><li><strong>真实世界数据</strong>：自采集 3 个双臂任务（Towel-Fold、Handover-Place、Shape-Alignment），每任务 75 条演示</li><li><strong>模型规模</strong>：绑定不确定性预测器约 6.65M 参数；WAM 策略使用预训练 Wan2.2-5B 作为视频骨干</li><li><strong>训练资源</strong>：真实世界部署使用 NVIDIA RTX 6000 Ada GPU 工作站；所有模型训练 10 epochs</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>绑定预测器性能</strong>：LIBERO 上 Balanced Accuracy 87.59%、AUROC 0.9653；RoboTwin 上 Balanced Accuracy 96.75%、AUROC 0.9984</li><li><strong>LIBERO 结果</strong>：Bind-WAM 平均成功率 98.60%，超过 Fast-WAM 1.50 个百分点、超过 Fast-WAM-Joint 0.20 个百分点，同时将完成时间从 15.73s 降至 11.71s（降低 25.6%），未来想象比例仅 40.58%</li><li><strong>RoboTwin 2.0 结果</strong>：干净条件下平均成功率 88.29%，随机条件下 87.00%，超过 Fast-WAM 5.15 和 2.71 个百分点，超过 Fast-WAM-Joint 0.58 和 0.86 个百分点，未来想象占比 44.45% 和 36.20%</li><li><strong>真实世界结果</strong>：平均成功率 66.6%，超过 Motus（51.5%）、Fast-WAM（42.4%）、Fast-WAM-Joint（57.6%），未来想象仅占 28.4%</li><li><strong>消融实验</strong>：绑定不确定性路由相比随机路由和均匀路由分别提升 1.25 和 1.10 个百分点成功率，并将完成时间缩短约 20%</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.15381/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Low-Cost Mobile Bimanual Manipulation for Long-Horizon Toilet Cleaning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.15360/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">CARE-Drive: Coupled Alternating Refinement for Ego-trajectories</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

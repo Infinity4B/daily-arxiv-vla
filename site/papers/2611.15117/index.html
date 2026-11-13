@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PolyMorphWBC: Whole-Body Control from End-Effector Trajectories for Quadrupedal Mobile Manipulation across Arm Morphologies with Extended Reach - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 PolyMorphWBC，一种分层全身控制器，以短时域末端执行器（EE）轨迹作为唯一任务级运动命令，生成协调的机械臂-基座运动 解决的核心问题：在四类 6-DoF 机械臂形态中，如何根据 EE 轨迹自动决定基座移动时机和方式，并支持扩展可达轨迹，同时实现跨形态复用 该控制器在 IsaacLab 中训练，在 MuJoCo 中跨仿真验证，并在真实 Go2–ARX5 系统上通过遥操作和语言条件 pick-and-place 演示" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.15117">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-11">2026-11-11</time></p>
+        <h1 class="article-title">PolyMorphWBC: Whole-Body Control from End-Effector Trajectories for Quadrupedal Mobile Manipulation across Arm Morphologies with Extended Reach</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.15117" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.15117" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 PolyMorphWBC，一种分层全身控制器，以短时域末端执行器（EE）轨迹作为唯一任务级运动命令，生成协调的机械臂-基座运动</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.15117.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.15117.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.15117.webp" alt="PolyMorphWBC: Whole-Body Control from End-Effector Trajectories for Quadrupedal Mobile Manipulation across Arm Morphologies with Extended Reach 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文原文未明确标注作者所属机构；作者包括 Heng Li、Yang Li、Yifan Duan、Ren…</p>
+        <ul class="article-facts"><li>arXiv 2611.15117</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文原文未明确标注作者所属机构；作者包括 <strong>Heng Li</strong>、<strong>Yang Li</strong>、<strong>Yifan Duan</strong>、<strong>Ren Fang</strong>、<strong>Matao Duan</strong>、<strong>Wenhao Yu</strong>、<strong>Lu Zhang</strong>、<strong>Jianmin Ji</strong>、<strong>Yanyong Zhang</strong> 等</li><li>从作者背景及实验硬件推断，可能涉及 <strong>中国科学技术大学（USTC）</strong> 及相关机器人研究团队；论文使用 <strong>Unitree Go2</strong> 四足基座和 <strong>ARX X5</strong> 机械臂平台</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>PolyMorphWBC</strong>，一种分层全身控制器，以<strong>短时域末端执行器（EE）轨迹</strong>作为唯一任务级运动命令，生成协调的机械臂-基座运动</li><li>解决的核心问题：在四类 6-DoF 机械臂形态中，如何根据 EE 轨迹自动决定基座移动时机和方式，并支持<strong>扩展可达轨迹</strong>，同时实现跨形态复用</li><li>该控制器在 <strong>IsaacLab</strong> 中训练，在 <strong>MuJoCo</strong> 中跨仿真验证，并在真实 <strong>Go2–ARX5</strong> 系统上通过遥操作和语言条件 pick-and-place 演示</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>PolyMorphWBC</strong> 分层控制层级：使用 EE 轨迹预览生成形态相关的臂-基座运动，无需显式基座命令，可覆盖初始固定基座可达范围之外的轨迹</li><li>结合 <strong>URDF 派生的形态条件化</strong>与<strong>在线残余力反馈</strong>，复用同一个学习协调器与运动后端，同时保留臂特定 IK，实现跨机械臂形态复用</li><li>在四类运动学族的<strong>保留轨迹和保留机械臂</strong>上验证跨形态与扩展可达跟踪，并在 <strong>MuJoCo</strong> 中与 <strong>UMI-on-Legs</strong> 对比，位置误差降低 69–72%、姿态误差降低 91–97%</li><li>在真实 <strong>Go2–ARX5</strong> 平台上演示<strong>语言条件扩展可达 pick-and-place</strong>，使用 <strong>π₀</strong> 提供 EE 轨迹，不依赖 VLA 给出的基座命令</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>分层控制结构</strong>：轨迹条件化协调器 \pi_W 根据预览的 EE 目标输出基座命令（平面速度、偏航率、俯仰和高度偏移）；臂特定 IK 跟踪当前目标；冻结的运动后端 \pi_B 执行基座命令</li><li><strong>形态表征</strong>：从 URDF 提取关节变换、轴、限位、质量、质心和惯量等描述符，通过预训练编码器 <strong>E_φ</strong> 得到 64 维嵌入，再经投影 <strong>P_B</strong> 和 <strong>P_W</strong> 分别适配后端和协调器；编码器预训练后冻结</li><li><strong>在线残余力反馈</strong>：基于臂各连杆的运动学与质量计算残余力和力矩，缩放后输入后端，同时保留目标-力-响应历史 <strong>H_t</strong>，捕捉静态模型之外的臂-基座交互</li><li><strong>训练策略</strong>：后端用 PPO 在 2048 并行环境训练 12000 次迭代，协调器用 PPO 训练 2000 次迭代；协调器使用 <strong>K=7</strong> 的预览姿态（1 秒跨度），后端使用 <strong>N_h=5</strong> 历史帧；协调器 10 Hz，后端和 IK 50 Hz</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>程序化生成机械臂</strong>：四类运动学族（PA、SW、OW、CW），每族生成 256 个训练、32 个验证、32 个保留形态（共 1024/128/128），锚臂模型不出现在训练中</li><li><strong>轨迹库</strong>：协调器使用 10 万条训练轨迹与 1 万条保留轨迹；轨迹包络覆盖初始基座坐标系下 x∈[-0.35,1.25] m、y∈[-0.66,0.66] m、z∈[-0.25,0.50] m</li><li><strong>仿真与硬件</strong>：在 <strong>IsaacLab</strong> 中训练，在 <strong>MuJoCo</strong> 中跨仿真验证；真实平台为 <strong>Unitree Go2</strong> 基座 + <strong>ARX X5</strong> 机械臂；<strong>π₀</strong> 在外部 <strong>NVIDIA RTX 5090</strong> 工作站运行</li><li><strong>模型规模</strong>：形态编码器输出 64 维，后端与协调器投影各输出 32 维；论文未提供具体参数量</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>IsaacLab 仿真（保留轨迹与形态）</strong>：整体完成率 <strong>93.95%</strong>，平均位置误差 <strong>2.30 cm</strong>，平均姿态误差 <strong>4.81°</strong>；扩展可达前向（x&gt;1 m）完成率 <strong>94.83%</strong>、误差 1.94 cm / 3.86°；后向（x&lt;0）完成率 <strong>91.56%</strong>、误差 2.41 cm / 4.68°</li><li><strong>锚臂迁移</strong>：ARX X5 完成率 <strong>99.30%</strong>（1.57 cm / 2.96°），Compact xArm6 <strong>99.27%</strong>（1.93 cm / 4.09°），PiPER <strong>93.16%</strong>（1.98 cm / 4.45°），Compact MICO <strong>86.62%</strong>（2.67 cm / 5.26°）</li><li><strong>MuJoCo 对比 UMI-on-Legs</strong>：在四条轨迹上 PolyMorphWBC 位置误差 <strong>1.38–2.04 cm</strong>、姿态误差 <strong>2.01–2.38°</strong>；UMI-on-Legs 位置误差 <strong>4.77–7.31 cm</strong>、姿态误差 <strong>22.72–76.57°</strong></li><li><strong>消融实验</strong>：形态条件化对 CW 族完成率提升 <strong>9.90 pp</strong>、对 OW 族提升 <strong>2.59 pp</strong>，对 PA 和 SW 族影响小于 1 pp；表明形态信息在几何差异大的臂族中作用更大</li><li><strong>真实硬件</strong>：在 <strong>Go2–ARX5</strong> 上成功演示 EE 遥操作和 <strong>π₀</strong> 驱动的语言条件扩展可达 pick-and-place，全程未向操作员或 VLA 提供基座命令</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.15360/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CARE-Drive: Coupled Alternating Refinement for Ego-trajectories</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.14969/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Scaling VLA Serving Under Robotic Execution Constraints</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

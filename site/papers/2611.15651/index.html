@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Recover, Don&#x27;t Just Continue: Learning from Feedback for Physical Failure Understanding and Correction - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究如何让多模态大语言模型从“会做规划”进化成能理解物理交互、适应执行能力并在失败后纠正行为的具身智能大脑。 核心问题：物理执行中动作会偏离预期效果，且能被实现的内容受本体、控制器和环境共同约束；当前具身基础模型缺乏物理因果理解与失败定位、执行能力识别与适配、基于交互经验的上下文学习三项互补能力。 提出 Embodied-Corrector，通过受控失败-恢复数据、评估优先训练和 OPD 内化，让模型在固定执行后端下实现失败原因分析与可执行纠正。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.15651">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-11">2026-11-11</time></p>
+        <h1 class="article-title">Recover, Don&#x27;t Just Continue: Learning from Feedback for Physical Failure Understanding and Correction</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.15651" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.15651" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究如何让多模态大语言模型从“会做规划”进化成能理解物理交互、适应执行能力并在失败后纠正行为的具身智能大脑。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.15651.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.15651.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.15651.webp" alt="Recover, Don&#x27;t Just Continue: Learning from Feedback for Physical Failure Understanding and Correction 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者均来自 浙江大学（Zhejiang University），隶属于 ZJU ACES Lab…</p>
+        <ul class="article-facts"><li>arXiv 2611.15651</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者均来自 <strong>浙江大学</strong>（Zhejiang University），隶属于 <strong>ZJU ACES Lab 的 OmniAI Group</strong>。</li><li>第一作者 <strong>Miao Pan</strong> 和 <strong>Kaixiang Yao</strong> 为共同贡献者。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究如何让多模态大语言模型从“会做规划”进化成能理解物理交互、适应执行能力并在失败后纠正行为的<strong>具身智能大脑</strong>。</li><li>核心问题：物理执行中动作会偏离预期效果，且能被实现的内容受本体、控制器和环境共同约束；当前具身基础模型缺乏<strong>物理因果理解与失败定位</strong>、<strong>执行能力识别与适配</strong>、<strong>基于交互经验的上下文学习</strong>三项互补能力。</li><li>提出 <strong>Embodied-Corrector</strong>，通过受控失败-恢复数据、评估优先训练和 OPD 内化，让模型在固定执行后端下实现失败原因分析与可执行纠正。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>识别出物理因果理解、执行能力适配、从交互反馈中上下文学习三项互补且不可替代的纠正能力，并诊断当前多模态具身大脑缺失这些能力。</li><li>提出 <strong>Embodied-Corrector</strong> 及受控失败-恢复数据构建流程，将动作、可观测物理后果、失败原因与可执行恢复对齐为 <strong>Judge–Cause–Sub–Fine</strong> 监督信号。</li><li>提出<strong>评估优先 SFT（evaluation-first SFT）</strong>与<strong>OPD（On-Policy Distillation）内化</strong>，解决前缀分布不匹配与响应级奖励过粗问题；设计<strong>噪声感知非对称 OPD（NEPO）</strong>。</li><li>在脑级失败推理、固定后端执行（冻结 VLA 与 GPT-5.5 代码生成器）以及真实机器人上验证，展示失败解释、指令适配与纠正上下文能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>受控失败数据构建：从成功轨迹的子任务边界注入单一受控扰动（导航、可达性、抓取姿态、控制时机、关节状态、任务前提、目标 grounding），重放并仅保留可观测且可恢复的失败，生成纠正轨迹。</li><li>训练目标字段：<strong>Judge</strong> 判断当前子任务是否完成；<strong>Cause</strong> 基于可观测证据定位失败原因；<strong>Sub</strong> 决定推进或重做当前子任务；<strong>Fine</strong> 给出动作、目标参数、顺序与验证步骤。</li><li>评估优先训练：先训练 Judge/Cause，再在准确 Judge/Cause 前缀下训练 Sub/Fine；之后采用 <strong>OPD</strong> 在自生成前缀下生成规划，并用准确前缀的对比前向概率差异作为 token 级信号进行强化/抑制。</li><li><strong>NEPO</strong>：根据自生成分布的熵动态门控负信号，正信号保留、负信号随熵衰减，提升训练稳定性。</li><li>推理阶段：纠正 Harness 将目标、观测、执行历史与检索记忆结合生成工作流代码或调用冻结 VLA；执行后由 Embodied-Corrector 输出 Judge/Cause/Sub/Fine，仅环境验证后写入 episode memory。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>从 <strong>RoboCasa365</strong> 和 <strong>OmniBehavior</strong> 成功轨迹构建受控失败-恢复数据，并保留 held-out 轨迹构建 <strong>EmbodiedDiag-Bench</strong>。</li><li>基础模型规模：<strong>RynnBrain-8B</strong>、<strong>RoboBrain2.5-4B</strong>、<strong>InternVL3-8B</strong>、<strong>MiMo-Embodied-7B</strong>、<strong>Qwen2.5-VL-7B</strong> 等；对比模型包括 <strong>GPT-5.5</strong>、<strong>GPT-4o</strong>、<strong>Claude-3.7-Sonnet</strong>、<strong>Qwen3-VL-32B</strong>。</li><li>训练/推理使用模拟环境与机器人执行接口；部分对比使用 <strong>GPT-5.5 代码生成器</strong>和<strong>冻结 VLA</strong>；真实机器人验证使用 <strong>Piper</strong> 平台。</li><li>模型变体：<strong>RynnBrain-SFT</strong>、<strong>RynnBrain-OPD</strong>、<strong>RynnBrain-GRPO</strong>、<strong>RynnBrain-NEPO</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>EmbodiedDiag-Bench</strong>：NEPO 模型在导航/操作上 Judge 准确率 <strong>79.6%</strong> 和 <strong>81.2%</strong>，Cause 准确率 <strong>58.2%</strong> 和 <strong>54.6%</strong>，Sub/Fine 至少 <strong>63.7%</strong>，超过 SFT/OPD/GRPO。</li><li><strong>EB-ALFRED 迁移</strong>：NEPO 在所有六个子集上优于基础模型；相比 SFT，在 <strong>Complex/Spatial/Long</strong> 任务上增益最明显。</li><li><strong>代码执行（无 VLA，固定 GPT-5.5 代码生成器）</strong>：NEPO 与固定代码执行结合，在 OmniBehavior 和 LIBERO-PRO 上提升所有十种执行条件，宏平均增益 <strong>13.9 个百分点</strong>。</li><li><strong>冻结 VLA 执行</strong>：执行感知分解在 <strong>Composite-Seen</strong> 和 <strong>Composite-Unseen</strong> 上分别提升 <strong>5.4</strong> 和 <strong>6.1 个百分点</strong>。</li><li><strong>真实机器人验证</strong>：在 Piper 平台上验证具身纠正能力（具体成功率见附录 G）。</li><li>反馈形式消融：与重复失败结果相比，提供失败原因可一致提高任务成功率（例如 0.22→0.28，0.20→0.27，0.20→0.24）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.15937/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">MOSAIC: Modular Obstacle and Spatial-Aware Framework for Manipulation In Cluttered Scenes</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.15491/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">What Makes a VLA Reactive? A Study of Execution Strategies for Dynamic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

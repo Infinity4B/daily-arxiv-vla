@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>What Makes a VLA Reactive? A Study of Execution Strategies for Dynamic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究预训练 VLA 模型（以 π_0.5 为例）在动态操作中的反应性，重点关注动作块因物体移动而失效的问题 系统评估了执行策略中的多个维度：预测视界、执行视界、同步/异步推理、轨迹连续性、时间信息及策略自适应 核心结论：反应性不仅取决于策略本身，更取决于执行管道，两者应联合评估" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.15491">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-11">2026-11-11</time></p>
+        <h1 class="article-title">What Makes a VLA Reactive? A Study of Execution Strategies for Dynamic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.15491" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.15491" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究预训练 VLA 模型（以 π_0.5 为例）在动态操作中的反应性，重点关注动作块因物体移动而失效的问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.15491.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.15491.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.15491.webp" alt="What Makes a VLA Reactive? A Study of Execution Strategies for Dynamic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者来自 Intuitive Robots Lab (IRL), Karlsruhe Institut…</p>
+        <ul class="article-facts"><li>arXiv 2611.15491</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者来自 <strong>Intuitive Robots Lab (IRL), Karlsruhe Institute of Technology (KIT)</strong></li><li>其中 Rudolf Lioutikov 同时隶属 <strong>Robotics Institute Germany (RIG)</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究预训练 <strong>VLA 模型</strong>（以 <strong>π_0.5</strong> 为例）在动态操作中的反应性，重点关注动作块因物体移动而失效的问题</li><li>系统评估了执行策略中的多个维度：<strong>预测视界</strong>、<strong>执行视界</strong>、<strong>同步/异步推理</strong>、<strong>轨迹连续性</strong>、<strong>时间信息</strong>及<strong>策略自适应</strong></li><li>核心结论：反应性不仅取决于策略本身，更取决于<strong>执行管道</strong>，两者应联合评估</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>揭示最佳<strong>预测视界</strong>约为 1 秒（DOM: 25 步；DOMINO: 30 步），执行视界则因<strong>模型检查点</strong>而异（1k 检查点最佳 s=5，5k 检查点最佳 s=15）</li><li>证明<strong>异步执行</strong>在短执行视界下显著优于同步执行，因为同步执行引入额外等待时间</li><li>发现保持<strong>块间连续性</strong>的方法（如 <strong>ABPolicy</strong>）优于仅降低延迟的方法（如 <strong>FASTER</strong>），强调轨迹连续性对动态操作的关键作用</li><li>评估了 <strong>PUMA</strong>（运动信息）和 <strong>DSRL</strong>（潜在空间强化学习）等策略自适应方法，显示它们能修复特定失败，但在传送带任务上与调整执行视界的收益相当</li><li>指出<strong>自适应动作分块</strong>（AAC）因使用熵作为触发信号而失败，未能超越固定执行视界</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于预训练 VLA 模型 <strong>π_0.5</strong>，通过微调改变预测视界 H，并在部署时独立调节执行视界 s</li><li>实现并对比多种干预方法：<strong>RTC</strong>（块过渡连续）、<strong>FASTER</strong>（加速动作生成）、<strong>DynamicVLA</strong>（执行对齐）、<strong>ABPolicy</strong>（样条曲线连续性）、<strong>PUMA</strong>（光流运动信息）、<strong>AAC</strong>（熵驱动的自适应分块）、<strong>DSRL</strong>（潜在空间强化学习）</li><li>执行模式分为<strong>同步执行</strong>（执行完块后等待下一预测）与<strong>异步执行</strong>（推理与运动重叠）</li><li>在仿真基准 <strong>DOM</strong>、<strong>DOMINO</strong> 和三个真实机器人任务（移动杯子放置、滚动罐抓取、传送带拾取）上进行系统评测</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用仿真动态操作基准：<strong>DOM</strong>（含 Adjust Bottle、Place Basket 等任务）和 <strong>DOMINO</strong></li><li>真实机器人：<strong>Franka Panda</strong> 执行三个任务，其中传送带任务含<strong>静止</strong>、<strong>慢速 2.5 cm/s</strong>、<strong>快速 5 cm/s</strong> 三种条件</li><li>模型为预训练 <strong>π_0.5</strong> VLA，采用 <strong>1k</strong> 和 <strong>5k</strong> 两个检查点进行对比；具体参数量未在正文中列出</li><li>训练与硬件细节见附录（正文未展开，包括 GPU 资源与控制频率等）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：仿真（DOM、DOMINO）与真实机器人（Franka Panda）</li><li>主要指标：<strong>任务成功率</strong>，以及<strong>首次动作时间</strong>、<strong>任务完成时间</strong>、<strong>推理调用次数</strong>等执行指标</li><li>RQ1：最佳预测视界约 1 秒；执行视界最优值随检查点变化；<strong>AAC</strong> 在静态和快速传送带条件下失败</li><li>RQ2：短执行视界在异步执行下性能提升明显（同步仅 20% 成功率，异步可达 60–75%）；<strong>ABPolicy</strong> 综合表现最佳，低延迟 <strong>FASTER</strong> 未带来优势；动作率从 20 Hz 提高到 30 Hz 在快速传送带上大幅提升性能（ABPolicy 从 13% 提升至 93%）</li><li>RQ3：<strong>PUMA</strong> 和 <strong>DSRL</strong> 等策略自适应方法在特定任务上可修复失败，但在传送带任务上与调整执行视界的收益相当</li><li>核心洞察：<strong>频繁重规划</strong>只有在新的预测与旧预测有实质差异时才有帮助；否则短执行视界可能导致“从不启动”的低效行为</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.15651/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Recover, Don&#x27;t Just Continue: Learning from Feedback for Physical Failure Understanding and Correction</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.15490/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ActionCodec2: A Streaming Action Tokenizer</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
