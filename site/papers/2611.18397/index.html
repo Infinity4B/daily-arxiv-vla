@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Gamer: A Generalist Vision-Language-Action Foundation Model for Long-Horizon Real-Time Game Agent - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Gamer，一个面向复杂交互环境中长时程任务的通用智能体框架，采用端到端架构融合感知、记忆管理与多步推理 解决现有游戏智能体的核心问题：依赖特权内部状态或专用 API 导致泛化性差、推理延迟导致动作滞后于游戏状态变化、长时程任务中的上下文窗口受限与稀疏奖励问题 以 Honkai: Star Rail 等复杂 3D 开放世界游戏为测试平台，探索从屏幕像素观察到原生键盘鼠标动作的统一设备级接口，通向跨数字与物理世界的通用智能体" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.18397">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-13">2026-11-13</time></p>
+        <h1 class="article-title">Gamer: A Generalist Vision-Language-Action Foundation Model for Long-Horizon Real-Time Game Agent</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.18397" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.18397" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Gamer，一个面向复杂交互环境中长时程任务的通用智能体框架，采用端到端架构融合感知、记忆管理与多步推理</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.18397.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.18397.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.18397.webp" alt="Gamer: A Generalist Vision-Language-Action Foundation Model for Long-Horizon Real-Time Game Agent 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">miHoYo Honkai AI R&amp;D Team（米哈游崩坏AI研发团队）</p>
+        <ul class="article-facts"><li>arXiv 2611.18397</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>miHoYo Honkai AI R&amp;D Team</strong>（米哈游崩坏AI研发团队）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Gamer</strong>，一个面向复杂交互环境中长时程任务的通用智能体框架，采用端到端架构融合感知、记忆管理与多步推理</li><li>解决现有游戏智能体的核心问题：依赖特权内部状态或专用 API 导致泛化性差、推理延迟导致动作滞后于游戏状态变化、长时程任务中的上下文窗口受限与稀疏奖励问题</li><li>以 <strong>Honkai: Star Rail</strong> 等复杂 3D 开放世界游戏为测试平台，探索从屏幕像素观察到原生键盘鼠标动作的统一设备级接口，通向跨数字与物理世界的通用智能体</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>通用游戏智能体框架</strong>：以屏幕图像为输入、标准键鼠操作为统一动作空间，实现跨游戏的非侵入式交互，无需依赖游戏专用 API</li><li><strong>可扩展的长时程指令数据构建管线</strong>：通过 LLM 辅助标注将数万小时多源游戏轨迹转化为超一千小时的高质量指令数据，覆盖操作、子目标和完整任务三个层级</li><li><strong>统一训练与实时推理基础设施</strong>：将 <strong>Verl</strong> 扩展为覆盖 CPT、SFT 和 TA-GRPO 的统一训练评估框架，并自研 <strong>Streaming-vLLM</strong> 推理引擎支持有状态 KV 缓存复用、FSM 引导的投机解码与流式动作分发</li><li><strong>Temporal-Aware GRPO（TA-GRPO）</strong>：通过记忆链接的分段 rollout 和时间感知信用分配，解决长时程在线强化学习中的上下文限制、误差累积和稀疏奖励问题</li><li><strong>强实证结果</strong>：在 3D 商业游戏任务上达到与熟练玩家相当的泛化与操作效率，并在多个传统 2D 游戏基准上取得有竞争力的表现</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>继续预训练（CPT）</strong>：在统一观察-动作表示上进行跨游戏控制学习，观察采样频率 5 Hz，动作以 6 个连续键盘-鼠标动作块序列化（约 30 Hz 动作率）；采用<strong>随机按键重映射</strong>消除按键频率偏差，采用<strong>重复感知损失衰减</strong>（γ=0.9）降低重复动作的监督权重</li><li><strong>稀疏推理与跨上下文记忆的 SFT</strong>：单一自回归策略在直接控制、稀疏推理与记忆更新间自适应切换（推理可为空、当前决策推理或记忆摘要）；基于摘要的长期记忆在上下文边界处压缩保留任务进度</li><li><strong>TA-GRPO 在线强化学习</strong>：将长 rollout 划分为由记忆压缩机制连接的有限分段，使用环境可验证结果进行组内相对优势估计，并以指数时间加权将段级优势分配到各时间步决策</li><li><strong>Scaling Law 分析</strong>：基于 D-CPT Law 建立组成感知的缩放关系，刻画模型规模、游戏数据预算与游戏组合对控制学习和跨游戏泛化的影响</li><li><strong>Streaming-vLLM 推理引擎</strong>：结合状态化 KV 缓存复用、架构感知执行、FSM 引导投机解码（BF16 验证）与流式动作分发，降低实时推理延迟</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用数万小时设备级键盘鼠标交互轨迹（涵盖模拟游戏与具身环境），经 LLM 辅助标注产出超 1000 小时多层级指令数据</li><li>基座模型：<strong>Qwen3-VL</strong> 与 <strong>Qwen3.5</strong>（支持稠密与 MoE 架构）</li><li>训练硬件：<strong>NVIDIA A800</strong>（Ampere）与 <strong>NVIDIA H200</strong>（Hopper）GPU 集群，训练框架基于 <strong>Verl</strong> 扩展</li><li>数据构建采用 LLM 辅助标注与质量校验，覆盖本地操作、中间子目标、完整任务三级指令</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：自建 <strong>Honkai: Star Rail（HSR）评估套件</strong>（涵盖开放世界探索、回合制战斗、小任务与长时程里程碑）以及多个公开 2D 游戏基准</li><li>评估指标：任务完成率、长时程里程碑达成、指令泛化能力、实时推理延迟与吞吐</li><li>关键结果：在多个具有挑战性的 3D 开放世界游戏任务上展现出与熟练玩家相当的泛化能力与操作效率；在传统 2D 游戏基准上取得有竞争力的实时表现</li><li>CPT 缩放实验表明：早期 CPT 使预训练模型适配统一控制接口，后期收益越来越依赖游戏数据组成；缩放律拟合可支持测量范围内的 held-out 预测，但对分布外较远游戏无持续增益</li><li>实时 rollout 显著影响在线 RL 效果，Streaming-vLLM 通过低延迟并发服务支撑大规模在线策略优化</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.18562/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Training Reasoning Models in Simulation to Natively Use Real Robots</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.18372/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Vision-Language-Action Models: A Life-Cycle Survey of Design, Training and Deployment</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Joint World Action Models through Differentiable Trajectory Optimization - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究联合世界动作模型：同时生成未来动作与状态的生成式控制模型，指出单纯的轨迹模仿只能复现离线数据分布，生成的轨迹可能“数据一致但任务无效或与动力学不一致” 提出 WATO（World Action Trajectory Optimization），将生成的动作与未来状态共同作为动力学约束轨迹优化问题的参考，联合优化以服务于控制目标 解决的核心问题：如何在保持与动作条件动力学一致的前提下，优化联合世界-动作轨迹以提升任务性能，同时避免部署时的在线优化开销" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.17626">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-13">2026-11-13</time></p>
+        <h1 class="article-title">Joint World Action Models through Differentiable Trajectory Optimization</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.17626" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.17626" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究联合世界动作模型：同时生成未来动作与状态的生成式控制模型，指出单纯的轨迹模仿只能复现离线数据分布，生成的轨迹可能“数据一致但任务无效或与动力学不一致”</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.17626.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.17626.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.17626.webp" alt="Joint World Action Models through Differentiable Trajectory Optimization 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Hybrid Robotics, BAIR, UC Berkeley（作者：Mintae Kim &amp;…</p>
+        <ul class="article-facts"><li>arXiv 2611.17626</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Hybrid Robotics</strong>, <strong>BAIR</strong>, <strong>UC Berkeley</strong>（作者：Mintae Kim &amp; Koushil Sreenath）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究联合世界动作模型：同时生成未来动作与状态的生成式控制模型，指出单纯的轨迹模仿只能复现离线数据分布，生成的轨迹可能“数据一致但任务无效或与动力学不一致”</li><li>提出 <strong>WATO（World Action Trajectory Optimization）</strong>，将生成的动作与未来状态共同作为动力学约束轨迹优化问题的参考，联合优化以服务于控制目标</li><li>解决的核心问题：如何在保持与动作条件动力学一致的前提下，优化联合世界-动作轨迹以提升任务性能，同时避免部署时的在线优化开销</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将联合 WAM 视为世界-动作轨迹上的生成模型类，把任务感知的世界-动作生成形式化为动力学约束轨迹优化问题</li><li>提出 <strong>WATO</strong>：以生成的动作和未来状态作为优化参考，通过隐式微分对优化后的轨迹求任务损失梯度，从而训练生成器</li><li>证明轨迹优化可以摊销进生成器：训练时使用轨迹优化，部署时只需生成候选轨迹并用世界模型评估（best-of-K 选择），无需迭代优化</li><li>理论刻画参考敏感性（Proposition 1）与动力学诱导的局部优化几何，说明动作参考与状态参考在优化中的作用机制</li><li>实验表明去除动作参考或状态参考任一项都会降低性能，证明两者对控制均不可或缺</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用预训练的潜在世界模型（遵循 <strong>LeWM</strong>），编码器将观测映射到潜在状态，动作条件预测器根据动作轨迹 rollout 未来潜在状态</li><li>用<strong>条件流匹配</strong>参数化联合世界动作流（<strong>WAF</strong>），联合生成动作轨迹与未来状态轨迹</li><li>提出<strong>动力学约束轨迹投影</strong>：在优化空间中最小化终端目标代价 J(Z, g)，并以动作参考距离 d_A 与状态参考距离 d_Z 作为正则项，状态一致性由世界模型 rollout 约束保证</li><li>通过对轨迹最优性条件的<strong>隐式微分</strong>计算解的敏感性：动作梯度经过局部优化 Hessian，状态梯度额外经过世界模型 rollout 雅可比矩阵</li><li>两阶段训练：先以流匹配损失预训练 WAF 模仿离线状态-动作轨迹，再以 WATO 目标（模仿 + 任务项）继续训练生成器；世界模型参数固定，仅更新生成器</li><li>部署时无迭代轨迹优化：生成 K 个候选世界-动作轨迹，用世界模型 rollout 各动作提议并按目标代价排序选择，滚动时域执行</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用奖励无关的<strong>离线视觉轨迹数据集</strong>（视觉观测 + 原始动作，按动作块分组）</li><li>覆盖 <strong>7 个视觉控制环境</strong>，涵盖导航、到达、接触丰富操作和多阶段目标条件控制任务</li><li>采用预训练潜在世界模型；训练成本与求解器统计在附录 E.4 中给出（正文截断部分未包含具体 GPU 规格与参数量）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估设置：视觉离线目标条件控制，跨 7 个环境（导航、到达、接触丰富操作、多阶段目标条件控制），采用滚动时域控制与成功率评估</li><li>与强基线比较：<strong>模型基规划、目标条件 RL、生成式控制</strong>等方法，以及蒸馏、直接 rollout、一致性正则化等替代训练方案</li><li>关键结果：平均成功率从模仿训练联合 WAM 的 <strong>79.9%</strong> 提升至 <strong>91.7%</strong>，全面优于强基线</li><li>部署效率：相比交叉熵方法（<strong>CEM</strong>），WATO 平均快 <strong>11.5 倍</strong>，世界模型评估次数减少 <strong>600.5 倍</strong></li><li>消融实验证实：通过优化轨迹微分优于直接 rollout 训练、一致性正则化和蒸馏；优化在生成器中被良好摊销，投影残差可约束生成与优化轨迹之间的任务代价差距</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.18176/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ESI: An Embodied Self-Improvement Flywheel for LLM-VLA Agents</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.17394/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Agentic-Teacher: An Agentic Data Engine for Failure-Driven VLA Post-Training</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
