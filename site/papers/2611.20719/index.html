@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ACiT: Proprioceptive-Prior Action Chunking with Inverted Transformers - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究视觉运动策略中的条件输入接口问题：现有方法将本体感觉历史序列与高维视觉特征同等对待进行融合，导致低信噪比的视觉信号淹没本体感觉信号，并引入虚假捷径 通过分析状态历史数据，论文发现关节间强耦合是决定动作的关键结构，但现有方法将所有关节压缩为一个扁平向量，使耦合结构只能隐式存在 受神经感觉运动环路启发（本体感觉先在 S1 形成身体中心先验，视觉经顶叶重映射仅用于校准目标），提出 ACiT（Proprioceptive-Prior Action Chunking with Inverted Transformers），将历史关节耦合作为主条件、视觉作为后续校准信号" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.20719">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-16">2026-11-16</time></p>
+        <h1 class="article-title">ACiT: Proprioceptive-Prior Action Chunking with Inverted Transformers</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.20719" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.20719" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究视觉运动策略中的条件输入接口问题：现有方法将本体感觉历史序列与高维视觉特征同等对待进行融合，导致低信噪比的视觉信号淹没本体感觉信号，并引入虚假捷径</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.20719.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.20719.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.20719.webp" alt="ACiT: Proprioceptive-Prior Action Chunking with Inverted Transformers 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">南京理工大学，中国南京</p>
+        <ul class="article-facts"><li>arXiv 2611.20719</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>南京理工大学</strong>，中国南京</li><li>作者：Haixiang Wu、Zhihao Guan、Yang Yang</li><li>真实机器人数据由<strong>深圳知博数据科技有限公司</strong>（Shenzhen Zhibo Data Technology Co., Ltd.）协助采集</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究视觉运动策略中的条件输入接口问题：现有方法将本体感觉历史序列与高维视觉特征<strong>同等对待</strong>进行融合，导致低信噪比的视觉信号淹没本体感觉信号，并引入虚假捷径</li><li>通过分析状态历史数据，论文发现<strong>关节间强耦合</strong>是决定动作的关键结构，但现有方法将所有关节压缩为一个扁平向量，使耦合结构只能隐式存在</li><li>受神经感觉运动环路启发（本体感觉先在 S1 形成身体中心先验，视觉经顶叶重映射仅用于校准目标），提出 <strong>ACiT</strong>（Proprioceptive-Prior Action Chunking with Inverted Transformers），将历史关节耦合作为主条件、视觉作为后续校准信号</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将条件输入接口形式化为<strong>贝叶斯感觉运动线索整合</strong>：历史本体感觉作为先验，视觉作为校准证据，实现显式的非对称融合</li><li>提出 <strong>ACiT</strong>，用三个“倒置”Transformer 模块显式建模并保留状态历史中的关节间耦合动态，而非将其展平</li><li>在 <strong>LIBERO</strong>、<strong>RoboTwin 2.0</strong> 和真实世界任务上验证，相比最强基线平均成功率提升 <strong>5.7–10.8 个百分点</strong></li><li>将同一条件接口迁移到大型 VLA 骨干 <strong>π0-ACiT</strong>，平均成功率提升 <strong>26.9 个百分点</strong>，同时推理延迟降低 <strong>20.2%</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Inverted State Encoding（倒置状态编码）</strong>：对每个关节用深度可分离 1D 卷积（核大小 κ=3）将其完整历史压缩为一个 token，关节身份嵌入 + 共享时间投影，再通过关节 token 间自注意力显式建模耦合结构，形成本体感觉先验 P_t</li><li><strong>State-Visual Grounding（状态-视觉接地）</strong>：以关节先验 token 作为查询去检索多视角视觉 token，视觉仅作为逐关节的目标校准证据进入，不与本体感觉对称融合</li><li><strong>Inverted Action Chunking（倒置动作分块）</strong>：D 个可学习关节查询作为 decoder 输入，每个关节独立解码完整轨迹块，动作被建模为 D 条关节轨迹而非 T 个时间步向量</li><li>兼容 ACT Transformer decoder 和条件 1D U-Net（扩散/流匹配）两种动作头；训练沿用 <strong>ACT 的 CVAE</strong> 目标（L1 损失 + KL 散度）</li><li><strong>π0-ACiT</strong>：仅替换 π0 中的单帧本体感觉 token 为 ACiT 的条件表示 G_t，保持 PaliGemma 骨干与流匹配专家不变</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真基准：<strong>LIBERO</strong>（Spatial、Object、LIBERO-10，7-DoF 单臂）与 <strong>RoboTwin 2.0</strong>（6 个 14-DoF 双臂任务：Lift Pot、Pick Dual Bottles、Handover Block、Move Can Pot、Place Dual Shoes、Shake Bottle，含 easy 和 randomized hard 划分）</li><li>真实平台：双 <strong>reBot Arm B601-DM</strong> 机械臂（每臂 6 DoF、1.5 kg 负载、±0.2 mm 重复精度），4 个任务：pick cube、stack cube、lift pot、handover cube</li><li>训练框架：<strong>LeRobot</strong> + <strong>PyTorch</strong>，共享 <strong>ResNet-18</strong> 视觉骨干，AdamW 优化器，仿真基于 <strong>MuJoCo</strong>/RoboTwin</li><li>模型规模：<strong>ACiT 92.6M</strong> 参数（比 ACT 84.0M 仅多 8.6M）；<strong>π0-ACiT 4.05B</strong> 参数（π0 为 4.03B，保留 PaliGemma VLM）</li><li>推理资源：单张 <strong>RTX 3090</strong>，240×320 观测分辨率</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估指标：任务成功率（100 episodes/任务），对比基线包括 <strong>ACT</strong>、<strong>Diffusion Policy</strong>、<strong>Flow Matching</strong>、<strong>π0</strong></li><li>仿真结果：ACiT 在大多数任务上领先，在依赖双臂协调（Pick Dual Bottles、Place Dual Shoes）与速度/相位关系（随机化 hard 分组下的 Shake Bottle、Move Can Pot）的任务上增益最大</li><li>真实世界结果：ACiT 在所有条件（分布内、unseen-OOD、暗背景-OOD）下均为最强或并列最强；暗背景下 pick cube 达 <strong>83%</strong>（基线 &lt;40%）；展示闭环失败恢复能力（抓取失败后退回并重试）</li><li>VLA 迁移：真实平台上 <strong>π0-ACiT 平均成功率 57.0%</strong> vs <strong>π0 39.4%</strong>；跨 24 个设置平均提升 <strong>26.9 个百分点</strong></li><li>效率：ACiT 单步采样 <strong>0.48 ms/动作</strong>（控制频率 2064 Hz），远快于 DP（2.12 ms）与 FM（3.74 ms）；<strong>π0-ACiT 4.73 ms/动作</strong> vs π0 的 5.93 ms（降低 20.2%），收益来自接口设计而非更廉价的采样器</li><li>消融：equal fusion（对称融合）代价最大（LIBERO -20.7、暗背景 -30.8），三模块互补而非冗余；历史长度 <strong>H=8</strong> 为平坦最优，单帧明显更差</li><li>局限性：仅支持连续动作头，尚未覆盖自回归 VLA 所依赖的离散动作 token</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.20971/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FAVR: Flow-Aware Visual Residual Alignment for Vision-Language-Action Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.20648/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Competent Autonomous Driving Through Fine Tuning Vision Language Action Models with Symbolic Traffic Rules</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

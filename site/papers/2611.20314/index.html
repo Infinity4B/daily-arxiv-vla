@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NF-VLA: A Normalizing-Flow Baseline for Vision-Language-Action Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 NF-VLA，一种基于归一化流（normalizing flow）的视觉-语言-动作（VLA）策略基线 使用单一最大似然目标联合训练视觉-语言骨干和连续动作分布，实现动作采样与基于分数的动作细化共享同一密度模型 解决现有 VLA 动作模型在条件注入与采样细化上的设计问题，展示自回归归一化流在机器人操作上的竞争力" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.20314">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-15">2026-11-15</time></p>
+        <h1 class="article-title">NF-VLA: A Normalizing-Flow Baseline for Vision-Language-Action Learning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.20314" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.20314" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 NF-VLA，一种基于归一化流（normalizing flow）的视觉-语言-动作（VLA）策略基线</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.20314.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.20314.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.20314.webp" alt="NF-VLA: A Normalizing-Flow Baseline for Vision-Language-Action Learning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">宾夕法尼亚大学 计算机与信息科学系（Ruichen Deng、Yong-Hyun Park、Mutia…</p>
+        <ul class="article-facts"><li>arXiv 2611.20314</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>宾夕法尼亚大学</strong> 计算机与信息科学系（Ruichen Deng、Yong-Hyun Park、Mutian Tong、Jiatao Gu）</li><li><strong>澳大利亚国立大学</strong> 计算学院（Qinyu Zhao、Liang Zheng）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>NF-VLA</strong>，一种基于归一化流（normalizing flow）的视觉-语言-动作（VLA）策略基线</li><li>使用单一最大似然目标联合训练视觉-语言骨干和连续动作分布，实现动作采样与基于分数的动作细化共享同一密度模型</li><li>解决现有 VLA 动作模型在条件注入与采样细化上的设计问题，展示自回归归一化流在机器人操作上的竞争力</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>NF-VLA</strong>：端到端训练的归一化流 VLA 基线，仅用一个似然目标训练，学习到的密度同时用于动作采样和基于分数的动作校正</li><li>系统评估条件注入的位置与机制：发现仅对深层 flow 块做前缀条件优于对所有块做条件，前缀条件优于 AdaLN</li><li>利用 Tweedie 去噪思想，无需单独训练去噪器，即可在推理时对采样动作进行单步自分数校正，提升闭环成功率</li><li>在 <strong>LIBERO</strong> 和 <strong>LIBERO-Plus</strong> 上验证：LIBERO 四套件平均 98.35%，LIBERO-Plus 零样本 72.6%，与主流 VLA 方法竞争</li><li>报告推理效率：FP32 BF16 下 NF 采样约 50 ms，端到端推理约 74 ms，NF 参数 303M</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>深层-浅层架构</strong>：视觉、语言、本体感觉上下文作为前缀只条件深层高容量 block，浅层 block 提供无条件共享的可逆动作变换</li><li>使用 <strong>自回归仿射流块</strong>：交替顺序、因果注意力掩码、旋转位置编码，仿射系数由 Transformer 生成，并通过 tanh 与 softplus 类技巧稳定训练</li><li>训练时对动作块添加高斯噪声（σ=0.05），最小化精确负对数似然；推理时采样高斯潜变量后反转 flow，再用学习密度的分数做一步 <strong>Tweedie 去噪</strong>校正</li><li>视觉语言骨干从 <strong>SmolVLM-500M-Instruct</strong> 初始化，与 flow 联合微调，无辅助预测或表征对齐损失</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>训练数据集：<strong>LIBERO</strong> 完整数据集，包含 Spatial、Object、Goal、Long 四个套件，每套件 10 个任务</li><li>评估数据集：<strong>LIBERO-Plus</strong>，共 10,030 个扰动任务实例（相机、机器人初始状态、语言、光照、背景、噪声、布局）</li><li>动作表示：动作块长度 H=10，动作维度 d_a=7（3 平移、3 旋转、1 夹爪）</li><li>模型规模：NF 参数约 <strong>303M</strong>（AdaLN 变体约 483M）；主干为 SmolVLM-500M-Instruct，总参数量论文未直接给出全模型总数</li><li>训练资源：<strong>4 张 B200 GPU</strong>，全局批大小 256</li><li>推理资源：单张 <strong>RTX 4080 SUPER</strong> GPU，FP32 配合 BF16 autocast；端到端每动作块约 74.10 ms</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：LIBERO 四套件（每任务 50 次试验，共 2000 次）和 LIBERO-Plus 零样本鲁棒性</li><li>主要指标：任务成功率（success rate, %）</li><li>LIBERO 结果：平均 <strong>98.35%</strong>；Spatial 97.4%、Object <strong>99.8%</strong>、Goal <strong>98.4%</strong>、Long <strong>97.8%</strong>，总体在对比模型中排名最高</li><li>LIBERO-Plus 结果：平均 <strong>72.6%</strong>；机器人初始状态 53.8%、光照 <strong>96.9%</strong>、布局 <strong>83.7%</strong>，在光照和布局扰动上表现突出</li><li>消融结果：移除分数细化平均成功率下降 <strong>1.90</strong> 个百分点；深层条件改为所有块条件下降 <strong>1.20</strong> 个百分点；前缀条件替换为 AdaLN 下降 <strong>4.30</strong> 个百分点</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.20460/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Stochastic Self-Distillation for Flow-Based Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.20244/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Right Goal, Wrong Body: Re-grounding Frozen VLAs under Actuation Shift</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

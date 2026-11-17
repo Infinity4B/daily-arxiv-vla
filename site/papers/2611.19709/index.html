@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Cache or Denoise Less? Residual Reuse in a Flow-Matching World Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文围绕流匹配世界动作模型（Flow-Matching World Action Model）的推理效率问题，比较了两种加速思路：跨周期缓存（cross-cycle cache，如 C³ache） 与直接减少去噪步数。 针对 Fast-WAM（一个 6B 参数的世界动作模型）在 LIBERO-Goal 基准上的表现，论文发现两个未缓存去噪步骤已经能够保持十个步骤的成功率，同时显著降低延迟。 核心问题：在“更少步数”已经足够好的情况下，缓存方法是否还有存在的必要？论文系统评估了缓存在不同时间偏移、噪声设置和刷新频率下的成功率与速度，并给出了推理加速器评估清单。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.19709">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-15">2026-11-15</time></p>
+        <h1 class="article-title">Cache or Denoise Less? Residual Reuse in a Flow-Matching World Action Model</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.19709" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.19709" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文围绕流匹配世界动作模型（Flow-Matching World Action Model）的推理效率问题，比较了两种加速思路：跨周期缓存（cross-cycle cache，如 C³ache） 与直接减少去噪步数。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.19709.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.19709.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.19709.webp" alt="Cache or Denoise Less? Residual Reuse in a Flow-Matching World Action Model 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者 Abhinav Gupta：Independent Researcher（独立研究者）</p>
+        <ul class="article-facts"><li>arXiv 2611.19709</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者 <strong>Abhinav Gupta</strong>：<strong>Independent Researcher</strong>（独立研究者）</li><li>作者 <strong>Nissan Pow</strong>：<strong>Independent Researcher</strong>（独立研究者）</li><li>两位作者均未列出来自高校或企业研究机构</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文围绕<strong>流匹配世界动作模型（Flow-Matching World Action Model）</strong>的推理效率问题，比较了两种加速思路：<strong>跨周期缓存（cross-cycle cache，如 C³ache）</strong> 与<strong>直接减少去噪步数</strong>。</li><li>针对 <strong>Fast-WAM</strong>（一个 6B 参数的世界动作模型）在 <strong>LIBERO-Goal</strong> 基准上的表现，论文发现<strong>两个未缓存去噪步骤</strong>已经能够保持十个步骤的成功率，同时显著降低延迟。</li><li>核心问题：在“更少步数”已经足够好的情况下，缓存方法是否还有存在的必要？论文系统评估了缓存在不同时间偏移、噪声设置和刷新频率下的成功率与速度，并给出了推理加速器评估清单。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>证明更少步骤优于缓存</strong>：两个未缓存步骤在 LIBERO-Goal 上非劣于十个步骤（成功率 95–96% vs 95%），且延迟从 202ms 降至 92–94ms（RTX A6000）。</li><li><strong>揭示缓存无法比更少步骤更快</strong>：因为任何保留 k 个新鲜步骤的缓存仍需执行图像编码、视频专家和 k 个完整步骤，其复用调用速度不可能超过 k 步未缓存调用。</li><li><strong>发现缓存失败与流路径覆盖份额相关</strong>：缓存步骤覆盖的流路径份额越大，成功率损失越严重；Fast-WAM 的最新时间偏移（s=1）使八步缓存覆盖 80% 路径（原为 44%），导致成功率从 95% 跌至 63%。</li><li><strong>指出噪声重采样会放大缓存损失</strong>：在每次调用重新采样噪声的条件下，缓存覆盖 60% 或更多路径时成功率下降 14–40 个百分点。</li><li><strong>提出评估推理加速器的检查清单</strong>：包括与更少步骤比较、在噪声水平上说明复用规则、使用部署噪声测试、隔离配置和测量延迟等。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>在 <strong>Fast-WAM</strong> 上实现 <strong>C³ache 的残差缓存</strong>：刷新调用存储动作 transformer 堆栈在每个缓存步骤的残差 <code>R_k = h_30 - h_0</code>，后续复用调用直接使用这些残差跳过相应步骤。</li><li>默认缓存步骤 <strong>0–7</strong>（共 10 步），刷新间隔 <strong>τ=8</strong>（也可为 2、4、从不刷新）；实现了一个<strong>衰减变体</strong>，对每个块的陈旧残差乘以最小二乘拟合的权重。</li><li>采用<strong>闭式环评估协议</strong>：在 LIBERO 仿真中，每个任务取 10 个初始状态（共 100 个）或 50 个状态进行实验；使用 <strong>PyTorch 默认编译模式</strong>测量每次重新规划调用的 CUDA 同步延迟。</li><li>使用统计方法：<strong>精确 McNemar 检验</strong>比较逐状态成功率，<strong>Bootstrap 区间</strong>，以及 <strong>Tango 评分区间</strong>进行非劣效性检验（边距 5 个百分点），并用 <strong>Holm 校正</strong>控制多重比较。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO-Goal</strong>（10 个任务，通常 100 或 500 个初始状态）和 <strong>LIBERO-Long</strong>（50 个状态）。</li><li>模型：<strong>Fast-WAM</strong>，总参数量约 <strong>6B</strong>（5B 视频 transformer + 1B 动作 transformer，30 块动作专家）。</li><li>两个检查点：<strong>Optional-IDM</strong>（s=1，一帧模式）和 <strong>original</strong>（s=5，原始发布设置）。</li><li>训练资源：论文仅评估已发布检查点，未提及训练过程；推理硬件为 <strong>NVIDIA RTX A6000</strong> 桌面 GPU，使用 PyTorch 默认编译模式和 CUDA graphs。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>更少步骤与缓存对比</strong>（100 个 LIBERO-Goal 状态，RTX A6000）：</li></ul>
+<p> - 未缓存 2 步：成功率 95%（Optional-IDM）/ 96%（original），延迟 94/92ms。</p>
+<p> - 未缓存 10 步：成功率 95%/95%，延迟 202/202ms。</p>
+<p> - 缓存 τ=8：Optional-IDM 成功率 63%，延迟 116ms；original 成功率 94%，延迟 120ms。</p>
+<p> - 缓存 τ=4（缓存 4 步中 2 步）：成功率 96%/95%，延迟 104/105ms，仅节省约 10% 调用时间。</p>
+<ul><li><strong>缓存失败条件</strong>：在 Optional-IDM 于 s=1 下，八步缓存覆盖 80% 路径时成功率跌至 54–63%；而在 original 于 s=5 下覆盖 44% 路径时缓存几乎不损失成功率（92–94%）。</li><li><strong>噪声影响</strong>：固定噪声下，缓存覆盖 ≤64% 路径时损失 ≤2 个百分点；覆盖 80% 时损失 22–42 个百分点。重新采样噪声使覆盖 60% 及以上路径的缓存损失 14–40 个百分点。</li><li><strong>延迟执行模拟</strong>：2 步延迟 2 个控制步 vs 10 步延迟 5 个控制步，成功率方向符合预期但差异未统计显著（p=0.12）。</li><li><strong>关键结论</strong>：在 Fast-WAM 的 LIBERO-Goal 上，直接使用 2 个未缓存步骤在成功率和延迟上都优于跨周期缓存，缓存仅在特定旧设置（s=5）和低频刷新下才能保持竞争力。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.19774/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">When Backdoors Can Be Switched Off: Suppression-Aware Backdoor Attacks on Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.19559/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ResWAM: Learning What Changes, Not What Stays, for World-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Stochastic Self-Distillation for Flow-Based Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对基于流的视觉-语言-动作（VLA）模型在在线强化学习（RL）微调中的两大限制：多步 ODE 推理速度慢，以及流匹配采样随机性不足导致 GRPO 组内方差低。 提出 VLA-SSD 方法，通过自蒸馏将预训练的流匹配动作头转化为随机一步策略，同时显著降低推理延迟并提高采样多样性。 解决了在一步随机策略上进行似然比策略优化（如 GRPO）所面临的密度难以求解问题，并展示了在 LIBERO 和 MetaWorld 上的性能与效率提升。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.20460">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-16">2026-11-16</time></p>
+        <h1 class="article-title">Stochastic Self-Distillation for Flow-Based Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.20460" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.20460" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对基于流的视觉-语言-动作（VLA）模型在在线强化学习（RL）微调中的两大限制：多步 ODE 推理速度慢，以及流匹配采样随机性不足导致 GRPO 组内方差低。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.20460.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.20460.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.20460.webp" alt="Stochastic Self-Distillation for Flow-Based Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Imperial College London</p>
+        <ul class="article-facts"><li>arXiv 2611.20460</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Imperial College London</strong></li><li>作者包括 <strong>Jingru Guo</strong>、<strong>Alessandra Russo</strong>、<strong>Joey Bose</strong>、<strong>Christos Ziakas</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对<strong>基于流的视觉-语言-动作（VLA）模型</strong>在<strong>在线强化学习（RL）微调</strong>中的两大限制：多步 ODE 推理速度慢，以及流匹配采样随机性不足导致 GRPO 组内方差低。</li><li>提出 <strong>VLA-SSD</strong> 方法，通过自蒸馏将预训练的流匹配动作头转化为<strong>随机一步策略</strong>，同时显著降低推理延迟并提高采样多样性。</li><li>解决了在一步随机策略上进行<strong>似然比策略优化（如 GRPO）</strong>所面临的密度难以求解问题，并展示了在 LIBERO 和 MetaWorld 上的性能与效率提升。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>VLA-SSD</strong>：一种基于 <strong>Itô 流映射</strong>的自蒸馏框架，将多步流匹配 VLA 动作头蒸馏为<strong>一步随机策略</strong>，在单次前向中保留 SDE 的随机扩散特性。</li><li>推导了<strong>条件动作密度的闭式近似</strong>：通过将布朗路径投影为与鞅增量平行和正交的两部分，将一步动作视为可逆残差变换，并仅需一次 Jacobian-vector 积即可有效评估对数密度。</li><li>证明在辅助变量条件密度基础上构建的策略梯度估计（在近似前）对期望回报梯度是无偏的，并利用存储的辅助变量来计算似然比。</li><li>实验表明蒸馏后的 <strong>VLA-SSD</strong> 将动作头前向时间<strong>加速 7.7 倍</strong>，同时将<strong>零方差组比例从 63% 降至 35%</strong>；经 <strong>GRPO</strong> 后训练后，在 LIBERO 上达到 <strong>93.0%</strong> 成功率，较 SFT 提升 <strong>15.9 个百分点</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>随机流映射策略</strong>：通过引入 Itô 映射，将标准流映射扩展为以布朗路径为条件的随机一步生成器，利用截断 Karhunen–Loève 展开表示布朗路径，并保留路径增量。</li><li><strong>自蒸馏目标</strong>：使用 <strong>Lagrangian self-distillation (LSD)</strong> 加上对角线修正损失，蒸馏预训练流匹配速度场；对角线目标包含由边际保持 SDE 产生的分数修正项（当扩散轮廓 \(\beta(t)=\sqrt{2(1-t)}\) 时为常数 \(\sigma^2\)）。</li><li><strong>密度评估与 GRPO</strong>：将布朗路径的随机系数分解为与鞅增量平行和正交的两部分，将一步动作表示为对独立高斯噪声 \(m\) 的可逆变换；利用 Hutchinson 追踪估计和单次 Jacobian-vector 积近似对数行列式项，计算存储 rollout 的近似似然比，用于 GRPO 的 PPO 风格裁剪代理损失。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong> 四个十任务套件（spatial、object、goal、long），每套件 500 集评估；<strong>MetaWorld MT50</strong> 50 个任务 × 10 个固定重置状态，horizon 100。</li><li><strong>模型</strong>：基于 <strong>π₀.₅</strong> VLA 模型（3.3B 参数），其中动作专家为 <strong>300M 参数</strong>的流匹配头；视觉-语言骨干在训练中冻结。</li><li><strong>训练资源</strong>：使用 <strong>RLinf</strong> 框架在 <strong>4 个 A100 GPU</strong> 上进行 GRPO，每组 <strong>N=8</strong> 条轨迹；蒸馏阶段使用 L=5 个 Karhunen–Loève 模态，噪声尺度 \(\sigma=0.1\)。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：LIBERO 四套件平均成功率（共 2000 集）和 MetaWorld MT50 平均成功率；同时测量动作专家前向时间和单 chunks 所需 passes 数。</li><li><strong>主要指标</strong>：成功率、动作头前向时间（ms）、零方差组比例、有效秩。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 蒸馏后 Itô 学生模型（无 RL）LIBERO 成功率为 <strong>68.6%</strong>，前向时间从 SFT 的 58.4ms 降至 <strong>7.6ms</strong>，加速约 <strong>7.7 倍</strong>。</p>
+<p> - 经 GRPO 后训练，一步 Itô 策略在 LIBERO 达到 <strong>93.0%</strong>，超过 \(\pi_{\mathrm{RL}}\) 的四步 GRPO（91.5%）但低于需要额外价值网络的四步 PPO（98.3%）。</p>
+<p> - 在 MetaWorld 上，一步 Itô + GRPO 达到 <strong>72.0%</strong>，优于四步 PPO 的 70.7%。</p>
+<p> - 随机性分析显示，Itô 映射在固定初始潜变量时有效秩为 <strong>18.5</strong>，远高于四步 Flow-SDE 的 14.3，并将零方差组比例从 ODE 采样器的 62.5% 降至约 4%（对应四步 Flow-SDE 的水平）。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.20465/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ReRead: Wrong Predictions, Useful Representations - Correcting Frozen Robot Policies by Re-reading Their Own Representations</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.20314/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">NF-VLA: A Normalizing-Flow Baseline for Vision-Language-Action Learning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

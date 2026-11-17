@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ResWAM: Learning What Changes, Not What Stays, for World-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对现有世界-动作模型（WAMs）监督完整未来观测导致静态背景信息占主导、策略学习受限的问题，提出视觉残差学习，仅监督当前帧与未来帧在冻结 DINOv3 空间中的特征变化。 设计轻量级残差世界-动作模型 ResWAM，总参数量 2.3B，通过条件流匹配联合训练动作分支和残差分支，避免使用大型视频生成模型或独立世界模型。 在多个机器人基准上以最低计算开销取得领先成功率，验证了残差监督比完整未来预测更聚焦、更有效。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.19559">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-14">2026-11-14</time></p>
+        <h1 class="article-title">ResWAM: Learning What Changes, Not What Stays, for World-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.19559" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.19559" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对现有世界-动作模型（WAMs）监督完整未来观测导致静态背景信息占主导、策略学习受限的问题，提出视觉残差学习，仅监督当前帧与未来帧在冻结 DINOv3 空间中的特征变化。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.19559.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.19559.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.19559.webp" alt="ResWAM: Learning What Changes, Not What Stays, for World-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Michigan State University</p>
+        <ul class="article-facts"><li>arXiv 2611.19559</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Michigan State University</strong></li><li><strong>Cisco</strong></li><li><strong>University of Michigan</strong></li><li><strong>IBM Research</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对现有世界-动作模型（WAMs）监督完整未来观测导致静态背景信息占主导、策略学习受限的问题，提出<strong>视觉残差学习</strong>，仅监督当前帧与未来帧在冻结 <strong>DINOv3</strong> 空间中的特征变化。</li><li>设计轻量级残差世界-动作模型 <strong>ResWAM</strong>，总参数量 2.3B，通过条件流匹配联合训练动作分支和残差分支，避免使用大型视频生成模型或独立世界模型。</li><li>在多个机器人基准上以最低计算开销取得领先成功率，验证了残差监督比完整未来预测更聚焦、更有效。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>视觉残差学习</strong>：用当前帧与未来帧的特征差值 \(\bm{\Delta}_t=\mathbf{Z}_{t+H}-\mathbf{Z}_t\) 作为监督目标，相比完整未来特征具有更高的有效秩和稳定秩，且空间上集中于机器人手臂和操作物体，提供更丰富的监督信号。</li><li>设计 <strong>ResWAM</strong> 架构：以 <strong>RynnBrain-1.1-2B</strong> VLM 为主干，附加 0.5B 双分支 DiT（动作分支和残差分支），通过交叉注意力与 VLM 输出和当前 DINOv3 tokens 交互，实现轻量、低延迟的联合动作-残差推理。</li><li>在<strong>无机器人外部动作数据预训练</strong>的情况下，于 <strong>LIBERO-Plus</strong>（81.1%）、<strong>RoboTwin 2.0</strong>（93.8%）、<strong>RoboDojo</strong>（9.40% 成功率，13.41 得分）及真实机器人任务（平均 80.0%）上达到最佳平均成功率，同时训练计算量（2.7–4.0 TFLOPs）和推理计算量（1.0–1.4 TFLOPs）均为最低。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用冻结的 <strong>DINOv3 ViT-B/16</strong> 编码器提取当前帧和未来帧的视觉 tokens，并经 2×2 空间平均池化得到每视图 \(N=64\) 个 tokens。</li><li>将视觉残差 \(\bm{\Delta}_t\) 作为世界分支的流匹配学习目标，动作分支学习动作 chunk \(\mathbf{A}_t\)；两个分支使用独立噪声和流时间，通过条件流匹配损失 \(\mathcal{L}=\mathcal{L}_a+\lambda_w\mathcal{L}_r\) 联合训练。</li><li>动作分支和残差分支在 DiT 块中进行双向注意力交换信息，并交叉注意力到 VLM 输出和当前 DINOv3 tokens；推理时从高斯噪声出发进行 10 步 Euler 积分，仅需单次前向，无需像素空间解码。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO</strong> 全四个子套件及 <strong>LIBERO-Plus</strong>（10,030 个扰动 episode）；<strong>RoboTwin 2.0</strong>（50 个双臂任务，清洁与域随机化条件）；<strong>RoboDojo</strong>（35 任务训练集，42 任务评估集，2,100 个 episode）；真实机器人 <strong>Franka Research 3 (FR3)</strong> 上三个任务（Open、Put、Stack），每个任务 30 次试验。</li><li>模型规模：VLM 主干 <strong>RynnBrain-1.1-2B</strong>（约 2B 参数），冻结 <strong>DINOv3 ViT-B/16</strong> 编码器，0.5B 双分支 DiT；总参数量 <strong>2.3B</strong>。</li><li>训练资源：未明确说明具体训练硬件；推理延迟在单张 <strong>NVIDIA RTX A6000</strong> 上测量，平均 1,000 次迭代。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：三个仿真基准（<strong>LIBERO-Plus</strong>、<strong>RoboTwin 2.0</strong>、<strong>RoboDojo</strong>）和真实机器人操作；指标为任务成功率（%），<strong>RoboDojo</strong> 同时报告阶段进展得分；计算效率用每样本训练 TFLOPs、每 chunk 推理 TFLOPs 和推理延迟（ms）衡量。</li><li>主要结果：<strong>LIBERO-Plus</strong> 平均成功率 81.1%，<strong>RoboTwin 2.0</strong> 平均 93.8%，<strong>RoboDojo</strong> 成功率 9.40%、得分 13.41，真实机器人平均成功率 80.0%（比 \(\pi_{0.5}\) 高 10.0%），推理延迟 92.7 ms。</li><li>残差监督相比直接预测未来特征在 <strong>RoboTwin 2.0</strong> 上提升 +2.9% 平均成功率（相同计算量下）；残差特征的秩分析显示其有效秩和稳定秩均高于未来特征，表明更丰富的方向多样性。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.19709/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Cache or Denoise Less? Residual Reuse in a Flow-Matching World Action Model</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.19324/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">MARS: Dynamic Routing of Reinforcement-Learned Atomic Skills for Multi-Stage Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

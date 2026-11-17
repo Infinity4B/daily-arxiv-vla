@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>POKE: Probe Offline, Keep Efficiently for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究视觉-语言-动作（VLA）模型中的视觉 token 剪枝问题：现有基于注意力分数的剪枝方法无法直接衡量 token 对预测动作的影响 论文定义“动作敏感度”作为 token 重要性度量，并指出在线计算该分数的两大障碍：在全图（未剪枝）上评分需要额外的前向/反向传播，导致推理过慢；在已剪枝图上评分则产生“评分图锁定”偏差——被移除的 token 失去直接计算路径而倾向获得低分，难以重新被选中 提出 POKE 方法：离线计算全图动作敏感度标签并蒸馏到轻量学生模型，实现无反向传播、不依赖历史掩码的高效剪枝" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.21033">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-16">2026-11-16</time></p>
+        <h1 class="article-title">POKE: Probe Offline, Keep Efficiently for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.21033" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.21033" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究视觉-语言-动作（VLA）模型中的视觉 token 剪枝问题：现有基于注意力分数的剪枝方法无法直接衡量 token 对预测动作的影响</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.21033.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.21033.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.21033.webp" alt="POKE: Probe Offline, Keep Efficiently for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">高丽大学，韩国首尔</p>
+        <ul class="article-facts"><li>arXiv 2611.21033</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>高丽大学，韩国首尔</li></ul>
+<p> - Jaehyuk Lee（数学系）</p>
+<p> - Yeajin Lee（精算科学与金融工程课程）</p>
+<p> - SuHyun Bae（数学系）</p>
+<p> - Donghun Lee（数学系，通讯作者）</p></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究视觉-语言-动作（VLA）模型中的视觉 token 剪枝问题：现有基于注意力分数的剪枝方法无法直接衡量 token 对预测动作的影响</li><li>论文定义“动作敏感度”作为 token 重要性度量，并指出在线计算该分数的两大障碍：在全图（未剪枝）上评分需要额外的前向/反向传播，导致推理过慢；在已剪枝图上评分则产生“评分图锁定”偏差——被移除的 token 失去直接计算路径而倾向获得低分，难以重新被选中</li><li>提出 POKE 方法：离线计算全图动作敏感度标签并蒸馏到轻量学生模型，实现无反向传播、不依赖历史掩码的高效剪枝</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>动作敏感度度量</strong>：提出基于动作的一阶 token 重要性度量，通过共享随机探针单次反向传播估计全部 token 的敏感度，并给出配对排名行为的精确分析</li><li><strong>评分图锁定现象</strong>：通过受控干预和固定观测回放实验证明，剪枝图上的分数（包括梯度和注意力历史）即使在无反馈回路时也会偏向已保留的 token（随机掩码下重选率 59%，而随机期望仅 6%）</li><li><strong>POKE 框架</strong>：离线全图敏感度蒸馏训练紧凑选择器（&lt;0.3M 参数），推理时无需反向传播或历史掩码，在并行回归、流匹配和自回归策略上均优于注意力、多样性和蒸馏类基线</li><li><strong> score 引导的多样性选择（MMDP）</strong>：在高分候选集内进行多样性选择，兼顾敏感度过滤与冗余降低</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>动作敏感度定义</strong>：将视觉 token 替换为其相机均值表示时，预测动作的一阶变化幅度 sᵢ = ‖Jᵢδᵢ‖₂，其中 Jᵢ 为动作对 token 的雅可比矩阵</li><li><strong>单探针估计</strong>：从单位球采样共享方向 v，对 v^⊤a_θ 做一次反向传播即可获得所有 token 的无偏估计（避免 OpenVLA-OFT 的 56 次或 π₀.₅ 的 70 次反向传播），单探针分数与精确敏感度的相机内 Spearman 相关达 0.80</li><li><strong>全图教师</strong>：在策略微调演示观测上离线计算全图敏感度标签（策略保持冻结，标注每套数据不足 1 GPU 小时）；对流策略（π₀.₅）固定初始噪声并对最终动作块求导</li><li><strong>轻量学生</strong>：基于当前视觉 token、语言和状态上下文，单次前向传播预测分数，无需反向传播和历史掩码</li><li><strong>推理时选择</strong>：支持 top-k 排序或多样性选择（MMDP）两种方式保留 token</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>基准环境</strong>：四个 LIBERO 套件（Spatial、Object、Goal、Long）及 LIBERO-Plus（观测偏移鲁棒性测试）、SimplerEnv</li><li><strong>评测策略</strong>：OpenVLA-OFT（并行回归，动作块 56 维）、π₀.₅（流匹配，70 维）、OpenVLA（自回归）</li><li><strong>学生模型规模</strong>：不到 0.3M 参数</li><li><strong>训练成本</strong>：教师标注每套环境不足 1 GPU 小时</li><li><strong>剪枝预算</strong>：512 个视觉 token 中保留 32 个</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估设置</strong>：LIBERO 闭环仿真，对比 Vanilla、Random、FastV、DivPrune、VLA-Cache、VLA-Pruner、SpecPrune-VLA、MAP 等基线，指标为任务成功率与相对加速比</li><li><strong>OpenVLA-OFT 上 B=32</strong>：POKE（MMDP）平均成功率 <strong>95.15%</strong>，加速 <strong>1.85×</strong>，超过 VLA-Pruner（89.25%）5.90 个百分点，接近未剪枝 Vanilla 的 96.70%</li><li><strong>π₀.₅ 上 B=32</strong>：POKE 平均成功率 <strong>90.80%</strong>，加速 <strong>1.26×</strong>，超过 VLA-Pruner（75.05%）约 15.75 个百分点</li><li><strong>鲁棒性</strong>：在 LIBERO-Plus 观测偏移下优势进一步扩大</li><li><strong>消融验证</strong>：以注意力标签替代动作敏感度标签进行蒸馏，在全部 8 种测试组合中均降低成功率，验证了动作敏感度监督的关键作用</li><li><strong>锁定偏差量化</strong>：剪枝图评分在随机掩码下重选 59% 的掩码 token（随机期望 6%），全图评分为 77% 的分数分配给掩码外 token，证明 POKE 离线全图蒸馏的必要性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.21057/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">WiTac: Wrist-Informed Tactile Representations for Contact-Rich Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.20971/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">FAVR: Flow-Aware Visual Residual Alignment for Vision-Language-Action Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

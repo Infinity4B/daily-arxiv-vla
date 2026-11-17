@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ScaleVLA: Scaling Vision-Language-Action Models to 552 Billion Parameters - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 ScaleVLA，首次将 VLA（视觉-语言-动作）模型的 VLM 骨干网络扩展到 552B 参数（采用 DeepSeek-V4.1-Flash），并连接一个可训练的动作 DiT（扩散Transformer）用于连续机器人控制 研究核心问题：前沿规模（frontier-scale）的 VLM 预训练表征能否为机器人学习提供更强的表示基础？大多数现有 VLA 策略仍依赖较小的 VLM 骨干（如 2B），前沿模型的知识潜力未被充分挖掘 系统性地在 2B 到 552B 参数范围内比较 VLM 骨干，在保持动作架构、初始化、示教数据和训练预算一致的条件下，考察骨干规模对机器人学习的影响" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.21607">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-16">2026-11-16</time></p>
+        <h1 class="article-title">ScaleVLA: Scaling Vision-Language-Action Models to 552 Billion Parameters</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.21607" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.21607" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 ScaleVLA，首次将 VLA（视觉-语言-动作）模型的 VLM 骨干网络扩展到 552B 参数（采用 DeepSeek-V4.1-Flash），并连接一个可训练的动作 DiT（扩散Transformer）用于连续机器人控制</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.21607.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.21607.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.21607.webp" alt="ScaleVLA: Scaling Vision-Language-Action Models to 552 Billion Parameters 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">清华大学（Tsinghua University）</p>
+        <ul class="article-facts"><li>arXiv 2611.21607</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>北京大学</strong>（Peking University）</li><li><strong>上海交通大学</strong>（Shanghai Jiao Tong University）</li><li><strong>Galbot</strong>（银河通用机器人）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>ScaleVLA</strong>，首次将 VLA（视觉-语言-动作）模型的 VLM 骨干网络扩展到 <strong>552B 参数</strong>（采用 <strong>DeepSeek-V4.1-Flash</strong>），并连接一个可训练的动作 DiT（扩散Transformer）用于连续机器人控制</li><li>研究核心问题：前沿规模（frontier-scale）的 VLM 预训练表征能否为机器人学习提供更强的表示基础？大多数现有 VLA 策略仍依赖较小的 VLM 骨干（如 2B），前沿模型的知识潜力未被充分挖掘</li><li>系统性地在 2B 到 552B 参数范围内比较 VLM 骨干，在保持动作架构、初始化、示教数据和训练预算一致的条件下，考察骨干规模对机器人学习的影响</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ScaleVLA</strong> 框架：将 552B 前沿 VLM 与可训练的动作 DiT 连接，无需自回归推理即可实现连续机器人控制</li><li>系统研究骨干从 2B 到 552B 的扩展规律，在仿真与真实机器人上验证了样本效率、泛化能力和接触敏感操作的显著提升</li><li>证明稀疏 MoE 前沿模型可实现亚秒级推理（<strong>216 ms</strong>/动作块），表明大规模预训练表征可以以可接受的延迟部署到学习型机器人策略中</li><li>揭示前沿预训练表征在数据稀缺、环境变化和精细协调场景下价值最大（如 10 条示教超过 2B 骨干用 50 条示教的效果）</li><li>发现任务级执行效率与模型推理延迟解耦：尽管推理延迟更高，ScaleVLA 完成真实任务的总时间反而最短</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>架构</strong>：冻结的 <strong>DeepSeek-V4.1-Flash-1017</strong>（552B MoE）作为视觉-语言骨干，仅运行其 20 层因果编码器（不运行解码器），读取提供给下一层注意力操作的视觉/文本 token 特征（维度 5120）</li><li><strong>动作头</strong>：遵循 <strong>GR00T N1.7</strong> 架构，包含特征适配器（LayerNorm + 两层线性投影映射到 2048 维 + 4 层自注意力 Transformer）、本体状态/动作编码器、32 层 DiT（交替自注意力与交叉注意力）和动作解码器，全部随机初始化并从零训练</li><li><strong>训练</strong>：采用 <strong>Flow Matching</strong> 训练动作头预测速度场，骨干特征预计算并复用；状态与动作按训练数据的 1%/99% 分位数归一化</li><li><strong>推理</strong>：从高斯噪声出发，4 步流积分生成动作块；每个动作块只运行一次骨干前向传播；DexJoCo 上采用异步执行与时间戳命令缓冲机制</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：<strong>LIBERO</strong>（Spatial/Object/Goal/Long 四个套件）、<strong>LIBERO-PRO</strong>（环境与物体扰动）、<strong>RoboCasa</strong>（Gen-30 与 Gen-100 厨房任务、分布外场景）、<strong>DexJoCo</strong>（5 个双臂灵巧手任务，各 100 条人类示教）</li><li><strong>真实机器人</strong>：<strong>RoboDojo</strong> 的 Plug In Charger 任务（双臂、抓取-交接-接触丰富插入三阶段）</li><li><strong>模型骨干对比</strong>：<strong>Qwen3-VL-2B/32B</strong>、<strong>Cosmos-Reason2-2B/8B/32B</strong>（稠密）与 <strong>DeepSeek-V4.1-Flash-1017</strong>（552B MoE）</li><li><strong>硬件资源</strong>：ScaleVLA 推理使用 <strong>4 张 H200 GPU</strong>（张量并行+专家并行），小骨干各用 1 张；真实机器人延迟中位数 384 ms/动作块</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>样本效率</strong>：LIBERO-Goal 仅用 <strong>10 条示教/任务</strong>达到 <strong>87.8%</strong>，超过 2B 骨干用 50 条示教的 <strong>85.6%</strong>；5 条示教时 2B→552B 将成功率从 39.4% 提升到 77.4%（近翻倍）</li><li><strong>泛化能力</strong>：<strong>LIBERO-PRO</strong> 扰动下平均成功率 <strong>45.1%</strong>，比最佳稠密骨干（31.3%）高约 14 个百分点；<strong>RoboCasa</strong> 分布外厨房场景达 30.7%（Gen-30）与 54.9%（Gen-100）</li><li><strong>标准仿真</strong>：LIBERO 四套件平均 <strong>96.1%</strong>（Goal 96.8、Long 90.2），超过 π₀（94.2）、OpenVLA（76.5）等；<strong>DexJoCo</strong> 双手任务平均 42.1%（物体随机化）/ 24.4%（完全随机化），均领先</li><li><strong>精确操作</strong>：真实双臂充电器插入任务域内成功 <strong>9/10</strong>（2B 骨干仅 4/10），OOD 设置 8/15；插入阶段比小骨干快约 30%，插入时间中位数 58.1 s，任务总完成时间 114.4 s（比 π₀.5 + Action Head 快 13%）</li><li><strong>推理延迟</strong>：RoboCasa 上每个动作块中位延迟 <strong>215.8 ms</strong>（骨干 140.7 ms + 动作头 72.1 ms），参数量是 2B 骨干的 276 倍但延迟仅为其 1.9 倍，实现实用的亚秒级控制</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.21258/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ThinkWAM: Rethinking Latent Futures for Action Refinement</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

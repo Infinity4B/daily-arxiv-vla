@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PlanDiv: Test-Time Scaling with Latent Plans for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对视觉-语言-动作（VLA）模型的测试时扩展问题，指出传统的重采样方法收益递减，因为候选动作仅在噪声层面变化，缺乏计划层面的多样性。 提出 PlanDiv，一种动作头，通过生成多个潜在计划假说并分别解码动作块，使候选动作在计划层面产生差异，从而提升测试时扩展效果。 目标是在不增加额外奖励模型或计划标签的前提下，仅利用演示数据训练，使策略能够从多个不同方案中选择最优动作。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.20010">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-15">2026-11-15</time></p>
+        <h1 class="article-title">PlanDiv: Test-Time Scaling with Latent Plans for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.20010" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.20010" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对视觉-语言-动作（VLA）模型的测试时扩展问题，指出传统的重采样方法收益递减，因为候选动作仅在噪声层面变化，缺乏计划层面的多样性。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.20010.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.20010.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.20010.webp" alt="PlanDiv: Test-Time Scaling with Latent Plans for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University College London（Hanbo Zhang、Liuhaichen Ya…</p>
+        <ul class="article-facts"><li>arXiv 2611.20010</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University College London</strong>（Hanbo Zhang、Liuhaichen Yang、Zezhi Tang）</li><li><strong>Tsinghua University</strong>（Lianlei Shan，通讯作者）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对视觉-语言-动作（VLA）模型的测试时扩展问题，指出传统的重采样方法收益递减，因为候选动作仅在噪声层面变化，缺乏计划层面的多样性。</li><li>提出 <strong>PlanDiv</strong>，一种动作头，通过生成多个潜在计划假说并分别解码动作块，使候选动作在计划层面产生差异，从而提升测试时扩展效果。</li><li>目标是在不增加额外奖励模型或计划标签的前提下，仅利用演示数据训练，使策略能够从多个不同方案中选择最优动作。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>受控测量</strong>：在统一训练配方下，三种重采样来源（自回归、无计划掩码扩散、固定计划）从 4 到 8 个候选仅增益 0.06–0.07 个任务完成数，且 8 个同计划重采样在子任务起始状态上的 oracle 覆盖率仅为 86%。</li><li><strong>PlanDiv 方法</strong>：提出基于潜在计划假说的动作头，由一个轻量级规划器生成 K 个计划，共享掩码扩散执行器解码每个计划对应的动作块，并通过潜在责任分配从演示数据中联合学习，无需计划标签或奖励。</li><li><strong>实验证据</strong>：在 CALVIN 和 LIBERO-Long 上，相同候选数下 PlanDiv 显著优于所有重采样来源；固定噪声干预证明计划本身可改变任务结果；真实 Franka 机器人上，在多解任务中 PlanDiv 将基线 14 个失败中的 11 个转化为成功。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>继承 OpenVLA 的动作令牌接口，将连续动作离散化为 256 个 bin，每个动作块为 56 个令牌（8 步 × 7 维）。</li><li>规划器将 K 个学习到的种子映射为 K 个潜在计划假说 z_k，并通过可学习的先验 α_k 进行排序；加入潜向量排斥损失确保计划多样性。</li><li>执行器采用掩码扩散模型，从全掩码块迭代解码每个计划对应的动作块（S=4 步去掩码），所有计划共享同一执行器参数。</li><li>训练采用<strong>潜在责任分配</strong>：通过软期望最大化风格，根据每个计划的重构损失和先验计算权重 w_k，加权聚合掩码损失，使计划自然分工，无需显式计划标签。</li><li>推理时仅解码先验最高的 K 个计划（一个 checkpoint 可服务任意 K ≤ K_max），默认使用似然分数（平均对数概率）选择最佳候选，也可结合训练好的价值代理 V_ψ 进行打分。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>CALVIN ABC→D</strong>：训练于环境 A、B、C，在未见环境 D 上评估 1000 条五任务指令链。</li><li><strong>LIBERO-Long</strong>：10 个长程任务，每个任务 50 个初始状态，共 500 个回合（最长达 520 步）。</li><li>模型基于 <strong>OpenVLA-7B</strong> 主干，LoRA 秩 32，动作块为 8 步 × 7 维（T=56 令牌，B=256 离散 bin）。</li><li>训练使用 AdamW，批量大小 64，训练 40,000 步，双 224×224 视图和本体感知输入。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 <strong>CALVIN ABC→D</strong> 上，K=8 时 PlanDiv 平均完成 4.13 个任务，五任务链成功率达 69.9%，而最佳重采样来源仅为 64.9%；K=4 时 PlanDiv 的平均长度 4.02 已超过所有重采样来源在 K=8 的表现。</li><li>在 <strong>LIBERO-Long</strong> 上，K=4 时 PlanDiv 成功率达 91.8%，相比单候选策略移除 40% 的失败，而匹配重采样仅移除 18–21%。</li><li>固定噪声干预实验表明，仅改变计划（保持噪声固定）导致 16.2% 的状态出现不同任务结果，是仅改变噪声（7.2%）的两倍以上。</li><li>真实 Franka 机器人上，在单解任务中 PlanDiv 与 OpenVLA-OFT+ 基线相当；在两个双解任务中，PlanDiv 在 54 次试验中成功 51 次，基线仅成功 40 次。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.20011/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ReactBench-AD: Do Driving VLAs and World-Action Models React to Imminent Hazards in Their Path?</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.19904/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">DiffWAM: Learning World Action Model from Consecutive Visual Difference</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

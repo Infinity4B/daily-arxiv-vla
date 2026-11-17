@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Ego2Sim2Humanoid: Agentic Real-to-Sim for Learning Loco-Manipulation VLAs without Robot Demonstrations - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 E2S2H 系统，将佩戴 Project Aria Gen 2 眼镜记录的人类自我中心视频（RGB-D、头部轨迹、视野内手部姿态）转换为可执行的人形机器人全身轨迹，完全无需机器人遥操作或机器人演示 解决人形机器人 loco-manipulation 数据采集昂贵、难以规模化的问题，以及人类与机器人身高、臂长、手部形态差异导致的接触不可行问题 通过场景重建、抓取与站姿规划、物理仿真校验和机器人视角渲染，生成同步的图像-本体感受-动作训练数据" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.19196">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-14">2026-11-14</time></p>
+        <h1 class="article-title">Ego2Sim2Humanoid: Agentic Real-to-Sim for Learning Loco-Manipulation VLAs without Robot Demonstrations</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.19196" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.19196" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 E2S2H 系统，将佩戴 Project Aria Gen 2 眼镜记录的人类自我中心视频（RGB-D、头部轨迹、视野内手部姿态）转换为可执行的人形机器人全身轨迹，完全无需机器人遥操作或机器人演示</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">Ego2Sim2Humanoid: Agentic Real-to-Sim for Learning Loco-Manipulation VLAs without Robot Demonstrations</p>
+</div></figure>
+        <p class="article-unit">作者 Chen Liu 和 Nikolaus Correll 均来自 University of No…</p>
+        <ul class="article-facts"><li>arXiv 2611.19196</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者 <strong>Chen Liu</strong> 和 <strong>Nikolaus Correll</strong> 均来自 <strong>University of Notre Dame</strong>（圣母大学）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>E2S2H</strong> 系统，将佩戴 <strong>Project Aria Gen 2</strong> 眼镜记录的人类自我中心视频（RGB-D、头部轨迹、视野内手部姿态）转换为可执行的人形机器人全身轨迹，完全无需机器人遥操作或机器人演示</li><li>解决人形机器人 loco-manipulation 数据采集昂贵、难以规模化的问题，以及人类与机器人身高、臂长、手部形态差异导致的接触不可行问题</li><li>通过场景重建、抓取与站姿规划、物理仿真校验和机器人视角渲染，生成同步的图像-本体感受-动作训练数据</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>agentic real-to-sim</strong> 流程：无需预先扫描或 CAD 模板，逐条重建碰撞与纹理资产，补全未观测表面，并定位目标接触带</li><li>提出 <strong>运动适配</strong> 方法：结合基于接触带的规则抓取规划、双层无碰撞站姿优化、以及覆盖可见与视野外手部片段的全身运动生成</li><li>提出 <strong>两阶段运动校正</strong>：运动学平滑可见性过渡，并用强化学习在物理仿真中动态执行轨迹，在语义奖励下完成视野外操作阶段</li><li>提出沿接受 rollout 的 <strong>机器人视角渲染</strong>，生成同步的机载相机图像和经过物理验证的动作标签</li><li>在 <strong>Unitree G1</strong> 上仅用转换数据微调 <strong>GR00T N1.7</strong>，无需目标任务真实机器人演示即可实现自主 loco-manipulation</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>输入为 <strong>Aria Gen 2</strong> 眼镜的校准 RGB-D 流、重力对齐 6-DoF 头部轨迹和视野内 3D 手部关键点；输出为 <code>(图像, 本体感受状态, 指令, 动作)</code> 元组</li><li>动作由 64 维 <strong>SONIC</strong> 全身潜变量 token 和 14 维 <strong>Dex3</strong> 双手关节命令组成</li><li><strong>Real-to-sim</strong>：用智能体执行 TSDF 融合、多视角掩膜分割、纹理烘焙和参数化形状补全，并通过投影轮廓匹配跟踪物体 6-DoF 位姿，预测目标接触带</li><li><strong>运动适配</strong>：接触阶段用抓取规划器将接触带转化为可行手腕位姿和手指闭合；通过双层优化规划无碰撞站姿；使用 <strong>Kimodo</strong> 生成器合成下肢运动和视野外手臂运动</li><li><strong>运动校正</strong>：运动学优化混合手部可见性过渡并防止碰撞与足部滑动；强化学习跟踪策略在物理仿真中用语义奖励（接触、物体跟踪、支撑间隙等）修正轨迹，筛选物理可行 rollout</li><li>渲染重建场景中沿接受 rollout 的机器人相机视角图像，与本体感受和动作严格同步</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据采集：仅佩戴 <strong>Project Aria Gen 2</strong> 眼镜，收集 <strong>219</strong> 条 bottle lift 和 <strong>154</strong> 条 hat wearing 人类演示</li><li>经完整管道筛选：<strong>189</strong> 条 bottle lift 和 <strong>59</strong> 条 hat wearing 进入训练集</li><li>机器人与模型：<strong>Unitree G1</strong> 人形机器人（29 自由度，配备 <strong>Dex3</strong> 手和头部相机）；微调 <strong>GR00T N1.7 (3B)</strong>，使用冻结的 <strong>SONIC</strong> 解码器</li><li>训练硬件：论文未明确列出 GPU/TPU 数量与型号</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>仿真评估：在 71 条 hat 记录上，抓取规划器相比直接复制人手姿态，将中位穿透深度从 <strong>1.8 cm</strong> 降至 <strong>0.8 cm</strong>，手中位移从 <strong>6.6 cm</strong> 降至 <strong>3.7 cm</strong>，旋转从 <strong>33.0°</strong> 降至 <strong>22.9°</strong></li><li>基线对比：<strong>E2S2H</strong> 路径完成比为 <strong>0.9</strong>，触碰时手到接触区中位距离 <strong>0.8 cm</strong>，可行抓取 <strong>57/71</strong>；<strong>EgoHumanoid</strong> 和 <strong>EgoHumanoid-V2</strong> 路径比仅 0.5-0.6，手距离 70.8-112.9 cm，可行抓取均为 <strong>0</strong></li><li>真实机器人：<strong>bottle lift</strong> 在 20 次试验中成功抬起瓶子 <strong>9 次（45%）</strong>；<strong>hat wearing</strong> 在 20 次试验中成功戴上帽子 <strong>5 次（25%）</strong></li><li>失败模式：bottle lift 中 <strong>30%</strong> 撞倒瓶子、<strong>10%</strong> 抓空；hat wearing 中 <strong>50%</strong> 未能抓住帽子、<strong>10%</strong> 抓空、<strong>15%</strong> 放置时碰到头部但未戴正</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.19198/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Self-Calibrating Vision-Agent-Action: Deploying Pick-and-Place to New Robot Cells without Demonstrations or Fine-Tuning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.19183/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">WA-JEPA: Goal-Aware Predictive Feedback Action Refinement for a World-Action Model</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

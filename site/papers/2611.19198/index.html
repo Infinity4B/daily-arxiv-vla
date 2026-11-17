@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Self-Calibrating Vision-Agent-Action: Deploying Pick-and-Place to New Robot Cells without Demonstrations or Fine-Tuning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Vision-Agent-Action (VAA) 框架，在不使用机器人演示或微调的情况下，实现拾取放置任务向新机器人单元的迁移 针对部署到新单元时面临的硬件变化（夹具、基座坐标系、摄像头位姿/镜头、光照、物体外观等）导致 VLA 性能大幅下降的问题 通过受控实验诊断出 夹具变化 和 基座坐标系旋转 是造成 VLA 迁移失败的主导因素" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.19198">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-14">2026-11-14</time></p>
+        <h1 class="article-title">Self-Calibrating Vision-Agent-Action: Deploying Pick-and-Place to New Robot Cells without Demonstrations or Fine-Tuning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.19198" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.19198" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Vision-Agent-Action (VAA) 框架，在不使用机器人演示或微调的情况下，实现拾取放置任务向新机器人单元的迁移</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef" aria-hidden="true">
+  <p class="note-cover-title">Self-Calibrating Vision-Agent-Action: Deploying Pick-and-Place to New Robot Cells without Demonstrations or Fine-Tuning</p>
+</div></figure>
+        <p class="article-unit">作者 Jae Hun Hwang 隶属于 韩国生产技术研究院 (KITECH) 制造 AI 研究中心与…</p>
+        <ul class="article-facts"><li>arXiv 2611.19198</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者 <strong>Jae Hun Hwang</strong> 隶属于 <strong>韩国生产技术研究院 (KITECH)</strong> 制造 AI 研究中心与 <strong>汉阳大学</strong> 人工智能融合学系</li><li>作者 <strong>Yechan Seo</strong> 隶属于 <strong>KITECH</strong> 制造 AI 研究中心与 <strong>成均馆大学</strong> 智能机器人学系</li><li>通讯作者 <strong>Hong-In Won</strong> 隶属于 <strong>KITECH</strong> 制造 AI 研究中心与 <strong>汉阳大学</strong> HYU-KITECH 联合研究生院</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Vision-Agent-Action (VAA)</strong> 框架，在不使用机器人演示或微调的情况下，实现拾取放置任务向新机器人单元的迁移</li><li>针对部署到新单元时面临的硬件变化（夹具、基座坐标系、摄像头位姿/镜头、光照、物体外观等）导致 VLA 性能大幅下降的问题</li><li>通过受控实验诊断出 <strong>夹具变化</strong> 和 <strong>基座坐标系旋转</strong> 是造成 VLA 迁移失败的主导因素</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>对 8 个公开的 LIBERO 微调 VLA 模型进行受控因子诊断，确定夹具和指令坐标系变化为 VLA 迁移损失的主导因素</li><li>提出 <strong>自校准 VAA 流水线</strong>，结合指令映射测量、摄像头几何与镜头畸变估计、基于实测深度的抓取规划</li><li>在 18 个含夹具或基座框架变化的单元上，VAA 达到 <strong>268/360 (74%)</strong> 成功率，显著优于最强 VLA 的 <strong>76/360 (21%)</strong></li><li>通过配对消融实验验证自校准包、镜头估计和实测深度各自的作用</li><li>在 <strong>LIBERO-Goal 两步链条</strong> 任务中，VAA 在变化单元上完成 <strong>54/60</strong> 条链，而四个评估的 VLA 完成 0 条</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>自校准单元建模</strong>：机器人通过执行小幅运动测量 TCP 位移，建立指令通道到末端运动的映射矩阵 J；同时测量指尖开合宽度和稳定时间</li><li><strong>摄像头与镜头几何估计</strong>：利用指尖在多个位姿下的观测，结合运动学先验估计内参 K、外参 [R\|t] 以及径向畸变系数 k₁（以桌面平面度为约束）</li><li><strong>语义理解与几何执行分离</strong>：使用预训练 VLM（<strong>Qwen3.8, 27B</strong>）标注物体提案，使用预训练 LLM（<strong>Qwen3, 30B instruct</strong>）解释指令选择目标和目的地</li><li><strong>深度抓取规划</strong>：利用物体自身三维点云选择夹取位置，由实测夹具开度约束可行抓取几何，并通过实测深度完成闭合伺服与放置验证</li><li><strong>校准复用</strong>：初始校准后通过约 90 步的漂移检查决定是否复用单元模型或重新校准</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO-spatial</strong> 数据集（10 个任务 × 2 个初始状态，共 20 个回合/单元）进行改变单元评估</li><li>使用 <strong>LIBERO-Goal</strong> 进行两步链条任务评估</li><li>VAA 使用 <strong>RGB-D 摄像头</strong> 与本体感知；VLA 基线仅使用 RGB 图像</li><li>评估的 VLA 基线包括 X-VLA、π0.5、π0、GR00T N1.7、OpenVLA、SmolVLA、τ0 和 VLA-JEPA</li><li>所有实验在 <strong>模拟环境</strong> 中进行；VAA 的初始校准成本为每单元 2.2–6.5 千仿真步，后续漂移检查约 64–86 步</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 18 个包含夹具或基座框架变化的设计单元上，冷冻 VAA 成功 <strong>230/360 (64%)</strong>，精炼 VAA 达 <strong>268/360 (74%)</strong>，最强 VLA（X-VLA）仅 <strong>21%</strong></li><li>在 5 个整体开发压力测试单元上，VAA 实现 <strong>68/100</strong> 成功，最强 VLA 仅 <strong>10/100</strong></li><li>配对消融（表 III）显示：复用训练设置校准导致成功降至 22/60；无镜头估计降至 32/60；用单目深度替代实测深度降至 20/60；全系统为 50/60</li><li>在两步链条任务中，VAA 在变化单元上完成 <strong>54/60</strong> 条链，VLA 完成 0 条；在训练设置上 VAA 完成 <strong>16/20</strong>，VLA 完成 0</li><li>失败分析显示剩余 VAA 失败主要集中在 <strong>离目标放置 (41)</strong>、<strong>重新抓取失误 (19)</strong> 和 <strong>抓取失误 (27)</strong> 等接触/放置阶段</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.19324/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">MARS: Dynamic Routing of Reinforcement-Learned Atomic Skills for Multi-Stage Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.19196/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Ego2Sim2Humanoid: Agentic Real-to-Sim for Learning Loco-Manipulation VLAs without Robot Demonstrations</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

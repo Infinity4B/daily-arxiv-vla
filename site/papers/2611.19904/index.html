@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DiffWAM: Learning World Action Model from Consecutive Visual Difference - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 DiffWAM（Difference World Action Model），一种基于连续视觉差异的世界动作模型 解决现有 World Action Model 仅预测未来状态、难以区分任务相关变化与静态背景内容的问题 通过联合学习未来状态预测、连续视觉差异预测和动作生成，强化世界表征对任务动态的建模能力" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.19904">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-15">2026-11-15</time></p>
+        <h1 class="article-title">DiffWAM: Learning World Action Model from Consecutive Visual Difference</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.19904" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.19904" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 DiffWAM（Difference World Action Model），一种基于连续视觉差异的世界动作模型</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.19904.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.19904.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.19904.webp" alt="DiffWAM: Learning World Action Model from Consecutive Visual Difference 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">主要作者来自 浙江大学（信息科学与电子工程学院、理工学院）</p>
+        <ul class="article-facts"><li>arXiv 2611.19904</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要作者来自 <strong>浙江大学</strong>（信息科学与电子工程学院、理工学院）</li><li>合作单位包括 <strong>复旦大学</strong>（智能机器人与先进制造创新学院）</li><li>以及 <strong>中关村学院</strong>、<strong>中关村人工智能研究院</strong>、<strong>中国科学院自动化研究所</strong></li><li>第一作者 Xinheng Zhang 同时隶属浙江大学多个学院及中关村学院</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>DiffWAM</strong>（Difference World Action Model），一种基于连续视觉差异的世界动作模型</li><li>解决现有 World Action Model 仅预测未来状态、难以区分任务相关变化与静态背景内容的问题</li><li>通过联合学习未来状态预测、连续视觉差异预测和动作生成，强化世界表征对任务动态的建模能力</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出在 WAM 中联合未来状态与视觉差异建模，使世界表征同时捕获场景内容和任务相关动态</li><li>设计 <strong>Mixture-of-Experts (MoE)</strong> 框架，包含共享 <strong>Observation Encoder</strong> 以及 <strong>World Expert</strong>、<strong>Diff Expert</strong>、<strong>Action Expert</strong> 三个专家</li><li>采用结构化单向注意力掩码隔离专家通路，推理时可移除 World 和 Diff Expert，不引入额外推理开销</li><li>在 <strong>LIBERO</strong>、<strong>RoboTwin 2.0</strong> 和真实世界操作任务上取得当前最优结果，并验证了训练效率提升</li><li>提供两种训练配置 <strong>DiffWAM-S</strong>（小规模）和 <strong>DiffWAM-L</strong>（大规模），适应不同数据规模</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用共享 Observation Encoder 将当前视觉潜变量编码为世界表征，并分别馈送给三个专家</li><li><strong>World Expert</strong> 通过流匹配（flow matching）预测未来帧潜变量；<strong>Diff Expert</strong> 通过回归预测连续帧潜变量之差；<strong>Action Expert</strong> 通过流匹配生成动作序列</li><li>World 和 Diff Expert 在前 N-M 层共享参数，后 M 层独立（<strong>Latent Diff Block, LDB</strong>），其中 M 默认取 10</li><li>训练目标为三项损失加权：世界流匹配损失、差异回归损失（平方误差）、动作流匹配损失</li><li>提出两种训练配置：<strong>DiffWAM-S</strong> 冻结独立 LDB 参数以抑制小数据过拟合；<strong>DiffWAM-L</strong> 两阶段训练（先仅训练 Diff Expert，再联合训练所有模块）</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO</strong> 基准（40 个单臂任务，四个套件：Spatial、Object、Goal、Long）</li><li>使用 <strong>RoboTwin 2.0</strong> 基准（50 个双臂任务，含干净和随机场景两种评估条件）</li><li>真实世界评估基于 <strong>ALOHA-AgileX</strong> 平台，包含 <strong>Place Pens</strong>、<strong>Store Block</strong>、<strong>Stack Cups</strong> 三个任务，约 1.1k 条演示轨迹</li><li>模型总参数量约 <strong>7B</strong>，基于 <strong>Wan2.2-5B</strong> Transformer 架构，视觉编码器为预训练 VAE，文本编码器为 T5</li><li>训练资源：论文未明确列出具体 GPU 型号，但模型规模大，需大规模训练</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：DiffWAM-S 平均成功率 <strong>98.8%</strong>，超过 FastWAM 1.75 个百分点，在 Goal 和 Long 套件分别提升 1.2 和 6.0 个百分点</li><li><strong>RoboTwin 2.0</strong>：DiffWAM-L 平均成功率 <strong>92.65%</strong>（Clean 93.28%，Random 92.02%），超过 FastWAM 1.55 个百分点</li><li><strong>真实世界</strong>：三个任务平均成功率 <strong>88.3%</strong>，较 FastWAM 的 73.3% 提升 15.0 个百分点</li><li><strong>Clean-to-Random 泛化</strong>：仅用干净数据训练时，DiffWAM 在随机场景取得 5.27% 成功率（FastWAM 为 1.50%），平均指标提升 1.62 个百分点</li><li><strong>训练效率</strong>：DiffWAM 在 LIBERO 上达到 95% 平均成功率只需 6.9k 步，比 FastWAM 减少 28.1% 的优化步数</li><li>消融实验验证独立 Diff Expert 比单纯增加差异损失更有效，且 LDB 深度 M=10 为最优配置</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.20010/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">PlanDiv: Test-Time Scaling with Latent Plans for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.19774/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">When Backdoors Can Be Switched Off: Suppression-Aware Backdoor Attacks on Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

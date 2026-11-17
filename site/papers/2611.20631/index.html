@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Instructions Before Actions: Prospective and Retrospective Language Supervision for Driving Vision-Language-Action Data - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究驾驶视觉-语言-动作（VLA）模型中语言监督数据的收集与评估方式，区分前瞻性指令（prospective，动作发出前给出）与回溯性标注（retrospective，观察动作后撰写）两类语言监督 核心问题：准确的轨迹预测并不能证明模型真正“遵循”了导航指令；大多数驾驶语言数据集采用事后回溯标注，与部署时人类/导航应用在动作前发出指令的时序特性不一致 构建 ADVLAT-Engine 同步语音指令、路景视频和车辆轨迹，比较导航应用与乘客指令的语言差异，并评估四个开源驾驶 VLA 在指令遵循上的真实表现" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.20631">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-16">2026-11-16</time></p>
+        <h1 class="article-title">Instructions Before Actions: Prospective and Retrospective Language Supervision for Driving Vision-Language-Action Data</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.20631" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.20631" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究驾驶视觉-语言-动作（VLA）模型中语言监督数据的收集与评估方式，区分前瞻性指令（prospective，动作发出前给出）与回溯性标注（retrospective，观察动作后撰写）两类语言监督</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.20631.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.20631.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.20631.webp" alt="Instructions Before Actions: Prospective and Retrospective Language Supervision for Driving Vision-Language-Action Data 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University of California, Merced（加州大学默塞德分校），作者 Ange…</p>
+        <ul class="article-facts"><li>arXiv 2611.20631</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of California, Merced</strong>（加州大学默塞德分校），作者 Angel Martinez-Sanchez 和 Ross Greer</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究驾驶视觉-语言-动作（VLA）模型中语言监督数据的收集与评估方式，区分<strong>前瞻性指令</strong>（prospective，动作发出前给出）与<strong>回溯性标注</strong>（retrospective，观察动作后撰写）两类语言监督</li><li>核心问题：准确的轨迹预测并不能证明模型真正“遵循”了导航指令；大多数驾驶语言数据集采用事后回溯标注，与部署时人类/导航应用在动作前发出指令的时序特性不一致</li><li>构建 <strong>ADVLAT-Engine</strong> 同步语音指令、路景视频和车辆轨迹，比较导航应用与乘客指令的语言差异，并评估四个开源驾驶 VLA 在指令遵循上的真实表现</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>驾驶语言监督的来源-时序分类法</strong>（作者类型：机器/人类；时序：前瞻/回溯）</li><li>开发 <strong>ADVLAT-Engine</strong> 数据采集引擎，并对三种导航应用（Apple Maps、Google Maps、Waze）在 48 条回放路线上的指令风格进行受控比较，同时收集匹配的应用与乘客指令</li><li>建立四个开源驾驶 VLA 的基准测试，采用<strong>指令移除配对测试</strong>与<strong>真实路口反事实指令评估</strong></li><li>收集四人回溯性标注语料库，并规划前瞻-回溯监督的受控比较评估框架（标注一致性、时间对齐、下游训练效果等五项研究问题，分析结果待完成）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>ADVLAT-Engine</strong>：将前置相机视频（Intel RealSense D455F，1280×720@30fps）、10 Hz u-blox GNSS 定位、乘客麦克风语音和 Google Maps 音频在统一时间轴上对齐，用 <strong>Whisper</strong> 转写语音；指令在完整说完后生效直至动作完成，保证训练样本只包含预测时刻驾驶员真正可获得的信息</li><li><strong>因果问题形式化</strong>：用因果图区分前瞻指令 L（可影响后续动作 A）与回溯标签 L′（在动作之后产生、只能预测而不能导致动作），明确时间先后不等于因果识别</li><li><strong>冻结模型上的指令干预实验</strong>：固定观测状态，替换或移除指令输入，测量反事实准确率（Acc_cf）与相对无指令条件的增益（Gain_cf）；在距停止线 15/5/0 米处查询每个合法机动（含与实际行驶不同的反事实机动），并设计“静止 parked”条件检验历史依赖性</li><li>四个 VLA 均适配单目前视相机，在应用指令驾驶数据上微调两个 epoch；Qwen-Drive 使用重构的 flow-matching 训练损失和直接规划模式</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>48 条路线在三个都会区、四种道路类型上分别通过 <strong>Apple Maps、Google Maps、Waze</strong> 回放，配对分析使用 170 个共同播报的机动</li><li><strong>60 次 Google Maps 引导驾驶</strong>（84 分钟白天 + 88 分钟夜间，406 条应用指令），54 次驾驶提供 17,687 个训练样本，6 次留作验证</li><li><strong>28 次乘客驾驶</strong>（62 分钟，135 条乘客指令），同时静默记录 Google Maps 的 161 条提示作为泛化测试集</li><li>随机路线驾驶覆盖 117 个不同路口、321 次遭遇（记录每个路口的合法机动选项，用于反事实提示）；四人回溯标注语料库</li><li>评估模型：<strong>Alpamayo 1.5（10B）、Alpamayo 2 Super（34B）、Qwen-Drive（4B）、Impromptu VLA（7B）</strong>；论文未详细说明具体 GPU/训练硬件</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估设置</strong>：乘客驾驶测试集含 5,012 个有指令时间戳（有/无指令配对评估）及 1,897 个无指令时间戳；3 秒预测时域；以速度/偏航率外推作为无语言基线</li><li><strong>指标</strong>：ADE/FDE（米）、左右转准确率、反事实准确率/增益、有向转向偏移</li><li><strong>语言差异</strong>：在 87 个匹配机动上，乘客几乎不说路名（1.1% vs Google Maps 93.1%）和距离（0% vs 34.5%），而使用指示语“right here”达 43.7%；Waze 在约 79% 的机动中报距离，Apple/Google 仅约 48%；两者首发指令提前时间相近（中位数 22.8 vs 24.7 秒）</li><li><strong>微调效果</strong>：在应用指令驾驶上微调使乘客驾驶 ADE 降低 <strong>23–59%</strong>（如 Impromptu VLA 1.011→0.554 m，Qwen-Drive 0.787→0.609 m），左右转准确率大幅提升（Alpamayo 1.5 从 30/6% 升至 83/83%），但配对指令效应多数不显著，说明轨迹收益未必来自语言</li><li><strong>反事实结果</strong>：预训练 <strong>Qwen-Drive</strong> 加显式离散命令时反事实准确率达 <strong>78/89%</strong>（15/5 米），仅用句子时降至 43/34%；微调后 <strong>Alpamayo 2 Super</strong> 在 15/5 米处增益从 +8/+2 提升至 <strong>+31/+18</strong> 个百分点；0 米处命令条件 Qwen-Drive 准确率 93%，显著高于其他设置</li><li>结论：应用录音可有效提升轨迹预测，但轨迹误差掩盖指令依赖差异；前瞻 vs 回溯监督对指令遵循的影响仍是待验证的开放问题（匹配训练实验已规划、结果待发布）</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.20648/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Competent Autonomous Driving Through Fine Tuning Vision Language Action Models with Symbolic Traffic Rules</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.20465/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ReRead: Wrong Predictions, Useful Representations - Correcting Frozen Robot Policies by Re-reading Their Own Representations</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

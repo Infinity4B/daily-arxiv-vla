@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>MetricHand: Geometry-Aware Flow Matching for 4D Hand Reconstruction in Metric World Space - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 MetricHand，一个面向度量世界空间（metric world space）4D 手部重建的几何感知流匹配（geometry-aware flow matching）框架 解决现有自我中心视角（egocentric）方法依赖弱透视（weak-perspective）逐帧估计再提升至世界坐标所导致的深度歧义问题——该近似忽略了近距离下随关节变化的深度变化，使平移、朝向与关节姿态误差相互耦合，并在遮挡下进一步恶化 核心洞察：将手-物体交互（HOI）区域深度先验编码为与手部关节关联的表示，同时为度量定位和遮挡鲁棒姿态估计提供共享几何条件" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.21060">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-16">2026-11-16</time></p>
+        <h1 class="article-title">MetricHand: Geometry-Aware Flow Matching for 4D Hand Reconstruction in Metric World Space</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.21060" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.21060" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 MetricHand，一个面向度量世界空间（metric world space）4D 手部重建的几何感知流匹配（geometry-aware flow matching）框架</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.21060.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.21060.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.21060.webp" alt="MetricHand: Geometry-Aware Flow Matching for 4D Hand Reconstruction in Metric World Space 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">National University of Defense Technology（国防科技大学）：Y…</p>
+        <ul class="article-facts"><li>arXiv 2611.21060</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>National University of Defense Technology</strong>（国防科技大学）：Yibo Bai、Zhengbin Pang、Xingshen Song、Xiaoqing Yin</li><li><strong>Sun Yat-sen University / Shanghai Jiao Tong University</strong>（中山大学/上海交通大学）：Jinglei Zhang</li><li><strong>Academy of Military Sciences</strong>（军事科学院）：Jinsheng Deng（通讯作者）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>MetricHand</strong>，一个面向度量世界空间（metric world space）4D 手部重建的几何感知流匹配（geometry-aware flow matching）框架</li><li>解决现有自我中心视角（egocentric）方法依赖弱透视（weak-perspective）逐帧估计再提升至世界坐标所导致的深度歧义问题——该近似忽略了近距离下随关节变化的深度变化，使平移、朝向与关节姿态误差相互耦合，并在遮挡下进一步恶化</li><li>核心洞察：将手-物体交互（HOI）区域深度先验编码为与手部关节关联的表示，同时为度量定位和遮挡鲁棒姿态估计提供共享几何条件</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>MetricHand</strong> 框架：将 HOI 深度先验的空间结构和度量尺度与手部拓扑（21 个关节锚点）关联，为度量定位和遮挡鲁棒姿态估计提供共享几何条件</li><li>提出几何感知的时序流匹配公式：结合质量感知条件（observation quality）与跨窗口重叠记忆（memory queue），联合生成世界空间平移、全局朝向、MANO 关节姿态与形状</li><li>在 <strong>HOT3D</strong>、<strong>ARCTIC</strong>、<strong>DexYCB</strong>、<strong>HO3D</strong> 上取得最先进的手部重建结果，并在未见过的真实世界 <strong>HOI4D</strong> 视频上实现零样本（zero-shot）泛化</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>多编码器架构</strong>：可训练的 WiLoR 初始化编码器提取手-物体外观特征；冻结的单目几何模型（<strong>Metric3D v2 / MoGe-2</strong>）提供全帧度量深度；冻结 <strong>DROID-SLAM</strong> 估计相机相对运动</li><li><strong>RGB-D 融合</strong>：深度编码器处理归一化对数深度、有效性掩码与空间梯度，通过空间门控残差注入 RGB 特征图；Metric Head 在视线射线和对数深度坐标系中细化粗略 MANO 平移，实现度量世界坐标系下的粗估计</li><li><strong>拓扑感知采样</strong>：以 21 个投影关节为锚点，采用可变形采样（deformable sampling），注意力中加入图像距离、对数深度和反投影表面距离的几何偏置，使每个关节 token 保留支撑证据的空间组织</li><li><strong>观测质量建模</strong>：学习的质量分数区分离可得性与可靠性，将可靠内容与占位符加权混合，无需显式质量标注</li><li><strong>时空记忆队列</strong>：FIFO 队列按时间戳、手、关节身份索引，通过空间注意力和跨窗口时序注意力让被遮挡关节从可见关节及历史观测中检索上下文</li><li><strong>几何条件引导的流匹配生成</strong>：DiT 风格模块在每个积分步读取条件，采用修正流（rectified flow）线性路径与 3 步 Euler 积分，训练目标包含流匹配损失、度量/平移损失、姿态损失与时序加速度损失</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>HOT3D</strong>、<strong>ARCTIC</strong>（移动自我中心相机）、<strong>DexYCB</strong>、<strong>HO3D</strong>，零样本评估使用 <strong>HOI4D</strong></li><li>手部表示：<strong>MANO</strong> 参数化模型（15 个局部关节旋转、10 维形状参数）</li><li>基础模型：<strong>WiLoR</strong> 初始化的可训练外观编码器；冻结的单目几何深度模型（<strong>Metric3D v2 / MoGe-2</strong>）；冻结的 <strong>DROID-SLAM</strong> 估计相机运动</li><li>训练资源：原文（截断部分）未明确说明具体 GPU/TPU 配置</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：遵循 <strong>HaWoR</strong> 的 observed-track 评估协议，在 HOT3D 和 ARCTIC 的相同有效观测帧上共享协议比较</li><li>评估指标：相机空间 MPJPE、RA-MPJPE、PA-MPJPE、WristErr（手腕定位误差）、绝对世界空间 MPJPE（ABS-W-MPJPE）、W-MPJPE、WA-MPJPE、世界空间加速度误差</li><li>关键结果（相对 <strong>HaWoR</strong>）：</li></ul>
+<p> - 相机空间 MPJPE 分别降低 <strong>49.3%</strong>（8.60mm）和 <strong>52.9%</strong>（17.54mm）</p>
+<p> - 绝对世界空间 MPJPE 分别降低 <strong>28.7%</strong>（20.58mm）和 <strong>21.7%</strong>（120.86mm）</p>
+<p> - 手腕定位误差分别降低 <strong>48.5%</strong> 和 <strong>37.9%</strong></p>
+<p> - 世界空间加速度误差降低 <strong>44.2%</strong>（3.11 m/s²）和 <strong>64.3%</strong>（4.39 m/s²），验证时序一致性显著提升</p>
+<ul><li>消融实验：移除拓扑感知采样使 ARCTIC MPJPE 从 17.54 升至 38.91mm；移除记忆队列使 HOT3D MPJPE 从 8.60 升至 15.42mm；几何条件仅在粗估计或仅第一步使用时性能显著下降，证明全程几何条件化的必要性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.21258/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ThinkWAM: Rethinking Latent Futures for Action Refinement</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.21057/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">WiTac: Wrist-Informed Tactile Representations for Contact-Rich Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Right Goal, Wrong Body: Re-grounding Frozen VLAs under Actuation Shift - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究视觉-语言-动作（VLA）模型在部署时面临执行器偏移（actuation shift）的问题：重装、机械磨损或命令延迟等变化导致任务失败和危险行为。 提出ReGround，一种推理时（inference-time）方法，保持 VLA 模型冻结，通过重新接地其意图运动来适应变化的执行器动力学。 方法无需奖励、演示或再训练，仅在检测到偏移时激活，利用任务无关的电机抖动（motor babbling）数据学习部署机器人动力学。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.20244">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-15">2026-11-15</time></p>
+        <h1 class="article-title">Right Goal, Wrong Body: Re-grounding Frozen VLAs under Actuation Shift</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.20244" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.20244" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究视觉-语言-动作（VLA）模型在部署时面临执行器偏移（actuation shift）的问题：重装、机械磨损或命令延迟等变化导致任务失败和危险行为。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.20244.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.20244.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.20244.webp" alt="Right Goal, Wrong Body: Re-grounding Frozen VLAs under Actuation Shift 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者隶属：德克萨斯大学圣安东尼奥分校（University of Texas at San Anton…</p>
+        <ul class="article-facts"><li>arXiv 2611.20244</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者隶属：<strong>德克萨斯大学圣安东尼奥分校（University of Texas at San Antonio）电气与计算机工程系</strong></li><li>通信作者：<strong>Umer Siddique</strong>（muhammadumer.siddique@my.utsa.edu）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究<strong>视觉-语言-动作（VLA）模型</strong>在部署时面临<strong>执行器偏移（actuation shift）</strong>的问题：重装、机械磨损或命令延迟等变化导致任务失败和危险行为。</li><li>提出<strong>ReGround</strong>，一种推理时（inference-time）方法，保持 VLA 模型冻结，通过重新接地其意图运动来适应变化的执行器动力学。</li><li>方法无需奖励、演示或再训练，仅在检测到偏移时激活，利用任务无关的电机抖动（motor babbling）数据学习部署机器人动力学。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ReGround</strong> 框架，通过“意图读出—部署体识别—信任区域跟踪”三阶段在推理时对齐冻结 VLA 的动作意图。</li><li>设计<strong>训练体前向模型</strong>读出策略的意图轨迹，并用<strong>部署体前向模型</strong>重新计算动作，从而无需外部任务奖励或演示。</li><li>引入<strong>信任区域 MPC</strong>，在跟踪意图轨迹的同时保持动作靠近策略原始计划，替代推理时对齐中的 KL 约束。</li><li>开发<strong>CUSUM 移位监视器</strong>，仅在检测到执行器偏移后激活 ReGround，避免在无偏移时干扰策略性能。</li><li>在两个 VLA（<strong>π₀.₅</strong> 和 <strong>SmolVLA</strong>）、八个 <strong>LIBERO</strong> 任务和五种偏移设置上验证有效性，恢复大量成功率并降低不安全率。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>意图读出（Intent read-out）</strong>：将 VLA 预测的动作块通过名义体（训练体）前向模型 rollout，得到参考轨迹，该轨迹代表策略意图产生的运动。</li><li><strong>部署体识别（Deployed-body identification）</strong>：通过平滑 Ornstein-Uhlenbeck 电机抖动收集状态-动作-下一状态数据，拟合部署体集成前向模型，并辨识动作延迟和线性动作映射。</li><li><strong>信任区域跟踪（Trust-region tracking）</strong>：构建一个滚动时域 MPC 问题，最小化部署体轨迹与参考轨迹的加权误差，同时惩罚动作与策略锚点（重定时/重映射后的原动作）的偏差。</li><li><strong>CUSUM 监视器</strong>：利用训练体模型的一步残差累积和检测偏移，阈值由名义验证集校准；检测到偏移后才启用 ReGround，未偏移时保持原样。</li><li>优化使用<strong>批量交叉熵方法（CEM）</strong> 求解 MPC，仅执行首个动作并结合 VLA 的夹爪命令，下一步重新求解。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO</strong> 基准中的 8 个操纵任务，使用 MuJoCo 和 robosuite 控制，频率 20 Hz。</li><li>模型：评估了 <strong>π₀.₅</strong> 和 <strong>SmolVLA</strong> 两个 VLA 模型（保持冻结，不更新参数）。</li><li>训练/适配数据：仅使用约 1k 条电机抖动转移（约 50 秒机器人时间）进行部署体模型学习和校准。</li><li>计算资源：论文未报告具体 GPU/TPU 配置；推理在模拟环境中进行，方法轻量（前向模型和 CEM 求解）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估设置：LIBERO 的 8 个任务上，设置五种偏移类型：延迟 250ms/400ms、动作帧旋转 90°（π₀.₅）或 30°（SmolVLA）、控制器增益 ×3 或 ×2、复合偏移；基线包括 Base、线性校准、Intent（一步逆向动力学）和 Oracle（解析逆）。</li><li>指标：成功率（IQM over tasks）和不安全事件率（unsafe-episode rate），使用分层 bootstrap 区间。</li><li>关键结果：</li></ul>
+<p> - <strong>π₀.₅</strong> 在 400ms 延迟下成功率从 0.16 恢复到 0.90（ReGround），接近 Oracle 的 0.91。</p>
+<p> - <strong>π₀.₅</strong> 在复合偏移下 ReGround 成功率 0.97，超过解析逆（0.92）。</p>
+<p> - <strong>SmolVLA</strong> 在 250ms 延迟下成功率从 0.19 恢复到 0.93，复合偏移下从 0.00 到 0.78。</p>
+<p> - 不安全率方面，ReGround 普遍低于线性校准；例如 π₀.₅ 在旋转 90° 时不安全率从 0.80 降至 0.29，增益 ×3 时从 1.00 降至 0.77。</p>
+<p> - CUSUM 监视器在所有偏移集检测到偏移，未偏移时的假警报率为 2.1%。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.20314/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">NF-VLA: A Normalizing-Flow Baseline for Vision-Language-Action Learning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.20011/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ReactBench-AD: Do Driving VLAs and World-Action Models React to Imminent Hazards in Their Path?</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

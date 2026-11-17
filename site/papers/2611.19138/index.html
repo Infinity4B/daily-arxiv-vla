@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SuperGlance: Driving at a Glance with a Vision-Language Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 SuperGlance，一种将 decoder-only VLM（Qwen3.5-9B）转变为一次前向传播的驾驶策略的方法。 解决现有 VLA（如 Qwen-Drive-1.0）通过逐步解码或扩散生成轨迹导致规划耗时过长的问题（例如 518 ms GPU 时间）。 核心思想是利用 VLM 在生成第一个 token 之前已经将场景编码到隐藏状态，用一个线性头从该隐藏状态直接评分固定候选轨迹，实现“一眼”规划，同时保留 VLM 的视觉问答能力。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.19138">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-14">2026-11-14</time></p>
+        <h1 class="article-title">SuperGlance: Driving at a Glance with a Vision-Language Model</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.19138" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.19138" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 SuperGlance，一种将 decoder-only VLM（Qwen3.5-9B）转变为一次前向传播的驾驶策略的方法。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef" aria-hidden="true">
+  <p class="note-cover-title">SuperGlance: Driving at a Glance with a Vision-Language Model</p>
+</div></figure>
+        <p class="article-unit">论文作者为 Yan Wang，所属研究机构未在论文 HTML 原文中明确列出。</p>
+        <ul class="article-facts"><li>arXiv 2611.19138</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者为 <strong>Yan Wang</strong>，所属研究机构未在论文 HTML 原文中明确列出。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>SuperGlance</strong>，一种将 decoder-only VLM（<strong>Qwen3.5-9B</strong>）转变为一次前向传播的驾驶策略的方法。</li><li>解决现有 VLA（如 <strong>Qwen-Drive-1.0</strong>）通过逐步解码或扩散生成轨迹导致规划耗时过长的问题（例如 518 ms GPU 时间）。</li><li>核心思想是利用 VLM 在生成第一个 token 之前已经将场景编码到隐藏状态，用一个线性头从该隐藏状态直接评分固定候选轨迹，实现“一眼”规划，同时保留 VLM 的视觉问答能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>从 decoder-only VLM 的单一隐藏状态读取规划，通过评分固定候选集，使 RL 能够精确最大化所有候选的期望奖励。</li><li>多选训练使 VLM 在一次前向传播中保持视觉能力，并迁移到驾驶场景问答。</li><li>单个检查点规划仅需 84 ms GPU 时间，比 <strong>Qwen-Drive-1.0</strong> 快 6.2 倍，在 <strong>NAVSIM</strong>、<strong>WOD-E2E</strong>、<strong>PAI-AV</strong> 和 <strong>AlpaSim</strong> 上表现至少相当。</li><li>在 AlpaSim 闭环中，带延迟下每 at-fault incident 行驶距离是 Qwen-Drive-1.0 的 3.9 倍。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>架构</strong>：基于 <strong>Qwen3.5-9B</strong>，输入为当前帧（1024×576）和过去帧（544×320），提示包含 ego 状态、导航命令和指令，末尾为 <code>[ANS]</code> 位置。</li><li><strong>候选轨迹</strong>：固定 5,273 个候选，包括 4,096 个 NAVSIM 人类轨迹聚类中心、1,024 个 PAI-AV 高速聚类中心、以及 152 个规则生成的候选。</li><li><strong>策略头</strong>：线性层从 <code>[ANS]</code> 隐藏状态输出候选分布，计划为 top-64 候选的加权平均（温度 0.2）。</li><li><strong>训练三阶段</strong>：Stage 1 通用 QA（1.16M 问题，双选项顺序对抗位置偏置）；Stage 2 驾驶 QA（124,378 个 DriveLM 问题）；Stage 3 策略训练（监督目标按奖励加权，再进行 KL 正则化 RL，精确期望，无需采样）。</li><li>所有阶段使用 rank-32 LoRA，KL 项防止遗忘。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>QA 数据：Stage 1 使用 1.16M 视觉和文本多选问题（来自 VQA、OK-VQA、A-OKVQA、TextVQA 等），Stage 2 使用 <strong>DriveLM-nuScenes</strong> 的 124,378 个驾驶问题。</li><li>驾驶训练数据：<strong>NAVSIM</strong> 训练集（92,339 场景）、<strong>PAI-AV</strong>、<strong>WOD-E2E</strong> 和 rollout 数据（46,583 帧）。</li><li>模型：基于 <strong>Qwen3.5-9B</strong>，LoRA rank 32，隐藏维度 d=4096，候选数 K=5,273。</li><li>训练资源：单张 <strong>H200 GPU</strong>，推理延迟测量基于 batch size 1。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>问答</strong>：在 <strong>CV-Bench</strong>、<strong>BLINK</strong>、<strong>3DSRBench</strong>、<strong>MMLU</strong>、<strong>MMLU-Pro</strong>、<strong>ARC-C</strong>、<strong>HellaSwag</strong>、<strong>WinoGrande</strong>、<strong>BoolQ</strong>、<strong>TruthfulQA</strong> 和 <strong>DriveLM</strong> 上评估；Stage 3 最终模型在视觉基准上字母准确率与 Qwen3.5-9B 解码相当，DriveLM 高出 24.56 分。</li><li><strong>驾驶开放环</strong>：<strong>NAVSIM</strong> PDMS 91.24（RL 后），NC 98.73%，DAC 98.25%，EP 86.18%，TTC 95.56%，Comf 100%。<strong>WOD-E2E</strong> 和 <strong>PAI-AV</strong> 上 ADE 优于或接近基线。</li><li><strong>驾驶闭环</strong>：<strong>AlpaSim</strong> 中，带延迟（84 ms vs 518 ms）下 SuperGlance 每 at-fault incident 距离 0.970 km（all）和 1.248 km（at-fault），是 Qwen-Drive-1.0 的约 3.9 倍；无延迟时也表现更优。</li><li><strong>效率</strong>：单次规划 GPU 时间 84 ms，相比 Qwen-Drive-1.0 的 518 ms 快 6.2 倍，且保留 VLM 的问答能力。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.19183/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">WA-JEPA: Goal-Aware Predictive Feedback Action Refinement for a World-Action Model</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.19131/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Wireless Edge-Assisted Adaptive Latent Reasoning for Vision-Language-Action Models in Physical AI</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
