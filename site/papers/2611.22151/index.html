@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>EgoHandWAM: Probing the Role of Hand Motion in Egocentric World Action Modeling - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究手部运动在第一人称世界-动作建模中的作用，提出 EgoHandWAM 模型，从当前图像和近期手部状态联合预测未来三维手腕/指尖轨迹以及未来的视觉特征。 在 EgoDex 大规模第一人称操作视频数据集上训练，使用冻结的 DINOv2 编码器，系统检验手部运动作为预测目标、视觉预测输入和机器人策略辅助监督三种角色的有效性。 核心问题：手部运动能在多大程度上提前预测？该信息对预测未来画面以及提升机器人操作策略成功率的实际价值如何？" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.22151">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">EgoHandWAM: Probing the Role of Hand Motion in Egocentric World Action Modeling</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.22151" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.22151" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究手部运动在第一人称世界-动作建模中的作用，提出 EgoHandWAM 模型，从当前图像和近期手部状态联合预测未来三维手腕/指尖轨迹以及未来的视觉特征。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.22151.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.22151.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.22151.webp" alt="EgoHandWAM: Probing the Role of Hand Motion in Egocentric World Action Modeling 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">AI Lab, Country Garden Services Group</p>
+        <ul class="article-facts"><li>arXiv 2611.22151</li><li>6 节精读</li><li>约 10 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>AI Lab, Country Garden Services Group</strong></li><li><strong>School of Mechanical Science and Engineering, Huazhong University of Science and Technology</strong></li><li><strong>Omni AI</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究手部运动在<strong>第一人称世界-动作建模</strong>中的作用，提出 <strong>EgoHandWAM</strong> 模型，从当前图像和近期手部状态联合预测未来三维手腕/指尖轨迹以及未来的视觉特征。</li><li>在 <strong>EgoDex</strong> 大规模第一人称操作视频数据集上训练，使用冻结的 <strong>DINOv2</strong> 编码器，系统检验手部运动作为<strong>预测目标</strong>、<strong>视觉预测输入</strong>和<strong>机器人策略辅助监督</strong>三种角色的有效性。</li><li>核心问题：手部运动能在多大程度上提前预测？该信息对预测未来画面以及提升机器人操作策略成功率的实际价值如何？</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>EgoHandWAM</strong> 架构，在单一共享 Transformer 中同时预测未来 60 帧手部关键点轨迹和两秒后的视觉特征，总可训练参数仅 <strong>21,924</strong>。</li><li>在 <strong>751,065</strong> 个 EgoDex 训练窗口上完成大规模训练，表明仅靠动作监督可将两秒手腕终点误差从 <strong>60.26 mm</strong> 降至 <strong>56.48 mm</strong>，但模型仍<strong>低估长距离伸手</strong>。</li><li>通过匹配训练对比发现，增加未来视觉特征监督对轨迹精度影响极小（终点误差仅相差 <strong>0.02 mm</strong>），但记录的真实手部历史可使视觉特征预测的 smooth L1 误差相对<strong>复制当前特征</strong>降低 <strong>1.32%</strong>，而打乱历史则会增加 <strong>1.85%</strong>。</li><li>在四任务探针中，加入记录的未来位移和追踪有效性掩码可使视觉特征误差降低 <strong>3.93%</strong>，但仅使用预测轨迹几乎不带来增益（<strong>0.0034%</strong>），表明手部轨迹预测本身难以提供独立于观测的额外信息。</li><li>在 <strong>RoboTwin 2.0</strong> 模拟机器人任务中，将对齐的人类手部历史加入辅助训练并未一致提高任务成功率，提示人类手部运动对机器人策略的迁移价值有限。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>输入</strong>：当前图像经冻结的 <strong>DINOv2 Base + registers</strong> 编码器提取空间特征，经固定 3×5 池化和固定投影得到 64 维特征；手部历史为 8 个观测帧，每帧含 36 个位置坐标、12 个旋转值和 12 个有效性位，拼接成 480 维向量；时间查询使用 <code>[τ, τ², sin(πτ), cos(πτ)]</code> 四维编码。</li><li><strong>共享状态</strong>：将历史、图像特征和时间编码拼接成 548 维输入，经两层宽度为 32 的 MLP（GELU 激活）得到共享隐藏状态，所有 60 个查询时间并行计算。</li><li><strong>动作头</strong>：输出 12×3 维无量纲残差，乘以位置尺度 <code>s_p = 0.1 m</code> 和时间比例 <code>τ/τ_60</code>，并与当前锚点位置相加得到未来轨迹。</li><li><strong>视觉头</strong>：仅使用最后一个时间查询的隐藏状态，预测两秒后归一化特征与当前特征的残差。</li><li><strong>训练损失</strong>：姿态损失为带平滑项的 L1 距离加上位移惩罚项；视觉损失为 64 维坐标的 smooth L1 加上 <strong>0.1</strong> 倍余弦距离；联合训练时视觉损失权重 <code>λ_v = 0.1</code>，动作-only 时 <code>λ_v = 0</code>。</li><li><strong>优化</strong>：使用 <strong>AdamW</strong>，批量大小 128，学习率 <strong>3×10⁻⁴</strong>，权重衰减 10⁻⁴，梯度裁剪 1，训练 2 个 epoch（11,736 步），四对种子保证可重复性。</li><li><strong>辅助实验</strong>：线性探针使用岭回归，输入观测上下文与不同形式的未来轨迹；机器人策略使用共享时序 Transformer，人类数据仅提供辅助视觉特征监督，机器人动作头输出 16 步双臂命令。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>EgoDex</strong>：训练集 <strong>751,065</strong> 个合格窗口，其中 <strong>689,806</strong> 个经置信度过滤，<strong>61,259</strong> 个通过兼容性规则补充；开发集 <strong>36,596</strong> 个窗口，来自 68 个任务；官方测试集未使用。</li><li><strong>视觉配对</strong>：<strong>570,864</strong> 个训练窗口具有恰好两秒后的特征目标，覆盖 <strong>76.01%</strong>；其余窗口仅训练姿态预测，视觉损失掩码。</li><li><strong>模型规模</strong>：共享层和两个输出头共 <strong>21,924</strong> 个可训练参数；视觉编码器为冻结的 <strong>DINOv2 Base + registers</strong>，空间特征维度 768×16×16，池化后投影为 64 维。</li><li><strong>训练资源</strong>：论文未明确说明使用的 GPU/TPU 型号；训练具有较小参数量，每个模型训练 2 个 epoch 共 11,736 次更新。</li><li><strong>机器人数据</strong>：<strong>RoboTwin 2.0</strong> 两个模拟任务——<strong>双瓶抓取</strong>和<strong>双臂方块交接</strong>；瓶抓取任务使用 48 个 ALOHA 演示，部分消融加入 ARX-X5、Piper、UR5 各 50 个演示；机器人视觉目标为 16 步后的 DINO 特征。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>主要指标</strong>：手腕 ADE / FDE（毫米）、MPJPE-12（毫米）、未来视觉特征 smooth L1 与余弦距离、机器人任务闭环成功率（%）。</li><li><strong>轨迹预测</strong>：动作-only 模型手腕 FDE <strong>56.480 ± 0.197 mm</strong>（stationary 为 60.262 mm），Joint 模型 <strong>56.460 ± 0.189 mm</strong>，两端点误差相对提升约 <strong>3.78–3.80 mm</strong>；长距离位移组（≥80 mm）预测严重不足，记录位移 <strong>147.23 mm</strong> 而预测仅 <strong>22.12 mm</strong>。</li><li><strong>视觉特征预测</strong>：对齐历史下 Joint 模型 smooth L1 为 <strong>0.1825</strong>，相对复制当前特征的 <strong>0.1850</strong> 降低 <strong>1.32%</strong>；乱序历史为 <strong>0.1884</strong>，增加 <strong>1.85%</strong>；对齐历史在 63 个任务中的 49 个任务上优于复制基线。</li><li><strong>探针实验</strong>：观测上下文使 MSE 从复制的 <strong>0.436436</strong> 降至 <strong>0.389063</strong>；加入记录的未来掩码几乎无变化；加入记录的未来位移和掩码进一步降至 <strong>0.373793</strong>（相对上下文降低 <strong>3.93%</strong>）；预测轨迹仅有 <strong>0.389050</strong>，几乎无增益。</li><li><strong>机器人策略</strong>：瓶抓取任务中，机器人-only 成功率 <strong>16.0 ± 2.0%</strong>，机器人+对齐历史 <strong>15.0 ± 2.6%</strong>，机器人+乱序历史 <strong>14.7 ± 1.5%</strong>；方块交接对应为 <strong>39.0 ± 8.7%</strong>、<strong>37.7 ± 4.0%</strong>、<strong>41.7 ± 9.0%</strong>，对齐历史未带来一致增益。</li><li><strong>消融观察</strong>：动作损失中的位移惩罚项导致预测倾向于保守，移除后预测平均位移从 <strong>11.28 mm</strong> 升至 <strong>18.72 mm</strong>，仍远低于记录的 <strong>69.62 mm</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.22295/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Similar Is Not Useful: Selecting In-Context Demonstrations by Closed-Loop Utility</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.21851/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">AR-WAM: efficient streaming world-action modeling for autonomous driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

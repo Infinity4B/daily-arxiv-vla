@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Similar Is Not Useful: Selecting In-Context Demonstrations by Closed-Loop Utility - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究检索增强的视觉-语言-动作（VLA）策略中上下文演示选择问题，质疑“视觉相似性”是否等同于“任务效用” 针对冻结的 RICL on π₀-FAST（LIBERO 端口）策略，提出基于闭环节效用（closed-loop utility）的演示选择方法 核心发现：相似性选择与随机选择无差异，而效用选择比相似性选择成功率高出约 11 个百分点" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.22295">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">Similar Is Not Useful: Selecting In-Context Demonstrations by Closed-Loop Utility</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.22295" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.22295" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究检索增强的视觉-语言-动作（VLA）策略中上下文演示选择问题，质疑“视觉相似性”是否等同于“任务效用”</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.22295.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.22295.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.22295.webp" alt="Similar Is Not Useful: Selecting In-Context Demonstrations by Closed-Loop Utility 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Jiachen Li - University of Texas at Austin</p>
+        <ul class="article-facts"><li>arXiv 2611.22295</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Jiachen Li</strong> - <strong>University of Texas at Austin</strong></li><li><strong>Zhigen Zhao</strong> - <strong>Georgia Institute of Technology</strong></li><li><strong>Shihao Li</strong> - <strong>University of Texas at Austin</strong></li><li><strong>Dongmei Chen</strong> - <strong>University of Texas at Austin</strong></li><li><strong>Long Chen</strong> - <strong>General Intelligent Machines, Inc</strong></li><li><strong>Zhuo Xu</strong> - <strong>General Intelligent Machines, Inc</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究检索增强的视觉-语言-动作（<strong>VLA</strong>）策略中上下文演示选择问题，质疑“视觉相似性”是否等同于“任务效用”</li><li>针对冻结的 <strong>RICL</strong> on <strong>π₀-FAST</strong>（LIBERO 端口）策略，提出基于<strong>闭环节效用</strong>（closed-loop utility）的演示选择方法</li><li>核心发现：相似性选择与随机选择无差异，而效用选择比相似性选择成功率高出约 11 个百分点</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出一套<strong>评估协议</strong>：通过可动态交换的演示池，结合固定规模的合作回归（coalition regression）估计每个演示的相对效用</li><li>在<strong>19 个任务</strong>（含 12 个未见任务）上验证效用选择显著优于相似性选择，且相似性选择不优于随机</li><li>揭示相似性失效原因：任务内相似性与成功率仅微弱相关（平均 Spearman 0.10），跨任务相似性仅能区分场景差异，无法区分目标差异</li><li>证明增益来源于<strong>在任务上的闭环 rollouts</strong>：100 次 rollouts 的 best-of-ten 直接搜索即可恢复三分之二的增益</li><li>展示效用排序的演示池在固定池大小 5 时优于原始 20 演示池（+7.0 个百分点）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>在冻结策略中新增控制消息实现<strong>运行时演示池交换</strong>，不重新加载模型权重</li><li>对每个任务采样 60 个固定大小为 5 的池，每个池在初始状态 0-9 上滚动 10 次估计成功率，通过<strong>岭回归</strong>（ridge regression）对成员指标进行拟合，得到每个演示的相对效用分数</li><li>四种池选择规则对比：<strong>top</strong>（效用最高五）、<strong>dino</strong>（相似性最高五）、<strong>random</strong>（随机五）、<strong>bottom</strong>（效用最低五）</li><li>通过<strong>预指定的 hold-out 设计</strong>分离效用拟合初始状态（0-9）与评估初始状态（10-49），确保评估独立性</li><li>使用精确 <strong>McNemar 检验</strong>和 <strong>Wilson 区间</strong>进行配对比较</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO</strong> 基准（包括 <strong>LIBERO-90</strong> 和四个标准套件），共筛选出 19 个合格任务</li><li>模型为 <strong>π₀-FAST</strong>（2.9B 参数）的第三方 <strong>RICL</strong> 端口，基于 <strong>DINOv2</strong> 嵌入和 <strong>FAISS</strong> 索引进行逐帧检索</li><li>每个任务有 20 个演示，每个池大小固定为 5，每个单元格 40 个配对 episodes（19 任务共 760 配对 episodes）</li><li>7 任务研究约消耗 <strong>170 GPU-hours</strong>；每个任务拟合效用约需 <strong>8.4 GPU-hours</strong>（600 次 rollouts）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>LIBERO</strong> 仿真，冻结的 <strong>π₀-FAST</strong> 策略，19 个任务（7 个归因研究任务 + 12 个未见任务）</li><li>主要指标：<strong>成功率</strong>（success rate），配对比较使用 <strong>McNemar 检验</strong>和 <strong>Wilson 置信区间</strong></li><li>池大小 5 时：<strong>top</strong> 成功率 66.4%，<strong>dino</strong> 55.7%，<strong>random</strong> 55.5%，<strong>bottom</strong> 43.8%；效用选择比相似性选择高 <strong>+10.8 个百分点</strong>（p=3.2e-6）</li><li>相似性选择与随机选择无差异（<strong>+0.1 个百分点</strong>，p=1.0）</li><li>与原始 20 演示池对比：效用选择的五演示池领先 <strong>+7.0 个百分点</strong>（p=0.006），效用排序的完整池检索领先 <strong>+4.5 个百分点</strong>（p=0.055）</li><li>池大小从 3 到 5 效应保持（+12.9 和 +11.8 个百分点），池大小 10 时效应消失（+0.7 个百分点，p=0.92）</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.22356/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SR-VLA: Stall-Reduced VLA Execution via Predicted-Input Lookahead and Selective KV Cache Repair</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.22151/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">EgoHandWAM: Probing the Role of Hand Motion in Egocentric World Action Modeling</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

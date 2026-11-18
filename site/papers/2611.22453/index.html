@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>VoxelSBFL: Voxel-Level Spectrum-Based Failure Prediction for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 VoxelSBFL，一种面向 视觉-语言-动作（VLA）模型 的黑盒失败预测方法，将 频谱故障定位（SBFL） 从程序元素迁移到机器人工作空间体素。 核心思想是：机器人执行轨迹中经过的某些工作空间区域与任务失败高度相关，通过记录 工具中心点（TCP）轨迹 并划分体素，可以利用 SBFL 公式构建 可疑度地图，用于识别高风险区域并预测未见轨迹的失败与否。 论文旨在解决现有 VLA 测试方法在利用已执行轨迹进行后续失败预测和策略修复方面指导不足的问题，以及部分方法需要内部模型访问的限制。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.22453">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">VoxelSBFL: Voxel-Level Spectrum-Based Failure Prediction for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.22453" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.22453" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 VoxelSBFL，一种面向 视觉-语言-动作（VLA）模型 的黑盒失败预测方法，将 频谱故障定位（SBFL） 从程序元素迁移到机器人工作空间体素。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.22453.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.22453.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.22453.webp" alt="VoxelSBFL: Voxel-Level Spectrum-Based Failure Prediction for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Mondragon University, Mondragon, Guipuzcoa, Spain</p>
+        <ul class="article-facts"><li>arXiv 2611.22453</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Mondragon University</strong>, Mondragon, Guipuzcoa, Spain</li><li><strong>Simula Research Laboratory</strong>, Oslo, Norway</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>VoxelSBFL</strong>，一种面向 <strong>视觉-语言-动作（VLA）模型</strong> 的黑盒失败预测方法，将 <strong>频谱故障定位（SBFL）</strong> 从程序元素迁移到机器人工作空间体素。</li><li>核心思想是：机器人执行轨迹中经过的某些工作空间区域与任务失败高度相关，通过记录 <strong>工具中心点（TCP）轨迹</strong> 并划分体素，可以利用 SBFL 公式构建 <strong>可疑度地图</strong>，用于识别高风险区域并预测未见轨迹的失败与否。</li><li>论文旨在解决现有 VLA 测试方法在利用已执行轨迹进行后续失败预测和策略修复方面指导不足的问题，以及部分方法需要内部模型访问的限制。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>引入 <strong>VoxelSBFL</strong>：一种无需内部模型参数、梯度或激活的 <strong>黑盒空间频谱故障定位</strong> 方法，使用端执行器访问的体素作为覆盖单元，结合任务结果进行失败预测。</li><li>在 <strong>四个 VLA 模型（EO1、GR00T-N1.6、Pi0、SpatialVLA）</strong> 上使用 <strong>96,000 条模拟 Pick-Up 轨迹</strong> 对 <strong>34 种 SBFL 公式</strong> 进行大规模评估，证明体素覆盖能够区分成功与失败轨迹，且表现最佳的公式（如 <strong>Harmonic Mean</strong> 和 <strong>Rogot2</strong>）显著优于现有动作/轨迹基线。</li><li>分析了 <strong>体素尺寸</strong> 和 <strong>训练集大小</strong> 对性能的影响，展示了从 Pick-Up 到 Move-Near 任务迁移时的性能下降，并提供了 <strong>Workspace Voxel Coverage (WVC)</strong> 空间覆盖度量。</li><li>展示了可疑度地图如何帮助开发者优先检查轨迹片段，并讨论了其在 <strong>定向测试生成、策略修复和运行时监控</strong> 中的潜在应用。</li><li>提供可复现的 <strong>复制包</strong>，支持其他研究者扩展评估。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>工作空间体素化</strong>：将机器人三维工作空间划分为规则体素网格，通过将 TCP 位置映射到体素索引得到二元覆盖表示。</li><li><strong>轨迹与结果表示</strong>：每个轨迹记录为一系列 3D 位置，伴随外部给定的二元成功/失败结果，体素覆盖采用二元指示（访问过即覆盖，不区分访问次数）。</li><li><strong>体素频谱构建</strong>：对每个体素统计四类计数：失败且覆盖、成功且覆盖、失败且未覆盖、成功且未覆盖（即 <strong>e_f, e_p, n_f, n_p</strong>）。</li><li><strong>体素可疑度计算</strong>：应用 34 种经典 SBFL 公式（如 <strong>Tarantula, Ochiai</strong> 等）计算原始可疑度，并转换为 <strong>经验百分位排名</strong> 得到标准化可疑度地图。</li><li><strong>未见轨迹评分</strong>：对未见轨迹，取该轨迹访问的所有体素中最大的可疑度百分位作为轨迹风险评分；若轨迹不包含任何已知体素，则赋予中性值 <strong>0.5</strong>。</li><li><strong>方法特点</strong>：纯黑盒、模型无关、仅需位置和结果标签；体素覆盖采用二元化防止长轨迹支配频谱；处理未定义数学表达式（如 0/0）并记录诊断信息。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>模拟环境</strong>：<strong>SimplerEnv</strong>（基于 SAPIEN 和 ManiSkill2），使用 <strong>Google Robot (Everyday Robot)</strong> 本体。</li><li><strong>任务</strong>：<strong>Pick-Up</strong>（拾取，80 步限制）和 <strong>Move-Near</strong>（移动靠近，120 步限制）。</li><li><strong>VLA 模型</strong>：<strong>EO1</strong>、<strong>GR00T-N1.6</strong>、<strong>Pi0</strong>、<strong>SpatialVLA</strong>，均使用基于 <strong>Fractal 数据集</strong> 微调的检查点。</li><li><strong>轨迹数据规模</strong>：<strong>96,000 条 Pick-Up 轨迹</strong>，用于 RQ1-RQ4 的评估；另有 Move-Near 轨迹用于 RQ5 跨任务泛化实验。</li><li><strong>训练/测试划分</strong>：RQ1 使用留一轮验证（9 轮训练、1 轮测试循环）；RQ4 采用训练池、校准集和测试集三路划分以避免标签泄漏。</li><li><strong>计算资源</strong>：原文未明确提及 GPU/TPU 数量或具体训练硬件配置，但使用模拟环境执行大规模轨迹收集。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估指标</strong>：主要采用 <strong>macro ROC-AUC</strong>（宏平均 ROC 曲线下面积），用于衡量体素可疑度地图对成功/失败轨迹的区分能力。</li><li><strong>RQ1 总体性能</strong>：<strong>Harmonic Mean</strong> 和 <strong>Rogot2</strong> 取得了最高的 macro ROC-AUC 值 <strong>0.704</strong>，在 34 种 SBFL 技术中表现最佳。</li><li><strong>RQ2 基线对比</strong>：最佳 SBFL 技术（如 Harmonic Mean）显著优于 8 个最先进的 <strong>黑盒动作/轨迹基础不确定性指标</strong>，其中最强的基线 <strong>运动不稳定性</strong> 宏 AUC 为 <strong>0.655</strong>。</li><li><strong>RQ3 体素尺寸敏感性</strong>：体素尺寸影响 SBFL 技术的相对排名和性能，引入空间粒度与覆盖稀疏性之间的权衡。</li><li><strong>RQ4 体素覆盖敏感性</strong>：随着训练轨迹增加（即更高的 WVC），Harmonic Mean 的性能提升，证明更大的训练覆盖能增强可疑度地图的鲁棒性和区分力。</li><li><strong>RQ5 跨任务泛化</strong>：从 Pick-Up 训练的体素可疑度地图在 Move-Near 任务上评估时性能出现下降，表明失败相关的空间模式具有任务特异性，但仍保留一定判别信息。</li><li><strong>统计检验</strong>：采用配对比较和宏平均以控制配置间轨迹数量不平衡，确保公平性。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.22561/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Plausible Videos Can Lead to Poor Decisions: Diagnosing and CURE-ing World Models for Planning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.22395/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">CoBoVLA: Decoupling Language from Action with Discrete Codes for Robust and Interpretable Robot Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

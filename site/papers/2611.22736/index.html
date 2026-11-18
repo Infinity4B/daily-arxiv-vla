@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RefCloth: Transferable Adversarial Tablecloths for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 RefCloth，一个在冻结源策略上优化单个对抗性桌布纹理、并零样本迁移到不同任务和目标模型的框架。 解决现有视觉攻击方法需要高特权（篡改相机流或物体网格）或在新任务/模型上重新训练的问题。 利用静态第三人称视角和移动手腕视角同时观察同一世界绑定桌布，在闭环操作中持续误导视觉-语言-动作（VLA）策略的目标选择。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.22736">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">RefCloth: Transferable Adversarial Tablecloths for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.22736" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.22736" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 RefCloth，一个在冻结源策略上优化单个对抗性桌布纹理、并零样本迁移到不同任务和目标模型的框架。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.22736.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.22736.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.22736.webp" alt="RefCloth: Transferable Adversarial Tablecloths for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中国科学院大学人工智能学院（School of Artificial Intelligence, Un…</p>
+        <ul class="article-facts"><li>arXiv 2611.22736</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国科学院大学人工智能学院（School of Artificial Intelligence, University of Chinese Academy of Sciences）</strong></li><li><strong>中国科学院自动化研究所（Institute of Automation, Chinese Academy of Sciences）</strong></li><li><strong>中国科学院大学（University of Chinese Academy of Sciences）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>RefCloth</strong>，一个在冻结源策略上优化单个对抗性桌布纹理、并零样本迁移到不同任务和目标模型的框架。</li><li>解决现有视觉攻击方法需要高特权（篡改相机流或物体网格）或在新任务/模型上重新训练的问题。</li><li>利用静态第三人称视角和移动手腕视角同时观察同一世界绑定桌布，在闭环操作中持续误导视觉-语言-动作（VLA）策略的目标选择。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>低特权、零重训练 3D 场景载体</strong>：首次优化一个冻结的、物体无关的 3D 桌布纹理，无需修改物体、劫持传感器或重新训练即可跨任务和策略零样本迁移。</li><li><strong>表面增强、路径校准优化</strong>：结合共享双视图 UV 变换与同路径干净特征基线，消除可微渲染器与原生仿真器之间的静态偏移，提升零样本迁移效果。</li><li><strong>理论与实证双视图分析</strong>：首次形式化刻画跨渲染器基线漂移和局部双视图敏感性，并通过去混杂随机对照和闭环相机干预验证。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>持久场景载体</strong>：固定预定义的背景桌布几何和位置，仅优化其表面纹理，桌布自然进入双视图观测。</li><li><strong>有界纹理参数化</strong>：使用粗控制网格（33×33）通过重心插值生成全分辨率 256×256 纹理，并用裁剪和幅度约束（ε=64/255）保证扰动有界。</li><li><strong>共享表面 UV 变换</strong>：对场景状态、共享 UV 变换和相机视图进行可微渲染，使两个相机投影同一块共享纹理的不同可见区域。</li><li><strong>路径校准优化</strong>：将有扰动的纹理与无扰动的基层纹理通过完全相同的可微渲染路径提取特征，并最大化两者间的特征位移，从而抵消跨渲染器静态偏置。</li><li><strong>表面坐标增强</strong>：在 UV 坐标上采样旋转、反射和平移，强制优化后的图案在任意局部表面切片和双视图投影下保持对抗性，避免过拟合训练轨迹。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong> 四个套件 <strong>Spatial、Object、Goal、Long</strong>，每套 10 个任务，共 40 个操作任务。</li><li><strong>源策略</strong>：<strong>OpenVLA-OFT</strong>（在 LIBERO-Spatial 上微调的 150K 步 checkpoint），仅使用其梯度进行纹理优化。</li><li><strong>目标策略</strong>：<strong>π₀</strong> 和 <strong>π₀.₅</strong>（均为 RLinf 的 full-shot SFT 版本）。</li><li><strong>训练数据</strong>：来自 Spatial 任务 {0,2,6,8} 的 296 个源帧；训练时使用可微渲染，原生仿真采用 <strong>MuJoCo 3.3.0</strong> 进行闭环评测。</li><li><strong>硬件资源</strong>：论文未明确披露 GPU/TPU 型号或数量。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：LIBERO 四个套件，每套 100 个 episode（初始状态 10–19），总计 400 episode/策略；在原生仿真器中部署冻结纹理。</li><li><strong>主要评估指标</strong>：任务成功率（%）、净纹理减少 <strong>G = Plain成功 − RefCloth成功</strong>（百分比点，pp），以及配对 McNemar 检验（Holm 校正）。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 一个冻结纹理从 OpenVLA-OFT 迁移到 π₀ 和 π₀.₅，G 平均分别为 <strong>62.50 pp</strong> 和 <strong>43.75 pp</strong>，远超幅度和变化匹配的随机对照。</p>
+<p> - 在 π₀ 上，RefCloth 平均成功率从 89.75%（Original）/75.75%（Plain）降至 <strong>13.25%</strong>；在 π₀.₅ 上，从 94.00%/92.75% 降至 <strong>49.00%</strong>。</p>
+<p> - 双视图闭环保姆干预显示，仅手腕视图暴露的攻击效果（G=23 pp）是仅主视图（G=10 pp）的 <strong>两倍以上</strong>，双视图同时暴露产生强协同效应（G=64 pp）。</p>
+<p> - 与随机纹理相比，RefCloth 在 π₀ 和 π₀.₅ 上分别高出 <strong>42.75 pp</strong> 和 <strong>37.42 pp</strong>，确认攻击源于学习到的空间结构，而非纹理统计量。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.22878/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Outcome-Balanced PPO and Policy-Induced Flow Rectification for Flow-Based VLA Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.22666/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">VSpark: Speculative Decoding for Autoregressive Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

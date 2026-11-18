@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Outcome-Balanced PPO and Policy-Induced Flow Rectification for Flow-Based VLA Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对基于流的视觉-语言-动作（VLA）策略的在线强化学习（RL）微调，论文提出统一框架解决两大挑战：RL更新导致的速度场几何变化与线性路径假设不匹配，以及稀疏多任务稀疏奖励下学习信号（正/负优势）分配不均。 提出两种互补机制：Outcome-Balanced PPO（结果平衡的PPO）和策略诱导的流整流（Policy-Induced Flow Rectification），分别优化优势信号分配与流表示重建。 在多个仿真操作基准和 Real2Sim2Real 真实机器人任务上验证了框架的有效性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.22878">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">Outcome-Balanced PPO and Policy-Induced Flow Rectification for Flow-Based VLA Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.22878" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.22878" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对基于流的视觉-语言-动作（VLA）策略的在线强化学习（RL）微调，论文提出统一框架解决两大挑战：RL更新导致的速度场几何变化与线性路径假设不匹配，以及稀疏多任务稀疏奖励下学习信号（正/负优势）分配不均。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.22878.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.22878.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.22878.webp" alt="Outcome-Balanced PPO and Policy-Induced Flow Rectification for Flow-Based VLA Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">清华大学：Yuhan Wang, Ruiyang Wang</p>
+        <ul class="article-facts"><li>arXiv 2611.22878</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>清华大学</strong>：Yuhan Wang, Ruiyang Wang</li><li><strong>香港科技大学</strong>：Jiaguan Zhu</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对基于流的视觉-语言-动作（VLA）策略的在线强化学习（RL）微调，论文提出统一框架解决两大挑战：RL更新导致的速度场几何变化与线性路径假设不匹配，以及稀疏多任务稀疏奖励下学习信号（正/负优势）分配不均。</li><li>提出两种互补机制：<strong>Outcome-Balanced PPO</strong>（结果平衡的PPO）和<strong>策略诱导的流整流</strong>（Policy-Induced Flow Rectification），分别优化优势信号分配与流表示重建。</li><li>在多个仿真操作基准和 Real2Sim2Real 真实机器人任务上验证了框架的有效性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>识别并形式化</strong>了基于流VLA策略RL微调中的两个问题：任务间/正负优势信号尺度不平衡，以及RL更新后速度场与Flow-SDE分数估计的线性路径几何不匹配。</li><li><strong>提出 Outcome-Balanced PPO</strong>：利用任务成功率指数移动平均（EMA）加权正优势，并对正负优势进行保号缩放，平衡不同任务难度和正负学习信号。</li><li><strong>提出策略诱导的流整流</strong>：定期暂停PPO，利用当前策略的确定性ODE端点对构建策略诱导耦合，通过线性桥流匹配重建速度场，随后恢复PPO优化。</li><li><strong>在四个仿真基准上系统评估</strong>，并与多个强基线（π_RL、ReFPO、BAPO风格自适应裁剪等）对比，展示了更好的平均成功率。</li><li><strong>在 FR3 真实机器人任务上</strong>验证了组件组合（配对优势归一化 + 失败状态重放）的有效性，成功率从32%提升到43%。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Outcome-Balanced PPO</strong>：对每个任务维护成功率EMA，根据成功率倒数加权正优势（有界裁剪），使低成功率任务获得更多正学习信号；随后对正、负优势分别缩放到相同的平均绝对幅度，保持符号不变，再进入标准PPO裁剪目标。</li><li><strong>策略诱导的流整流</strong>：当测得的SDE-ODE边际差异超过阈值γ时，冻结当前策略参数，收集其确定性ODE的端点对；利用这些端点对构造线性插值路径与目标速度，仅在动作子空间上最小化条件流匹配损失，重建速度场；重建后继续PPO，实现周期性分离式整流。</li><li><strong>关键技术</strong>：分离PPO更新与流重建阶段；动作子空间整流损失只考虑与执行动作相关的潜变量坐标；阈值触发机制平衡计算代价与表示一致性。</li><li><strong>整体框架</strong>：视觉-语言模块冻结，仅训练流动作专家和Critic；SDE用于探索训练，ODE用于部署。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：<strong>LIBERO</strong>（含 Object/Goal/Spatial/Long 四个子套件）、<strong>ManiSkill</strong>、<strong>MetaWorld</strong>、<strong>CALVIN</strong>，覆盖语言条件、接触丰富、技能多样和长时序任务。</li><li><strong>真实机器人任务</strong>：<strong>FR3 胡萝卜到盘子转移</strong>，使用 Real2Sim2Real 流程构建对应 ManiSkill/SAPIEN 场景。</li><li><strong>模型主干</strong>：<strong>π_0.5</strong>，融合 PaliGemma 视觉语言模型与流匹配动作专家，条件于图像、语言和本体感知token。</li><li><strong>训练设置</strong>：SFT用20条仿真演示轨迹（约3401帧）；RL使用Flow-SDE PPO，视觉语言模块冻结，仅更新动作专家和Critic。</li><li><strong>超参数</strong>：难度感知权重 EMA β=0.9，w_min=0.75，w_max=1.25；整流阈值敏感性测试中 γ=0.003 效果最佳。</li><li><strong>计算资源</strong>：论文未明确提及GPU/TPU型号与数量。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估协议</strong>：每个基准使用10个随机种子，每个种子评估1000集，共10,000集，报告平均成功率；同时进行组件消融、与联合整流正则化/自适应裁剪对比及阈值敏感性分析。</li><li><strong>主要结果（平均成功率）</strong>：Ours在 LIBERO 98.4%、ManiSkill 95.0%、MetaWorld 73.4%、CALVIN 89.0%，平均88.9%，较π_RL基线平均+2.3个百分点，较π_0.5-SFT提升33.3个百分点。</li><li><strong>组件消融</strong>：逐步加入难度感知分配（DAA）使宏平均从91.4%升至92.0%，加入配对优势归一化升至92.7%，加入周期性整流最终达93.0%，各组件均带来一致增益。</li><li><strong>与联合整流正则化（ReFPO）对比</strong>：仅添加周期性整流的配置在四个基准上平均87.6%，优于ReFPO风格的联合优化（84.7%）。</li><li><strong>与自适应裁剪（BAPO风格）对比</strong>：DAA+配对归一化平均88.3%，优于DAA+BAPO风格裁剪（85.9%），表明保号缩放比调整裁剪界更有效。</li><li><strong>整流阈值敏感性</strong>：γ=0.003时LIBERO 98.4%、ManiSkill 95.0%，均优于γ=0.001和γ=0.006，且平均整流间隔为16.6次PPO迭代，取得效果与计算效率的平衡。</li><li><strong>真实机器人结果</strong>：标准PPO物理试验成功32/100（32%），添加配对优势归一化和失败状态重放的改进分支成功43/100（43%），提升11个百分点；SFT-only策略未能完成任务。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.22880/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Learning Agent-Centric Vision-Language-Action World Models for Autonomous Driving</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.22736/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">RefCloth: Transferable Adversarial Tablecloths for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

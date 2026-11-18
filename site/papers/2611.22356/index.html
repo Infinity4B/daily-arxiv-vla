@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SR-VLA: Stall-Reduced VLA Execution via Predicted-Input Lookahead and Selective KV Cache Repair - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对视觉-语言-动作（VLA）模型在机器人控制中因推理阻塞导致的控制停顿问题，提出 SR-VLA 框架。 核心目标是在保持任务成功率的同时，通过预测输入前瞻和选择性 KV 缓存修复减少 VLA 推理带来的停顿延迟。 现有异步推理虽然能隐藏部分延迟，但与实际输入不一致的风险会导致动作失配；SR-VLA 在预测输入基础上引入修复机制，兼顾速度与准确性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.22356">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">SR-VLA: Stall-Reduced VLA Execution via Predicted-Input Lookahead and Selective KV Cache Repair</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.22356" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.22356" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对视觉-语言-动作（VLA）模型在机器人控制中因推理阻塞导致的控制停顿问题，提出 SR-VLA 框架。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.22356.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.22356.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.22356.webp" alt="SR-VLA: Stall-Reduced VLA Execution via Predicted-Input Lookahead and Selective KV Cache Repair 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">北京大学集成电路学院</p>
+        <ul class="article-facts"><li>arXiv 2611.22356</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>北京大学</strong>集成电路学院</li><li><strong>北京大学</strong>微电子器件与电路重点实验室、MPW 中心</li><li><strong>北京</strong>集成电路先进创新中心</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对<strong>视觉-语言-动作（VLA）模型</strong>在机器人控制中因推理阻塞导致的<strong>控制停顿</strong>问题，提出 SR-VLA 框架。</li><li>核心目标是在保持任务成功率的同时，通过<strong>预测输入前瞻</strong>和<strong>选择性 KV 缓存修复</strong>减少 VLA 推理带来的停顿延迟。</li><li>现有异步推理虽然能隐藏部分延迟，但与实际输入不一致的风险会导致动作失配；SR-VLA 在预测输入基础上引入修复机制，兼顾速度与准确性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>动作条件化的下一决策边界输入预测器</strong>，同时预测未来的视觉观测和本体感受状态，并用冻结 VLA 预计算投机性 KV 缓存与动作块。</li><li>设计<strong>实际输入引导的两级缓存重用机制</strong>：先通过观察驱动门和任务保护门决定是否修复，再根据预测-实际差异和任务相关性选择需要更新的 KV 条目。</li><li>在<strong>LIBERO</strong> 基准上，与同步 π0.5 和 OpenVLA-OFT 基线相比，分别实现 <strong>2.67×</strong> 和 <strong>1.27×</strong> 的查询加速，且成功率保持竞争力。</li><li>在<strong>目标运动扰动</strong>场景下，SR-VLA 保持与同步基线相当的成功率，同时仍获得 <strong>1.52×–1.93×</strong> 的查询加速。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>预测输入前瞻</strong>：轻量级预测器（约 10.08M 参数）利用当前观测、本体感受状态和已执行动作块，通过 U-Net 图像分支和 MLP 状态分支预测下一决策边界的图像和状态；使用 FiLM 调制将动作/状态信息融入图像分支。</li><li><strong>投机 KV 缓存与动作生成</strong>：将预测输入送入冻结的 VLA，预计算所有层的 KV 缓存和下一动作块。</li><li><strong>两级选择性修复</strong>：实际输入到达后，计算预测-实际图像 token 的余弦误差和本体感受 RMSE，结合任务相关注意力权重形成风险分数；若触发修复，则用 TopK 误差和 TopRatio 风险选择部分视觉 token 进行 KV 更新，其余 token 复用投机缓存，最终重新生成动作。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO</strong> 基准的四个子套件：<strong>Spatial</strong>、<strong>Object</strong>、<strong>Goal</strong>、<strong>Long</strong>。</li><li>骨干模型为冻结的 <strong>π0.5</strong>（动作块长度 K=5）和 <strong>OpenVLA-OFT</strong>（动作块长度 K=8）。</li><li>预测器在 <strong>13622 个样本</strong>上训练 100k 步，优化器为 AdamW（batch size 8，学习率 1e-4，权重衰减 1e-4），验证集 960 个样本。</li><li>预测器参数量 <strong>10.08M</strong>，单次推理算力 <strong>51.52 GFLOPs</strong>。</li><li>所有实验在 <strong>40GB A100 GPU</strong> 上完成。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO 四个子套件，机器人为 30Hz 动作频率，A100 GPU 上测量端到端延迟。</li><li><strong>主要指标</strong>：任务成功率、查询/动作延迟（ms）、停顿均值（ms）、残差停顿（相对于同步 π0.5 的归一化值）、查询加速比。</li><li><strong>SR-VLA (π0.5)</strong>：平均成功率 <strong>96.9%</strong>，查询/动作延迟 <strong>9.59 ms</strong>，停顿均值 <strong>47.95 ms</strong>，残差停顿 <strong>0.37</strong>，加速 <strong>2.67×</strong>（同步 π0.5 基线：成功率 96.4%，延迟 25.62 ms，停顿 128.11 ms）。</li><li><strong>SR-VLA (OpenVLA-OFT)</strong>：平均成功率 <strong>97.2%</strong>，查询/动作延迟 <strong>13.27 ms</strong>，停顿均值 <strong>106.19 ms</strong>，残差停顿 <strong>0.83</strong>，加速 <strong>1.93×</strong>（同步 OFT 基线：成功率 97.1%，延迟 16.90 ms，停顿 135.18 ms）。</li><li><strong>目标运动扰动</strong>：在 LIBERO-Spatial 上，目标位移 5 cm 时，SR-VLA (π0.5) 查询加速 <strong>1.52×</strong>，成功率与同步基线相当，修复率随扰动幅度上升。</li><li><strong>消融实验</strong>：移除预测器的 FiLM、动作条件或本体感受分支均导致成功率显著下降；两级修复策略（输入驱动门、任务保护门、TopK 误差选择、TopRatio 风险选择）缺一不可，完整策略修复率 31.68%、更新 KV 比例 27.37% 时成功率与同步基线持平。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.22395/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CoBoVLA: Decoupling Language from Action with Discrete Codes for Robust and Interpretable Robot Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.22295/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Similar Is Not Useful: Selecting In-Context Demonstrations by Closed-Loop Utility</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

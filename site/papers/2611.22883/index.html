@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Fly as Instructed: Refining World-Action Policies for UAV Vision-Language Navigation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出面向无人机视觉-语言导航的世界-动作学习框架，解决现有世界-动作模型在指令跟随、任务进度跟踪和安全避障方面的不足。 研究目标是通过集成三种互补机制，提升无人机在复杂环境中遵循自然语言指令完成顺序多阶段任务的可靠性。 具体要解决的问题包括：动作策略依赖视觉捷径导致语言响应不足、多阶段指令执行缺乏持续进度追踪与及时终止、避障策略缺少对预测动作路径与运动响应的反馈。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.22883">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">Fly as Instructed: Refining World-Action Policies for UAV Vision-Language Navigation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.22883" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.22883" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出面向无人机视觉-语言导航的世界-动作学习框架，解决现有世界-动作模型在指令跟随、任务进度跟踪和安全避障方面的不足。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.22883.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.22883.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.22883.webp" alt="Fly as Instructed: Refining World-Action Policies for UAV Vision-Language Navigation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Zhexuan Zhou：哈尔滨工业大学</p>
+        <ul class="article-facts"><li>arXiv 2611.22883</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Zhexuan Zhou</strong>：<strong>哈尔滨工业大学</strong></li><li><strong>Yanke Sun</strong>：<strong>哈尔滨工业大学</strong></li><li><strong>Yuhan Zong</strong>：<strong>新加坡国立大学</strong></li><li><strong>Youmin Gong</strong>：<strong>哈尔滨工业大学</strong></li><li><strong>Jie Mei</strong>：<strong>哈尔滨工业大学（深圳）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出面向无人机视觉-语言导航的世界-动作学习框架，解决现有世界-动作模型在指令跟随、任务进度跟踪和安全避障方面的不足。</li><li>研究目标是通过集成三种互补机制，提升无人机在复杂环境中遵循自然语言指令完成顺序多阶段任务的可靠性。</li><li>具体要解决的问题包括：动作策略依赖视觉捷径导致语言响应不足、多阶段指令执行缺乏持续进度追踪与及时终止、避障策略缺少对预测动作路径与运动响应的反馈。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出语言条件动作接口及定向后训练方法，增强动作专家对指令语义变化的响应能力，并用配对文本干预验证效果。</li><li>设计循环指令消耗接口，通过视觉与执行历史预测已完成指令需求，在冻结的动作执行器内持续重加权完整指令，并触发任务级停止。</li><li>提出高斯场景安全后训练，利用成功绕行示范模仿和可微分路径几何反馈进行低秩适配，并通过梯度约束保留通用任务性能。</li><li>构建统一闭环评估套件，包含 521 个测试回合，并开源模型框架，在仿真中取得的最高综合导航成功率。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>动作专家</strong>基于 Wan 视频表征和 12 层 Transformer，接收 RGB 历史帧、本体状态和指令特征，通过文本交叉注意力和 DiM 动作混合器进行一步去噪生成四步动作序列。</li><li><strong>指令消耗模块</strong>使用循环 GRU 头预测每个指令 token 的满意度，通过软掩码在动作专家的交叉注意力中降低已完成 token 的对数，实现进度引导的动作生成和停止判断。</li><li><strong>安全适配</strong>在重建的高斯场景中进行低秩适配训练，采用持续探索、导出过滤、自模仿学习和可微分几何反馈（含间隙损失、工作空间惩罚和导航势），并通过梯度范数上限与 KL 约束保持通用导航能力。</li><li>推理阶段动作专家支持直接一步去噪，无需显式未来视频生成，显著降低部署成本。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>评估使用 <strong>UAV-Flow</strong>、<strong>FLIGHT</strong> 等数据集的子任务和复合指令，构建 521 个闭环测试回合（181 个一般任务、170 个安全任务、170 个进度任务）。</li><li>模型参数量为 <strong>815.28M</strong>，是相比基线最轻量的模型。</li><li>训练与评估延迟在 <strong>RTX 5880 Ada</strong> 上测量，真实飞行演示在 <strong>RTX 5070</strong> 上运行，使用 10 Hz 轨迹更新和 50 Hz 底层控制。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在统一 521 回合测试集上，<strong>Full System</strong> 达到 <strong>83.7%</strong> 目标到达率、<strong>77.0%</strong> 正确停止率、<strong>0.648</strong> nDTW、<strong>79.8%</strong> 顺序完成率、<strong>76.6%</strong> 安全到达率和 <strong>86.8%</strong> 碰撞自由率，均大幅领先世界 VLN 等基线。</li><li>语言指令跟随评估中，本方法在 500 条指令上取得 <strong>80.6%</strong> 指令成功率，并在语义对比和释义配对指标上分别达到 <strong>56.4%</strong> 和 <strong>38.2%</strong>，优于 Pi0-UAV、WorldVLN 和 OpenVLA-UAV。</li><li>模块消融实验表明安全适配器将安全子集 SFR 从 30.6% 提升至 78.2%，指令消耗头将进度子集 OC 从 24.1% 提升至 81.2%，两者结合保留各自增益且通用任务到达率升至 84.0%。</li><li>推理效率方面，本模型动作头延迟中位数 <strong>30.55 ms</strong>、完整模型延迟 <strong>91.84 ms</strong>，比 FastWAM 动作头快 2.75 倍，且参数减少 54.8%。</li><li>六次室内外真实飞行演示验证了障碍通过、箱上着陆、绕树飞行等任务的自主执行能力。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.22994/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Making Future-Predictive Representations Actionable</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.22880/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Learning Agent-Centric Vision-Language-Action World Models for Autonomous Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
