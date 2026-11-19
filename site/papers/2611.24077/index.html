@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>AeroRSI: Recursive Self-Improvement for Aerial Vision-Language Navigation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 AeroRSI，一个面向空中视觉语言导航（aerial VLN）的递归自我改进框架，让无人机策略从自身失败中迭代学习。 解决现有 VLA 模型在闭环飞行中频繁失败的问题，这些失败需要动作级修复，但人类标注代价高昂、规则规划器不可靠、强化学习无法提供可执行的动作监督。 核心思想：让失败策略通过自身后续飞行来评判候选修复动作，将弱监督（采样动作和规则提议）转化为可靠监督。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24077">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">AeroRSI: Recursive Self-Improvement for Aerial Vision-Language Navigation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24077" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24077" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 AeroRSI，一个面向空中视觉语言导航（aerial VLN）的递归自我改进框架，让无人机策略从自身失败中迭代学习。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24077.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24077.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24077.webp" alt="AeroRSI: Recursive Self-Improvement for Aerial Vision-Language Navigation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Tsinghua University（SIGS，电子工程系）</p>
+        <ul class="article-facts"><li>arXiv 2611.24077</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Tsinghua University</strong>（SIGS，电子工程系）</li><li><strong>Foshan University</strong></li><li><strong>South China University of Technology</strong></li><li>项目代码：<strong>GitHub: starsholic/AeroRSI</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>AeroRSI</strong>，一个面向空中视觉语言导航（aerial VLN）的递归自我改进框架，让无人机策略从自身失败中迭代学习。</li><li>解决现有 VLA 模型在闭环飞行中频繁失败的问题，这些失败需要动作级修复，但人类标注代价高昂、规则规划器不可靠、强化学习无法提供可执行的动作监督。</li><li>核心思想：让失败策略通过自身后续飞行来评判候选修复动作，将弱监督（采样动作和规则提议）转化为可靠监督。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>识别闭环飞行中自我改进的三个挑战：动作价值依赖后续飞行、首次失败掩盖后续失败、失败策略难以采样所需修复动作。</li><li>证明让策略自我判断修复可将采样动作和规则提议转化为可靠监督，且验证的修复在后续回合保持有效。</li><li>揭示递归必要性：新失败在已修复位置之后出现，且规则提议学到的动作会进入策略采样分布。</li><li>提出 <strong>AeroRSI</strong>，包含三个模块：<strong>AFA</strong>（自适应失败锚定）、<strong>CVR</strong>（延续验证修复）、<strong>RRL</strong>（保持性修复学习），在 TravelUAV 上达到 SOTA，无需额外人工标注或推理成本。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>AFA</strong>：在每个失败回合中按指数间隔放置探针，记录失败前多个时间尺度的状态，根据失败分布采样锚定，覆盖不同失败类型。</li><li><strong>CVR</strong>：对每个锚点构建候选组（原始动作、策略采样动作、基于深度和目标的规则提议），通过从恢复的状态执行候选并让当前策略继续飞行来估计 Q 值，只有通过再现检查和确认检查的候选才被接受为验证修复。</li><li><strong>RRL</strong>：通过交叉熵最大化验证修复动作的似然，同时加入行为保持项（在成功飞行状态上模仿当前策略输出）和修复重放（回放上一轮修复），防止策略漂移。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>TravelUAV</strong>，基于 <strong>AirSim</strong> 和 <strong>Unreal Engine</strong> 的空中 VLN 基准。</li><li>训练集：7,611 条路线、11 个场景；测试集：Seen 1,418 条、Unseen Object 629 条、Unseen Map 958 条。</li><li>模型：2B 参数 VLA（基于 <strong>Qwen3-VL-2B</strong>），使用 LoRA 微调。</li><li>训练资源：论文未明确列出具体 GPU/TPU 硬件，但提到补充材料包含每轮成本。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：TravelUAV 测试集，指标包括导航误差（NE）、成功率（SR）、oracle 成功率（OSR）、路径加权成功率（SPL）和碰撞率（CR）。</li><li><strong>AeroRSI (SFT init.)</strong> 三回合将总体 SR 从 46.4% 提升到 <strong>67.5%</strong>，碰撞率从 38.64% 降至 <strong>19.10%</strong>；优于 AeroDPO 基线 <strong>10.6 个百分点</strong>。</li><li><strong>AeroRSI (DPO init.)</strong> 进一步提升总体 SR 至 <strong>69.9%</strong>，证明与偏好优化互补。</li><li>消融实验表明：未验证的规则提议或采样动作效果差于验证版本；只看前两步的验证不如完整延续；缺乏行为保持或递归更新都会降低性能。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24138/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Ego2X: Contact-aware Transfer from Egocentric Human Data to Any Robot</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24076/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Meaning Reaches Object Choice but Not Completion: Where Is a VLA Vulnerable to Landmark Synonyms?</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

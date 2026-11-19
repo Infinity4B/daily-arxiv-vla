@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Homeward: No Place Like the Training View - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对视觉-语言-动作（VLA）策略在部署时相机位姿发生扰动导致性能大幅下降的问题，提出一种无需训练、即插即用的观察适配器 Homeward。 核心目标是将未校准的部署相机观察规范化回训练视角，使冻结的 VLA 策略在相机被碰撞、重装或更换镜头后仍能可靠工作。 通过闭环诊断发现，使用现成 3D 基础模型进行朴素重投影会因移动机械臂的深度伪影使性能低于不做任何校正，而利用机器人运动学直接渲染机械臂可以解决此问题。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24455">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">Homeward: No Place Like the Training View</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24455" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24455" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对视觉-语言-动作（VLA）策略在部署时相机位姿发生扰动导致性能大幅下降的问题，提出一种无需训练、即插即用的观察适配器 Homeward。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24455.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24455.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24455.webp" alt="Homeward: No Place Like the Training View 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中国科学院自动化研究所（Institute of Automation, Chinese Academ…</p>
+        <ul class="article-facts"><li>arXiv 2611.24455</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国科学院自动化研究所</strong>（Institute of Automation, Chinese Academy of Sciences）</li><li><strong>中关村学院</strong>（Zhongguancun Academy）</li><li><strong>中国科学院大学</strong>（University of Chinese Academy of Sciences）</li><li><strong>伊利诺伊大学厄巴纳-香槟分校</strong>（University of Illinois Urbana-Champaign）</li><li><strong>北京科技大学</strong>（University of Science and Technology Beijing）</li><li><strong>字节跳动</strong>（ByteDance）</li><li><strong>北京航空航天大学</strong>（Beihang University）</li><li><strong>清华大学</strong>（Tsinghua University）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对<strong>视觉-语言-动作（VLA）策略</strong>在部署时相机位姿发生扰动导致性能大幅下降的问题，提出一种<strong>无需训练、即插即用的观察适配器 Homeward</strong>。</li><li>核心目标是将<strong>未校准的部署相机</strong>观察规范化回训练视角，使冻结的 VLA 策略在相机被碰撞、重装或更换镜头后仍能可靠工作。</li><li>通过闭环诊断发现，使用现成 3D 基础模型进行朴素重投影会因移动机械臂的深度伪影使性能<strong>低于不做任何校正</strong>，而利用机器人运动学直接渲染机械臂可以解决此问题。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>闭环视角诊断</strong>：量化冻结 VLA 在相机位移下的失败可恢复性，证明用 oracle 几何重新渲染可恢复大部分性能，但现成 3D 模型会在移动臂上产生撕裂和散射伪影，导致性能倒挂。</li><li><strong>训练自由的运动学-几何规范化</strong>：提出 <strong>Homeward</strong>，将观察恢复分解为<strong>单目场景重投影</strong>和<strong>前向运动学链接渲染</strong>，无需部署相机校准，仅需一次训练相机标定和参考图像。</li><li><strong>大规模评估与机制表征</strong>：在<strong>四个冻结 VLA</strong> 和<strong>五种相机扰动家族</strong>（含 LIBERO-Plus 全部 1599 个变体、6-DoF 随机位姿、连续漂移、焦距变化）上验证有效性，并与校准的视图合成基线比较，揭示适用边界。</li><li><strong>系统设计选择</strong>：引入<strong>选择性移动链接渲染</strong>（只渲染运动连杆，不渲染静态基座）、<strong>姿态缓存</strong>和<strong>运动门控</strong>，在保持性能的同时大幅降低推理开销。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>单目场景恢复</strong>：利用冻结的 <strong>VGGT</strong> 模型从参考图像和当前观测中估计相机内参、外参和稠密深度，通过反向投影和重投影将场景变换到训练视角，并用深度边缘过滤、z-buffer 溅射和参考帧填充处理遮挡区域。</li><li><strong>运动学机器人渲染与合成</strong>：利用已知的关节状态和训练相机标定，通过前向运动学渲染移动连杆的 RGB 图像和轮廓掩模，再与恢复的场景层按掩模合成最终观测。</li><li><strong>关键创新</strong>：将未知的场景几何与已知的机器人运动学<strong>解耦</strong>，只渲染运动连杆而非整个机器人，避免全机器人渲染带来的遮挡错误；引入<strong>姿态缓存</strong>（仅在首步估计位姿，后续单帧深度推断）和<strong>运动门控</strong>（检测相机是否真的移动，若未移动则绕过恢复），实现低开销部署。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：LIBERO-Plus 基准（含 Spatial、Object、Goal、Long 四个套件，共 1599 个相机变体），以及自定义的 CamRand（随机 6-DoF 位姿）、AnyCamVLA 轨道、相机漂移和镜头更换场景。</li><li><strong>模型</strong>：四个冻结的 VLA 策略：<strong>OpenVLA-OFT</strong>、<strong>π0.5</strong>、<strong>π0</strong>、<strong>OpenVLA</strong>；3D 基础模型 <strong>VGGT-1B</strong>（518px，bfloat16）。</li><li><strong>训练资源</strong>：在单个 <strong>NVIDIA A100 GPU</strong> 上部署；场景恢复每策略查询约 0.16s，运动学渲染 0.01s，总开销约 0.21s，对 8 步动作分块策略摊销至每控制步骤 27ms。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：使用 MuJoCo 仿真器的 GPU EGL 后端，在 LIBERO-Plus 以及扩展扰动基准上进行闭环评估，配对实验采用 McNemar 检验和任务级 cluster bootstrap 置信区间。</li><li><strong>主要指标</strong>：闭环任务成功率（%）。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 在 LIBERO-Plus 全部 1599 个相机变体上，<strong>Homeward</strong> 将 OpenVLA-OFT 从 62.5% 提升至 77.6%，π0.5 从 76.5% 提升至 95.1%，π0 从 68.0% 提升至 91.2%，OpenVLA 从 3.6% 提升至 26.4%。</p>
+<p> - 在极端位移（Level 5）下，Homeward 显著减缓性能下降，例如 OpenVLA-OFT 从 22.0% 恢复到 53.8%，π0.5 从 55.6% 恢复到 92.6%。</p>
+<p> - 在 6-DoF 随机位姿、镜头更换、连续漂移和 AnyCamVLA 轨道场景中，Homeward 均带来一致提升，且对前三类策略与校准的视图合成基线持平或更优。</p>
+<p> - 消融实验表明：选择性移动链接渲染至关重要（渲染全机器人导致性能崩溃）；使用估计几何的性能接近 oracle 几何；对训练相机标定误差和渲染颜色误差具有鲁棒性。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24494/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RECLAIM: Robot-Vision-Informed Adversarial Patch Defense via Embodied Attention Feedback</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24360/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Towards Pose-Robust Few-Shot Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

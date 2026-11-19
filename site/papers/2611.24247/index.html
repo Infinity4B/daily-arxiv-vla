@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Allocentric Memory, Egocentric Acting: A Dual-Frame VLA for Urban Aerial Navigation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 CityNav-VLA，一种面向城市空中语言目标导航（LGAN）的双帧视觉-语言-动作模型。 核心问题是解决长距离导航中自我中心感知与异我中心空间记忆之间的关联难题。 通过将动态自我中心上下文与持久异我中心空间记忆相结合，实现稳定、可扩展的目标预测与执行。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24247">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">Allocentric Memory, Egocentric Acting: A Dual-Frame VLA for Urban Aerial Navigation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24247" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24247" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 CityNav-VLA，一种面向城市空中语言目标导航（LGAN）的双帧视觉-语言-动作模型。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24247.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24247.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24247.webp" alt="Allocentric Memory, Egocentric Acting: A Dual-Frame VLA for Urban Aerial Navigation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">National University of Defense Technology（国防科技大学）：N…</p>
+        <ul class="article-facts"><li>arXiv 2611.24247</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>National University of Defense Technology</strong>（<strong>国防科技大学</strong>）：<strong>National Key Laboratory of Digital Intelligent Modeling and Simulation</strong>、<strong>College of Systems Engineering</strong></li><li><strong>Zhejiang University</strong>（<strong>浙江大学</strong>）</li><li>作者：Haotian Xu、Yue Hu、Zhengqiu Zhu、Tuo Feng、Wenguan Wang、Quanjun Yin（通讯作者）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>CityNav-VLA</strong>，一种面向城市空中语言目标导航（<strong>LGAN</strong>）的双帧视觉-语言-动作模型。</li><li>核心问题是解决长距离导航中<strong>自我中心感知</strong>与<strong>异我中心空间记忆</strong>之间的关联难题。</li><li>通过将动态自我中心上下文与持久异我中心空间记忆相结合，实现稳定、可扩展的目标预测与执行。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>CityNav-VLA</strong> 双帧架构，显式解耦异我中心记忆与自我中心执行，区别于以往基于地图的隐式特征融合方法。</li><li>设计<strong>持久异我中心记忆与显式度量接地</strong>：固定北向上地图累积观察、轨迹和地标先验，并以度量坐标锚定视觉证据。</li><li>引入<strong>动态导航查询</strong>通过交叉注意力检索记忆并预测地图帧目标，再由确定性控制器转换为机体帧命令。</li><li>提出<strong>早期目标承诺（EGC）</strong>：推理时取前 K 次预测的逐坐标中位数作为固定执行目标，无需额外可训练参数。</li><li>在 CityNav 和 refined CityNav 上取得 SOTA 结果，并在 4B 规模骨干下实现单卡 A100 高效推理。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>构建固定北向上异我中心地图，包含累积 RGB、地形高度、地标掩码、探索掩码和轨迹等 9 个通道。</li><li>冻结 <strong>CityBot-4B</strong> 骨干（改编自 Qwen3-VL-4B）编码指令、局部视图和全局地图视图。</li><li>将全局视觉 token 与导航地图特征、可学习位置嵌入和度量坐标编码融合为空间记忆 token（14×14×256）。</li><li>用 MLP 编码 UAV 状态、GRU 编码运动历史，与骨干上下文特征结合形成查询，经多层交叉注意力解码预测归一化地图坐标 (u, v, z)。</li><li>训练目标为加权 Smooth-L1 损失，在米制坐标误差上优化。</li><li>执行时 EGC 稳定目标，确定性控制器根据当前位姿将地图帧位移转换为机体帧前向/侧向/垂直命令。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>CityNav</strong> 和 <strong>refined CityNav</strong> 两个数据集进行训练与评估。</li><li>训练集规模：<strong>CityNav 22,002 条轨迹</strong>；<strong>refined CityNav 21,878 条轨迹</strong>（Training Seen 划分）。</li><li>模型骨干为 <strong>CityBot-4B</strong>（参数规模 4B），训练时保持冻结。</li><li>推理效率：单张 <strong>A100 GPU</strong>，平均每决策 <strong>0.68 秒</strong>，峰值显存 <strong>8.6 GB</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估协议：CityNav 使用三维距离；refined CityNav 使用平面距离；指标包括 <strong>NE、SR、OSR、SPL</strong>。</li><li>在 <strong>CityNav Test Unseen</strong> 上：<strong>NE 54.01 m</strong>、<strong>SR 26.59%</strong>、<strong>SPL 25.70%</strong>；相比前 SOTA 分别降低 <strong>21.2%</strong>、提升 <strong>15.8%</strong> 和 <strong>30.9%</strong>。</li><li>在 <strong>refined CityNav Test Unseen</strong> 上：<strong>NE 37.91 m</strong>、<strong>SR 30.52%</strong>、<strong>SPL 29.32%</strong>；相比 HETT* 分别降低 <strong>6.2%</strong>、提升 <strong>5.6%</strong> 和 <strong>23.2%</strong>。</li><li>消融表明<strong>导航地图特征</strong>是性能提升的最大来源，度量坐标进一步改善终点精度，EGC 在困难样本上提升尤其明显。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24360/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Towards Pose-Robust Few-Shot Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24192/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">TrajWAM: Trajectory-Conditioned Future Learning for Vision-Language Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

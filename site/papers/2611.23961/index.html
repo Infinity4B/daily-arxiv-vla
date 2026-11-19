@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>3DTouch: A Tactile-aware VLA Model with 3D Geometric Relations for Dexterous Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 3DTouch，一种面向接触丰富灵巧操作的触觉-几何条件化方法，用于增强视觉-语言-动作（VLA）模型。 解决的问题：在五指灵巧操作中，视觉遮挡导致局部几何信息缺失，且视觉相似场景可能对应不同接触状态，需要融合触觉和几何信息来支持精确动作控制。 通过构建共享3D视觉-触觉表示和显式手-物体/物体-物体几何关系，为VLA动作生成提供空间局部化接触力和表面几何线索。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.23961">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">3DTouch: A Tactile-aware VLA Model with 3D Geometric Relations for Dexterous Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.23961" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.23961" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 3DTouch，一种面向接触丰富灵巧操作的触觉-几何条件化方法，用于增强视觉-语言-动作（VLA）模型。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.23961.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.23961.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.23961.webp" alt="3DTouch: A Tactile-aware VLA Model with 3D Geometric Relations for Dexterous Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者主要来自 中国科学技术大学（University of Science and Technolog…</p>
+        <ul class="article-facts"><li>arXiv 2611.23961</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者主要来自 <strong>中国科学技术大学</strong>（University of Science and Technology of China）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>3DTouch</strong>，一种面向接触丰富灵巧操作的触觉-几何条件化方法，用于增强视觉-语言-动作（VLA）模型。</li><li>解决的问题：在五指灵巧操作中，视觉遮挡导致局部几何信息缺失，且视觉相似场景可能对应不同接触状态，需要融合触觉和几何信息来支持精确动作控制。</li><li>通过构建共享3D视觉-触觉表示和显式手-物体/物体-物体几何关系，为VLA动作生成提供空间局部化接触力和表面几何线索。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>3D Tactile Grounding (3DTG)</strong>：将密集五指触觉测量（每指120个taxel）与RGB-D场景点云编码在统一的机器人基座坐标系中，提供空间对齐的触觉反馈。</li><li>引入 <strong>Geometric Relation Modeling (GRM)</strong>：利用手部关键点和位姿对齐的重建表面，构建显式的手-物体（HO）和物体-物体（OO）关系，编码相对位移和距离。</li><li>在 <strong>五个真实世界接触丰富灵巧操作任务</strong> 上验证，3DTouch 平均成功率比 VLA 基线提高 <strong>42 个百分点</strong>，比最强触觉感知 VLA 基线提高 <strong>20 个百分点</strong>。</li><li>通过消融实验证明场景几何、空间触觉反馈和显式几何关系的互补性，以及共享空间接地（robot-base frame）相对于手部局部坐标的显著优势。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>3D Tactile Grounding</strong>：从 RGB-D 观测反投影生成场景点云（4096点），采用 PointNet++ 风格层次编码器提取局部和全局场景 token；将每个 taxel 的 3D 位置和归一化力向量通过运动学变换到机器人基座坐标系，用共享 MLP 编码为手指级触觉 token（5个）。</li><li><strong>Geometric Relation Modeling</strong>：离线使用 SAM2 和 RGBTrack 生成物体分割掩码和 6D 位姿伪标签，训练轻量级位姿估计器；在线预测物体位姿后，从手部关键点（17个）和物体表面点构建 HO 关系（K=16 最近邻），从物体表面区域代表点（M=8 锚点）构建 OO 关系，分别编码为 5 个 HO token 和 5 个 OO token。</li><li><strong>动作生成</strong>：将场景 token（33个）、触觉 token（5个）、关系 token（10个）拼接后通过线性投影插入预训练 VLA（π0）动作专家的观测后缀中，保留原始视觉-语言前缀和 flow-matching 训练目标，无需额外损失。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>任务数据集</strong>：五个真实世界接触丰富灵巧操作任务——<strong>Funnel Insertion</strong>、<strong>Plug Assembly</strong>、<strong>Button Press</strong>、<strong>Sponge Wiping</strong>、<strong>Pipette Press</strong>，每个任务采集约 100 条真实机器人演示。</li><li><strong>硬件平台</strong>：<strong>UR7e</strong> 机器人臂 + <strong>XHand</strong> 灵巧手；XHand 具备密集五指触觉传感，每指 120 个三维力 taxel（共 600 个）。</li><li><strong>模型规模</strong>：基于预训练 <strong>π0</strong> 骨干，动作维度为 18（6 个臂关节 + 12 个手指关节），每次推理执行 16 个动作；额外编码器产生 33 个场景 token、5 个触觉 token、10 个关系 token。</li><li><strong>训练资源</strong>：论文未明确提及 GPU/TPU 型号或训练时长。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：真实机器人平台上进行，每个任务 20 次真实机器人试验，采用二元任务成功标准（完整任务目标达成才算成功）。</li><li><strong>主要结果</strong>：3DTouch 平均成功率为 <strong>65.0%</strong>，高于最强基线 Tactile-VLA（45.0%）20 个百分点；相对纯视觉 VLA 基线 π0（23.0%）提高 42 个百分点。</li><li><strong>任务级表现</strong>：在 Funnel Insertion（35.0% vs 最佳基线20.0%）、Plug Assembly（60.0% vs 55.0%）、Button Press（80.0% vs 45.0%）、Sponge Wiping（90.0% vs 85.0%）、Pipette Press（60.0% vs 60.0%）上表现最优或并列最优。</li><li><strong>消融实验</strong>：单独使用空间触觉、点云或几何关系，平均成功率分别为 35.0%、46.0%、41.0%；组合点云+空间触觉达到 53.0%；加入几何关系提升至 65.0%；将触觉坐标从全局基座帧改为手部局部帧导致平均成功率下降至 42.0%（降 11 个百分点）。</li><li><strong>鲁棒性</strong>：在目标姿态变化（平移、旋转、组合）下，3DTouch 平均成功率下降仅 5.0 个百分点，而 π0.5 + tactile 基线下降 13.3 个百分点。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.23963/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CoRA-VTLA: Contact-Guided Attention and Queryable Response Memory for Tactile Post-Training</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23926/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">GTI: Grounding Task Intent Throughout Long-Horizon VLA Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

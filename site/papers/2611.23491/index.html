@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>GRID-UAV: Geometry and Ray-depth Integrated Decision-making for Unmanned Aerial Vehicles - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究 UAV 视觉-语言-动作模型（VLA） 在长距离飞行中如何有效利用 3D 信息；现有 2D 图像编码器缺少 3D 结构，直接注入深度特征在长航程上无显著收益（成功率 42.5% vs 42.6%） 提出 GRID-UAV，一种仅使用前视与下视 RGB 相机的策略，结合 显式 3D 提升（explicit 3D lifting）与 隐式几何对齐（implicit alignment） 解决两个互补失败模式：无法到达目标（T1，途中碰撞）与到达后无法完成任务（T2，如悬停不降落）" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.23491">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">GRID-UAV: Geometry and Ray-depth Integrated Decision-making for Unmanned Aerial Vehicles</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.23491" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.23491" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究 UAV 视觉-语言-动作模型（VLA） 在长距离飞行中如何有效利用 3D 信息；现有 2D 图像编码器缺少 3D 结构，直接注入深度特征在长航程上无显著收益（成功率 42.5% vs 42.6%）</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff" aria-hidden="true">
+  <p class="note-cover-title">GRID-UAV: Geometry and Ray-depth Integrated Decision-making for Unmanned Aerial Vehicles</p>
+</div></figure>
+        <p class="article-unit">作者团队来自 穆罕默德·本·扎耶德人工智能大学（Mohamed bin Zayed Universit…</p>
+        <ul class="article-facts"><li>arXiv 2611.23491</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者团队来自 <strong>穆罕默德·本·扎耶德人工智能大学（Mohamed bin Zayed University of Artificial Intelligence, UAE）</strong> 和 <strong>印度理工学院孟买分校 CSRE（IIT Bombay, India）</strong></li><li>作者包括 <strong>Anas Anwarul Haq Khan、Amrin Kareem、Muhammad Umer Sheikh、Biplab Banerjee、Muhammad Haris Khan</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究 <strong>UAV 视觉-语言-动作模型（VLA）</strong> 在长距离飞行中如何有效利用 3D 信息；现有 2D 图像编码器缺少 3D 结构，直接注入深度特征在长航程上无显著收益（成功率 <strong>42.5% vs 42.6%</strong>）</li><li>提出 <strong>GRID-UAV</strong>，一种仅使用前视与下视 RGB 相机的策略，结合 <strong>显式 3D 提升</strong>（explicit 3D lifting）与 <strong>隐式几何对齐</strong>（implicit alignment）</li><li>解决两个互补失败模式：无法到达目标（T1，途中碰撞）与到达后无法完成任务（T2，如悬停不降落）</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>通过失败分析分离 <strong>T1（未到达目标）</strong> 与 <strong>T2（到达未完成）</strong>，揭示显式 3D 提升减少 T1 但增加 T2，隐式对齐相反，二者互补</li><li>提出 <strong>GRID</strong>：对单目深度进行射线校正的 3D 反投影，统一前视/下视相机到 UAV 体坐标系，并将傅里叶编码的位置特征注入视觉 token；训练时与冻结的 <strong>VGGT</strong> 多视角几何模型对齐，推理零额外开销</li><li>在 <strong>TravelUAV</strong> 三个测试子集上均取得最高成功率，相对现有最优方法的提升为 <strong>9.5%</strong>（Seen）、<strong>17.1%</strong>（Unseen Object）、<strong>25.4%</strong>（Unseen Map）</li><li>证明直接添加深度特征对长航程导航无效，而显式 3D 提升可显著提高成功率（<strong>42.6% → 46.6%</strong>）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基础策略基于 <strong>OpenVLA-7B</strong>，使用 DINOv2 和 SigLIP 编码前/下视图，Llama-2 7B 经 LoRA 微调，输出量化飞行动作/LAND</li><li>显式分支：采用细调到航拍视角的 <strong>Metric Depth Anything V2-Large</strong> 预测距离图；每个 token 取 4 个深度样本并沿归一化视射线反投影到 UAV 体坐标系，避免广角畸变</li><li>使用傅里叶特征编码（L=8，S=40m）和可学习 MLP 将 3D 位置投影到 token 宽度，残差加入视觉 token；分支仅增加 <strong>5.2M</strong> 可训练参数（占总参数 0.07%）</li><li>隐式分支：训练时冻结 VGGT，将其最后一层特征双线性重采样到策略的 16×16 token 网格，与 LLM 第 24 层视觉 token 隐藏状态通过余弦损失对齐（λ=0.5），并与动作交叉熵联合训练；推理时丢弃 VGGT 和对齐头</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>TravelUAV</strong> 的 UAV-Need-Help 任务；训练集采用 AeroVLA 整理版本，含 <strong>7,611</strong> 条轨迹、<strong>410k</strong> 帧、<strong>11</strong> 个环境；测试集 <strong>3,005</strong> 个 episode（Seen 1,418 / Unseen Object 629 / Unseen Map 958），路线平均 256m、最长 1.1km</li><li>模型规模：基础 <strong>OpenVLA-7B</strong>（约 7B 参数）；显式 3D 分支新增 5.2M 可训练参数；隐式对齐头约 12.6M 参数，推理时移除</li><li>训练资源：<strong>4 块 A100 (40GB) GPU</strong>；所有策略统一训练设置与超参数</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：<strong>TravelUAV</strong> 三个测试分割及 Easy/Hard 子集；指标包括 <strong>SR（成功率）</strong>、<strong>OSR（Oracle 成功率）</strong>、<strong>NE（导航误差）</strong>、<strong>SPL</strong></li><li>采用配对 <strong>McNemar 检验</strong>和 bootstrap 置信区间，所有方法在相同起点、headless GPU 环境下评估；AeroVLA 使用作者发布 checkpoint 复现</li><li>GRID 在全部测试子集上取得最优 SR：Seen Full <strong>48.03%</strong>（AeroVLA 43.86%），Unseen Object Full <strong>56.76%</strong>（AeroVLA 48.49%），Unseen Map Full <strong>42.69%</strong>（AeroVLA 34.03%）</li><li>GRID 整体成功率从 <strong>41.7%</strong> 提升到 <strong>48.2%</strong>，并在所有子集上相对 SOTA 显著提升（p&lt;0.05），除了 Seen Hard 子集</li><li>消融显示：直接深度特征无提升（42.5% vs 42.6%）；显式 3D 提升优于深度特征（46.6%）；显式+隐式结合比仅隐式显著提高到达率（<strong>61.5%→69.5%</strong>，p&lt;0.001），比仅显式显著提高完成率（<strong>57.7%→61.4%</strong>，p&lt;0.05）</li><li>计算成本：显式分支仅增加一次冻结深度前向传播，隐式分支仅训练时使用，推理时无额外参数与计算</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.23499/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">BiCAT: Bimanual Coordination Action Tokenization</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23070/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">PAIR: Bringing Household Robots into the Smart Home</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

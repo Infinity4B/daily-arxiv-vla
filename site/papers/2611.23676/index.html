@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Finetuning VLAs for Dexterous Manipulation: The Right Checkpoint Is All You Need - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究如何将视觉语言动作模型（VLA）适配到多指灵巧手操作，解决现有 VLA 预训练数据以平行夹爪为主、难以迁移到灵巧手的问题。 将监督微调（SFT）与扩散转向强化学习（DSRL）结合，在少量遥操作演示下评估五种微调方案。 核心发现：SFT 检查点的 rollout 成功率与后续 DSRL 转向成功率相关性差，冻结 VLM 仅训练动作专家的方案最可转向，LoRA 方案转向性能最差。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.23676">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">Finetuning VLAs for Dexterous Manipulation: The Right Checkpoint Is All You Need</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.23676" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.23676" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究如何将视觉语言动作模型（VLA）适配到多指灵巧手操作，解决现有 VLA 预训练数据以平行夹爪为主、难以迁移到灵巧手的问题。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #177e89; --cover-to: #5ec2a8; --cover-spot: #c5f0de; --cover-ink: #f5fffb" aria-hidden="true">
+  <p class="note-cover-title">Finetuning VLAs for Dexterous Manipulation: The Right Checkpoint Is All You Need</p>
+</div></figure>
+        <p class="article-unit">Mila — Quebec AI Institute, Montréal, Canada</p>
+        <ul class="article-facts"><li>arXiv 2611.23676</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Mila — Quebec AI Institute, Montréal, Canada</strong></li><li><strong>Université de Montréal, Canada</strong></li><li><strong>Renesas Electronics Canada Ltd.</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究如何将视觉语言动作模型（VLA）适配到多指灵巧手操作，解决现有 VLA 预训练数据以平行夹爪为主、难以迁移到灵巧手的问题。</li><li>将监督微调（SFT）与扩散转向强化学习（DSRL）结合，在少量遥操作演示下评估五种微调方案。</li><li>核心发现：SFT 检查点的 rollout 成功率与后续 DSRL 转向成功率相关性差，冻结 VLM 仅训练动作专家的方案最可转向，LoRA 方案转向性能最差。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>实证分析五种 VLA 微调方案</strong>：在 <strong>π0.5</strong> 模型和 <strong>LEAP 手</strong>上系统比较 Expert-only、Frozen-LM、Full-FT、LoRA、LoRA-LM 五种 SFT 配方。</li><li><strong>揭示 SFT 成功与 post-DSRL 成功之间的弱相关/反相关关系</strong>：SFT 检查点的 rollout 成功率不能作为选择转向初始化检查点的有效指标。</li><li><strong>提出最佳微调配方</strong>：冻结 VLM、完全训练动作专家的 <strong>Expert-only</strong> 方案在训练布局和分布外布局上均表现出最高的可转向性。</li><li><strong>发现 LoRA 适配器方案最不可转向</strong>：无论是 LoRA 还是 LoRA-LM，更新语言模型都会显著损害转向性能。</li><li><strong>给出具体实践建议</strong>：选择最早能定性复现演示技能的 SFT 检查点作为 DSRL 初始化，而非选择 SFT 成功率最高的检查点。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>基础模型</strong>：使用 <strong>π0.5</strong> 双系统 VLA，包含 <strong>PaliGemma</strong> 视觉语言骨干（SigLIP 视觉编码器 + 多模态投影器 + Gemma 语言模型）和基于流匹配的动作专家（预测 32 维动作块，H=32）。</li><li><strong>SFT 配方设计</strong>：五个配方分别控制更新范围——<strong>Expert-only</strong>（仅动作专家及其接口）、<strong>Frozen-LM</strong>（动作专家 + 视觉编码器 + 投影器）、<strong>Full-FT</strong>（全部参数）、<strong>LoRA</strong>（语言模型和动作专家使用 rank-32 LoRA，其余全训练）、<strong>LoRA-LM</strong>（语言模型使用 LoRA，其余全训练）。</li><li><strong>DSRL 转向</strong>：采用 large-chunk 变体，actor 输出单个 32 维噪声向量，平铺到动作块的所有位置，冻结的 SFT 检查点解码该噪声；actor 使用 SAC 训练，观察低分辨率图像和本体感知状态。</li><li><strong>检查点选择策略</strong>：每个配方在每个任务上选择 4 个不同 SFT 步数的检查点（从早期到后期），记录其 SFT 成功率和 post-DSRL 成功率，避免预选单点造成的偏差。</li><li><strong>评估协议</strong>：在训练布局和分布外布局上分别评估；SFT 阶段使用 i.i.d. 噪声和重复噪声两种采样方式，DSRL 后使用确定性 actor。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真框架</strong>：<strong>RoboCasa</strong>，两个定制任务——<strong>CoffeePressButton</strong>（按下咖啡机按钮）和 <strong>ScrewLightBulb</strong>（拧入灯泡）。</li><li><strong>机器人形态</strong>：<strong>16-DoF LEAP 手</strong>，分别搭配 Franka Panda 和 xArm6 臂。</li><li><strong>演示数据</strong>：CoffeePressButton 使用 56 个演示、7,928 帧；ScrewLightBulb 使用 33 个演示、31,842 帧。</li><li><strong>模型规模</strong>：π0.5 的 Full-FT 更新 <strong>3.24B</strong> 参数，存储检查点含 4.14B 参数（其中约 0.9B 参数在动作生成中未使用）。</li><li><strong>训练资源</strong>：未明确列出 GPU/TPU 细节；DSRL 使用 500k 环境步预算，每个检查点运行 3 个 RL 种子；SFT 每个配方 1 个种子。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：两个仿真任务，每个任务包含两个训练布局（DSRL 训练时使用）和两个分布外布局（extrapolation），评估成功率为主要指标。</li><li><strong>SFT 成功率与 post-DSRL 成功率相关性差</strong>：在 20 个配方-检查点组合中，ScrewLightBulb 上无显著正相关，CoffeePressButton 上出现反相关。</li><li><strong>Expert-only 配方最佳</strong>：是唯一在所有评估配置中稳定转向成功的配方，训练布局成功率达 <strong>95–100%</strong>，且在后期检查点仍保持可转向性（如 ScrewLightBulb 8k 步时训练布局 100%、extrapolation 88%）。</li><li><strong>更新语言模型的配方最差</strong>：Full-FT、LoRA、LoRA-LM 在后期检查点上转向性能大幅下降；LoRA 在 CoffeePressButton 18k 步时拥有最高的 SFT 重复噪声成功率（76%）但 post-DSRL 成功率最低（7%）。</li><li><strong>Frozen-LM 早期表现接近 Expert-only</strong>，但在后期检查点崩溃；LoRA 变体无法保护语言模型更新带来的转向性能损失。</li><li><strong>局限性</strong>：SFT 仅运行一次，未捕捉 SFT 随机性；仿真中早期检查点可能利用仿真漏洞（如用掌心拧灯泡而非抓握），需真实机器人验证；缺乏离线指标预测转向结果。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.23714/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ExecGap: Exploiting Command-Execution Gap for Patch Attacks on Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23628/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">LoRN: Low-Rank Noise Steering for Generative Robot Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

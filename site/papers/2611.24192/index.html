@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>TrajWAM: Trajectory-Conditioned Future Learning for Vision-Language Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 TrajWAM，一种轨迹条件世界动作模型，用于提升视觉-语言驾驶规划能力。 核心问题：驾驶记录仅提供已执行轨迹对应的未来观测，大量备选轨迹查询缺失标签，如何利用轨迹查询与观测未来共同改进驾驶策略。 通过在共享规划器表征上添加辅助 BEV 未来学习，并联合事实重建与未标注轨迹分离，实现原生直接输出 waypoint。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24192">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">TrajWAM: Trajectory-Conditioned Future Learning for Vision-Language Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24192" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24192" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 TrajWAM，一种轨迹条件世界动作模型，用于提升视觉-语言驾驶规划能力。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24192.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24192.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24192.webp" alt="TrajWAM: Trajectory-Conditioned Future Learning for Vision-Language Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Xinjiang Agricultural University：Xuerui Fang、Gulimi…</p>
+        <ul class="article-facts"><li>arXiv 2611.24192</li><li>6 节精读</li><li>约 10 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Xinjiang Agricultural University</strong>：Xuerui Fang、Gulimila Kezierbieke</li><li><strong>ToReality (Hangzhou) Network Technology Co., Ltd.</strong>：CHEN WANGXING</li><li><strong>Jiangnan University</strong>：Hui Li（通讯作者之一）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>TrajWAM</strong>，一种轨迹条件世界动作模型，用于提升视觉-语言驾驶规划能力。</li><li>核心问题：驾驶记录仅提供已执行轨迹对应的未来观测，大量备选轨迹查询缺失标签，如何利用轨迹查询与观测未来共同改进驾驶策略。</li><li>通过在共享规划器表征上添加辅助 BEV 未来学习，并联合事实重建与未标注轨迹分离，实现原生直接输出 waypoint。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Trajectory-conditioned auxiliary training</strong>：外部 waypoint query 条件化共享 future-query 状态，将 BEV 监督与驾驶策略耦合。</li><li>提出 <strong>joint learning from factual and unlabeled trajectory queries</strong>：事实重建锚定已执行轨迹的观测结果；单侧分离损失训练读出模块响应轨迹查询变化。</li><li>通过 <strong>closed-loop gains supported by matched training controls</strong>：全量 Bench2Drive 220 路线评估验证规划性能；双种子控制量化轨迹条件、分离和正确查询配对的贡献；规划-预测联合诊断关联重建质量与查询响应。</li><li>实测性能：在 <strong>Bench2Drive</strong> Base Set 上达到 <strong>91.53 DS</strong> 和 <strong>75.45% SR</strong>，超过 schedule-matched planning-only 基线 <strong>5.31 DS</strong>，多成功 9 条路线。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>Qwen2.5-VL-3B</strong> 驾驶规划器，输入包含历史前视帧、当前六相机环视、自车状态、路线指令及固定 future-world query tokens。</li><li>提出 <strong>Logged and Noisy Trajectory Queries</strong>：对已执行轨迹构建事实查询；通过前向距离缩放（0.7–1.3）和侧向高斯噪声（σ=2）生成扰动查询。</li><li>使用 <strong>Trajectory Address + Latent FiLM</strong>：ActionEncoder 将轨迹坐标映射到 VLM 隐藏维度，FiLM 以缩放+偏移方式调制 shared future-query 状态；FiLM 投影零初始化，保持初始恒等变换。</li><li>使用 <strong>DINOv3-aligned prediction</strong>：冻结 <strong>DINOv3 ViT-L/16</strong> 教师提取 BEV 目标特征（CLS+有效 patch tokens）；学习投影 V 输出 DINO 空间预测。</li><li>损失包括：token-level 规划交叉熵、事实重建 MSE、以及单侧分离 hinge loss；训练中梯度路由到 ActionEncoder、latent FiLM 和最后 4 层 planner layers；推断时旁路辅助预测分支，直接生成 waypoint 并交由 PID 控制。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>Bench2Drive</strong>，Phase II 使用 226,656 条训练样本；全部 220 路线 Base Set 用于闭环评测。</li><li>基础模型：<strong>Qwen2.5-VL-3B</strong> 规划器；<strong>DINOv3 ViT-L/16</strong> 作为冻结未来特征教师。</li><li>训练资源：8 张 <strong>A100 GPU</strong>，BF16，有效 batch size 64，AdamW + cosine decay + 10% warmup，训练 24 epochs；规划层学习率 2e-5，TrajWAM 模块学习率 2e-4。</li><li>推理资源：原生推理在 <strong>RTX 5090</strong> 上，中位生成时间约 3.5086 秒（对照组 DeepSight 约 3.4926 秒）。</li><li>多种子评测使用 seeds 42 和 43；220 路线正式评测使用 seed 42。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：<strong>Bench2Drive Base Set</strong> 全部 220 条路线，报告官方 <strong>Driving Score (DS)</strong>、严格 <strong>Success Rate (SR)</strong>、Efficiency 和 Smoothness；多能力评测覆盖 Merging、Overtaking、Emergency Brake、Give Way、Traffic Sign。</li><li>TrajWAM 取得 <strong>91.53 DS</strong> 和 <strong>75.45% SR</strong>，超过 SparseDriveV2 的 89.15 DS 和 DynVLA 的 72.73% SR；Efficiency 171.41，Smoothness 15.27。</li><li>相较 schedule-matched <strong>planning-only FT</strong>（86.22 DS / 71.36% SR），TrajWAM 提升 <strong>5.31 DS</strong> 和 4.09 个百分点，SR 对应多成功 9 条路线。</li><li>组件消融：Base Planner（unconditioned future FT）85.34 DS / 73.18% SR；加入 trajectory conditioning 的 TrajWAM w/o separation 提升至 89.34 DS / 74.55% SR；再加入 separation 达 91.53 DS / 75.45% SR。</li><li>多种子 120 路线固定子集：TrajWAM 均值 <strong>88.45 ± 0.34 DS</strong>，显著高于 planning-only FT 均值 82.90、TrajWAM w/o separation 86.40；正确轨迹配对相较 shuffled pairing 提升 <strong>4.25 DS</strong>。</li><li>多能力表现：Merging 75.00%（最高），Give Way 50.00%（并列最高），Overtaking 82.22%（第二），Traffic Sign 77.37%（第二），Emergency Brake 65.00%；五能力均值 69.92%，整体第二、仅比 DeepSight 低 0.28 个百分点。</li><li>预测诊断：trajectory conditioning 将未来 MSE 从 0.03110 降至 0.02985；正确配对训练的执行轨迹查询收益 MSE 为 6.00e-5，高于 shuffled pairing 5.70e-5。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24247/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Allocentric Memory, Egocentric Acting: A Dual-Frame VLA for Urban Aerial Navigation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24178/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Adaptive Action Horizon Selection via Flow-Field Uncertainty</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

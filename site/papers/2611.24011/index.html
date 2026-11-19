@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>WAM-Policy: World Action Models with On-Policy Distillation for Quadrupedal Loco-Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了 WAM-Policy，将预训练为机械臂设计的世界动作模型（WAM）转换为无臂四足机器人的语言引导移动操作策略 解决两个核心挑战：一是现有 WAM 以机械臂为中心且多步采样速度太慢，无法满足四足机器人实时控制；二是蒸馏策略受限于模仿学习的教师，难以超越演示性能 通过两阶段方法实现：跨形态策略适配与加速（Stage 1）和 任务特定改进与合并（Stage 2），在提升性能的同时大幅降低推理成本" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24011">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">WAM-Policy: World Action Models with On-Policy Distillation for Quadrupedal Loco-Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24011" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24011" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 WAM-Policy，将预训练为机械臂设计的世界动作模型（WAM）转换为无臂四足机器人的语言引导移动操作策略</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24011.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24011.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24011.webp" alt="WAM-Policy: World Action Models with On-Policy Distillation for Quadrupedal Loco-Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者所属机构包括 澳大利亚机器人中心（Australian Centre for Robotics…</p>
+        <ul class="article-facts"><li>arXiv 2611.24011</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者所属机构包括 <strong>澳大利亚机器人中心（Australian Centre for Robotics, USYD）</strong>、<strong>UNSW Sydney</strong>、<strong>Maincode</strong> 和 <strong>La Trobe University</strong></li><li>通讯作者为 Yue Yang（yue@maincode.com）和 Yang Zhao（yangzhao.au@outlook.com）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>WAM-Policy</strong>，将预训练为机械臂设计的世界动作模型（WAM）转换为无臂四足机器人的语言引导移动操作策略</li><li>解决两个核心挑战：一是现有 WAM 以机械臂为中心且多步采样速度太慢，无法满足四足机器人实时控制；二是蒸馏策略受限于模仿学习的教师，难以超越演示性能</li><li>通过两阶段方法实现：<strong>跨形态策略适配与加速</strong>（Stage 1）和 <strong>任务特定改进与合并</strong>（Stage 2），在提升性能的同时大幅降低推理成本</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>跨形态适配与加速</strong>：仅替换 WAM 的视觉和动作接口，在四足机器人演示上微调；提出 <strong>OPSD（On-Policy Self-Distillation）</strong> 将高步数教师蒸馏为 1 视频步/2 动作步的学生，采样速度提升 14 倍，成功率保持 76.7%（无蒸馏为 69.3%）</li><li><strong>任务特定改进与合并</strong>：利用强化学习获得任务专家教师，并通过 <strong>M-OPD（Multi-Teacher On-Policy Distillation）</strong> 将多个专家合并为一个 1/2 步学生，十任务平均成功率提升至 85.0%，超过原始教师（77.0%）</li><li><strong>QLM-Bench 基准构建</strong>：包含 10 个仿真任务、1000 条无需遥操作的演示，并提供真实 <strong>Unitree Go2 Air</strong> 上的部署验证</li><li>展示了在无臂四足机器人上实现语言条件端到端移动操作的有效路径，验证了少步蒸馏和任务路由蒸馏的可行性</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Stage 1（跨形态策略适配与加速）</strong></li></ul>
+<p> - 视觉适配：将原头部/腕部相机替换为四足机器人的自我视角和俯视视角 RGB 相机</p>
+<p> - 动作适配：将 30 维双臂命令替换为 9 维四足命令（基座速度、偏航率、操纵足目标位置和接触力），由全身控制器转换为关节扭矩</p>
+<p> - 微调后使用 <strong>OPSD</strong> 进行少步蒸馏：教师为原高 NFE 采样器，学生为 1/2 NFE 采样器，两者共享同一噪声，回归教师目标，训练上下文混合教师缓存与学生在线 rollout</p>
+<ul><li><strong>Stage 2（任务特定改进与合并）</strong></li></ul>
+<p> - 对推箱和开门两个任务分别用 <strong>DiffusionNFT</strong> 变体进行强化学习微调，获得高成功率专家教师</p>
+<p> - 使用 <strong>M-OPD</strong> 按任务路由多个教师，将专家能力合并到一个从 Stage 1 学生继续训练的 1/2 步学生，实现单一策略覆盖所有任务</p></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>QLM-Bench</strong>：基于 MuJoCo 的 10 个语言引导移动操作任务（冰箱、烤箱、阀门、抽屉、门、按钮、篮子、踢球、推箱、清扫），使用 <strong>Unitree Go2</strong> 前置左腿进行操纵</li><li>演示数据：1000 条（每任务 100 条），由大模型生成参考轨迹并重定向至随机场景，成功执行后保留，无需遥操作或手工设计轨迹</li><li>基础模型：<strong>LingBot-VA</strong>（预训练世界动作模型），微调使用 LoRA 更新；具体总参数量未明确列出</li><li>硬件资源：采样时间在 <strong>RTX 5070 Ti</strong> 上测量，教师每块采样 2.226 秒，学生 0.159 秒</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估协议：QLM-Bench Standard100（100 个场景 × 3 个策略种子 42/43/44），主要指标为成功率（%）</li><li>Stage 1 代表性结果：教师成功率为 <strong>77.0% ± 4.0</strong>；1/2-NFE 无蒸馏学生为 <strong>69.3% ± 1.2</strong>；<strong>OPSD 学生为 76.7% ± 4.7</strong>，采样时间从 2.226s 降至 0.159s</li><li>Stage 2 结果：推箱专家教师 100% 成功，开门专家教师 100% 成功；<strong>M-OPD 学生达到 85.0% ± 2.6</strong>，其中推箱 90%，开门 87%</li><li>真实机器人：OPSD 学生在 <strong>Unitree Go2 Air</strong> 上按压按钮 3/10、踢球 1/10、推箱 3/10，按压按钮完成时间约 37 秒</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24076/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Meaning Reaches Object Choice but Not Completion: Where Is a VLA Vulnerable to Landmark Synonyms?</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23974/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">LaST1.0: A Unified Latent World-Action Model with Control-Centric SpatioTemporal Reasoning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

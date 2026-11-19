@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Ego2X: Contact-aware Transfer from Egocentric Human Data to Any Robot - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Ego2X，一个以物体为中心的框架，将单目第一人称人类操作视频转换为物理可执行的机器人数据，支持灵巧手与平行夹爪。 核心目标是解决现有 ego-to-robot 流水线中“手指悬空、夹爪夹空”的物理不可行问题，通过显式建模物体表面的接触点、力、抓取模式与交互状态来提升接触精度与下游策略成功率。 论文强调应转移物体参照系下的接触动态而非单纯的手部运动轨迹，从而克服单目深度漂移、跨形态差异与视频合成中的物体擦除问题。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24138">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">Ego2X: Contact-aware Transfer from Egocentric Human Data to Any Robot</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24138" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24138" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Ego2X，一个以物体为中心的框架，将单目第一人称人类操作视频转换为物理可执行的机器人数据，支持灵巧手与平行夹爪。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24138.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24138.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24138.webp" alt="Ego2X: Contact-aware Transfer from Egocentric Human Data to Any Robot 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">北京邮电大学（Xinke Lyu 所属）</p>
+        <ul class="article-facts"><li>arXiv 2611.24138</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>北京邮电大学</strong>（Xinke Lyu 所属）</li><li><strong>中国科学院自动化研究所</strong>（Bowen Yang 所属）</li><li><strong>PowerTech (Mite.)</strong>（Zhicheng Wang 所属；Xinke 与 Bowen 实习期间完成本工作）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Ego2X</strong>，一个以物体为中心的框架，将单目第一人称人类操作视频转换为物理可执行的机器人数据，支持灵巧手与平行夹爪。</li><li>核心目标是解决现有 ego-to-robot 流水线中“手指悬空、夹爪夹空”的物理不可行问题，通过显式建模<strong>物体表面的接触点、力、抓取模式与交互状态</strong>来提升接触精度与下游策略成功率。</li><li>论文强调应转移<strong>物体参照系下的接触动态</strong>而非单纯的手部运动轨迹，从而克服单目深度漂移、跨形态差异与视频合成中的物体擦除问题。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>CORE（Contact-centric Object-interaction REpresentation）</strong>：在物体坐标系中记录每个接触的锚点、法向、推力方向、相对力、抓取模式与交互状态，作为统一表示贯穿整个转换流程。</li><li>开发 <strong>CORE 驱动的 Ego2X 框架</strong>：集成接触驱动的解耦深度校正、跨形态逆运动学、接触感知的视频擦除与合成，以及 URDF 编译与闭环仿真验证。</li><li>首次利用 <strong>第一人称视频对 VLA 模型进行后训练</strong>：仅用 Ego2X 转换的机器人数据（无需仿真专家演示）即可显著提升下游任务成功率。</li><li>在多个基准上验证了 <strong>物理接触实现与几何精度</strong>：HOT3D 上手部深度误差降低 <strong>33.7%</strong>，EgoDex 上接触实现率 <strong>62.9%</strong>（官方 HuRo 为 27.9%），平行夹爪接触适配率 <strong>63.2%</strong>（Ego2Robot 为 9.7%）。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>手与物体的几何重建</strong>：使用 WiLoR、ACE-Ego-Hand、EgoHand 等恢复 3D 手部网格，用 SAM 3D 重建物体带符号距离场（SDF），FoundationPose 跟踪物体 6-DoF 位姿。</li><li><strong>CORE 提取</strong>：利用触觉时序检测与相机射线-物体表面求交得到接触锚点；根据 MANO 表面区域分类 7 种抓取模式与 5 种交互状态；引入视觉相对载荷分布与运动学支撑载荷先验，形成结构化力先验。</li><li><strong>解耦深度校正</strong>：用无真实标记训练的单调 GBDT 评估物体位姿可信度，分别沿物体路径与手部路径优化深度，避免手-物尺度耦合的循环漂移；手部沿相机射线做 1-DoF Cauchy 优化。</li><li><strong>接触驱动逆运动学</strong>：对灵巧手，将 URDF 碰撞几何采样为与抓取模式匹配的接触垫，用 Geman–McClure 残差、法向对齐与推进方向约束求解关节角；对平行夹爪，在物体 SDF 上搜索对跖接触对并生成物体参照系抓取。</li><li><strong>接触感知擦除与合成</strong>：在 Acquire/Hold/Transport 状态下保护物体区域不被擦除；通过去皮肤边缘掩模保留原始物体像素，仅去除手部重叠区域，避免人类皮肤残留。</li><li><strong>仿真验证与数据编译</strong>：URDF 编译器自动映射接触垫与抓取参数；在 RoboTwin 2.0 中进行闭环物理回放，筛除不通过物理验证的片段，生成 LeRobot 格式的机器人数据用于 VLA 后训练。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>HOT3D</strong>（评估接触恢复与深度校正）、<strong>EgoDex</strong>（评估跨形态重定向与视频转换）、<strong>RoboTwin 2.0</strong>（闭环仿真验证与 VLA 后训练）。</li><li>接触标注：基于 HOT3D 多摄像头 MoCap 接触真值（MANO 与物体网格距离 ≤ 5 mm 且连续 ≥ 3 帧），EgoDex 用于接触实现率评估。</li><li>模型与工具：涉及 <strong>WiLoR</strong>、<strong>EgoHand</strong>、<strong>SAM 3/ SAM 3D</strong>、<strong>FoundationPose</strong>、<strong>DROID-SLAM</strong>、<strong>ProPainter</strong> 等基础模型；自身模型包括手部/物体几何重建、CORE 提取、位姿可信度 GBDT、接触驱动 IK 与渲染模块。</li><li>训练资源与模型规模：论文未明确提及 GPU/TPU 型号或数量；后训练仅使用从视频转换的 Ego2X 数据，没有依赖仿真专家演示（具体 GPU 规模未说明）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估协议：采用 cluster-bootstrap <strong>95% 置信区间</strong>、Wilcoxon 符号秩检验与 Holm 调整 McNemar 检验；评价指标包括 F1、IoU、接触锚点误差、MPJPE、射线误差、物体平移误差、接触实现率、成功任务率。</li><li><strong>接触恢复</strong>（HOT3D）：CORE 在可靠位姿下帧 F1 <strong>0.924</strong>、3D 锚点误差 <strong>2.39 mm</strong>（消融前 6.69 mm）；在估计位姿下目标深度融合使帧 F1 从 0.191 提升至 0.386。</li><li><strong>深度校正</strong>（HOT3D）：接触时手部射线误差降低 <strong>33.7%</strong>；估计位姿下物体平移误差降低 30.4–47.3 mm；位姿可信度 GBDT 在多个划分上 AUROC 达到 0.789–0.899，优于单特征 IoU。</li><li><strong>重定向与编译</strong>（EgoDex）：灵巧手接触实现率 <strong>62.9%</strong> vs HuRo <strong>27.9%</strong>；平行夹爪物理接触适配率 <strong>63.2%</strong> vs Ego2Robot <strong>9.7%</strong>；省略接触项的手腕跟随消融实现率显著下降。</li><li><strong>闭环仿真与 VLA 后训练</strong>（RoboTwin 2.0）：在 200 个配对场景中，X-VLA 零样本任务成功率 <strong>40.5%</strong>，后训练后提升至 <strong>67.0%</strong>；闭环仿真转换通过率 <strong>59.6%</strong>，而对比方法仅 <strong>1.9%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24178/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Adaptive Action Horizon Selection via Flow-Field Uncertainty</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24077/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">AeroRSI: Recursive Self-Improvement for Aerial Vision-Language Navigation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

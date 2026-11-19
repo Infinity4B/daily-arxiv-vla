@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ExecGap: Exploiting Command-Execution Gap for Patch Attacks on Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型在机器人操作中的对抗鲁棒性问题，揭示 VLA 预测命令与实际执行之间存在的命令-执行差距（command-execution gap）。 提出现有对抗攻击主要关注预测级差异或 rollout 偏差，忽略了命令在下游控制和机器人本体约束下的物理实现难度。 提出 ExecGap 攻击框架，通过利用该差距诱导执行退化（execution degradation），从而削弱任务完成，即使预测命令在任务空间中看似合理。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.23714">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">ExecGap: Exploiting Command-Execution Gap for Patch Attacks on Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.23714" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.23714" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对视觉-语言-动作（VLA）模型在机器人操作中的对抗鲁棒性问题，揭示 VLA 预测命令与实际执行之间存在的命令-执行差距（command-execution gap）。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">ExecGap: Exploiting Command-Execution Gap for Patch Attacks on Vision-Language-Action Models</p>
+</div></figure>
+        <p class="article-unit">广州大学（Guangzhou University）</p>
+        <ul class="article-facts"><li>arXiv 2611.23714</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>广州大学</strong>（Guangzhou University）</li><li><strong>武汉大学</strong>（Wuhan University）</li><li><strong>西北工业大学</strong>（Northwestern Polytechnical University）</li><li><strong>4Axiom Robotics</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对视觉-语言-动作（VLA）模型在机器人操作中的对抗鲁棒性问题，揭示 VLA 预测命令与实际执行之间存在的<strong>命令-执行差距</strong>（command-execution gap）。</li><li>提出现有对抗攻击主要关注预测级差异或 rollout 偏差，忽略了命令在下游控制和机器人本体约束下的物理实现难度。</li><li>提出 <strong>ExecGap</strong> 攻击框架，通过利用该差距诱导<strong>执行退化</strong>（execution degradation），从而削弱任务完成，即使预测命令在任务空间中看似合理。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>识别<strong>执行退化</strong>作为 VLA 执行侧的新型故障模式，区别于传统的预测级或 rollout 级攻击目标。</li><li>提出 <strong>ExecGap</strong> 攻击框架，利用<strong>运动学低效</strong>和<strong>动态弱驱动</strong>估计低可执行性任务空间方向。</li><li>设计机器人感知的代理损失，使补丁优化无需通过下游执行和闭环动态进行端到端微分。</li><li>在 <strong>LIBERO</strong> 仿真基准和<strong>真实机器人</strong>（Kinova Jaco2、ROKAE xMate ER7 Pro）上验证攻击有效性，展示跨 VLA 架构的泛化能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将 VLA 策略输出映射到共同的<strong>平移末端执行器任务空间命令</strong>，并定义命令-执行不匹配度量。</li><li>低可执行性方向估计：</li></ul>
+<p> - <strong>运动学低效</strong>：对当前雅可比矩阵进行 SVD，选择最小奇异值对应的左奇异向量作为弱方向。</p>
+<p> - <strong>动态弱驱动</strong>：基于扭矩限制和刚体动力学构建任务空间加速度多面体，选择支撑距离最小的 facet 法向量（Boltzmann 加权）作为弱方向。</p>
+<ul><li>补丁优化采用<strong>组合代理损失</strong>，鼓励对抗补丁使 VLA 输出命令与低可执行性方向对齐，从而增大命令-执行不匹配。</li><li>支持<strong>连续动作策略</strong>（直接提取可微任务空间命令）和<strong>token 化动作策略</strong>（使用模型特定预测损失使解码命令对齐弱方向）；优化时仅更新补丁像素，VLA、控制器、机器人模型均保持不变。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：LIBERO 基准的四个 10 任务套件：<strong>Spatial、Object、Goal、Long</strong>；每个策略和套件用 10 条专家轨迹离线优化一个共享补丁，评估时使用 500 次在线 rollout。</li><li><strong>受害者模型</strong>：<strong>OpenVLA</strong>、<strong>OpenVLA-OFT</strong>、<strong>π0</strong> 三种 VLA 策略。</li><li><strong>补丁规格</strong>：50×50 RGB 补丁，应用于 224×224 观测；训练时随机放置，评估时固定到可见且非遮挡位置。</li><li><strong>训练资源</strong>：PyTorch 实现，<strong>AdamW</strong> 优化器，100 epochs，学习率 <strong>2×10⁻²</strong>，损失权重 λ=0.15。</li><li><strong>真实机器人平台</strong>：</li></ul>
+<p> - <strong>Kinova Jaco2</strong>（内置两指夹爪，单主视角 RGB 相机）</p>
+<p> - <strong>ROKAE xMate ER7 Pro</strong>（Robotiq 2F-85 夹爪，主视角和腕部 RGB 相机）</p></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：LIBERO 四个套件，对比攻击方法包括 <strong>TMA、UADA、UMA</strong>（以及 Random Patch）；真实机器人每个机器人-策略对进行 50 次干净和 50 次受攻击试验。</li><li><strong>主要指标</strong>：</li></ul>
+<p> - 任务成功率（TSR，越低越好）</p>
+<p> - 命令-执行方向误差（CEDE，越高越好）</p>
+<p> - 归一化命令-执行误差（NCEE，越高越好）</p>
+<p> - 命令-执行增益（CEG，越低越好）</p>
+<p> - 平均实现执行（MRE，越低越好）</p>
+<p> - 累计实现执行（CRE，越低越好）</p>
+<ul><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 在 <strong>OpenVLA</strong> 上，ExecGap 在所有四个套件将 TSR 降至 <strong>0.0%</strong>，并取得最高的 CEDE/NCEE、最低的 CEG 以及多数最低的 MRE/CRE。</p>
+<p> - 在 <strong>OpenVLA-OFT</strong> 和 <strong>π0</strong> 上，ExecGap 相比 TMA/UADA/UMA 在所有套件获得更高的 CEDE，并在大多数设置下获得更低的 CRE。</p>
+<p> - 消融实验表明<strong>低可执行性方向</strong>导致最大的平均 CEDE；补丁可泛化到同套件中<strong>未参与优化</strong>的任务（tasks 7-9）。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.23803/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CoT-WAM: Collaborative Training of Vision-Language Models and World-Action Models via Plan Latents</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23676/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Finetuning VLAs for Dexterous Manipulation: The Right Checkpoint Is All You Need</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>BiCAT: Bimanual Coordination Action Tokenization - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 BiCAT（Bimanual Coordination Action Tokenization），一种针对双臂机器人动作分词的 tokenizer，通过共享跨臂运动表示和跨臂注意力显式建模双臂协调。 解决现有动作分词器将双臂拼接为单一向量、导致共享运动模式未被利用且跨臂依赖纠缠在每个 token 中的问题。 目标是在动作分词器层面捕捉双臂协调结构，以提升双臂视觉语言动作（VLA）模型的控制性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.23499">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">BiCAT: Bimanual Coordination Action Tokenization</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.23499" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.23499" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 BiCAT（Bimanual Coordination Action Tokenization），一种针对双臂机器人动作分词的 tokenizer，通过共享跨臂运动表示和跨臂注意力显式建模双臂协调。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">BiCAT: Bimanual Coordination Action Tokenization</p>
+</div></figure>
+        <p class="article-unit">论文作者均来自 新加坡国立大学（National University of Singapore）</p>
+        <ul class="article-facts"><li>arXiv 2611.23499</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者均来自 <strong>新加坡国立大学（National University of Singapore）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>BiCAT（Bimanual Coordination Action Tokenization）</strong>，一种针对双臂机器人动作分词的 tokenizer，通过共享跨臂运动表示和跨臂注意力显式建模双臂协调。</li><li>解决现有动作分词器将双臂拼接为单一向量、导致共享运动模式未被利用且跨臂依赖纠缠在每个 token 中的问题。</li><li>目标是在动作分词器层面捕捉双臂协调结构，以提升双臂视觉语言动作（VLA）模型的控制性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>BiCAT</strong>：一个 per-arm 动作分词器，共享镜像手臂的运动表示，并在离散瓶颈两侧（编码端与解码端）通过对称跨臂注意力和联合解码交换伙伴上下文。</li><li>在模拟基准 <strong>RoboTwin 2.0</strong> 的十个任务上超过八个基线，平均成功率比最强基线高 <strong>17.6 个百分点</strong>；在真实世界三个平台的六项任务中成功率显著超过 <strong>FAST</strong> 和 <strong>OAT</strong>。</li><li>通过消融实验证明，分词器内的跨臂交互与策略中的按臂分块预测（两阶段解码）<strong>联合必需</strong>，缺一不可，才能超越联合分词方法。</li><li>BiCAT 仅需每动作块 <strong>40.5 ms</strong> 的推理延迟，明显低于逐 token 解码基线。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将右臂动作通过实施例特定的符号向量镜像映射到左臂坐标系，并在两臂间共享通道归一化，构建<strong>规范动作空间（canonical action space）</strong>。</li><li>使用<strong>共享的因果时间编码器</strong>（两段因果卷积 + 因果自注意力）对各臂动作序列编码，得到隐表示。</li><li>通过<strong>对称的因果跨臂注意力</strong>在双臂流之间交换伙伴上下文，使每臂 token 条件化于对侧臂，且保持流独立。</li><li>使用<strong>共享的有限标量量化（FSQ）</strong>将特征离散化为统一词汇（K=1920），两臂共享同一码本。</li><li>联合解码器以时间对齐的双臂量化向量为输入，通过 Transformer 并行重建完整双臂动作块。</li><li>策略训练采用<strong>半自回归预测</strong>：先并行生成左臂全部 token，再基于左臂 token 生成右臂全部 token（两个块）。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>模拟数据集</strong>：RoboTwin 2.0（50 个任务，2500 条演示），选取 10 个任务（2 单臂、4 松耦合、4 紧耦合）进行系统评估。</li><li><strong>真实世界数据集</strong>：自采双臂操作数据，覆盖六项任务、三个本体（Bimanual SO-101、Unitree G1、Bimanual YAM）。</li><li><strong>BiCAT tokenizer 参数量</strong>：7.40M（所有对比 tokenizer 中最小）。</li><li><strong>VLA 主干网络</strong>：模拟中使用 <strong>PaliGemma 2-3B</strong>，真实机器人中使用 <strong>Molmo2-ER</strong>。</li><li><strong>硬件</strong>：模拟实验在 <strong>H200 GPU</strong> 上进行（延迟测量）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>模拟评估</strong>：RoboTwin 2.0 十个任务，每任务 100 次 rollout，指标为成功率；对比八个基线（Bin、FAST、QueST、OAT(sing/pow2)、M²Tok、NAC、ActionCodec）。</li><li><strong>BiCAT 十任务平均成功率最优</strong>，比最强基线提升 <strong>17.6 个百分点</strong>；在单臂任务上增益仅 1.5 点，紧耦合任务增益达 <strong>21.3 点</strong>。</li><li><strong>真实世界结果</strong>：六项任务共 150 次试验，BiCAT 成功 <strong>113 次</strong>，对比 OAT 成功 74 次。</li><li><strong>延迟</strong>：BiCAT 策略生成每个动作块仅需 <strong>40.5 ms</strong>，远低于逐 token 基线（如 Bin 451.7 ms）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.23517/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RageVLA: Augmentation-Trained Perception and Action for State-of-the-Art Robustness on LIBERO</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23491/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">GRID-UAV: Geometry and Ray-depth Integrated Decision-making for Unmanned Aerial Vehicles</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Phoenix: Learning Scene Structure Representations for Generalizable World-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Phoenix，一种学习场景结构表征的通用世界-动作模型（World-Action Model, WAM），用于同时预测未来观测和机器人动作。 针对重建导向视觉表征忽略空间关系与物体状态变化的问题，Phoenix 通过几何与时空语义知识蒸馏构建面向操作任务的场景结构表征。 在约 39,000 小时的自我中心视频与机器人操作数据上预训练，并在多个仿真与真实机器人基准上取得最先进性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24938">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">Phoenix: Learning Scene Structure Representations for Generalizable World-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24938" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24938" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Phoenix，一种学习场景结构表征的通用世界-动作模型（World-Action Model, WAM），用于同时预测未来观测和机器人动作。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24938.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24938.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24938.webp" alt="Phoenix: Learning Scene Structure Representations for Generalizable World-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中国科学院自动化研究所</p>
+        <ul class="article-facts"><li>arXiv 2611.24938</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国科学院自动化研究所</strong></li><li><strong>Anyverse Dynamics</strong></li><li><strong>清华大学</strong></li><li><strong>新加坡国立大学</strong></li><li><strong>复旦大学</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Phoenix</strong>，一种学习场景结构表征的通用世界-动作模型（World-Action Model, WAM），用于同时预测未来观测和机器人动作。</li><li>针对重建导向视觉表征忽略空间关系与物体状态变化的问题，Phoenix 通过几何与时空语义知识蒸馏构建面向操作任务的场景结构表征。</li><li>在约 <strong>39,000 小时</strong>的自我中心视频与机器人操作数据上预训练，并在多个仿真与真实机器人基准上取得最先进性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>场景结构表征用于世界-动作建模</strong>：提出 Phoenix Encoder，基于 DINOv3 视觉语义并通过双教师蒸馏融合几何（VGGT-Ω）与时空语义（V-JEPA 2.1-L）知识；CS-VAE 因果聚合压缩为生成式潜变量，保留空间布局。</li><li><strong>提升 WAM 预训练数据效率</strong>：在机器人演示数据上对比不同预训练规模，证明所提表征比纯视频 VAE 基线获得更大的性能提升和更有效的数据利用。</li><li><strong>跨六个仿真与真实机器人基准的 SOTA 性能</strong>：在扰动鲁棒性、跨实施例迁移、灵巧操作和真实世界操作上全面领先，并展现强少样本适应能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Phoenix Encoder（双教师蒸馏）</strong>：以 VGGT-Ω 中 DINOv3 的 ViT-L/16 为学生初始化；几何教师 VGGT-Ω 通过中间特征对齐与置信度加权 log 深度损失蒸馏空间结构；时空语义教师 V-JEPA 2.1-L 通过掩码视频预测蒸馏时序语义。</li><li><strong>CS-VAE（因果语义变分自编码器）</strong>：对每帧施加空间 Transformer，再用两个因果时间压缩阶段将 9 帧 Phoenix 特征压缩为 3 个潜变量时间步，保持 patch 空间网格；用 MSE + 余弦重构损失 + KL 正则训练。</li><li><strong>联合视觉与动作建模</strong>：将 CS-VAE 场景潜变量与 Wan VAE 外观潜变量沿通道拼接，形成 96 通道视觉表示；视频扩散 Transformer 与动作扩散 Transformer 通过非对称掩码联合注意力耦合；动作流额外交叉注意力到 T5 指令、机器人状态和按臂索引的软提示 token。</li><li><strong>训练流程</strong>：先进行表征预训练（蒸馏与 CS-VAE），再在机器人演示上预训练 WAM，最后针对下游任务进行后训练；采用 flow matching 目标，视觉与动作专家共享损失函数。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>预训练数据</strong>：过滤 54,413 小时数据，保留 <strong>39,306 小时</strong>；其中机器人演示占 31.09%，自我中心视频占 63.58%，UMI 数据占 5.33%。</li><li><strong>模型规模</strong>：Phoenix Encoder 基于 <strong>ViT-L/16</strong>；视频专家由 <strong>Wan2.2-TI2V-5B</strong> 初始化，动作专家随机初始化；视觉表征为 96 通道（场景 48 + 外观 48）；动作块长度 32 步。</li><li><strong>关键训练设置</strong>：WAM 预训练全局批大小 <strong>4,480</strong>，峰值学习率 <strong>1e-4</strong>；CS-VAE 峰值学习率 <strong>1.5e-4</strong>；编码器蒸馏骨干学习率 <strong>1e-5</strong>、适配器/预测器 <strong>1e-4</strong>；后训练默认 25k 步，推理 10 步去噪。</li><li><strong>训练资源</strong>：论文未明确列出具体 GPU/TPU 型号与数量。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：LIBERO-Plus、RoboTwin 2.0 Clean2Random、LIBERO-Pro、RoboCasa-GR1、Bench2Dex、RoboDojo-RealWorld，覆盖单臂、双臂、灵巧手和真实机器人场景。</li><li><strong>主要指标</strong>：任务成功率（Success Rate）。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - LIBERO-Plus 总体成功率 <strong>94.8%</strong>，比 InternW0-Δ 高 2.0 个百分点，并在七类扰动中的五类领先。</p>
+<p> - RoboTwin 2.0 C2R（双臂清洁到随机环境）成功率 <strong>72.4%</strong>，比 InternW0-Δ 高 0.5 个百分点，比 π0.5 高 26.4 个百分点。</p>
+<p> - Bench2Dex 综合成功率 <strong>45.6%</strong>，比 GR00T N1.5 高 17.3 个百分点；在无扰动、等变、不变和全部条件下均排名第一。</p>
+<p> - RoboDojo-RealWorld 平均成功率 <strong>30.0%</strong>，其中 ARX X5 33.3%、Piper 31.7%、Piper X 25.0%，均超过 OpenWAM-α 5.6 个百分点、π0.5 17.2 个百分点。</p>
+<p> - LIBERO-Pro 和 RoboCasa-GR1 分别达到 <strong>66.5%</strong> 和 <strong>82.7%</strong>。</p>
+<p> - 消融与探测表明：学习场景表征并压缩为生成潜变量能提升操作性能与动力学预测忠实度；扩大预训练数据时 Phoenix 相比纯视频 VAE 基线获得更大收益；在有限下游演示下保持高成功率，展示强少样本适应。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24940/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">$Z$-sight: Unifying Vision-Language-Action and Latent World Modeling</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24864/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">NereidVLA: Learning to Understand and Navigate the Underwater World</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

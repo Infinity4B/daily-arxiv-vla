@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Towards Pose-Robust Few-Shot Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对少样本微调视觉-语言-动作模型（VLA）在部署后相机或机器人基座发生位姿偏移时性能急剧下降的问题 指出相机偏移和基座偏移本质上是同一现象：策略记忆的 camera-to-base 外参发生了变化 提出 WACO（world-anchored canonicalization framework），利用机器人自身关节状态和静态场景从单帧 RGB-D 中估计两种偏移，将观测规范回购训练时的视角和基座坐标系，无需额外数据或地面真值外参" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24360">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">Towards Pose-Robust Few-Shot Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24360" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24360" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对少样本微调视觉-语言-动作模型（VLA）在部署后相机或机器人基座发生位姿偏移时性能急剧下降的问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24360.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24360.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24360.webp" alt="Towards Pose-Robust Few-Shot Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">山东大学 软件学院：Wenhao Li、Zhongyi Han、Yilong Yin</p>
+        <ul class="article-facts"><li>arXiv 2611.24360</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>山东大学 软件学院</strong>：Wenhao Li、Zhongyi Han、Yilong Yin</li><li><strong>深圳循环智能研究院（Shenzhen Loop Area Institute）</strong>：Wenhao Li、Yuhao Wei</li><li><strong>西安电子科技大学 生命科学技术学院</strong>：Yuhao Wei</li><li><strong>哈尔滨工业大学（深圳）计算机科学与技术学院</strong>：Liang Han、Liqiang Nie</li><li>通讯作者：<strong>Liqiang Nie</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对少样本微调视觉-语言-动作模型（VLA）在部署后相机或机器人基座发生位姿偏移时性能急剧下降的问题</li><li>指出相机偏移和基座偏移本质上是同一现象：策略记忆的 camera-to-base 外参发生了变化</li><li>提出 <strong>WACO</strong>（world-anchored canonicalization framework），利用机器人自身关节状态和静态场景从单帧 RGB-D 中估计两种偏移，将观测规范回购训练时的视角和基座坐标系，无需额外数据或地面真值外参</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将相机偏移和基座偏移统一建模为外参变化，揭示基于机械臂自标定的规范模糊性（gauge ambiguity）以及 LIBERO 世界坐标系约定对基座偏移的隐性吸收</li><li>提出 <strong>WACO</strong>：免标定的双锚点估计器（机械臂锚点 + 世界锚点）、通道分离的规范器（图像通道只做相机偏移校正，状态/动作/起始位姿通道只做基座偏移校正）以及面向估计器误差的微调增强策略</li><li>发布 <strong>LIBERO-PoseShift</strong>：首个针对 RGB-VLA 的包含分级基座偏移和复合偏移的基准，并采用与实际机器人同构的基座坐标系协议</li><li>在 LIBERO-PoseShift、LIBERO-Plus 相机轨道以及四个真实 UR5e 任务上，WACO 均优于标准少样本配方和已有视点鲁棒方法，且在不使用扰动训练数据、无测试时标定的设置下达到最优</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>双锚点偏移估计</strong>：机械臂锚点利用前向运动学将机械臂点云配准到观测深度，获得度量级的外参估计；世界锚点通过将当前帧与空工作空间参考帧（SIFT + RANSAC + ICP）匹配，独立恢复相机偏移</li><li><strong>融合与门控</strong>：利用外参约束闭式求解基座偏移（SE(2)），被丢弃的高度/滚转/俯仰残差作为无需地面真值的一致性检验，失败时回退到不规范化的原始策略</li><li><strong>通道分离规范化</strong>：图像通道仅用相机偏移进行前向映射（forward-splatting）至标定视角；状态、动作和起始位姿通道仅用基座偏移变换回标定基座坐标系，并将动作旋转回实际基座坐标系后执行</li><li><strong>误差感知微调</strong>：在演示数据上通过 round-trip reprojection（随机虚拟相机往返投影，模拟测试时 splat 引起的空洞、边界和残余偏差）和 structured state noise（平面基座偏移误差扰动状态）进行增强，使策略适应自身估计器的误差分布</li><li><strong>大视角前端</strong>：针对 LIBERO-Plus 的极端视角变化，引入场景内标定与扫描（多视角参考）、平面约束全局搜索、地板周期性混叠处理、反向扭曲图像填充以及仅用机械臂的回退方案</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>基准数据集</strong>：LIBERO-PoseShift（自建，包含分级相机、基座和复合偏移）、LIBERO-Plus 相机轨道（作为现有视点鲁棒基准）</li><li><strong>策略模型</strong>：基于 <strong>π0.5</strong>（flow-matching VLA），使用 <strong>LeRobot</strong> 微调，全局 batch size 32</li><li><strong>深度估计</strong>：使用 <strong>Depth Anything V2</strong> 提供逐帧度量深度，并对齐到标定尺度</li><li><strong>真实机器人</strong>：<strong>UR5e</strong> 机器人，四个真实桌面操作任务</li><li><strong>训练资源</strong>：未明确提及 GPU/TPU 型号；强调使用未修改的 π0.5 模型，无新增头部或参数</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO-PoseShift 仿真基准（基座坐标系协议）、LIBERO-Plus 相机轨道（大范围视角变化）、真实 UR5e 机器人任务（四种桌面操作）</li><li><strong>主要指标</strong>：任务成功率（shifted success rate）</li><li><strong>关键结果</strong>：</li></ul>
+<p> - WACO 在仿真中将偏移后成功率提升 <strong>13.2 个百分点</strong>，在真实机器人上提升 <strong>36.7 个百分点</strong></p>
+<p> - 恢复 <strong>90%</strong> 的仿真环境与地面真值 oracle 之间的差距，恢复 <strong>87%</strong> 的真实机器人差距</p>
+<p> - 在无扰动训练数据且无测试时标定的方法中达到新的 SOTA</p>
+<p> - 基座偏移被解析处理，误差异常小：标准误差模型为 8 mm 平移和 0.6° 旋转（yaw）</p>
+<p> - 消融实验验证：机械臂锚点和世界锚点各自必要，误差感知训练显著弥补真实规范化与理想规范化之间的差距</p>
+<p> - 少样本规模下提升最大：演示数量越少，WACO 优势越明显</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24455/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Homeward: No Place Like the Training View</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24247/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Allocentric Memory, Egocentric Acting: A Dual-Frame VLA for Urban Aerial Navigation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

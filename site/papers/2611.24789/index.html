@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>HINT-WAM: Hindsight-Informed Training for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了 HINT-WAM，一种面向世界动作模型（WAMs）的在线策略自蒸馏后训练框架 针对现有 WAM 后训练方法（离线 SFT 存在曝光偏差和目标歧义，在线 RL 奖励稀疏）的不足，利用演示中的未来视频帧（后见之明）作为特权信息，让模型在自身采样轨迹上自我监督 目标是在不依赖环境奖励或模拟器交互的情况下提升 WAM 在机器人操作任务上的可靠性和泛化能力" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.24789">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">HINT-WAM: Hindsight-Informed Training for World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.24789" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.24789" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 HINT-WAM，一种面向世界动作模型（WAMs）的在线策略自蒸馏后训练框架</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.24789.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.24789.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.24789.webp" alt="HINT-WAM: Hindsight-Informed Training for World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者均来自 新加坡国立大学（National University of Singapore）</p>
+        <ul class="article-facts"><li>arXiv 2611.24789</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者均来自 <strong>新加坡国立大学（National University of Singapore）</strong></li><li>作者包括 <strong>Phuong Tuan Dat</strong>、<strong>Qi Li</strong>、<strong>Xinchao Wang</strong>（通讯作者）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>HINT-WAM</strong>，一种面向世界动作模型（WAMs）的在线策略自蒸馏后训练框架</li><li>针对现有 WAM 后训练方法（离线 SFT 存在曝光偏差和目标歧义，在线 RL 奖励稀疏）的不足，利用演示中的未来视频帧（后见之明）作为特权信息，让模型在自身采样轨迹上自我监督</li><li>目标是在不依赖环境奖励或模拟器交互的情况下提升 WAM 在机器人操作任务上的可靠性和泛化能力</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>HINT-WAM</strong> 框架：无需单独训练教师模型，仅通过添加轻量后见之明分支使同一模型同时充当教师和学生，且无需环境奖励或模拟器交互</li><li>针对流匹配动作专家，设计了基于 <strong>能量分数（energy score）</strong> 的分布级蒸馏目标，避免速度回归导致的模式平均问题，且不需要动作似然评估</li><li>在 <strong>LIBERO-90</strong> 和 <strong>RoboTwin 2.0</strong> 上全面验证，HINT-WAM 显著优于 SFT 和匹配基线，并有效缓解预训练技能的灾难性遗忘</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>Fast-WAM</strong> 架构，冻结大型视频专家，只训练轻量动作专家</li><li>分三阶段：<strong>Stage 0</strong> 对动作专家进行 SFT 初始化；<strong>Stage A</strong> 冻结骨干，训练轻量后见之明编码器和门控交叉注意力适配器，使模型能读取未来视频帧作为教师；<strong>Stage B</strong> 在教师固定下，学生在自身 ODE 采样轨迹上通过能量分数匹配教师动作分布，并辅以行为克隆锚定项</li><li><strong>后见之明编码器</strong>：丢弃当前帧，空间池化未来帧并利用可学习查询进行多头注意力池化，得到后见之明 token</li><li><strong>门控交叉注意力适配器</strong>：以 Flamingo 风格的门控残差分支注入后见之明信息，零初始化为恒等映射</li><li><strong>能量分数目标</strong>：学生抽取 M 条采样轨迹，教师抽取一个动作样本，通过拉近学生样本与教师样本、推开学生样本间距离来匹配分布，避免模式平均</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO-90</strong>（90 个未见过任务，来自 LIBERO 四套件共享动作空间的演示，3921 条演示）和 <strong>RoboTwin 2.0</strong>（50 个双臂操作任务，选用预先选定的 25 个困难子集，干净和随机设置各 50 回合）</li><li>模型规模：基础模型为已发布的 <strong>Fast-WAM</strong> 检查点；后见之明分支（编码器 + 适配器）额外增加约 <strong>13M</strong> 参数（约占 0.2%），仅教师使用</li><li>训练资源：<strong>8 块 A5000 GPU</strong>，有效批量大小 192，使用 AdamW 优化器与余弦调度；Stage 0 训练 5000 步，Stage A 训练 2000 步，Stage B 训练 2000 步</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：LIBERO 基准测试标准评估协议，每任务 50 次试验；RoboTwin 2.0 干净与随机设置各 50 回合</li><li>主要指标：任务成功率（%）</li><li><strong>LIBERO-90</strong>：HINT-WAM 成功率 <strong>85.18%</strong>，较 SFT 的 78.88% 提升 <strong>6.30%</strong>，较全 SFT 的 81.24% 提升 3.94%；同时超过 BC 控制 71.56%、自模仿 79.62%、乱序后见之明 80.28%</li><li><strong>RoboTwin 2.0</strong>：HINT-WAM 在干净设置下 <strong>87.04%</strong>，随机设置下 <strong>83.68%</strong>，优于 BC 控制（85.36% / 82.08%）和全 SFT（84.12% / 83.24%），且几乎不损失预训练性能</li><li><strong>持续学习</strong>：无回放时 HINT-WAM 保留原始套件平均成功率最高（<strong>44.05%</strong>，SFT 为 37.45%，全 SFT 为 32.85%）；有回放时 HINT-WAM 新任务 <strong>81.56%</strong>、原始套件平均 <strong>95.10%</strong>，均显著优于 SFT 和全 SFT</li><li><strong>计算成本</strong>：HINT-WAM 训练时间约为 SFT 的 1.28 倍，仅为全 SFT 的 0.56 倍，但取得更高成功率；蒸馏单步比 BC 慢 1.5 倍，该开销仅存在于训练阶段</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.24816/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RoboMorpher: Scaling Robot Morphology Representations for Cross-Embodiment Action Prediction</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24708/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">F$^3$: What Makes Good Experience in World-Action Models?</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

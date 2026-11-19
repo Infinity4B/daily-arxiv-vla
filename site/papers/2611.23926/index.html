@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>GTI: Grounding Task Intent Throughout Long-Horizon VLA Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 GTI（Grounding Task Intent） 框架，解决长时程 VLA 操作中全局任务意图难以持续对准当前可执行上下文的问题 核心思想是利用当前观测与执行历史定位活跃子任务及其执行阶段，并为同一子任务生成阶段特定的视觉里程碑（K1 交互/接触状态 和 K2 局部完成状态） 通过本地语言指令和阶段视觉目标共同条件 VLA 执行器，并在持续异常时进行局部恢复与意图再对齐" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.23926">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">GTI: Grounding Task Intent Throughout Long-Horizon VLA Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.23926" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.23926" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 GTI（Grounding Task Intent） 框架，解决长时程 VLA 操作中全局任务意图难以持续对准当前可执行上下文的问题</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef" aria-hidden="true">
+  <p class="note-cover-title">GTI: Grounding Task Intent Throughout Long-Horizon VLA Manipulation</p>
+</div></figure>
+        <p class="article-unit">论文作者均来自 上海交通大学（Shanghai Jiao Tong University），中国</p>
+        <ul class="article-facts"><li>arXiv 2611.23926</li><li>6 节精读</li><li>约 11 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者均来自 <strong>上海交通大学</strong>（Shanghai Jiao Tong University），中国</li><li>作者包括 <strong>Tianqi Gong</strong>、<strong>Haochen Niu</strong>、<strong>Yusheng Zhao</strong>、<strong>Lantao Zhang</strong>、<strong>Haoyu Liu</strong>、<strong>Rendong Ying</strong>、<strong>Peilin Liu</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>GTI（Grounding Task Intent）</strong> 框架，解决长时程 VLA 操作中全局任务意图难以持续对准当前可执行上下文的问题</li><li>核心思想是利用当前观测与执行历史定位活跃子任务及其执行阶段，并为同一子任务生成阶段特定的视觉里程碑（<strong>K1 交互/接触状态</strong> 和 <strong>K2 局部完成状态</strong>）</li><li>通过本地语言指令和阶段视觉目标共同条件 VLA 执行器，并在持续异常时进行局部恢复与意图再对齐</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>GTI</strong> 持续任务意图接地框架，从当前观测和执行历史中定位活跃子任务与执行阶段，并在持续异常后恢复与意图一致的执行上下文</li><li>设计 <strong>结构化规划器 + 阶段条件视觉接地</strong> 机制：生成 K1/K2 阶段视觉目标，并与局部语言指令共同条件 VLA</li><li>提出基于 VLA 动作潜特征的 <strong>异常监测与局部恢复</strong> 模块，通过回滚、重观测和阶段重评估保持子任务意图；保留 K1/K2 缓存，支持失败后重新接地</li><li>在 <strong>RoboCasa365</strong>、<strong>VLA-Arena Horizon-Long</strong> 和真实 <strong>PiPER</strong> 机器人上开展完整系统对比、匹配视觉接地消融和部署敏感性测试</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>记忆式意图定位：使用 <strong>Qwen2.5-VL-3B-Instruct</strong> 作为规划器，输入全局指令、当前三视角图像和已完成子任务历史，输出技能、物体、目标位置、来源、阶段五个字段；采用字段并行 token 解码，语义切换需两次稳定确认</li><li>阶段条件视觉接地：适配 <strong>Wan2.2-TI2V-5B-Diffusers</strong>，以当前观测、局部指令和阶段为条件生成 <strong>K1</strong>（接触关系建立）或 <strong>K2</strong>（局部完成）视觉里程碑；训练使用重复目标监督 <code>[当前帧, K, K, K, K]</code> 保留原生视频时序接口，仅监督未来目标潜位置</li><li>执行器适配：VLA 保留原生动作参数化，将预测的里程碑作为第四幅视觉输入，与物理相机视图共同送入共享视觉编码器，如 GR00T 使用 <strong>Eagle</strong>，π0/π0.5 使用 <strong>PaliGemma</strong></li><li>异常监测与恢复：采用 <strong>LSTM-MLP</strong>（1024-256、LSTM-256、MLP、dropout 0.1）对 VLA 最终去噪动作潜特征建模并预测异常概率；持续异常触发 8 步 <code>+z</code> 回滚、4 步稳定和 60 步冷却，重观测后重新评估阶段并复用或重新生成里程碑；恢复触发需连续两个策略 chunk 超动态阈值，每个子任务最多恢复一次</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集与基准：<strong>RoboCasa365</strong>（18 个 seen atomic、16 个 seen composite、16 个 unseen composite，含 ID 和 cross-scene OOD）；<strong>VLA-Arena Horizon-Long</strong>（L0+L1 用于适配，L2 作为 held-out；L0 视为原子任务，L1/L2 视为复合任务）；真实机器人 <strong>AgileX PiPER 6R</strong> 上的柜子搜索/放置、彩椒-香蕉互换、猕猴桃搜索/放置任务</li><li>模型规模：规划器 <strong>Qwen2.5-VL-3B-Instruct</strong>（约 3B 参数）、视觉接地模型 <strong>Wan2.2-TI2V-5B-Diffusers</strong>（约 5B 参数）、执行器包括 <strong>GR00T N1.5</strong>、<strong>π0.5</strong>、<strong>π0</strong></li><li>训练数据规模：RoboCasa 规划器使用 89,260 个原子状态和 215,934 个复合状态；视觉接地使用 148,790 条 K1/K2 记录；VLA-Arena 规划器来自 728 条 L0/L1 演示，视觉接地 4,317 条 K1/K2 记录；真实机器人使用 1,000 条成功遥操作演示并构建 3,000 条 K1/K2 记录</li><li>训练资源：执行器接口适配使用 <strong>单 GPU</strong>，配置为 per-device batch 8、gradient accumulation 4（有效 batch 32），RoboCasa 共 20,000 次更新；VLA-Arena 训练 1 个 epoch，共 115,198 帧；真实机器人执行器训练 15,000 步</li><li>训练配置：规划器冻结视觉编码器，使用 LoRA rank 16、学习率 1e-4、训练 2 个 epoch；视觉接地模型同样使用 LoRA rank 16、学习率 1e-4，训练 4-12 个 epoch</li><li>评估设置：模拟实验使用种子 <strong>7、42、142</strong> 平均；RoboCasa 每任务每种子 50 次试验；VLA-Arena 每个任务 50 episodes，对应 L0/L1/L2 共 500/250/250 episodes；真实机器人每个条件 30 次试验</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>离线意图定位精度：RoboCasa 上 Exact-4 为 <strong>90.30%</strong>、Exact-5 为 <strong>79.55%</strong>；VLA-Arena 上 Exact-4 为 <strong>85.13%</strong>、Exact-5 为 <strong>83.36%</strong>；阶段字段在 VLA-Arena 上准确率达 <strong>94.95%</strong></li><li>离线视觉接地质量：RoboCasa Atomic 与 Composite 的 PSNR 分别为 <strong>18.12 dB</strong> 和 <strong>17.57 dB</strong>；VLA-Arena L0/L1 分别为 <strong>19.53 dB</strong> 和 <strong>20.25 dB</strong>；人工诊断 700 个样本中 K1 正确率 <strong>90.1%</strong>、K2 正确率 <strong>83.0%</strong>、几何/空间关系正确率 <strong>72.0%</strong></li><li>VLA-Arena 主结果：<strong>GTI+π0.5</strong> 总体成功率为 <strong>47.6%</strong>，优于 Global-FT π0.5 的 <strong>43.8%</strong> 和 ForeAct+π0.5 的 <strong>45.2%</strong>；在难度更高的 L1/L2 上分别提升 <strong>+8.0 / +6.0</strong> 个百分点</li><li>多种执行器验证：<strong>GTI+π0</strong> 总体成功率为 <strong>45.3%</strong>，对比 π0 Global-FT 的 <strong>42.2%</strong> 和 ForeAct+π0 的 <strong>43.6%</strong>，总体提升 <strong>+3.1</strong> 个百分点</li><li>消融结果：Global instruction 总体 <strong>43.8%</strong> → Planner language <strong>44.3%</strong> → Planner+phase text <strong>44.8%</strong> → Planner+Single-K2 <strong>44.9%</strong> → K1/K2 w/o recovery <strong>47.0%</strong> → GTI <strong>47.6%</strong>，显示 K1/K2 阶段目标和局部恢复均带来增益</li><li>RoboCasa 结果：<strong>GR00T</strong> 在 seen composite ID/OOD 上的成功率由 <strong>14.6% / 12.1%</strong> 提升至 <strong>31.8% / 20.4%</strong></li><li>真实机器人结果：三项任务的平均全任务成功率由 <strong>21.7%</strong> 提升至 <strong>59.2%</strong></li><li>主要性能增益集中在 L1/L2 等长时程多阶段复合任务，原子任务 L0 上的提升相对有限，与框架设计目标一致</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.23961/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">3DTouch: A Tactile-aware VLA Model with 3D Geometric Relations for Dexterous Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23843/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">RePlan-VLA: Progress-Aware Replanning for Long-Horizon Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

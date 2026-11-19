@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>LoRN: Low-Rank Noise Steering for Generative Robot Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 LoRN（Low-Rank Noise Steering），一种用于生成式机器人策略的强化学习方法，通过在学习过程中选择初始噪声而不更新模型权重来改进策略 针对现有噪声引导方法难以扩展到大型策略（如世界-动作模型，WAM）高维噪声输入的问题，LoRN 通过低秩随机投影和范数保持构造实现可扩展的噪声引导 论文发现 WAM 的解码动作对视频噪声比动作噪声更敏感，从而利用视频噪声进行引导，显著提升任务成功率" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.23628">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-17">2026-11-17</time></p>
+        <h1 class="article-title">LoRN: Low-Rank Noise Steering for Generative Robot Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.23628" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.23628" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 LoRN（Low-Rank Noise Steering），一种用于生成式机器人策略的强化学习方法，通过在学习过程中选择初始噪声而不更新模型权重来改进策略</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">LoRN: Low-Rank Noise Steering for Generative Robot Policies</p>
+</div></figure>
+        <p class="article-unit">作者包括 Wei Liu、Abrar Anwar、Huihua Zhao、Soha Pouya、Yan…</p>
+        <ul class="article-facts"><li>arXiv 2611.23628</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者包括 <strong>Wei Liu</strong>、<strong>Abrar Anwar</strong>、<strong>Huihua Zhao</strong>、<strong>Soha Pouya</strong>、<strong>Yan Chang</strong></li><li>所属机构：<strong>NVIDIA</strong>（作者列表中的机构标注显示 NVIDIA，且标注了 Equal contribution）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>LoRN（Low-Rank Noise Steering）</strong>，一种用于生成式机器人策略的强化学习方法，通过在学习过程中选择初始噪声而不更新模型权重来改进策略</li><li>针对现有噪声引导方法难以扩展到大型策略（如世界-动作模型，WAM）高维噪声输入的问题，LoRN 通过低秩随机投影和范数保持构造实现可扩展的噪声引导</li><li>论文发现 WAM 的解码动作对<strong>视频噪声</strong>比动作噪声更敏感，从而利用视频噪声进行引导，显著提升任务成功率</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>引入 <strong>LoRN</strong>：固定随机低秩子空间与新鲜高斯样本混合，不依赖 actor 输出，保持期望平方噪声范数，独立于噪声维度</li><li>识别噪声范数保持为可靠引导的关键要求，并测量每个冻结策略可容忍的噪声范数带，发现该带可能非常窄</li><li>理论证明：一个秩为 \(r\) 的随机子空间错过状态的高优势噪声的概率至多为 \((1-p)^r\)，其中 \(p\) 为改进噪声在球面上的比例；并证明在该子空间内选择改进方向可改善基础策略</li><li>提供实用的世界-动作模型引导配方：包含一个<strong>无奖励探针</strong>来选择引导哪个噪声输入（视频或动作），并在三个世界-动作模型、十二个动作策略任务以及双臂机器人平台上进行评估</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>LoRN 构造</strong>：随机生成正交投影矩阵 \(P \in \mathbb{R}^{N \times r}\)（\(r \ll N\)），actor 输出 \(r\) 维系数 \(u\)，归一化为单位方向 \(d = Pu / \\|u\\|\)，然后构造噪声 \(z = \sqrt{1-s^2}\,\varepsilon + s\sqrt{N}\,d\)，其中 \(\varepsilon \sim \mathcal{N}(0,I_N)\)，\(s\) 由 \(\\|u\\|\) 通过上限 \(\alpha\) 和尺度 \(\rho\) 确定</li><li><strong>保持范数</strong>：混合构造保证 \(\mathbb{E}\\|z\\|^2 = N\)，使噪声保持在扩散/流匹配策略训练时所见的典型高斯范数附近</li><li><strong>低秩子空间</strong>：actor 仅控制 \(r\) 维系数，但通过 \(P\) 的列（全尺寸噪声模式）影响整个噪声向量，使搜索空间维度与噪声维度 \(N\) 解耦</li><li><strong>选择噪声输入</strong>：通过敏感性探针比较重采样视频噪声与动作噪声对生成动作的影响（RMS 差异），选择影响更大的输入进行引导；在三个 WAM 上视频噪声的影响显著更大</li><li><strong>训练</strong>：使用 <strong>SAC</strong> 算法训练 steering actor，actor 输出系数 \(u\)，在冻结的 WAM 或动作策略之上进行强化学习</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>世界-动作模型</strong>：<strong>Cosmos3-Edge</strong>、<strong>DreamZero-14B</strong>、<strong>DreamZero-5B</strong>（后者在 LIBERO 上）</li><li><strong>动作策略</strong>：<strong>\(\pi_0\)</strong>、<strong>\(\pi_{0.5}\)</strong>、<strong>Diffusion Policy</strong>、<strong>GR00T N1.7</strong></li><li><strong>任务与环境</strong>：RoboLab 四个任务（MustardInLeftBin, MarkerInMug, ButterAboveRaisin, StackYellowOnRed）、LIBERO（cream-cheese-box, moka-pot）、ALOHA、YAM 任务、Robomimic</li><li><strong>噪声维度</strong>：Cosmos3-Edge 视频噪声为 <strong>506,880</strong> 维，Robomimic 动作噪声为 <strong>28</strong> 维；投影秩典型为 <strong>32</strong></li><li><strong>训练资源</strong>：论文未在正文中明确列出 GPU 型号与数量；实验涉及大规模世界-动作模型、动作策略和物理机器人平台，训练在模拟环境（如 Isaac Lab）中进行</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境与基准</strong>：三个世界-动作模型、十二个动作策略模拟任务、物理双臂 YAM 站；对比方法包括 <strong>DSRL</strong>、<strong>LP-DS</strong> 以及基础策略</li><li><strong>主要评估指标</strong>：任务成功率（success rate），使用多次评估的均值和标准误差（一般为 3 个训练种子）</li><li><strong>视频噪声引导结果</strong>：在三个 WAM 共十个模型-任务对上，LoRN 视频引导平均成功率从基础策略的 <strong>43.0%</strong> 提升至 <strong>69.2%</strong>（+26.2 个百分点）；DSRL 动作引导仅提升至 <strong>50.1%</strong>（+7.1 个百分点）</li><li><strong>动作噪声引导结果</strong>：在十二个动作策略任务上，LoRN 在九个任务上具有最高的早期平均成功率，在 \(\pi_{0.5}\) 任务上最终成功率超过 DSRL 和 LP-DS；Diffusion Policy 上与 DSRL 最终成功率差距在 3 个百分点内</li><li><strong>物理机器人迁移</strong>：在 YAM 站上，模拟训练的 LoRN 直接部署到真机；cube to bowl 任务真机成功 <strong>6/10</strong>（基础策略 0/10），cube handover 任务真机成功 <strong>8/10</strong>（基础策略 0/10，微调后 3/10）</li><li><strong>消融分析</strong>：范数保持的混合构造对稳定引导至关重要；投影秩 32 已足够，进一步增加收益有限；视频噪声的选择通过敏感性探针有效识别</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.23676/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Finetuning VLAs for Dexterous Manipulation: The Right Checkpoint Is All You Need</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.23517/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">RageVLA: Augmentation-Trained Perception and Action for State-of-the-Art Robustness on LIBERO</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
