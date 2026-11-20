@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PGX: Physically Grounded Execution for Long-Horizon Humanoid Loco-Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对人形机器人长时程移动操作问题：现有视觉-语言-动作模型（VLA）虽能执行单个操作技能，但在时间结构、技能动态与精度控制紧密耦合的长时程任务中表现不佳 提出 PGX（Physically Grounded Execution），一个无需训练的执行框架，将时间控制与精度控制从 VLA 中剥离，交给两个经典组件处理，让 VLA 专注于各阶段的操作技能执行 核心洞察：平坦 VLA 最不擅长的&quot;何时&quot;和&quot;何地&quot;行动可由物理量直接解决，而&quot;如何&quot;执行技能正是 VLA 最擅长之处" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26596">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">PGX: Physically Grounded Execution for Long-Horizon Humanoid Loco-Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26596" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26596" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对人形机器人长时程移动操作问题：现有视觉-语言-动作模型（VLA）虽能执行单个操作技能，但在时间结构、技能动态与精度控制紧密耦合的长时程任务中表现不佳</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26596.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26596.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26596.webp" alt="PGX: Physically Grounded Execution for Long-Horizon Humanoid Loco-Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">牛津机器人研究所，牛津大学（Kai Lu、Ioannis Havoutis）</p>
+        <ul class="article-facts"><li>arXiv 2611.26596</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>牛津机器人研究所</strong>，<strong>牛津大学</strong>（Kai Lu、Ioannis Havoutis）</li><li><strong>牛津大学计算机科学系</strong>（Chenyang Ma）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对<strong>人形机器人长时程移动操作</strong>问题：现有视觉-语言-动作模型（VLA）虽能执行单个操作技能，但在时间结构、技能动态与精度控制紧密耦合的长时程任务中表现不佳</li><li>提出 <strong>PGX（Physically Grounded Execution）</strong>，一个无需训练的执行框架，将时间控制与精度控制从 VLA 中剥离，交给两个经典组件处理，让 VLA 专注于各阶段的操作技能执行</li><li>核心洞察：平坦 VLA 最不擅长的"何时"和"何地"行动可由物理量直接解决，而"如何"执行技能正是 VLA 最擅长之处</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>PGX 框架</strong>：将谓词门控状态机（FSM）与世界坐标锁定（WCL）层结合 VLA 模型，提升长时程任务能力</li><li>开发带重试与逆向转移的谓词门控阶段序列机制及 WCL 组件，解耦的执行层可跨 VLA 骨干网络泛化</li><li>同一谓词规则服务三个用途：离线演示分割、在线执行门控、阶段评估，将训练目标、执行条件和度量指标绑定到同一物理事件</li><li>在三个仿真任务和真实人形机器人上验证，将近乎失败的平坦策略转化为可靠的长时程执行（如咖啡任务成功率从 35% 提升至 80%）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>三层解耦架构</strong>：</li></ul>
+<p> - <strong>时序层</strong>：谓词门控有限状态机（FSM），每个阶段表示为五元组（指令、执行器、守卫谓词、超时、恢复策略），包含抓取、放置、触发、站立、掉落五种物理谓词，支持重试与逆向转移恢复</p>
+<p> - <strong>技能层</strong>：VLA 仅在操作阶段内执行，执行器负责重建技能训练时的起始条件（物体相对站位、手臂姿态）；支持平坦模型和阶段训练模型两种技能模型</p>
+<p> - <strong>精度层</strong>：世界坐标锁定（WCL）包括物体相对站位、底座定点保持（带内外阈值的迟滞校正）和世界锚定接触目标（通过逆运动学转换为关节指令）</p>
+<ul><li><strong>关键创新</strong>：任务推进和空间精度由物理结构决定，VLA 保持冻结权重不变，仅在操作阶段内执行操作动作；操作阶段屏蔽 VLA 的底座速度通道以消除漂移</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真环境</strong>：<strong>Isaac Lab Arena</strong>，使用 <strong>Unitree G1</strong> 人形机器人与 <strong>Dex-3</strong> 灵巧手</li><li><strong>任务与数据</strong>：</li></ul>
+<p> - 箱子搬运：100 条官方 <strong>MimicGen</strong> 演示（切分后 200 个操作段）</p>
+<p> - 马克杯放置：30 条遥操作演示（60 段）</p>
+<p> - 咖啡取拿：50 条 Quest 遥操作演示（250 段，主测试平台）</p>
+<p> - 真实机器人：44 条 Quest 遥操作演示（176 段），<strong>Vicon</strong> 动捕提供位姿</p>
+<ul><li><strong>VLA 骨干</strong>：<strong>π₀.₅</strong>（32 维动作）和 <strong>GR00T N1.6</strong>（35 维动作），动作块长度 16 步</li><li><strong>全身控制器</strong>：仿真中使用 <strong>HOMIE</strong>，真机使用 <strong>GR00T-WBC</strong> 策略</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估设置</strong>：标称初始位姿（C0）与随机化初始位姿（C1，平移 ±0.30 m、偏航 ±30°）；每格至少 20 次评估；时间预算为 40 s / 60 s / 110 s（箱子/杯子/咖啡）</li><li><strong>评估指标</strong>：端到端成功率、每回合最远阶段进度、操作期间底座漂移</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 咖啡取拿任务：<strong>π₀.₅</strong> 成功率从 0% 提升至 60%/55%，<strong>GR00T</strong> 从 35%/20% 提升至 80%/80%（权重不变）；加入 WCL-P 后按压率达 95–100%，<strong>π₀.₅</strong> 成功率达 70%</p>
+<p> - 三个任务六种条件设置下，平均阶段进度与成功率：<strong>GR00T</strong> 从 35% 提升至 78%，<strong>π₀.₅</strong> 从 17% 提升至 82%</p>
+<p> - 执行结构是主要增益来源（平坦模型放入 PGX 后 GR00T 咖啡任务从 20–35% 升至 80%），阶段训练是次要且依赖模型的因素</p>
+<p> - 站点保持将持续扰动下的 p90 最大底座漂移从 54 cm 降至 9 cm；世界锚定原语在 245 次按钮阶段进入中完成 243 次（99%）</p>
+<p> - 真实 <strong>Unitree G1</strong> 实验验证了仿真到实机的阶段图和谓词迁移有效性</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26565/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">PhyDEX: A Benchmark for Physical Reasoning in Vision-Language-Action Models via Dynamic Extrinsic Dexterity</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

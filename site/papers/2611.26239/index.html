@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Teaching Vision-Language-Action Models to Stop Safely - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对视觉-语言-动作（VLA）模型在任务执行中途被禁止时无法可靠停止、以及停止后可能产生不安全物理响应（如掉落已抓取物体）的问题。 提出 State-Aware Fallback Imitation (SAFI)，通过显式学习“保持夹持”这一安全的备选响应，让机器人在任务被禁止后不仅在初始状态、而且在中间接管状态下都能安全停止。 目标是在抑制被禁止任务的同时，保持其他已授权任务的性能，并避免物理事件或动作饱和。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26239">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">Teaching Vision-Language-Action Models to Stop Safely</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26239" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26239" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对视觉-语言-动作（VLA）模型在任务执行中途被禁止时无法可靠停止、以及停止后可能产生不安全物理响应（如掉落已抓取物体）的问题。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26239.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26239.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26239.webp" alt="Teaching Vision-Language-Action Models to Stop Safely 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University of Notre Dame（多数作者：Zheyuan Liu、Chuhan Wa…</p>
+        <ul class="article-facts"><li>arXiv 2611.26239</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of Notre Dame</strong>（多数作者：Zheyuan Liu、Chuhan Wang、Jinduo Guo、Yue Huang、Meng Jiang）</li><li><strong>Georgia Tech</strong>（Xiangchi Yuan）</li><li><strong>MIT</strong>（Ningshan Ma）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对视觉-语言-动作（VLA）模型在任务执行中途被禁止时无法可靠停止、以及停止后可能产生不安全物理响应（如掉落已抓取物体）的问题。</li><li>提出 <strong>State-Aware Fallback Imitation (SAFI)</strong>，通过显式学习“保持夹持”这一安全的备选响应，让机器人在任务被禁止后不仅在初始状态、而且在中间接管状态下都能安全停止。</li><li>目标是在抑制被禁止任务的同时，保持其他已授权任务的性能，并避免物理事件或动作饱和。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>识别了 VLA 模型“无法停止正在进行的任务”和“产生不安全替代响应”两个关键问题，并通过中间状态接管评估协议进行量化验证。</li><li>提出 <strong>SAFI</strong> 两阶段框架：阶段一从被禁止任务的演示中构造“保持夹持”回退目标，阶段二联合优化回退模仿和保留任务模仿。</li><li>在 <strong>LIBERO</strong>（Goal、Spatial、Object）和 <strong>BadLIBERO</strong> 后门攻击设置上系统评估了抑制效果、物理事件、动作饱和及保留任务性能。</li><li>实验证明 SAFI 可将接管后目标成功率降至 <strong>1.3%</strong>（LIBERO 平均），且 <strong>无物理事件</strong>、<strong>无动作饱和</strong>，同时保持高保留任务成功率（Spatial 96.9%、Object 93.1%）。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Fallback Target Construction（回退目标构建）</strong>：对于每个被禁止任务演示，将整个动作块中的手臂运动指令替换为“零位移”指令（保持当前位置），并将夹爪指令固定为演示中第一个夹爪指令，形成显式的“保持夹持”回退目标。</li><li><strong>Joint Policy Adaptation（联合策略适配）</strong>：使用 <strong>LoRA</strong> 对语言模型层进行微调，并更新动作头；训练目标同时最小化回退目标上的模仿误差（回退损失）和保留任务上的原始动作模仿误差（保留损失），二者等权重相加。</li><li>关键创新在于：在<strong>所有执行的中间状态</strong>（不仅初始状态）都提供回退监督，使策略学会在接管后保持稳定夹持；同时通过保留任务监督防止灾难性遗忘。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong> 基准（包含 Goal、Spatial、Object 三个任务套件），选取原始策略可执行且脚本化“保持”能通过适用性检查的任务。</li><li><strong>BadLIBERO</strong> 基准（基于 GoBA 的中毒物体后门攻击设置），使用被植入策略作为参考。</li><li>基础模型：<strong>OpenVLA-OFT</strong> 策略（基于 OpenVLA 的连续动作块预测模型，具体参数规模文中未明确，但 OpenVLA 通常为 7B 级）。</li><li>训练资源：LIBERO-Goal 和 BadLIBERO 实验使用 <strong>NVIDIA RTX A6000 GPU</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO 仿真环境（Spatial、Object、Goal）及 BadLIBERO 后门攻击环境；采用从初始状态和中间状态接管（early/mid-task takeover）的协议。</li><li><strong>主要评估指标</strong>：目标成功率（Target Success Rate）、物理事件率（Physical Incident Rate）、动作饱和率（Action Saturation Rate）、保留任务成功率（Retained Success Rate）、物体位移（Object Displacement）、夹爪接触率（Gripper Contact Rate）。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - LIBERO 平均：SAFI 将目标成功率从原始策略的 <strong>99.7%</strong> 降至 <strong>1.3%</strong>，物理事件率 <strong>0%</strong>，动作饱和率 <strong>0%</strong>。</p>
+<p> - BadLIBERO：SAFI 目标成功率 <strong>0%</strong>，物理事件率 <strong>0%</strong>，动作饱和率 <strong>0%</strong>，优于 GA、GradDiff、NPO-RT 等基线。</p>
+<p> - 保留任务性能：Spatial 上 <strong>96.9%</strong>、Object 上 <strong>93.1%</strong>，显著优于仅用回退损失的变体（保留成功率降为 0%）。</p>
+<p> - 物理响应：SAFI 平均末端物体位移 <strong>3.1 cm</strong>（最接近脚本化保持），夹爪接触率 <strong>97.3%</strong>，在所有适配策略中最佳。</p>
+<p> - 与梯度上升（GA）、梯度差（GradDiff）、NPO-RT、RMU、Refusal FT、VLA-Forget 等基线相比，SAFI 在抑制效果、物理安全性和保留性能之间取得最佳平衡。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26242/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FastRoverVLA: Fast Vision-Language-Action Execution for Off-Road Autonomous Driving</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26161/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">One View, One Action: Spatially Generalizable VLAs through Observation-Aligned Experts and Cross Graph Consistency</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

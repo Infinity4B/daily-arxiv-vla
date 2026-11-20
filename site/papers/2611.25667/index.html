@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>CauSyncVLA: Causal Latent World Modeling for Asynchronous Robot Control - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 CauSyncVLA，一个面向异步机器人控制的因果潜世界建模框架，旨在解决视觉-语言-动作（VLA）策略中视觉推理延迟导致的感知记忆过时和动作块不连续问题。 通过双系统控制架构（慢速视觉流 + 快速控制流），利用因果潜世界模型预测当前感知记忆（KV memory），并结合动作敏感蒸馏保持冻结专家的控制响应。 在预测记忆的基础上引入 Predictive Flow Warm-Starting (PFWS)，以单步流修正对齐未执行的动作轨迹，无需额外训练，显著提升闭环鲁棒性和动作平滑性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25667">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">CauSyncVLA: Causal Latent World Modeling for Asynchronous Robot Control</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25667" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25667" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 CauSyncVLA，一个面向异步机器人控制的因果潜世界建模框架，旨在解决视觉-语言-动作（VLA）策略中视觉推理延迟导致的感知记忆过时和动作块不连续问题。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.25667.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.25667.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.25667.webp" alt="CauSyncVLA: Causal Latent World Modeling for Asynchronous Robot Control 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Nanyang Technological University (NTU), Singapore -…</p>
+        <ul class="article-facts"><li>arXiv 2611.25667</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Nanyang Technological University (NTU), Singapore</strong> - PINE Lab, School of Electrical and Electronic Engineering: <strong>Xu Pan</strong>, <strong>Runmin Lan</strong>, <strong>Zihao Wang</strong>, <strong>Wenkai Guo</strong>, <strong>Bofang Jia</strong>, <strong>Ziwei Wang</strong></li><li><strong>Nanyang Technological University (NTU), Singapore</strong> - College of Computing and Data Science: <strong>Chubin Zhang</strong>, <strong>Bo An</strong></li><li>**Agency for Science, Technology and Research (A*STAR), Singapore<strong> - CFAR and IHPC: </strong>Xingrui Yu**</li><li><strong>Embodied AI Center, Singapore</strong>: <strong>Ziwei Wang</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>CauSyncVLA</strong>，一个面向异步机器人控制的因果潜世界建模框架，旨在解决视觉-语言-动作（VLA）策略中视觉推理延迟导致的感知记忆过时和动作块不连续问题。</li><li>通过双系统控制架构（慢速视觉流 + 快速控制流），利用因果潜世界模型预测当前感知记忆（KV memory），并结合动作敏感蒸馏保持冻结专家的控制响应。</li><li>在预测记忆的基础上引入 <strong>Predictive Flow Warm-Starting (PFWS)</strong>，以单步流修正对齐未执行的动作轨迹，无需额外训练，显著提升闭环鲁棒性和动作平滑性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>执行基础异步控制</strong>：将异步控制形式化为感知记忆预测与轨迹修正的耦合问题，在冻结 VLA 骨干上降低反馈延迟。</li><li><strong>因果、动作相关的潜世界建模</strong>：在潜前缀空间中将延迟 KV 锚点沿已执行的状态-动作历史传播，通过动作敏感蒸馏监督残差更新，恢复控制相关的感知条件。</li><li><strong>无训练预测性轨迹修正</strong>：提出 PFWS 重用未执行动作区间作为流先验，通过单步冻结专家欧拉步骤细化轨迹，抑制块边界模式切换。</li><li><strong>完整的理论分析与实验验证</strong>：在 LIBERO-10 和 LIBERO-Plus 数据集上验证方法，并在真实 Franka FR3 机械臂上进行物理部署，展示优于基线的性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>双系统异步架构</strong>：System 2 慢速视觉流周期发布 KV memory anchor；System 1 快速控制流使用 <strong>Causal Latent World Model</strong> \(W_\theta\) 预测当前 KV memory，并根据预测记忆进行动作细化。</li><li><strong>因果潜世界模型</strong>：\(W_\theta\) 是一个 24.27M 参数的 AdaLN transformer，以延迟 KV anchor 和已执行的历史状态-动作序列为输入，通过标准化、历史嵌入、自适应 LayerNorm 和残差更新预测当前 KV memory。</li><li><strong>预测性流热启动 (PFWS)</strong>：将未执行动作块平移并重复末端动作，与噪声在中间流时间插值，在预测 KV memory 条件下通过冻结流专家执行单步 Euler 修正，实现轨迹连续性和上下文对齐。</li><li><strong>动作敏感蒸馏</strong>：联合优化 KV 回归损失 \(\mathcal{L}_{\mathrm{KV}}\) 和动作损失 \(\mathcal{L}_{\mathrm{act}}\)，其中动作损失使用冻结专家输出的一阶近似进行加权，使 KV 误差对控制动作的影响最小化。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO-10</strong>（500 个原生起点）、<strong>LIBERO-Plus</strong>（2,519 组配对扰动测试）、以及真实机器人演示数据集（10 Hz 时间戳适应的离线训练数据）。</li><li><strong>模型</strong>：冻结的 <strong>π0.5</strong> 骨干和流动作专家；Causal Latent World Model \(W_\theta\) 含 <strong>24.27M 参数</strong>，训练 12k 步，模拟地平线 \(H=10\)，步幅 \(C=5\)，PFWS 因子 \(\rho=0.5\)。</li><li><strong>训练与推理资源</strong>：模拟环境使用专有 <strong>RTX 5090 GPU</strong> 进行单 GPU 闭环执行评测；物理实验使用 7-DoF <strong>Franka FR3</strong> 机械臂，配置双 D405 相机，在 100 Hz 命令上限和 30 Hz 视觉感知下运行。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>主要评估基准</strong>：在 <strong>LIBERO-10</strong> 上评估任务成功率与模型推理能力；在 <strong>LIBERO-Plus</strong> 上评估鲁棒性；在 20 Hz 定时闭环执行下评估响应延迟与完成率；在真实机器人上验证物理部署效果。</li><li><strong>任务成功率</strong>：<strong>CauSyncVLA</strong> 在 LIBERO-10 上达到 <strong>93.8%</strong> 成功率，超过同步 π0.5 基线的 91.2%，以及 PFWS-only 的 93.0%，与 VLA-Rolling 的 93.4% 相当但延迟更低。</li><li><strong>推理能力与延迟</strong>：模型批一推理延迟从同步 π0.5 的 <strong>60.01 ms</strong> 降至 <strong>11.91 ms</strong>（CauSyncVLA 快循环），推理吞吐量提升约 5.04 倍；单 GPU 闭环响应延迟从同步的 176.73 ms 降至 83.04 ms，控制速率提升至 16.60 actions/s。</li><li><strong>动作相关预测效果</strong>：在 320 个保留窗口上，因果潜世界模型将下游动作 MSE 从过时 anchor 的 0.10355 降至 <strong>0.00983</strong>（降低超过 10 倍），KV 误差从 0.42430 降至 <strong>0.31958</strong>。</li><li><strong>消融实验</strong>：逐步消融执行历史信号（年龄、端点状态、打乱顺序）表明完整因果历史对降低动作误差至关重要；PFWS 和动作敏感蒸馏均对性能有正向贡献。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25695/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DMT-Attack: Diffusion-Prior Texture Search for Closed-Loop Vision-Language-Action Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25656/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">A$^2$-VLA: Adapting Vision-Language-Action Policies to New Tools through Agentic Affordance Discovery</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

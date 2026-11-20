@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PhyDEX: A Benchmark for Physical Reasoning in Vision-Language-Action Models via Dynamic Extrinsic Dexterity - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 PhyDEX，一个通过“动态外部灵巧性”（dynamic extrinsic dexterity，即投掷任务）评估视觉-语言-动作（VLA）模型物理推理能力的基准 现有基准主要评估夹爪-物体接触，忽略了物体与环境通过重力、摩擦、惯性、质量分布的交互；PhyDEX 要求机器人推断物体的质量、质心和摩擦，并将其投掷到运动学工作空间之外的目标位置 核心问题：检验当前策略是真正理解物理，还是仅从训练数据中插值，并识别当前 VLA 模型在物理理解上的瓶颈" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26565">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">PhyDEX: A Benchmark for Physical Reasoning in Vision-Language-Action Models via Dynamic Extrinsic Dexterity</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26565" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26565" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 PhyDEX，一个通过“动态外部灵巧性”（dynamic extrinsic dexterity，即投掷任务）评估视觉-语言-动作（VLA）模型物理推理能力的基准</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26565.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26565.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26565.webp" alt="PhyDEX: A Benchmark for Physical Reasoning in Vision-Language-Action Models via Dynamic Extrinsic Dexterity 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">AICV Lab, University of Arkansas（美国）</p>
+        <ul class="article-facts"><li>arXiv 2611.26565</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>AICV Lab, University of Arkansas</strong>（美国）</li><li><strong>VinUniversity</strong> 及其 <strong>Center for AI Research</strong>（越南）</li><li><strong>University of Stuttgart</strong>（德国）</li><li><strong>DFKI</strong>（德国）</li><li><strong>Max Planck Research School for Intelligent Systems</strong>（德国）</li><li><strong>University of Liverpool</strong>（英国）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>PhyDEX</strong>，一个通过“动态外部灵巧性”（dynamic extrinsic dexterity，即投掷任务）评估视觉-语言-动作（<strong>VLA</strong>）模型物理推理能力的基准</li><li>现有基准主要评估夹爪-物体接触，忽略了物体与环境通过重力、摩擦、惯性、质量分布的交互；PhyDEX 要求机器人推断物体的<strong>质量、质心和摩擦</strong>，并将其投掷到运动学工作空间之外的目标位置</li><li>核心问题：检验当前策略是真正理解物理，还是仅从训练数据中插值，并识别当前 VLA 模型在物理理解上的瓶颈</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>PhyDEX</strong> 基准：包含 9 个投掷任务、<strong>35K 条轨迹</strong>（143 小时）和 100 个场景，覆盖均匀、不规则和动态质量物体，以及静态、多目标和移动目标三类目的地</li><li>引入可扩展的<strong>全自动数据构建流水线</strong>，结合抓取生成、运动规划与闭环投掷优化，并在随机化物理属性下生成端到端数据</li><li>在多种本体（机械臂、人形机器人）和真实世界中进行广泛评估，发现<strong>数据稀缺/鲁棒性不足</strong>与<strong>物理盲区</strong>是当前策略的主要瓶颈</li><li>揭示两个关键瓶颈：预训练模型鲁棒性有限（约 <strong>89%</strong> 的失败发生在投掷之前），以及“物理盲区”（提供真值物理属性可使成功率约翻倍）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>NVIDIA Isaac Sim</strong> 构建可扩展的全自动仿真数据生成流水线，包含四个阶段：环境构建、域随机化、轨迹生成与数据存储</li><li><strong>环境构建</strong>：从资产库中检索目标物体、目标容器与场景（<strong>UR5e</strong> 机械臂 + <strong>Robotiq 2F-85</strong> 夹爪），并放置干扰物体</li><li><strong>域随机化</strong>：视觉（相机位姿、光照）、轨迹（<strong>GraspGen-X</strong> 抓取候选、物体位置/朝向、机器人初始状态）和物理属性（质量缩放 [0.5, 2.0]、质心偏移 ±15 mm、摩擦系数 [0.8, 1.2]）三个维度的随机化</li><li><strong>轨迹生成</strong>：GraspGen-X 生成抓取位姿 → <strong>cuRobo</strong> 规划无碰撞接近轨迹 → 基于 <strong>SLSQP</strong> 的闭环投掷优化器（五次多项式关节轨迹 + 弹道拦截约束），迭代修正瞄准偏移直至投掷成功</li><li>数据以 <strong>LeRobot</strong> 格式存储，包含多视角 RGB、力/扭矩（F/T）信号、本体感知状态与动作标签</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主数据集：<strong>35,357 条轨迹</strong>（143.2 小时，10 Hz），9 个投掷任务，100 个 <strong>RoboCasa</strong> 厨房场景；物体来自 <strong>RoboCasa</strong>、<strong>RoboTwin 2.0</strong>、<strong>Objaverse-XL</strong>（共 107 个资产：20 个目标容器、46 个均匀物体、37 个不规则物体、4 个动态物体）</li><li>任务设计：三类物体难度（均匀 31.8%、不规则 39.2%、动态质量 29.0%）× 三类目标（静态单目标、静态多目标、移动单目标）</li><li>跨本体数据：<strong>Unitree 人形机器人</strong>上生成 2,400 条轨迹；真实世界使用 <strong>UR10e</strong> 机械臂采集 3 种外观相同但物理属性不同的 3D 打印立方体（每物体 300 条示范）</li><li>计算资源：数据生成使用 <strong>8 块 NVIDIA RTX A6000</strong> GPU（128 并行环境，物理仿真 120 Hz）；微调使用 <strong>16 块 NVIDIA A100 (40GB)</strong> GPU</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估三个代表性 VLA：<strong>GR00T N1.7</strong>（通用型）、<strong>DynamicVLA</strong>（基于 SmolLM2 的 25 Hz 高频策略）、<strong>ForceVLA</strong>（多感官力觉 VLA）；指标为成功率（SR），每任务单独微调、每策略 50 次 rollout</li><li>整体结果：所有策略成功率低于 <strong>3%</strong>（GR00T N1.7：0.9%，DynamicVLA：0.2%，ForceVLA：2.4%），无任何策略能完成移动目标任务</li><li>多样性消融：引入多样性分数 α，当 α 从 1 降至 0 时 ForceVLA 从 3.3% 升至 <strong>35.3%</strong>（超十倍提升），表明高多样性是低分主因，但即使无随机化也无策略超过 44%</li><li>物理属性注入：提供真值物理属性后，GR00T N1.7 提升 <strong>12.5%</strong>、ForceVLA 提升 <strong>24%</strong>，证实“物理盲区”是核心瓶颈</li><li>人形机器人与真实世界评估呈现相同失败模式：真实世界中 ForceVLA 平均达 <strong>51.3%</strong>（得益于力/扭矩输入），GR00T N1.7 仅 10.7%，DynamicVLA 为 0%</li><li>失败分析：约 89% 的失败发生在投掷前（抓取错误 38.5%、无效够取 28.8%、接近错误 22.0%），仅约 21.24% 的轨迹能成功抓取物体</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26596/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">PGX: Physically Grounded Execution for Long-Horizon Humanoid Loco-Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26444/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>MAWAM: A Multi-Agent World-Action Model for Coordinated Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 MAWAM，一种多智能体世界-动作模型，用于机器人团队协同操作。 要解决的问题：现有多机器人协作方法主要分为去中心化策略协调、联合轨迹/动作生成、语言或逻辑引导的任务协调，但它们通常缺乏对团队动作及其视觉后果的联合建模，难以同时生成可执行联合动作和对应的未来视图。 核心目标：通过一次生成，同时输出团队中每个机器人的未来相机视图和可执行动作块，并利用未来视频监督提升协调控制能力。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25105">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">MAWAM: A Multi-Agent World-Action Model for Coordinated Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25105" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25105" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 MAWAM，一种多智能体世界-动作模型，用于机器人团队协同操作。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff" aria-hidden="true">
+  <p class="note-cover-title">MAWAM: A Multi-Agent World-Action Model for Coordinated Manipulation</p>
+</div></figure>
+        <p class="article-unit">NVIDIA（主要研究单位，作者包括 Xianzhe Fan、Chi-Pin Huang、Fu-En…</p>
+        <ul class="article-facts"><li>arXiv 2611.25105</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>NVIDIA</strong>（主要研究单位，作者包括 Xianzhe Fan、Chi-Pin Huang、Fu-En Yang、Jing Wang、Yecheng Wu、Yu-Cheng Chou 等）</li><li><strong>The University of Hong Kong</strong>（香港大学）</li><li><strong>MIT</strong></li><li>论文作者还包括 Linxi “Jim” Fan、Jan Kautz、Yu-Chiang Frank Wang、Zhiding Yu、Hengshuang Zhao、Zhiqi Li 等，分属上述机构</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>MAWAM</strong>，一种<strong>多智能体世界-动作模型</strong>，用于机器人团队协同操作。</li><li>要解决的问题：现有多机器人协作方法主要分为去中心化策略协调、联合轨迹/动作生成、语言或逻辑引导的任务协调，但它们通常缺乏对团队动作及其视觉后果的联合建模，难以同时生成可执行联合动作和对应的未来视图。</li><li>核心目标：通过一次生成，同时输出团队中每个机器人的未来相机视图和可执行动作块，并利用未来视频监督提升协调控制能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>MAWAM</strong>，通过跨智能体注意力联合去噪所有机器人的未来视图 token 与动作 token，实现视频-动作流匹配，一次采样即可得到同步的视觉预测与可执行动作。</li><li>设计<strong>智能体归属表示</strong>：显式视图-智能体映射、每个机器人的独立状态/动作流、正则单纯形旋转身份编码与任务角色嵌入，使多个机器人可以共享任务角色，但不合并各自的观测与控制接口。</li><li>提出<strong>两阶段训练方案</strong>：单机器人 warm-up 适配相机与控制器，团队训练通过同步演示、随机身份分配和完整智能体组打乱来学习跨机器人交互。</li><li>在真实双臂机器人与仿真多臂团队（2-4 臂）上验证，真实任务平均成功率 <strong>67.8%</strong>，仿真平均成功率 <strong>90.3%</strong>，并通过消融实验证明跨智能体注意力与团队阶段未来视频监督的关键作用。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于预训练的单机器人世界-动作骨干 <strong>GR00T 2</strong>，将每个机器人的私有视图、状态与动作组织为 <strong>per-robot stream</strong>。</li><li>使用一个共享 Transformer 对所有智能体的视图、状态和动作 token 做稠密双向注意力，联合去噪未来视图与动作块，称为<strong>跨智能体注意力</strong>。</li><li>通过<strong>视频-动作流匹配目标</strong>同时训练私有视图潜变量预测与动作块预测；视觉掩码选择有效私有视图未来目标，动作掩码选择有效控制器维度。</li><li>身份编码采用<strong>中心单位正则单纯形顶点</strong>，将同一智能体的所有视图赋予相同身份相位，共享全局相机相位为零；动作到视频偏置将动作均值注入对应未来视图 token；任务角色通过可学习角色嵌入加入。</li><li>部署时联合去噪生成团队未来视图与动作块，所有机器人同步执行前 8/24 步动作后重新观测，并进行闭环重规划。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>真实机器人：两台 <strong>Galaxea R1 Pro</strong> 双臂机器人，每台 1 个 ego/head-left 相机 + 2 个腕部相机，共 6 路私有相机视图，无共享全局相机；任务包括洗衣袋收集、浴巾折叠、雨伞交接。</li><li>仿真：<strong>RoboFactory</strong> 基准中的 8 个任务，使用 2-4 个 <strong>Panda</strong> 单臂作为智能体；团队训练每个任务使用 <strong>150 条</strong>联合演示；仿真提供只读共享全局相机作为上下文。</li><li>模型从 <strong>GR00T 2</strong> 预训练单机器人世界-动作骨干初始化；论文正文未披露具体总参数量与训练 GPU 数量，相关细节见附录。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：真实机器人每任务 <strong>30 次</strong>试验，报告成功率及二项标准误；仿真每个任务 <strong>100 个</strong>评估回合。</li><li>真实机器人结果：<strong>MAWAM</strong> 在三个任务上均最优，平均成功率 <strong>67.8%</strong>；对比 <strong>MA-VLA</strong> 48.9%、<strong>CLS-DP</strong> 37.8%、<strong>GauDP</strong> 28.9%，比 MA-VLA 高 <strong>18.9 个百分点</strong>。</li><li>仿真结果：<strong>MAWAM</strong> 在 8 个 <strong>RoboFactory</strong> 任务上平均成功率 <strong>90.3%</strong>，超过 MA-VLA 已报告平均的 <strong>83.4%</strong>（高 6.9 个百分点）。</li><li>消融实验：移除跨智能体注意力后，四臂 Long Pipeline Delivery 从 <strong>95.0% 降至 39.0%</strong>；移除团队阶段未来视频监督后，Place Food 从 <strong>78.0% 降至 47.0%</strong>；无任务角色时 Place Food 降至 <strong>0.0%</strong>、Camera Alignment 降至 <strong>8.0%</strong>；无 Warm-up 时 Long Pipeline Delivery 降至 <strong>34.0%</strong>。</li><li>真实机器人上不带跨智能体注意力的独立智能体版本平均成功率降至 <strong>52.2%</strong>，其中洗衣袋收集任务从 53.3% 降至 36.7%。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25251/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">WEVO: World Model-Enabled VLA Optimization for Whole-Body Loco-Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.24940/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">$Z$-sight: Unifying Vision-Language-Action and Latent World Modeling</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

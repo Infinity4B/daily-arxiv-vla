@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DMT-Attack: Diffusion-Prior Texture Search for Closed-Loop Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 DMT-Attack，一种针对闭环视觉-语言-动作（VLA）策略的扩散先验纹理攻击方法，在保持纹理自然外观的同时破坏机器人操作任务 解决的核心问题是：现有对抗纹理/补丁攻击虽然能干扰策略，但优化出的图案在场景中过于显眼，容易被察觉和移除 核心思想是利用扩散模型的结构化图像分布生成自然纹理，并通过闭环 rollout 反馈搜索具有任务破坏性的候选纹理" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25695">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">DMT-Attack: Diffusion-Prior Texture Search for Closed-Loop Vision-Language-Action Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25695" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25695" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 DMT-Attack，一种针对闭环视觉-语言-动作（VLA）策略的扩散先验纹理攻击方法，在保持纹理自然外观的同时破坏机器人操作任务</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.25695.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.25695.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.25695.webp" alt="DMT-Attack: Diffusion-Prior Texture Search for Closed-Loop Vision-Language-Action Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">所有作者均来自 国防科技大学（National University of Defense Techn…</p>
+        <ul class="article-facts"><li>arXiv 2611.25695</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>所有作者均来自 <strong>国防科技大学</strong>（<strong>National University of Defense Technology</strong>, nudt.edu.cn）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>DMT-Attack</strong>，一种针对闭环视觉-语言-动作（VLA）策略的扩散先验纹理攻击方法，在保持纹理自然外观的同时破坏机器人操作任务</li><li>解决的核心问题是：现有对抗纹理/补丁攻击虽然能干扰策略，但优化出的图案在场景中过于显眼，容易被察觉和移除</li><li>核心思想是利用扩散模型的结构化图像分布生成自然纹理，并通过闭环 rollout 反馈搜索具有任务破坏性的候选纹理</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>DMT-Attack</strong>：结合冻结扩散生成器、多专家潜在提案网络和 rollout 反馈的梯度无关灰盒攻击，生成自然外观的持久性场景纹理</li><li>设计了评估协议，同时衡量任务破坏效果（clean-conditioned ASR）和视觉兼容性（CLIP/DINO 相似度、MMD、异常检测器标志率），并在候选选择外独立测试初始状态</li><li>在 <strong>π₀.₅</strong> 和 <strong>OpenVLA-OFT</strong> 两个策略、四个 LIBERO suite 上全面评估，证明 DMT-Attack 在全部八个策略-suite 组合中均取得最高 cASR</li><li>系统分析了任务隔离选择、跨 suite 迁移、场景外观、搜索参数化和搜索预算等消融因素</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>威胁模型</strong>：攻击者控制一个静态 512×512 纹理，放置在普通场景物体（如桌布）上，在整个任务执行过程中持续影响策略的视觉观测；指令、控制器和任务目标保持不变</li><li><strong>两阶段搜索框架</strong>：</li></ul>
+<p> - <strong>Phase I（教师初始化）</strong>：利用先前评估的高 gap 潜在向量蒸馏到八专家文本条件提案网络，结合匹配损失、多样性正则化和负载均衡</p>
+<p> - <strong>Phase II（闭环精修）</strong>：交替进行候选生成、外观筛选、闭环 rollout 反馈和 PPO 提案更新</p>
+<ul><li><strong>多专家提案网络</strong>：基于 <strong>Stable Diffusion 2.1</strong> 冻结文本编码器，八个独立头产生 128 维瓶颈潜在向量，经文本条件解码器生成 4×64×64 扩散初始潜在，软路由网络输出专家权重</li><li><strong>外观过滤器</strong>：基于总变分比、高频能量、饱和度百分位和色彩熵下限筛选解码纹理，不通过者不进入仿真</li><li><strong>反馈课程</strong>：分阶段奖励函数依次引入注意力位移、训练 gap 和行为信号（动作差异、轨迹偏差、目标位置差异），对比配对干净轨迹计算</li><li><strong>探索与回放</strong>：每次采样三个模型提案，以 0.7 概率考虑回放扰动、0.2 概率随机探索，合格高 gap 潜在向量进入缓冲区</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>基准任务</strong>：LIBERO-Object、LIBERO-Spatial、LIBERO-Goal、LIBERO-Long 四个 suite，每个含 10 个操作任务</li><li><strong>被测策略</strong>：π₀.₅ 和 OpenVLA-OFT，均为冻结模型</li><li><strong>生成模型</strong>：冻结的 Stable Diffusion 2.1（30 步采样，CFG 7.5）</li><li><strong>仿真环境</strong>：MuJoCo 中的 LIBERO 场景</li><li><strong>外观评估模型</strong>：CLIP ViT-B/32（场景相似度和异常检测）、DINO（MMD 比较）</li><li><strong>训练资源</strong>：论文未报告具体 GPU/TPU 配置；搜索时间约 100-600 秒（取决于在线轮次）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>主要指标</strong>：clean-conditioned attack success rate（cASR）、attacked task success rate（SR）、CLIP 场景相似度、清洁校准异常检测器标志率、CLIP/DINO MMD</li><li><strong>聚合攻击效果</strong>：DMT-Attack 获得 <strong>57.9%</strong> 宏平均 cASR，显著高于 UPA-RFAS（44.7%）、UPA（41.8%）、UADA（40.2%）和随机自然纹理（19.7%）；平均 SR 从干净执行的 84.2% 降至 40.0%</li><li><strong>策略和 suite 差异</strong>：DMT-Attack 在所有 8 个策略-suite 单元中均取得最高 cASR；OpenVLA-OFT-Object 达到 100% cASR，而 π₀.₅-Goal 仅 20.7%，显示攻击效果随策略和任务类型变化</li><li><strong>外观与异常检测</strong>：DMT-Attack 的 CLIP 场景相似度最高（0.8957），异常检测标志率最低（45%），远低于 UADA（97.5%）、UPA（100%）和 UPA-RFAS（100%）</li><li><strong>任务隔离泛化</strong>：在任务 0-4 选择、任务 5-9 测试的隔离实验中，DMT-Attack 达 34.7% 宏 cASR，优于所有基线</li><li><strong>跨 suite 迁移</strong>：非对角线平均 37.5% cASR，对角线 35.7%，表明纹理具有跨 suite 攻击能力</li><li><strong>消融研究</strong>：在 3 至 30 的搜索预算中，DMT cASR 从 51.2% 提升至 57.9%，始终远超进化策略基线（Bottleneck ES 和 Latent-space ES）；教师初始化在 3 轮在线搜索时将 cASR 从 0.0% 提升至 33.3%，在 24 轮时从 29.6% 提升至 37.0%</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25719/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SteerTrace: Tracing How Target Attacks Steer World Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25667/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">CauSyncVLA: Causal Latent World Modeling for Asynchronous Robot Control</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Awaken-HI: Scaling Humanoid Intelligence with Whole-Body Human Experience - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Awaken-HI，一个面向人形机器人全身移动操作（loco-manipulation）的视觉-语言-动作（VLA）模型，通过大规模人类自我中心经验预训练来提升人形机器人智能。 解决人形机器人全身遥操作数据稀缺、传统重定向（retargeting）因形态差异导致动作偏差的问题，利用原始人类运动与重定向机器人动作的联合监督来迁移学习。 构建 Awaken-Human 数据集，包含约 50,000 小时自我中心立体视频与同步全身运动，覆盖超过 100 种技能，为大规模人形机器人预训练提供数据基础。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26420">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">Awaken-HI: Scaling Humanoid Intelligence with Whole-Body Human Experience</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26420" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26420" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Awaken-HI，一个面向人形机器人全身移动操作（loco-manipulation）的视觉-语言-动作（VLA）模型，通过大规模人类自我中心经验预训练来提升人形机器人智能。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26420.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26420.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26420.webp" alt="Awaken-HI: Scaling Humanoid Intelligence with Whole-Body Human Experience 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文未明确列出作者所属研究机构（作者名单以占位符 \reportorganization 呈现），但根…</p>
+        <ul class="article-facts"><li>arXiv 2611.26420</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文未明确列出作者所属研究机构（作者名单以占位符 <code>\reportorganization</code> 呈现），但根据贡献者列表与机器人平台 <strong>EngineAI T800</strong> 推断，研究团队来自 <strong>EngineAI</strong> 或相关人形机器人企业。</li><li>贡献者包括：<strong>Shuiqi Cheng, Boren Jiang, Weilong Ju, Liyun Li, Xuanyi Li（项目负责人†）, Chujie Qin, Kai Wang</strong> 等。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Awaken-HI</strong>，一个面向人形机器人全身移动操作（loco-manipulation）的视觉-语言-动作（VLA）模型，通过大规模人类自我中心经验预训练来提升人形机器人智能。</li><li>解决人形机器人全身遥操作数据稀缺、传统重定向（retargeting）因形态差异导致动作偏差的问题，利用原始人类运动与重定向机器人动作的联合监督来迁移学习。</li><li>构建 <strong>Awaken-Human</strong> 数据集，包含约 <strong>50,000 小时</strong>自我中心立体视频与同步全身运动，覆盖超过 <strong>100 种技能</strong>，为大规模人形机器人预训练提供数据基础。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Awaken-HI</strong> 模型，通过共享动作专家同时预测原始人类运动和重定向后的机器人动作，使人类运动直接监督共享参数，提升运动先验迁移效果。</li><li>构建 <strong>Awaken-Human</strong> 数据集，规模达 <strong>50,000 小时</strong>自我中心立体视频配准全身运动，包含 <strong>17.02M 片段</strong>、<strong>5.41B 姿态帧</strong>，覆盖家庭、工作场所、零售、仓储等多种环境。</li><li>发现人类预训练数据规模与动作预测误差、真实机器人任务成功率之间存在<strong>经验缩放定律</strong>，数据从 5k 小时增至 50k 小时，平均成功率从 56.7% 提升至 90.0%。</li><li>在 <strong>EngineAI T800</strong> 上 8 个独立全身操作任务平均成功率 <strong>93.75%</strong>，显著超越 <strong>π0.5</strong>（57.5%）和 <strong>GR00T N1.7</strong>（58.75%），并在长程任务中保持大幅领先。</li><li>展现对未见物体和新物体-目标组合的<strong>泛化能力</strong>：新指令组合测试全部通过，未见物体完成率 50%/30%，而基线均为 0%。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>数据集构建</strong>：使用 PICO 头显和五个身体追踪器同步采集自我中心立体视频和骨骼序列；通过去畸变、VLM 语义标注、3D 手部重建、立体深度估计生成对齐的语言、运动和深度监督；基于 GMR 进行 T800 全身动作重定向并保留原始人体运动。</li><li><strong>模型框架</strong>：以 <strong>Qwen3-VL</strong> 为视觉语言骨干，共享动作专家包含状态编码器和扩散 Transformer（DiT），三个分支（机器人动作、人类运动、手腕位姿）通过共享专家预测速度场。</li><li><strong>训练策略</strong>：预训练阶段联合使用 flow matching 目标（机器人动作、人类运动、手腕位姿），辅以当前/未来深度预测和子任务描述预测；后训练阶段仅用机器人动作损失在 150 小时遥操作数据上微调。</li><li><strong>部署方式</strong>：滚动时域循环中从最新观测重新生成动作序列，根目标转换至控制器位姿表示后传递给 T800 低层控制器执行。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>Awaken-Human</strong>：约 50,000 小时自我中心立体视频，同步全身运动，17.02M 片段，5.41B 姿态帧，11.18M 有效语言指令，覆盖 100+ 技能。</li><li><strong>模型配置</strong>：VLM 骨干 Qwen3-VL；机器人动作 40 维（根位移 3D、根旋转 6D、29 关节角度、2 夹爪命令），人类运动 161 维，手腕位姿 18 维。</li><li><strong>训练资源</strong>：缩放实验全局批量大小 4096，最大 100k 更新；消融实验使用 64 GPUs，每 GPU batch size 16；推理使用单张 <strong>NVIDIA RTX 5090 GPU</strong>。</li><li><strong>后训练数据</strong>：约 150 小时 T800 遥操作演示，30,000 步，全局批量大小 256。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>环境与基准</strong>：EngineAI T800 人形机器人，8 个全身移动操作任务，每个方法每任务 10 次试验；对比基线为 π0.5 和 GR00T N1.7。</li><li><strong>主要指标</strong>：任务成功率（%）、动作预测 MSE、验证损失、根/手腕位置误差（cm）、关节角度 MAE（°）。</li><li><strong>关键结果</strong>：Awaken-HI 平均成功率 <strong>93.75%</strong>（π0.5: 57.5%，GR00T N1.7: 58.75%）；长程工业补货任务 90%（vs 10%/30%），家庭整理任务 80%（vs 20%/10%）。</li><li><strong>缩放规律</strong>：人类预训练数据从 5k 小时增至 50k 小时，动作 MSE 从 0.06649 降至 0.05926；下游任务平均成功率从 56.7% 升至 90.0%。</li><li><strong>消融实验</strong>：完整模型（Full）相比 Base 动作 MSE 降低 4.29%，真实机器人平均成功率 53.3% vs 13.3%；人类运动监督贡献最大，深度监督显著提升视觉几何表征。</li><li><strong>泛化测试</strong>：新指令组合（熟悉物体到新目标）成功率 100%/100%/80%/80%；未见物体（纸巾、药瓶）完成率 50%/30%，而 π0.5 和 GR00T N1.7 均为 0%。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26438/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Risk-Controlled Test-Time Adaptation for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26405/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">TacInno: Teaching Vision-Language-Action Models the Contact Dynamics Beyond Vision and Action</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

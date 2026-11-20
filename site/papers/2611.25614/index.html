@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Don&#x27;t Lose the Future: Latent-Aware 4-Bit Quantization of World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究世界动作模型（WAMs）的 4 位量化部署问题，目标是使模型在机器人机载计算机上以 W4A4KV4 精度运行。 现有量化方法只保护动作生成路径，忽略了预测未来的保真度，导致动作误差主要通过退化的未来进入。 提出 LAQ（latent-aware quantization） 框架，在预测未来的写入、存储和读取环节均进行精度保护，从而实现可靠的闭环动作。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25614">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">Don&#x27;t Lose the Future: Latent-Aware 4-Bit Quantization of World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25614" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25614" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究世界动作模型（WAMs）的 4 位量化部署问题，目标是使模型在机器人机载计算机上以 W4A4KV4 精度运行。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.25614.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.25614.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.25614.webp" alt="Don&#x27;t Lose the Future: Latent-Aware 4-Bit Quantization of World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">南洋理工大学</p>
+        <ul class="article-facts"><li>arXiv 2611.25614</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>南洋理工大学</strong></li><li><strong>南京大学</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究<strong>世界动作模型（WAMs）</strong>的 4 位量化部署问题，目标是使模型在机器人机载计算机上以 W4A4KV4 精度运行。</li><li>现有量化方法只保护动作生成路径，忽略了<strong>预测未来</strong>的保真度，导致动作误差主要通过退化的未来进入。</li><li>提出 <strong>LAQ（latent-aware quantization）</strong> 框架，在预测未来的写入、存储和读取环节均进行精度保护，从而实现可靠的闭环动作。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>识别<strong>未来潜在保真度</strong>为 WAM 量化的关键目标：保护动作路径后，仍有 71.2% 的剩余动作误差来自退化的预测未来，且写一次读多次的舍入误差损害最大。</li><li>提出 <strong>LAQ</strong> 框架：引入 <strong>reader metric</strong>（衡量未来误差对动作的影响）和 <strong>read count</strong>（衡量舍入误差在去噪步中的累积效应），得到激活与缓存精度分配的<strong>闭式解</strong>。</li><li>开发 <strong>gaze-guided refinement</strong>：根据动作 token 的注意力实时选择关键 token，为其赋予第二个 4-bit 量化编码，进一步提升精度。</li><li>在 <strong>LIBERO-Plus</strong> 和真实机器人上验证：LAQ 达到与 BF16 模型接近的成功率，显著优于现有量化基线，且模型压缩 3.8 倍，峰值 GPU 内存降低 2.3 倍，推理速度提升 1.66 倍。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Reader metric</strong>：通过线性化 reader 并计算 Gauss-Newton 矩阵，衡量预测未来误差对动作的影响，离线估计并混合单位矩阵以保证稳定性。</li><li><strong>Read count</strong>：通过干预实验量化舍入误差在去噪步中冻结与重绘的比率，得到误差源的累积读取次数，用于加权灵敏度。</li><li><strong>Joint allocation</strong>：将动作、未来和 reader 误差统一为目标函数，利用阈值决定哪些 token 在去噪循环和缓存中获得更高精度，实现闭式分配。</li><li><strong>Gaze-guided refinement</strong>：对选中 token 的激活残差进行第二次 4-bit 量化，缓存则存储第二个 4-bit 码；运行时通过动作 token 的 attention 确定 gaze，无需额外训练或任务校准。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO-Plus</strong>（对四个 LIBERO 套件进行七维扰动）、<strong>LIBERO</strong> 原始套件、真实机器人任务数据（AgileX PiPER 臂，每任务 75-80 个演示）。</li><li>模型规模：<strong>Fast-WAM</strong>（6B 参数，其中 1B 动作专家）、<strong>Cosmos-Policy</strong>（2B 参数）。</li><li>校准资源：使用 80 个 LIBERO 上下文进行离线校准，论文未明确说明具体 GPU 型号。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>LIBERO-Plus</strong> 和 <strong>LIBERO</strong> 模拟基准，以及真实 <strong>AgileX PiPER</strong> 机械臂。</li><li>主要指标：平均成功率（%）、模型压缩比、峰值 GPU 内存、推理速度。</li><li>关键结果：在 <strong>LIBERO-Plus</strong> 上，LAQ 使 <strong>Fast-WAM</strong> 达到 76.4% 平均成功率（BF16 为 77.6%，最强基线 SVDQuant 为 73.0%）；<strong>Cosmos-Policy</strong> 达到 83.3%（BF16 为 83.5%）。真实机器人上，LAQ 平均成功率 47.0%（BF16 为 52.0%，QuaRot 为 17.0%）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25656/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">A$^2$-VLA: Adapting Vision-Language-Action Policies to New Tools through Agentic Affordance Discovery</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25595/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">LoopedWAM: Looped World Action Models for Elastic Inference</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Beyond the Sink Interpretation: Radial Attention in Flow-Based VLA Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究基于流的视觉-语言-动作（VLA）策略中动作专家（action expert）的注意力机制，特别是针对 π₀.₅ 模型中动作序列首尾 token（端点）的高注意力现象 之前的研究将这两个端点 token 称为“径向动作汇聚点”（radial action sinks），但论文质疑这一命名是否准确，因为“汇聚点”（sink）在语言模型中具有特定含义：高入向注意力、小值范数、对输出贡献很小 论文通过配对干预实验，系统检验端点 token 是否真正符合汇聚点的特征，并寻找真正符合汇聚点描述的 token" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26385">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">Beyond the Sink Interpretation: Radial Attention in Flow-Based VLA Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26385" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26385" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究基于流的视觉-语言-动作（VLA）策略中动作专家（action expert）的注意力机制，特别是针对 π₀.₅ 模型中动作序列首尾 token（端点）的高注意力现象</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26385.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26385.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26385.webp" alt="Beyond the Sink Interpretation: Radial Attention in Flow-Based VLA Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者均来自 Duke University（杜克大学）</p>
+        <ul class="article-facts"><li>arXiv 2611.26385</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者均来自 <strong>Duke University</strong>（杜克大学）</li><li>主要作者包括 <strong>Yuxi Zheng</strong>、<strong>Yueqian Lin</strong>、<strong>Yudong Liu</strong>、<strong>Zijia Tang</strong>、<strong>Yiheng Wang</strong>、<strong>Hai Helen Li</strong> 和 <strong>Yiran Chen</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究基于流的视觉-语言-动作（VLA）策略中动作专家（action expert）的注意力机制，特别是针对 <strong>π₀.₅</strong> 模型中动作序列首尾 token（端点）的高注意力现象</li><li>之前的研究将这两个端点 token 称为“径向动作汇聚点”（radial action sinks），但论文质疑这一命名是否准确，因为“汇聚点”（sink）在语言模型中具有特定含义：高入向注意力、小值范数、对输出贡献很小</li><li>论文通过配对干预实验，系统检验端点 token 是否真正符合汇聚点的特征，并寻找真正符合汇聚点描述的 token</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>证明端点注意力质量来自 <strong>RoPE 位置编码</strong>：浅层直接由当前层的 RoPE 产生，深层则依赖上游动作 token 的 RoPE 处理</li><li>证明端点值<strong>不符合</strong>汇聚点的特征：端点值范数接近动作 token 均值，其门控输出贡献高于平均水平</li><li>发现真正符合汇聚点特征的是<strong>前缀 BOS token</strong>：具有高注意力质量和小的共享值，且将其值置零反而提升成功率 +13.2 个百分点</li><li>揭示动作 token 间的路由遵循<strong>相对偏移轮廓</strong>（relative-offset profile），该轮廓能保持 75% 的动作 token 差异性和闭环成功率</li><li>提供了系统的配对干预协议，用于分离注意力分配与值贡献的功能分析</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用<strong>配对干预协议</strong>：每个干预与其基线共享相同的观察和初始噪声，闭环比较逐集配对</li><li>设计三类干预实验：<strong>位置编辑</strong>（保持内容不变，改变 RoPE 位置）、<strong>分数和值编辑</strong>（掩码、置零、替换）、<strong>动作-动作路由编辑</strong>（均匀路由、共享偏移路由、偏移打乱、键置换）</li><li>使用<strong>端点质量</strong>（endpoint mass）和<strong>门控输出比</strong>（gated-output ratio）等定量指标衡量 token 的功能角色</li><li>通过在浅层和深层分别移除 RoPE 来区分当前层旋转与上游位置处理的贡献</li><li>使用来自不同观察（donor）的值进行替换，测试 token 方向信息的重要性</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>RoboCasa</strong> 仿真环境的五个任务：CloseFridge、OpenCabinet、OpenDrawer、PickPlaceCounterToCabinet、TurnOnMicrowave</li><li>分析模型为 <strong>π₀.₅</strong> 的 action expert，检查点 <strong>pi05_pretrain_human300</strong>（第 75,000 步）</li><li>网络包含 <strong>18 层</strong>，处理 50 个动作 token 的联合去噪</li><li>实验规模：端点值分析使用 1,969 个 chunk；闭环评估每个任务运行 50 个 episode，共 250 个 episode</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>端点注意力质量</strong>：两个端点共接收 5.4% 的动作键注意力质量，仅比均匀份额（4.0%）高 1.4 个百分点</li><li><strong>端点值范数</strong>：位置 0 和 49 的相对值范数分别为 1.034 和 1.019（相对于动作 token 均值），不符合汇聚点的小值特征</li><li><strong>端点值干预</strong>：掩码、置零和替换对成功率影响均小于 4 个百分点；而替换两个已执行的内部 token（位置 2 和 3）导致成功率下降 28.4 个百分点</li><li><strong>BOS token</strong>：符合汇聚点的质量和小值特征，将其值置零使成功率从 107/250 提升至 140/250（+13.2 个百分点，95% CI [+7.0, +19.4]）</li><li><strong>动作路由</strong>：共享偏移路由保持 75% 的动作 token 差异性，并在三个留出任务上保持 42.7% 的闭环成功率（基线为 38.7%）；均匀路由和打乱路由将成功率降至 3-4%</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26405/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">TacInno: Teaching Vision-Language-Action Models the Contact Dynamics Beyond Vision and Action</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26242/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">FastRoverVLA: Fast Vision-Language-Action Execution for Off-Road Autonomous Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RefreshGrad: An Online Adaptive Data-sampling Method for Diffusion-based Visuomotor Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 RefreshGrad，一种面向基于扩散的视觉运动学习的在线自适应数据采样方法。 针对演示数据中不同时间窗口的监督价值差异大、且随训练动态变化的问题，周期性重新评估窗口价值并动态调整采样权重。 在不改变策略架构、训练目标或推理成本的前提下，将优化重点集中在信息量大、可学习的窗口上。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25398">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">RefreshGrad: An Online Adaptive Data-sampling Method for Diffusion-based Visuomotor Learning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25398" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25398" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 RefreshGrad，一种面向基于扩散的视觉运动学习的在线自适应数据采样方法。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">RefreshGrad: An Online Adaptive Data-sampling Method for Diffusion-based Visuomotor Learning</p>
+</div></figure>
+        <p class="article-unit">华南理工大学（South China University of Technology）：Dijia…</p>
+        <ul class="article-facts"><li>arXiv 2611.25398</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>华南理工大学</strong>（South China University of Technology）：Dijia Zhan、Jinyi Li、Xuemiao Xu、Yan Zhou、Jie Tang</li><li><strong>清华大学</strong>（Tsinghua University）：Yu Liu</li><li><strong>香港中文大学（深圳）</strong>（The Chinese University of Hong Kong, Shenzhen）：Shaoshan Liu</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>RefreshGrad</strong>，一种面向基于扩散的视觉运动学习的在线自适应数据采样方法。</li><li>针对演示数据中不同时间窗口的监督价值差异大、且随训练动态变化的问题，周期性重新评估窗口价值并动态调整采样权重。</li><li>在不改变策略架构、训练目标或推理成本的前提下，将优化重点集中在信息量大、可学习的窗口上。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>揭示并刻画了演示数据时间窗口价值的非均匀性和动态演化特性，归纳为学习进展、跨 episode 梯度一致性、时间预测一致性、残差分歧和光度敏感性五个因素。</li><li>提出 <strong>RefreshGrad</strong> 框架，基于策略原生信号在线为窗口评分，并通过基于排名的采样与均匀覆盖下限实现数据驱动的窗口分配。</li><li>在十个 <strong>LIBERO-Plus</strong> 操作任务上验证有效性，在视觉扰动和干净场景下均显著提升成功率。</li><li>通过训练轨迹诊断、采样器控制与信号消融分析，支持多线索估值与周期性在线自适应的机制解释。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于动作分块 <strong>Diffusion Policy</strong> 骨干，保持标准掩码去噪得分匹配损失不变。</li><li>采用确定性评分探针（固定扩散时间步和噪声库）评估每个窗口，避免随机采样方差。</li><li>定义五个策略原生信号：</li></ul>
+<p> - <strong>学习进展</strong>：相邻刷新间窗口损失的下降。</p>
+<p> - <strong>跨 episode 梯度一致性</strong>：窗口梯度与视觉相似演示参考梯度的余弦相似度。</p>
+<p> - <strong>时间预测一致性</strong>：相邻锚点在重叠未来时间步上动作重建的一致性。</p>
+<p> - <strong>残差分歧</strong>：不同噪声下动作重建差异，经当前损失归一化。</p>
+<p> - <strong>光度敏感性</strong>：亮度/对比度变化下动作灵敏度，检测视觉捷径依赖。</p>
+<ul><li>信号经鲁棒标准化和 EMA 平滑后，利用基于排名的采样结合均匀覆盖下限更新锚点采样概率。</li><li>训练采用均匀预热，之后周期性交替执行评分与策略更新，保留所有有效窗口的非零采样支持。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO-Plus</strong> 的十个操作任务，包含光照、噪声、纹理扰动及干净场景评估。</li><li>模型骨干：动作分块 <strong>Diffusion Policy</strong>。</li><li>基线对比：<strong>Uniform</strong> 采样和 <strong>FAKTUAL</strong> 数据筛选方法。</li><li>论文 HTML 中未明确列出模型参数量与具体 GPU/TPU 训练资源。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：十个 <strong>LIBERO-Plus</strong> 操作任务，包含三类视觉扰动（光照、噪声、纹理）和干净场景。</li><li>主要指标：任务成功率和扰动平均成功率（%）。</li><li>关键结果：</li></ul>
+<p> - 视觉扰动下平均成功率：<strong>Uniform</strong> 60.7%，<strong>FAKTUAL</strong> 68.2%，<strong>RefreshGrad</strong> 76.1%。</p>
+<p> - 干净场景平均成功率：<strong>Uniform</strong> 57.4%，<strong>FAKTUAL</strong> 73.3%，<strong>RefreshGrad</strong> 81.3%。</p>
+<p> - <strong>RefreshGrad</strong> 在全部十个任务的扰动成功率上均优于 Uniform，并超越 FAKTUAL。</p>
+<p> - 消融和机制分析表明多线索估值与周期性在线采样对性能提升必要。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25400/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Dune: A Zeroth-Order Optimizer with Time-Conditioned Historical Error Regression for VLA Test-Time Adaptation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25251/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">WEVO: World Model-Enabled VLA Optimization for Whole-Body Loco-Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

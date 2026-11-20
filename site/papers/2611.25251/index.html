@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>WEVO: World Model-Enabled VLA Optimization for Whole-Body Loco-Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 WEVO（World Model-Enabled VLA Optimization），一个面向全身移动操控（whole-body loco-manipulation）人形机器人的免遥操作 VLA 后训练框架 解决两个核心问题：在真实硬件上做强化学习探索不安全，而仅用仿真器做 RL 会利用残余的 sim-to-real 视觉差距 将仿真数据与自主真实机器人 rollout 结合，利用动作条件视频世界模型（video world model）作为策略改进环境，实现闭环策略优化" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25251">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-18">2026-11-18</time></p>
+        <h1 class="article-title">WEVO: World Model-Enabled VLA Optimization for Whole-Body Loco-Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25251" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25251" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 WEVO（World Model-Enabled VLA Optimization），一个面向全身移动操控（whole-body loco-manipulation）人形机器人的免遥操作 VLA 后训练框架</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">WEVO: World Model-Enabled VLA Optimization for Whole-Body Loco-Manipulation</p>
+</div></figure>
+        <p class="article-unit">论文作者所属研究机构包括 Amazon、斯坦福大学（Stanford University） 和 德克…</p>
+        <ul class="article-facts"><li>arXiv 2611.25251</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者所属研究机构包括 <strong>Amazon</strong>、<strong>斯坦福大学（Stanford University）</strong> 和 <strong>德克萨斯大学奥斯汀分校（The University of Texas at Austin）</strong></li><li>第一作者在 <strong>Amazon</strong> 实习期间完成该工作</li><li>涉及作者：Qianzhong Chen、Muyuan Lin、Yuyin Sun、Mac Schwager、Cheng-Hao Kuo、Roberto Martín-Martín</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>WEVO（World Model-Enabled VLA Optimization）</strong>，一个面向全身移动操控（whole-body loco-manipulation）人形机器人的免遥操作 VLA 后训练框架</li><li>解决两个核心问题：在真实硬件上做强化学习探索不安全，而仅用仿真器做 RL 会利用残余的 sim-to-real 视觉差距</li><li>将仿真数据与自主真实机器人 rollout 结合，利用动作条件视频世界模型（video world model）作为策略改进环境，实现闭环策略优化</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>构建了 <strong>WEVO</strong>，据论文称是首个面向全身人形机器人 VLA 的 WM-RL 系统，超越固定基座桌面操控，将第一人称视频生成、全身动力学和密集进度奖励相结合</li><li>开发了自主全身 <strong>play data</strong> 用于 WM 中间训练：操控 play 改善接触动力学预测，移动 play 改善大视角变化下的视频一致性</li><li>系统研究了<strong>照片级仿真</strong>与<strong>视频世界模型</strong>如何形成免遥操作的策略改进飞轮：仿真提供策略初始化和广泛覆盖，视频 WM 提供更贴近部署的优化环境</li><li>在三个真实机器人移动操控任务上，将平均成功率从基础 BC 的 <strong>23.3%</strong> 提升到 <strong>75.0%</strong>，显著优于真实机器人 RL（48.3%）</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>VLA 初始化（Real-to-Sim-to-Real）</strong>：使用 ZED 2i 相机重建部署场景，基于 LEGS 仿真器生成 200 个合成示范，微调 <strong>GR00T N1.7</strong> 策略；接着在真实机器人上收集 20 条平衡轨迹（10 成功 + 10 失败）用于 WM 对齐</li><li><strong>世界模型微调</strong>：初始化自 <strong>DreamDojo 2B_G1_post-train</strong> 检查点，首先在 500 集（11 小时）仿真操控和移动 play data 上中间训练，然后针对每个任务微调（200 合成示范 + 20 真实轨迹）</li><li><strong>WM 内策略 rollout</strong>：<strong>GR00T VLA</strong> 输出 18 维任务空间目标（双手位姿、夹爪开度、底盘速度和高度），<strong>SONIC–MuJoCo</strong> 全身控制器以 50 Hz 演化 43 维关节状态，<strong>DreamDojo</strong> 以 10 fps 生成 12 帧第一人称图像</li><li><strong>密集奖励估计</strong>：训练任务特定的 <strong>SARM</strong> 进度预测模型（8 层 12 头 Transformer，d_model=768，冻结 <strong>DINOv3</strong> 视觉特征），用指数滑动平均的进度增量作为逐步奖励</li><li><strong>强化学习实例化</strong>：实现并比较 <strong>DICE-RL</strong>（冻结合成概率先验 + 残差 actor + 20 成员 critic 集成）、<strong>ReinFlow</strong>（将 flow ODE 转换为 SDE 并使用 PPO）、<strong>AWR</strong>（优势加权回归，以改进为条件）</li><li><strong>闭环优化</strong>：每任务执行 15 轮，每轮生成 32 集 WM rollout，共 480 集、1.5×10^4 次更新</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真数据</strong>：LEGS 仿真器中使用超过 100 个家用物体（质量和摩擦随机化）；每任务 200 个合成示范；play data 包含 400 个操控轨迹（10 小时）和 100 个移动轨迹（1 小时）</li><li><strong>真实机器人数据</strong>：每任务 20 条自主 rollout（10 成功 + 10 失败），包含同步第一人称 RGB、关节状态和 VLA 动作；WM 评估使用 20 合成 + 20 真实保留轨迹</li><li><strong>模型规模</strong>：基础 VLA 为 <strong>GR00T N1.7</strong>；世界模型为 <strong>DreamDojo 2B_G1_post-train</strong>；奖励模型为 8 层 12 头 Transformer（d_model=768）</li><li><strong>训练资源</strong>：VLA 训练使用 8 块 <strong>NVIDIA L40S GPUs</strong> 收集数据、8 块 <strong>NVIDIA H100 GPUs</strong> 微调 3.5 小时；WM 中间训练约 10 小时（8×H100）；任务特化微调 17 小时；完整 RL 运行约 12 小时（75% 视频生成，20% RL 更新），使用 8 块 H100 GPUs 和 8 个并行 worker</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：真实 <strong>Unitree G1</strong> 人形机器人、LEGS 仿真器和视频世界模型；三个任务：<strong>Pick-and-Place Bottle (PNP)</strong>、<strong>Pick-Turn-Place Bottle (PTP)</strong>、<strong>Bimanual Move Basket (Basket)</strong></li><li><strong>评估指标</strong>：真实机器人成功率（SR，20 次试验）；WM 保真度指标：PSNR、交互 PSNR（iPSNR）、SSIM、LPIPS、FID</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 播放数据（play data）改善所有 WM 指标，平均 PSNR 提高 <strong>0.93 dB</strong>，iPSNR 提高 <strong>1.17 dB</strong>，证明接触动力学建模增强</p>
+<p> - <strong>DICE-RL</strong> 效果最佳，平均真实机器人 SR 达 <strong>75.0%</strong>（PNP 85%，PTP 75%，Basket 65%），显著高于 BC（23.3%）、真实机器人 RL（48.3%）和仿真 RL（退化）</p>
+<p> - VLAW 平均 SR 33.3%，WMPO 40.0%；消融表明密集进度奖励、在线刷新和播放数据都是关键因素</p>
+<p> - 学习曲线显示 WM 成功率与真实机器人成功率同步上升，而仿真器中的成功率在 Basket 任务上大幅下降，证实了视频 WM 的部署对齐优势</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25398/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RefreshGrad: An Online Adaptive Data-sampling Method for Diffusion-based Visuomotor Learning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25105/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">MAWAM: A Multi-Agent World-Action Model for Coordinated Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

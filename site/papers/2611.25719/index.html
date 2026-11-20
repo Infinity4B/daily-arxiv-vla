@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SteerTrace: Tracing How Target Attacks Steer World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究世界动作模型（WAM）的对抗鲁棒性；WAM 同时预测未来视频帧和动作，其“想象未来”通常被视为安全信号。 提出 SteerTrace：一种针对 WAM 的目标式通用攻击，同时通过干预度量追踪攻击效应在模型内部的传递路径。 核心问题：能否用一个固定、跨任务共享的对抗扰动将执行动作推向攻击者指定目标，并在模型中找到承载该攻击效应的 token、神经元和残差方向。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25719">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">SteerTrace: Tracing How Target Attacks Steer World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25719" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25719" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究世界动作模型（WAM）的对抗鲁棒性；WAM 同时预测未来视频帧和动作，其“想象未来”通常被视为安全信号。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.25719.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.25719.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.25719.webp" alt="SteerTrace: Tracing How Target Attacks Steer World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">同济大学：Yukun Dai、Tianshi Wang、Lei Zhu</p>
+        <ul class="article-facts"><li>arXiv 2611.25719</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>同济大学</strong>：Yukun Dai、Tianshi Wang、Lei Zhu</li><li><strong>穆罕默德·本·扎耶德人工智能大学（MBZUAI）</strong>：Fengling Li</li><li><strong>电子科技大学</strong>：Jingjing Li</li><li><strong>上海人工智能实验室</strong>：Xin Li</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究<strong>世界动作模型（WAM）</strong>的对抗鲁棒性；WAM 同时预测未来视频帧和动作，其“想象未来”通常被视为安全信号。</li><li>提出 <strong>SteerTrace</strong>：一种针对 WAM 的<strong>目标式通用攻击</strong>，同时通过干预度量追踪攻击效应在模型内部的传递路径。</li><li>核心问题：能否用一个固定、跨任务共享的对抗扰动将执行动作推向攻击者指定目标，并在模型中找到承载该攻击效应的 token、神经元和残差方向。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出首个针对 WAM 的<strong>目标式通用扰动</strong>，使用单个 \(\ell_\infty\) 有界扰动将执行动作推向攻击者选择的目标动作。</li><li>揭示攻击路径：未受限攻击主要通过“想象未来”token 传递；在 <strong>preserve</strong> 变体下，攻击路径更多转移到当前帧 token。</li><li>定位关键神经元：在视频专家的 FFN 层中，仅恢复 <strong>0.36%</strong> 的神经元即可移除 <strong>72–96%</strong> 的目标攻击效应。</li><li>定位残差子空间：残差位移方向 <strong>2–16</strong> 只占 <strong>11–18%</strong> 的能量，但移除这些方向可消除 <strong>96–99%</strong> 的目标效应。</li><li>建立以<strong>签名目标效应 T</strong> 为核心的干预量化框架，用于衡量不同组件对攻击效应的必要性（necessity）与充分性（sufficiency）。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>威胁模型</strong>：攻击对象为冻结的 WAM；攻击者拥有白盒访问权限，使用训练数据帧优化一个固定的通用扰动 \(\delta\)，满足 \(\\|\delta\\|_\infty \le 4/255\)，跨所有帧、相机视角和任务共享。</li><li><strong>攻击优化</strong>：损失放在完整的 flow-matching <strong>Euler 采样器</strong>输出上，而非单一速度场回归；目标损失将执行动作拉向 \(a^\star\)，可选的未来保持损失 \(\mathcal{L}_{\text{fut}}\) 惩罚被攻击后想象未来与干净预测的偏差。</li><li><strong>机制分析</strong>：</li></ul>
+<p> - <strong>Token 组修补</strong>：分别对当前帧 token \(\mathcal{C}\) 和未来 token \(\mathcal{F}\) 的 K/V 进行恢复或注入，测量目标效应变化。</p>
+<p> - <strong>神经元归因与修补</strong>：使用一阶梯度估计（激活变化 × 梯度）对视频专家 FFN 神经元打分，并修补 top-k 神经元。</p>
+<p> - <strong>残差子空间消融</strong>：对残差位移 \(\Delta\) 进行 PCA，移除或保留特定方向带（如方向 2–16），观察目标效应残余比例。</p></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong>（Spatial、Object、Goal、Long 四个套件，各 10 个任务）和 <strong>RoboTwin</strong>（50 个任务）。</li><li><strong>模型</strong>：共攻击 8 个 WAM，涵盖四个家族：<strong>FastWAM</strong>、<strong>FastWAM-Joint</strong>、<strong>Faster-WAM</strong>、<strong>LingBot-VA</strong>，以及 <strong>OpenWAM</strong> 的四个变体（mutual、action\_sees\_video、video\_sees\_action、isolated）。</li><li><strong>攻击超参数</strong>：扰动预算 \(\epsilon = 4/255\)；preserve 变体的未来损失权重在 LIBERO 上为 \(\lambda = 1\)，在 RoboTwin 上为 \(\lambda = 0.1\)。</li><li><strong>训练资源</strong>：论文未披露具体 GPU/TPU 数量及模型参数量；攻击在冻结模型上仅优化一个图像扰动。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO 和 RoboTwin；主要指标包括任务成功率（<strong>SR</strong>）、目标方向位移（<strong>TDS</strong>）、未来相对偏差（<strong>D_fut</strong>）和感知距离（<strong>LPIPS</strong>）。</li><li><strong>基线对比</strong>：与干净查询、同预算高斯噪声、<strong>BadWAM</strong> 进行对比；噪声和 BadWAM 几乎不产生目标方向上的动作位移。</li><li><strong>攻击有效性</strong>：标准攻击在 8 个 WAM 上使任务成功率接近 <strong>0</strong>，并产生显著的目标方向位移（TDS 较大）。</li><li><strong>Token 路径分析</strong>：在动作专家关注未来 token 的 5 个模型中，恢复未来 token 可移除标准攻击 <strong>61–94%</strong> 的目标效应；preserve 变体下，在 3 个模型中恢复当前帧 token 可移除 <strong>87–99%</strong> 的效应，而未来 token 仅移除 <strong>9–15%</strong>。</li><li><strong>神经元分析</strong>：在 6 个模型中，恢复视频专家第 10–29 层约 <strong>0.36%</strong> 的 FFN 神经元即可移除 <strong>72–96%</strong> 的目标效应；该关键神经元集合随攻击路径变化而改变。</li><li><strong>残差方向分析</strong>：移除残差位移方向 <strong>2–16</strong> 可在 7 个模型中消除 <strong>96–99%</strong> 的目标效应，尽管这些方向仅占约 <strong>11–18%</strong> 的位移能量。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26161/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">One View, One Action: Spatially Generalizable VLAs through Observation-Aligned Experts and Cross Graph Consistency</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25695/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">DMT-Attack: Diffusion-Prior Texture Search for Closed-Loop Vision-Language-Action Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

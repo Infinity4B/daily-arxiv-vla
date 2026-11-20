@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>A$^2$-VLA: Adapting Vision-Language-Action Policies to New Tools through Agentic Affordance Discovery - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了 A²-VLA，一个将具身智能体与视觉-语言-动作（VLA）策略相结合的工具适应框架 核心目标是让机器人从少量源工具的遥操作演示中自主发现任务相关的 可供性（affordance）特征，并将这些特征迁移到未见过的工具上，无需为新工具收集额外演示 解决的问题是：不同形状的工具可能具有相似功能，但传统的 VLA 策略难以泛化到全新工具几何形态；论文通过将工具可供性视为可构建、测试和修正的假设，实现跨工具的技能迁移" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25656">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">A$^2$-VLA: Adapting Vision-Language-Action Policies to New Tools through Agentic Affordance Discovery</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25656" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25656" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 A²-VLA，一个将具身智能体与视觉-语言-动作（VLA）策略相结合的工具适应框架</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.25656.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.25656.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.25656.webp" alt="A$^2$-VLA: Adapting Vision-Language-Action Policies to New Tools through Agentic Affordance Discovery 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文 HTML 原文中未明确列出作者所属的研究机构，作者包括 Chenyuan Zhou、Chaoyi…</p>
+        <ul class="article-facts"><li>arXiv 2611.25656</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文 HTML 原文中未明确列出作者所属的研究机构，作者包括 <strong>Chenyuan Zhou</strong>、<strong>Chaoyi Huang</strong>、<strong>Zibo Wang</strong>、<strong>Zhiyuan Li</strong> 和 <strong>Yong-Lu Li</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>A²-VLA</strong>，一个将具身智能体与视觉-语言-动作（VLA）策略相结合的工具适应框架</li><li>核心目标是让机器人从少量源工具的遥操作演示中自主发现任务相关的 <strong>可供性（affordance）特征</strong>，并将这些特征迁移到未见过的工具上，无需为新工具收集额外演示</li><li>解决的问题是：不同形状的工具可能具有相似功能，但传统的 VLA 策略难以泛化到全新工具几何形态；论文通过将工具可供性视为可构建、测试和修正的假设，实现跨工具的技能迁移</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>智能体工具适应框架</strong>：从少量源工具演示出发，在仿真中重建场景，自主确定任务相关的可供性特征（功能区域及其关键几何属性），并通过仿真实验迭代改进特征和提取技能</li><li><strong>可供性提取技能库</strong>：经过验证的提取技能积累为可复用技能库，用于处理未见过的工具，无需重新训练</li><li><strong>可供性条件 VLA 模型</strong>：将编码后的功能区域特征作为低维条件输入集成到 <strong>π₀.₅</strong> 骨干中，并引入辅助可供性轨迹预测头，训练策略忠实遵循可供性引导</li><li><strong>反事实轨迹重规划数据增强</strong>：通过对功能区域特征施加刚性扰动并重新规划动作序列，生成 10% 的额外训练数据，增强 VLA 对可供性引导的遵循能力</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>重建演示交互（Real-to-Sim）</strong>：利用源工具演示中的观测、机器人轨迹、标定相机参数和机器人模型，在仿真中重建工具、目标物体及其空间布局</li><li><strong>自主可供性发现</strong>：智能体比较源工具演示，识别功能区域和关键几何特征，开发可执行的可供性提取技能；在仿真中通过特征对齐和轨迹平滑目标（式 1）进行轨迹重定向验证；根据仿真反馈（任务结果、接触信息、诊断视图）迭代修正功能区域、几何特征或提取技能</li><li><strong>可供性条件 VLA</strong>：在 <strong>π₀.₅</strong> 骨干上增加动作预测头和辅助可供性预测头，联合训练使用损失函数 <strong>L = L_act + L_aff</strong>；当前可供性特征、观测和任务指令共同作为条件输入</li><li><strong>未见工具适应</strong>：部署前智能体在仿真中重建未见工具，提取并测试候选可供性参数，迭代优化后编码为统一格式的特征向量供 VLA 执行</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>任务与工具</strong>：三个真实机器人工具使用任务——<strong>Pnp Ring</strong>（钩取搬运钥匙环）、<strong>Cut Sand</strong>（切割沙子并转移）、<strong>Reset Plate</strong>（抓取并放置盘子）</li><li><strong>演示数据</strong>：每个源工具提供 10 条遥操作演示；源工具数量分别为 Pnp Ring 10 个、Cut Sand 12 个、Reset Plate 5 个；未见工具分别为 10、10、5 个</li><li><strong>模型基础</strong>：采用 <strong>π₀.₅</strong> 作为 VLA 骨干，带有随机初始化的可供性编码器和辅助可供性预测头</li><li><strong>仿真环境</strong>：由 <strong>GPT-6 Astra</strong> 从真实演示中重建，实验中所有智能体均使用 GPT-6 Astra</li><li><strong>硬件平台</strong>：<strong>Dobot Nova 2</strong> 双机械臂平台，配备三台 <strong>RealSense D405</strong> 相机；论文未明确给出具体的训练 GPU/TPU 资源和模型参数量</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>仿真评估</strong>：在 Cut Sand、Reset Plate 和 Pnp Ring 三个任务上分别评估 80、60、80 个回合，Full A²-VLA 在跨工具轨迹重定向中取得 <strong>86.1%</strong> 的平均成功率，显著优于 Raw VLM（37.8%）、MAGIC（17.1%）、MimicFunc（13.3%）、TAX-Pose（26.9%）等方法</li><li><strong>真实机器人评估</strong>：每个任务 50 个回合用于 VLA 方法、20 个回合用于 Agent-Only 控制；在源工具上，Full A²-VLA 平均成功率为 <strong>46.0%</strong>，对比纯 π₀.₅ 的 22.0%；在未见工具上，Full A²-VLA 保持 <strong>35.3%</strong>，对比 π₀.₅ 的 4.7%；与 Human Oracle 的 47.3% 接近，表明自主发现的可供性已接近人类标注水平</li><li><strong>消融研究</strong>：仿真引导的迭代优化在六个迭代中分别将 Cut Sand、Reset Plate 和 Pnp Ring 的成功率提升了 23.8、18.3 和 30.0 个百分点；Pnp Ring 任务中源工具数量从 1 增加到 5 个时，平均成功率从 56.2% 提升至 81.3%，且成功率波动范围从 0.0–100.0% 收窄到 78.7–86.4%</li><li><strong>关键发现</strong>：仿真引导的迭代优化显著提升了可供性可靠性和跨工具泛化能力；更多样化的源工具集有助于发现更具泛化性的功能结构和提取技能</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25667/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CauSyncVLA: Causal Latent World Modeling for Asynchronous Robot Control</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25614/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Don&#x27;t Lose the Future: Latent-Aware 4-Bit Quantization of World Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

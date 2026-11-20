@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>WAMotor: Accelerating World Action Models via Speculative Inference under Dual Nonuniform Denoising Dynamics - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对世界动作模型（WAMs）在机器人控制中因流匹配多步去噪导致的高推断延迟问题，提出基于推测推断的加速方法。 通过重新审视WAM的去噪动力学，发现其存在双重非均匀性：相邻速度残差在去噪起始和结束阶段急剧变化（速度平滑度非均匀），且非均匀积分时间步长将残差转换为不同的局部状态误差并累积到最终动作分布。 提出WAMotor，一种无需训练的即插即用推测推断方法，旨在实现高性能加速的同时保持任务成功率。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25413">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">WAMotor: Accelerating World Action Models via Speculative Inference under Dual Nonuniform Denoising Dynamics</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25413" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25413" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对世界动作模型（WAMs）在机器人控制中因流匹配多步去噪导致的高推断延迟问题，提出基于推测推断的加速方法。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">WAMotor: Accelerating World Action Models via Speculative Inference under Dual Nonuniform Denoising Dynamics</p>
+</div></figure>
+        <p class="article-unit">中国科学技术大学（USTC）</p>
+        <ul class="article-facts"><li>arXiv 2611.25413</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国科学技术大学（USTC）</strong></li><li>Data Darkness Lab, MIRACLE Center, Suzhou Institute for Advanced Research, USTC</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对<strong>世界动作模型（WAMs）</strong>在机器人控制中因流匹配多步去噪导致的<strong>高推断延迟</strong>问题，提出基于推测推断的加速方法。</li><li>通过重新审视WAM的去噪动力学，发现其存在<strong>双重非均匀性</strong>：相邻速度残差在去噪起始和结束阶段急剧变化（速度平滑度非均匀），且非均匀积分时间步长将残差转换为不同的局部状态误差并累积到最终动作分布。</li><li>提出<strong>WAMotor</strong>，一种无需训练的即插即用推测推断方法，旨在实现高性能加速的同时保持任务成功率。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>首次识别并形式化WAM去噪中的<strong>双重非均匀性</strong>（速度平滑度与积分时间步长），打破现有速度重用方法的隐式均匀假设。</li><li>推导<strong>轨迹误差容限界限</strong>，从理论上刻画速度重用残差与积分时间步长如何影响最终动作分布误差，为后续WAM加速提供原理化基础。</li><li>提出<strong>WAMotor</strong>方法，包含<strong>可靠锚速度选择</strong>（延迟推测至首次欧拉更新后）和<strong>时间步感知验证</strong>（阈值随步长缩放），无需训练辅助草稿模型。</li><li>在<strong>LIBERO、RoboTwin 2.0、LIBERO-Plus</strong>三个基准上，将WAMotor无缝集成到<strong>Joint-WAM、Fast-WAM、Faster-WAM</strong>中，实现<strong>2.86×–4.28×端到端加速</strong>，同时保持与原始模型相当的任务成功率。</li><li>实验证明WAMotor在性能-效率帕累托前沿上优于多种缓存和推测推断基线（如VLA-Cache、TeaCache、BAC、ParaStep、SpeCa、FlowCast）。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>问题形式化</strong>：定义“轨迹δ-误差容限”，要求推测输出与参考欧拉输出的最终动作分布误差不超过δ。</li><li><strong>理论推导</strong>：基于Lipschitz连续性假设，推导误差界限为<strong>加权速度重用残差和</strong>加条件误差传播项（Theorem 4.3），并证明局部状态误差与速度残差的平方及时间步长的平方成正比（Lemma 4.4）。</li><li><strong>阶段一：可靠锚速度选择</strong>：规定第一个去噪步骤执行标准欧拉更新，使用更新后的速度 \(u_1\) 作为初始锚，避开初始步骤的非平滑区。</li><li><strong>阶段二：时间步感知验证</strong>：采用中位数时间步长 \(h^{\mathrm{mid}}\) 作为参考，验证准则为 \(\\|r\\|_{\mathcal{A}}^2 \left(\frac{h_k}{h^{\mathrm{mid}}}\right)^2 \leq \varepsilon\)，从而对大步长步骤收紧验证，对小幅步长放松验证，并给出理论保证（Theorem 4.5）。</li><li><strong>集成策略</strong>：WAMotor可即插即用替换原模型的流匹配采样器，支持联合视频-动作外推（Joint-WAM）、固定视觉缓存的动作仅推测（Fast-WAM）以及稀疏视频-动作交互（Faster-WAM），无需改变模型架构。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：LIBERO、RoboTwin 2.0、LIBERO-Plus（皆用于机器人操作任务评估）。</li><li><strong>模型</strong>：Joint-WAM、Fast-WAM、Faster-WAM，代表三种不同类型的WAM架构。</li><li><strong>训练资源</strong>：论文未明确提及GPU/TPU等具体训练资源，但方法为训练无关（training-free），仅涉及推理加速。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境与基准</strong>：在LIBERO、RoboTwin 2.0、LIBERO-Plus三个基准上进行评估，与VLA-Cache、TeaCache、BAC、ParaStep、SpeCa、FlowCast等基线比较。</li><li><strong>主要指标</strong>：任务成功率（%）、端到端延迟（ms）、流匹配推断加速比。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - WAMotor在三个WAM模型上实现<strong>端到端加速2.86×–4.28×</strong>，流匹配部分加速<strong>3.24×–6.62×</strong>。</p>
+<p> - 在LIBERO上，Joint-WAM的平均成功率从vanilla的98.35%微降至98.00%（延迟从660.83ms降至216.44ms）；Fast-WAM的平均成功率保持97.10%（延迟从387.54ms降至92.57ms）；Faster-WAM的平均成功率从98.60%微降至98.50%（延迟从275.85ms降至108.57ms等）。</p>
+<p> - WAMotor在所有基线上达到最优帕累托点，即在最低延迟下保持最高成功率，例如在LIBERO-Plus上显著优于其他缓存和推测方法。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25460/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">LoongForge-Embodied: A Unified Framework for Training Heterogeneous Embodied Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25400/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Dune: A Zeroth-Order Optimizer with Time-Conditioned Historical Error Regression for VLA Test-Time Adaptation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

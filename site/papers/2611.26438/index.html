@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Risk-Controlled Test-Time Adaptation for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究检索增强视觉-语言-动作（VLA）模型的测试时适应问题：现有方法（如 RICL）通过检索专家演示作为上下文进行适应，但即使检索到的演示与任务相关，VLA 仍可能无法有效利用该信息，导致任务失败 提出以最少的专家协助满足用户指定任务成功率要求为目标的可靠测试时适应框架 核心思路是让 VLA 学会判断何时可以自主行动、何时需要请求专家协助，并通过风险控制程序校准不确定性阈值以满足任务级失败风险要求" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26438">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">Risk-Controlled Test-Time Adaptation for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26438" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26438" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究检索增强视觉-语言-动作（VLA）模型的测试时适应问题：现有方法（如 RICL）通过检索专家演示作为上下文进行适应，但即使检索到的演示与任务相关，VLA 仍可能无法有效利用该信息，导致任务失败</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26438.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26438.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26438.webp" alt="Risk-Controlled Test-Time Adaptation for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Tulane University（计算机科学系）：Zixuan Liu、Zizhan Zheng</p>
+        <ul class="article-facts"><li>arXiv 2611.26438</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Tulane University</strong>（计算机科学系）：Zixuan Liu、Zizhan Zheng</li><li><strong>University of Turku</strong>（计算系）：Hashem Haghbayan</li><li><strong>Aalto University</strong>（工业工程与管理系）：Siavash Khajavi</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究检索增强视觉-语言-动作（VLA）模型的测试时适应问题：现有方法（如 <strong>RICL</strong>）通过检索专家演示作为上下文进行适应，但即使检索到的演示与任务相关，VLA 仍可能无法有效利用该信息，导致任务失败</li><li>提出以最少的专家协助满足用户指定任务成功率要求为目标的可靠测试时适应框架</li><li>核心思路是让 VLA 学会判断何时可以自主行动、何时需要请求专家协助，并通过风险控制程序校准不确定性阈值以满足任务级失败风险要求</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>R2-VLA</strong>：一个风险控制的检索增强 VLA 框架，通过学习的不确定性预测器估计预测动作的不确定性，决定 <strong>Act</strong>（自主执行）或 <strong>Ask</strong>（请求专家协助），以满足用户指定的任务级失败风险要求</li><li>建立理论保证（定理 1）：将任务失败风险分解为专家策略失败概率、自主执行时的累积不确定性、不确定性预测误差等可解释分量，揭示不确定性预测准确性与任务级失败风险的联系</li><li>提出持续部署适应机制：将专家修正持续纳入检索记忆，并理论上证明每次记忆更新后重新校准阈值可全程保持任务级风险保证（定理 2）</li><li>在三个 VLA 骨干和四个 LIBERO 基准套件上进行广泛实验，平均任务成功率比 RICL 提升 <strong>9.2–11.2</strong> 个百分点，且以更少的专家请求达成目标成功率</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>不确定性引导的 Act/Ask 决策框架</strong>：在检索增强 VLA 策略上附加轻量级不确定性预测器 U_ψ，从模型内部表示输出标量不确定性分数；低于阈值 λ 时自主执行，否则请求专家协助</li><li><strong>不确定性预测器训练</strong>：冻结 VLA 参数，仅训练不确定性头，以 VLA 预测动作与专家动作之间的归一化差异为监督目标（SmoothL1 损失），避免移动目标问题</li><li><strong>训练数据增强</strong>：引入刻意降级的检索上下文（错误任务检索、视觉相似但目标不同的检索、随机检索），使不确定性头学习“动作不确定性”而非“检索异常性”</li><li><strong>风险控制校准</strong>：在留出校准集上对每个候选阈值执行二项假设检验，结合 Bonferroni 校正构建认证阈值集，选择其中经验 ASK 率最低的阈值</li><li><strong>持续部署适应</strong>：Ask 触发的专家修正被存入修正缓冲区并合并到检索记忆中；每次记忆更新后用新鲜校准集重新校准阈值，维持风险保证</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>基准：<strong>LIBERO</strong> 基准的四个套件（Spatial、Object、Goal、Long）</li><li>VLA 骨干：<strong>MiniVLA</strong>、<strong>π0-FAST</strong>、<strong>OpenVLA</strong></li><li>检索模块：使用冻结的 <strong>DINOv2</strong> 图像编码器计算观测相似度</li><li>对比基线：<strong>RICL</strong>（Re-training for In-Context Learning）</li><li>训练资源细节在正文截断部分（附录 8 节提供实现细节）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：LIBERO 仿真基准，按任务套件分别评估，并设置目标成功率要求</li><li>评估指标：任务成功率（SR ↑）、目标成功率、ASK 率（↓，专家协助请求频率）</li><li>关键结果：跨三个 VLA 骨干和四个 LIBERO 套件，R2-VLA 平均任务成功率较 RICL 提升 <strong>9.2–11.2</strong> 个百分点，在大多数设置下以最小专家协助满足目标成功率</li><li>定性对比：在 LIBERO-Goal 任务上，RICL 检索到相关演示仍会执行错误动作导致失败，而 R2-VLA 通过不确定性预测器检测不确定动作并请求专家协助，成功完成任务</li><li>消融研究：分析目标风险水平、检索损坏、校准集大小对性能的影响，并验证在不确定性头训练中引入损坏检索上下文的有效性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26444/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26420/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Awaken-HI: Scaling Humanoid Intelligence with Whole-Body Human Experience</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

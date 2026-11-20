@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>CoachSI: Self-Improvement of Robot Policies with a Language Coach - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了 CoachSI，一种仅通过语言指导实现机器人策略自改进的方法，无需人类操作员、奖励模型或测试时的 VLM。 要解决的问题是：通用机器人策略在原子技能上表现可靠，但在将技能组合为长程任务时容易停滞，且仅靠策略自身收集经验难以突破其能力边界。 核心发现是：策略在长程任务中停滞时，缺少的不是技能，而是“下一步该做什么”的指令；一个冻结的视觉语言模型（VLM）即可从相机图像中判断并给出该指令。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25529">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">CoachSI: Self-Improvement of Robot Policies with a Language Coach</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25529" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25529" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 CoachSI，一种仅通过语言指导实现机器人策略自改进的方法，无需人类操作员、奖励模型或测试时的 VLM。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.25529.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.25529.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.25529.webp" alt="CoachSI: Self-Improvement of Robot Policies with a Language Coach 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者均来自 美国伊利诺伊大学芝加哥分校（University of Illinois at Chica…</p>
+        <ul class="article-facts"><li>arXiv 2611.25529</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者均来自 <strong>美国伊利诺伊大学芝加哥分校（University of Illinois at Chicago）</strong></li><li>通讯作者为 <strong>Yan Yan</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>CoachSI</strong>，一种仅通过语言指导实现机器人策略自改进的方法，无需人类操作员、奖励模型或测试时的 VLM。</li><li>要解决的问题是：通用机器人策略在原子技能上表现可靠，但在将技能组合为长程任务时容易停滞，且仅靠策略自身收集经验难以突破其能力边界。</li><li>核心发现是：策略在长程任务中停滞时，<strong>缺少的不是技能，而是“下一步该做什么”的指令</strong>；一个冻结的视觉语言模型（VLM）即可从相机图像中判断并给出该指令。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>识别出长程操作中的一类“停滞”现象，并证明 <strong>单一的下一条指令</strong>可以在 WAM 和 VLA 两种架构上将停滞状态的子目标完成率提升 <strong>4.6 倍</strong>。</li><li>提出 <strong>CoachSI</strong> 自改进框架：冻结 VLM 作为语言教练在数据收集阶段给出下一步指令，成功的受指导轨迹经事后重新标注（hindsight relabeling）后用于微调策略。</li><li>证明了 CoachSI 在同等数据预算下优于人类演示微调和自收集成功轨迹微调：在 18 个长程任务中实现 <strong>59.3%</strong> 的成功率，相比预训练策略提升 <strong>11.9 个百分点</strong>。</li><li>表明冻结的 VLM 从相机图像即可恢复 oracle 增益的 <strong>91%</strong>，且 CoachSI 的增益主要来自“仅有教练干预才能产生的成功轨迹”。</li><li>指出在 World Action Model 中，仅更新视频骨干网络的自注意力层，<strong>动作骨干网络保持冻结</strong>，即可将受指导经验转化为策略独立完成任务的能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>每个复合任务预定义一组原子指令候选集 \(\mathcal{V}(g)\)，每条候选对应策略已具备的一种技能。</li><li><strong>语言教练</strong> \(c_\phi\) 是一个冻结的现成 VLM（Qwen3.8-27B），在每个动作块边界读取相机视图和候选指令，选择第一个尚未完成的下一步指令，或返回 KEEP。</li><li>教练不输出动作，所有动作均由冻结的策略自身产生，从而保证受指导轨迹中的动作来自策略已有技能。</li><li>成功轨迹被 <strong>事后重新标注</strong>：将轨迹中的教练指令替换为原始任务指令 \(g\)，构建训练数据集 \(\mathcal{D}_{\mathrm{coach}}\)。</li><li>微调时仅在视频损失上更新 World Action Model 的 <strong>视频骨干网络自注意力层</strong>，动作骨干网络保持冻结，使策略学会“在任务指令下预测下一步”，而非学习新动作技能。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>RoboCasa365</strong> 基准，采用 18 个复合任务作为长程评估任务；数据收集和评估使用互不重叠的厨房场景集。</li><li>研究两个公开模型：<strong>OpenWAM</strong>（World Action Model）和 <strong>Xiaomi-Robotics-1</strong>（VLA）。</li><li>教练模型为 <strong>Qwen3.8-27B</strong>，在数据收集期间每个动作块被查询一次。</li><li>微调设置：3,000 梯度步，batch size 16，训练样本 48,000 个，其中 80% 为 RoboCasa365 人类演示数据，20% 来自各任务的受指导成功轨迹（每任务 530 个样本）。</li><li>评估使用 20 个未见场景，每任务 3 次试验，共 1,080 个评估 episode。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>停滞状态分析</strong>：在 500 个停滞状态上，oracle 的下一步指令将子目标完成率提升 <strong>4.6 倍</strong>；冻结 VLM 仅凭相机图像恢复 oracle 增益的 <strong>91%</strong>。</li><li><strong>主要结果</strong>：CoachSI 将预训练策略在 18 个长程任务中的成功成功率从 <strong>47.4% 提升至 59.3%</strong>（+11.9 个百分点）。</li><li>相比基线：人类演示微调达到 <strong>49.4%</strong>，自收集成功轨迹微调达到 <strong>51.9%</strong>；CoachSI 分别高出 <strong>9.8</strong> 和 <strong>7.3</strong> 个百分点。</li><li>使用仅图像教练时 CoachSI 达到 <strong>56.8%</strong>，仍高于两个基线。</li><li><strong>消融实验</strong>：移除事后重新标注后成功率降至 <strong>51.7%</strong>，证明将轨迹重新标注为任务指令是必要组件。</li><li><strong>过程分析</strong>：在 320 步内，CoachSI 完成第一个子目标的比例为 <strong>41.5%</strong>，明显高于预训练策略（23.9%）、人类演示（24.9%）和自收集成功（28.8%）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25589/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">GraF-VTA: Neuro-Symbolic Trajectory Generation from Vision and Temporal Logic via Graph-Based Fusion</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25474/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">TuringPAI: A Foundation for On-Device Physical AI</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

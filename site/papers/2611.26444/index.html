@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Mind2Act World，一个用于诊断机器人操作中具身心智、物理行动及其组合能力的诊断式基准测试，旨在评估具身智能的三种互补能力：基于历史观测的认知推理、精准及时物理执行、以及通过环境反馈将推理与执行组合的闭环能力 针对现有基准的两大局限：一是将认知推理与物理执行混合在同一任务中评估，导致失败无法归因于“心智”或“行动”；二是即使有细粒度诊断的基准，也极少评估“心智-行动组合”（Mind-Action Composition），即物理结果能否有效指导后续决策 通过对比系统在三个视图上的表现，揭示系统是缺乏某项能力，还是无法组合其已具备的能力" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26444">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26444" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26444" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Mind2Act World，一个用于诊断机器人操作中具身心智、物理行动及其组合能力的诊断式基准测试，旨在评估具身智能的三种互补能力：基于历史观测的认知推理、精准及时物理执行、以及通过环境反馈将推理与执行组合的闭环能力</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26444.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26444.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26444.webp" alt="Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">清华大学（THU，MMLab@SIGS，主导单位）</p>
+        <ul class="article-facts"><li>arXiv 2611.26444</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>清华大学</strong>（THU，MMLab@SIGS，主导单位）</li><li><strong>剑桥大学</strong>（UCam）、<strong>牛津大学</strong>、<strong>斯坦福大学</strong>、<strong>卡内基梅隆大学</strong>（CMU）</li><li><strong>香港大学</strong>（HKU）、<strong>香港科技大学</strong>（HKUST）、<strong>香港中文大学</strong>（CUHK）</li><li><strong>北京大学</strong>（PKU）、<strong>上海交通大学</strong>（SJTU）、<strong>复旦大学</strong>（FDU）、<strong>中国人民大学</strong>（RUC）、<strong>深圳大学</strong>（SZU）</li><li>产业界合作单位：<strong>Velabot AI</strong>、<strong>Simple AI</strong>、<strong>百度智能云</strong>（Baidu AI Cloud）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Mind2Act World</strong>，一个用于诊断机器人操作中具身心智、物理行动及其组合能力的诊断式基准测试，旨在评估具身智能的三种互补能力：基于历史观测的认知推理、精准及时物理执行、以及通过环境反馈将推理与执行组合的闭环能力</li><li>针对现有基准的两大局限：一是将认知推理与物理执行混合在同一任务中评估，导致失败无法归因于“心智”或“行动”；二是即使有细粒度诊断的基准，也极少评估“心智-行动组合”（Mind-Action Composition），即物理结果能否有效指导后续决策</li><li>通过对比系统在三个视图上的表现，揭示系统是缺乏某项能力，还是无法组合其已具备的能力</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Mind2Act World</strong> 诊断式基准：包含源自真实世界需求的 <strong>30 个仿真操作任务</strong>，组织为 <strong>Mind</strong>、<strong>Act</strong>、<strong>Mind2Act</strong> 三个视图（各 10 个任务），覆盖 12 个能力类别</li><li>开发诊断工具框架，结合<strong>基于规则的分析</strong>与 <strong>LLM 评判器</strong>，将失败片段定位于最先断裂的阶段，并归因于 Mind、Act 或 Mind-Action 组合；同时为三个代表性系统生成总结失败模式与行为倾向的“模型画像卡”</li><li>在共享任务、信息契约与评估器上，统一评估<strong>多模态智能体、视觉-语言-动作模型（VLA）和世界-动作模型（WAM）</strong>，为智能体与端到端策略设立独立排行榜</li><li>揭示关键发现：单一能力上的优势不能迁移到组合任务——最强智能体在 Mind 任务成功率达 52.7%、Act 任务 39.0%，但在 Mind2Act 任务仅 <strong>12.0%</strong>，指出“推理与执行通过环境反馈的组合”是核心开放问题</li><li>提供完整开源生态：网站、代码、任务库、排行榜、诊断工具与文档</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>三视图任务设计</strong>：Mind 任务保持物理操作简单以测历史推理（含记忆类别）；Act 任务显式给出所需操作以测动态响应与精准执行；Mind2Act 任务串联依赖操作，使每次物理结果决定后续决策（含组合机制）</li><li><strong>四项设计原则</strong>：任务源自真实世界需求；能力先解耦再重组；结果基于环境物理谓词在回合内物理验证并追踪；评估与架构无关（智能体与端到端策略共享相同任务、信息契约与评估器）</li><li><strong>难度设计</strong>：每个任务设 3 个难度级别，在 <strong>Clean</strong>（整洁）与 <strong>Random</strong>（随机化杂乱、材质、光照）两种场景下运行，共 <strong>180 种配置</strong></li><li><strong>诊断工具</strong>：结合评估器记录的阶段/事件规则分析与 LLM 评判器，输出失败代码并将失败归因至 Mind、Act 或组合层面，生成模型画像卡</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>30 个仿真操作任务</strong>，来自 5 个真实世界应用领域（如烹饪等家庭场景），覆盖 12 个能力类别</li><li>提供 <strong>4,500 条专家示范</strong>（共 <strong>75.8 小时</strong>），用于端到端策略的微调</li><li>评估三类代表性系统：多模态智能体、VLA（视觉-语言-动作模型）、WAM（世界-动作模型）</li><li>智能体在仿真器中推理时时钟暂停（pause clock）以保证不同推理速度系统间的公平比较（这一设定也作为局限性被指出）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：仿真平台上的统一任务、信息契约与评估器；智能体与端到端策略分列独立排行榜</li><li>主要指标：回合成功率、任务得分，以及诊断层面的阶段定位与失败归因（Mind / Act / 组合）</li><li>关键结果：</li></ul>
+<p> - 最强智能体在 <strong>Mind 达 52.7%</strong>、<strong>Act 达 39.0%</strong>，但 <strong>Mind2Act 仅 12.0%</strong></p>
+<p> - 没有端到端策略在 Mind2Act 任务上超过 <strong>3.6%</strong></p>
+<p> - 最强智能体能保持任务状态但难以维持持续接触；端到端策略执行熟练动作但几乎不保留任务状态，VLA 的记忆能力在场景随机化下大幅消失</p>
+<p> - 共有 <strong>8 个任务没有任何系统能够完成</strong>；成功集中在少数任务上</p>
+<ul><li>诊断结论：各系统在 Mind 与 Act 上的短板各不相同，但均受限于 Mind-Action 组合，表明“通过环境反馈将推理与执行组合”是当前具身智能的主要开放问题</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26565/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">PhyDEX: A Benchmark for Physical Reasoning in Vision-Language-Action Models via Dynamic Extrinsic Dexterity</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26438/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Risk-Controlled Test-Time Adaptation for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

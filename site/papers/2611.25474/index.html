@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>TuringPAI: A Foundation for On-Device Physical AI - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 TuringPAI，一个面向设备端物理 AI 的模型家族，包含 TuringPAI-VL（视觉语言基础模型）、TuringPAI-Drive（自动驾驶 VLA）和 TuringPAI-Embodied（机器人操作 VLA） 核心目标是在有限的车载计算资源（如 NVIDIA Orin-X）下，实现空间关系理解、动态环境感知以及从视觉观测到动作的高效转换 解决现有 VLM 在处理多相机、多帧高分辨率输入时序列冗余大、计算成本高、缺乏显式几何与时间监督的问题" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.25474">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-19">2026-11-19</time></p>
+        <h1 class="article-title">TuringPAI: A Foundation for On-Device Physical AI</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.25474" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.25474" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 TuringPAI，一个面向设备端物理 AI 的模型家族，包含 TuringPAI-VL（视觉语言基础模型）、TuringPAI-Drive（自动驾驶 VLA）和 TuringPAI-Embodied（机器人操作 VLA）</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.25474.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.25474.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.25474.webp" alt="TuringPAI: A Foundation for On-Device Physical AI 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文由 XPeng Inc（小鹏汽车）的 Foundation Model Team 撰写</p>
+        <ul class="article-facts"><li>arXiv 2611.25474</li><li>6 节精读</li><li>约 10 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文由 <strong>XPeng Inc</strong>（小鹏汽车）的 <strong>Foundation Model Team</strong> 撰写</li><li>作者未列出个人姓名，仅以团队名义署名</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>TuringPAI</strong>，一个面向设备端物理 AI 的模型家族，包含 <strong>TuringPAI-VL</strong>（视觉语言基础模型）、<strong>TuringPAI-Drive</strong>（自动驾驶 VLA）和 <strong>TuringPAI-Embodied</strong>（机器人操作 VLA）</li><li>核心目标是在有限的车载计算资源（如 NVIDIA Orin-X）下，实现空间关系理解、动态环境感知以及从视觉观测到动作的高效转换</li><li>解决现有 VLM 在处理多相机、多帧高分辨率输入时序列冗余大、计算成本高、缺乏显式几何与时间监督的问题</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>HybridViT-MLQ</strong> 架构：结合卷积局部聚合与 Transformer 全局建模，通过多尺度潜查询（MLQ）在同一视觉 Transformer 内融合空间特征和观测历史，显著减少语言模型输入 token 数</li><li>构建面向物理 AI 的训练数据混合：在通用图文数据基础上，加入几何感知（深度、3D 定位）、跨视角关联（像素对应、相机姿态）和时序理解（多帧驾驶、机器人操作）监督，提升模型的空间与动态推理能力</li><li>训练 <strong>TuringPAI-VL</strong>（0.65B）基础模型，在保持通用多模态能力的同时，在深度估计、相对位姿估计等几何感知任务上大幅超越 <strong>Qwen2-VL-2B</strong> 和 <strong>InternVL3-1B</strong></li><li>展示 <strong>TuringPAI-Drive</strong> 在自动驾驶中的有效部署：使用 MLQ 将视觉 token 压缩后，开环轨迹预测的所有 ADE/FDE 指标保持在完整 token 基线的 1.2% 以内，驾驶质量成本接近，并在单颗 Orin-X 上实现 12 Hz 轨迹生成</li><li>验证跨领域泛化：<strong>TuringPAI-Embodied</strong> 基于同一基础模型在 LIBERO 四个套件上取得 <strong>96.8%</strong> 的平均成功率，证明共享视觉语言基础能够支持驾驶和操作两大物理 AI 任务</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>HybridViT</strong>：卷积前端将图像划分为 128×128 区域，以总步长 32 生成 4×4 特征网格，拼接后投影得到 patch token，相比 patch-size-16 的 ViT，token 数减少为四分之一；混合注意力 Transformer 负责全局建模</li><li><strong>Multi-scale Latent Queries (MLQ)</strong>：从卷积特征通过多尺度池化初始化粗到细的查询网格，使用统一的 3D RoPE（扩展 DINO 风格 2D RoPE 到时间维）编码空间和时间位置；非对称注意力掩码确保查询聚合 patch 和先前查询，但 patch 不反向聚合查询，只有更新后的查询特征传给语言模型</li><li>视频输入组织为四帧窗口，查询层次仅由当前帧初始化，但聚合窗口内所有帧的 patch 证据；语言模型输入 token 数固定为 N_q，与帧数无关（实验中 N_q ≈ 0.3N，T ∈ {1,4}）</li><li>部署优化：卷积前端支持在 Orin-X 上的 DLA 与 GPU 异构执行；使用 <strong>XPeng Native Runtime (XNRT)</strong> 实现 BF16+INT8 混合精度推理，相比 TensorRT FP32+INT8 快 <strong>3.69 倍</strong></li><li>训练采用两阶段：先对齐视觉编码器与冻结的语言模型，再联合训练全部参数并加入 logit 蒸馏；整个过程使用原生动态分辨率</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>训练数据</strong>：通用图文对齐语料、几何监督数据（深度、3D 框、相机姿态、跨视图对应，构建方法参考 VLM3）、多视图 QA 与视频数据、XPeng 内部驾驶数据集（<strong>298,000 小时</strong>，<strong>35M clips</strong>，覆盖高速、城市、泊车等场景）、机器人操作多帧数据</li><li><strong>模型规模</strong>：TuringPAI-VL 视觉编码器 HybridViT-MLQ 为 <strong>156M</strong>，语言模型为 <strong>Qwen2.5-0.5B</strong>，总参数约 <strong>0.65B</strong>；下游 VLA 在此基础上添加任务头（驾驶轨迹头或操作动作专家）</li><li><strong>训练资源</strong>：使用 <strong>H800 GPU</strong> 训练，Stage 1 消耗 <strong>1,640 H800 GPU-hours</strong>，Stage 2 消耗 <strong>9,870 H800 GPU-hours</strong></li><li><strong>推理硬件</strong>：全部分部署和延迟评估均在单颗 <strong>NVIDIA Orin-X SoC</strong> 上进行；驾驶模型通过 XNRT 实现混合精度加速，机器人操作模型推理阶段（CNN patch 嵌入后）总和为 <strong>168.3 ms</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>通用多模态理解</strong>：TuringPAI-VL 在 RefCOCO 平均 80.91（高于 InternVL3-1B 的 77.88），ChartQA 76.96、DocVQA 80.52、MathVista mini 54.20 等指标上表现突出；视频理解上 MVBench 61.95、MLVU 51.50、LongVideoBench 45.60，均优于 InternVL3-1B</li><li><strong>空间感知与推理</strong>：NYU Depth V2 绝对相对误差 <strong>0.146</strong>（Qwen2-VL-2B 为 0.70）；7-Scenes 相对位姿 AUC@30° <strong>19.99</strong>（Qwen2-VL-2B 为 2.03）；在 4 个 3D 目标定位基准上直接输出 3D 框，mAP（IoU 0.15）从 20.00 到 39.55，而参考模型无法产生有效分数</li><li><strong>自动驾驶开环轨迹预测</strong>：在 436k 帧验证集上，HybridViT-MLQ 相比完整 token 的 HybridViT，6s 横向 ADE 降低 1.2%，横向 FDE 降低 1.1%，纵向仅微增 0.5%/0.4%；所有 ADE/FDE 指标变化不超过 1.2%，yaw 误差和 miss rate 略有改善</li><li><strong>驾驶质量仿真</strong>：使用 XPeng 内部 CCES 套件，五个类别（Compliance, Comfort, Efficiency, Safety, Navigation）的成本比率均在 0.991–1.004 之间，整体驾驶质量几乎无损失；其中后碰撞风险、异常减速、限速不足等指标成本显著降低</li><li><strong>设备端部署</strong>：TuringPAI-Drive 在单颗 Orin-X 上通过 XNRT 实现 <strong>12 Hz</strong> 轨迹生成；XNRT BF16+INT8 比 TensorRT FP32+INT8 快 3.69 倍（均使用 QAT），满足车载实时性要求</li><li><strong>机器人操作</strong>：TuringPAI-Embodied 在 LIBERO 四个套件上取得 <strong>96.8%</strong> 平均成功率，接近已发表的 OpenPI π₀.₅ 结果；模型推理各阶段总延迟 168.3 ms（Orin-X 上），支持实时操作任务</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.25529/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CoachSI: Self-Improvement of Robot Policies with a Language Coach</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.25461/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ActMem: From Latent Memory Reasoning to Grounded Robotic Action</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
