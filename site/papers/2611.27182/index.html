@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Tripwire: Robot Agents that Program Their Own Interrupts under Human Disturbance - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 TRIP（Tripwire）：一种免训练、事件驱动的机器人智能体执行框架，让智能体为正在运行的策略编写并更新自己的中断程序（tripwire）。 解决回合制 harness 在策略执行期间智能体“失明”的问题：人类可能中途进入机器人路径或移动目标物体，而智能体无法及时重新决策。 tripwire 是一段轻量、有状态的 Python 程序，与策略并行运行，可调用紧凑 VLM 感知场景、结合深度与几何信息，决定是否中断当前调用并将控制权交还智能体。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.27182">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">Tripwire: Robot Agents that Program Their Own Interrupts under Human Disturbance</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.27182" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.27182" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 TRIP（Tripwire）：一种免训练、事件驱动的机器人智能体执行框架，让智能体为正在运行的策略编写并更新自己的中断程序（tripwire）。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.27182.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.27182.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.27182.webp" alt="Tripwire: Robot Agents that Program Their Own Interrupts under Human Disturbance 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University of Massachusetts at Amherst（Sunli Chen、Q…</p>
+        <ul class="article-facts"><li>arXiv 2611.27182</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of Massachusetts at Amherst</strong>（Sunli Chen、Qinhong Zhou、Xiaowen Qiu、Jiaben Chen、Zeyuan Yang、Chuang Gan）</li><li><strong>University of Minnesota - Twin Cities</strong>（Yun Zong）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>TRIP</strong>（Tripwire）：一种免训练、事件驱动的机器人智能体执行框架，让智能体为正在运行的策略编写并更新自己的中断程序（tripwire）。</li><li>解决回合制 harness 在策略执行期间智能体“失明”的问题：人类可能中途进入机器人路径或移动目标物体，而智能体无法及时重新决策。</li><li>tripwire 是一段轻量、有状态的 Python 程序，与策略并行运行，可调用紧凑 VLM 感知场景、结合深度与几何信息，决定是否中断当前调用并将控制权交还智能体。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>TRIP</strong>：免训练、策略无关的 harness，智能体通过编写和更新状态化 tripwire 来编程自身中断；tripwire 在执行中查询紧凑 VLM，并结合深度、记忆和计时器进行判断。</li><li>构建 <strong>RoboHD</strong> 基准：基于 <strong>RoboCasa365</strong> 的 42 个任务、168 个场景，加入反应式人类化身，包含空间、物体状态、任务状态和感知四类扰动，任何人机接触均视为失败。</li><li>在 <strong>三个 VLA（GR00T、REKI-2B、Xiaomi-Robotics-1）和一个 WAM（PatchWAM）</strong> 上系统评估 TRIP，显示其显著提升安全性且不损失任务成功率。</li><li>在真实机器人 <strong>UFACTORY xArm 7</strong> 上验证 TRIP，在人类挡住手臂和移动目标物体两种干扰下仍能成功完成任务。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>事件驱动控制</strong>：智能体每次选择执行调用（策略执行或直接动作）并附带一个 tripwire；tripwire 在每个控制步检查观测，返回 <code>false</code> 继续执行，或返回触发原因（如“人距离 0.6 m，正在接近”）停止调用并唤醒智能体。</li><li><strong>可编程 tripwire</strong>：tripwire 是 Python 函数 <code>w(o_t, m_t) -&gt; (m_{t+1}, z_t)</code>，具有内部记忆，可调用 <code>vlm(question, images)</code> 按需进行视觉问答，并结合深度、机器人姿态、计时器和历史记忆决定是否触发。</li><li><strong>有界执行与沙箱</strong>：限制 import、代码长度、VLM 查询次数、时间和内存；运行错误或超时会安全中断并唤醒智能体。</li><li><strong>智能体工具</strong>：包括观测检查、策略执行、直接动作、tripwire 编程和记忆检查；智能体在触发后重新评估场景，更新 tripwire 并继续任务。</li><li><strong>RoboHD 扰动模拟</strong>：人类化身按空闲、接近、等待、行动、离开五阶段反应式行动，使用动作捕捉数据驱动；接触检测采用胶囊-边界盒几何判定。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>RoboHD</strong>：168 个场景，来自 42 个 RoboCasa365 任务，每个任务对应 4 种扰动类型；其中 36 个场景来自 target split，132 个来自 pretrain split。</li><li><strong>底层策略</strong>：3 个 VLA（<strong>GR00T N1.5</strong>、<strong>REKI-2B</strong>、<strong>Xiaomi-Robotics-1 (XR)</strong>）和 1 个 WAM（<strong>PatchWAM</strong>），均使用 RoboCasa365 数据训练并保持冻结。</li><li><strong>智能体模型</strong>：默认 <strong>GPT-6.1-sol</strong>；消融中测试了 <strong>GPT-6 Astra</strong>。</li><li><strong>tripwire VLM</strong>：<strong>Qwen3.5-9B</strong>（关闭思维链），约每秒查询 2 次。</li><li><strong>训练资源</strong>：仿真控制频率 20 Hz；真实机器人策略使用一块 <strong>RTX 4090</strong>，另用一块 <strong>RTX 4090</strong> 运行 Qwen3.5-9B；真实机器人策略为 <strong>π0.5</strong> 单任务策略，用 100 条遥操作数据通过行为克隆训练。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>主要指标</strong>：有人的成功率（任务成功且无接触）、无人的成功率、安全性（在可无人生存场景中无接触的比例）。</li><li><strong>模拟结果（168 场景）</strong>：以最强策略 <strong>Xiaomi-Robotics-1</strong> 为例，TRIP 将有人成功率从策略单独运行的 20.8% 提升至 38.7%（agentic harness 为 31.0%）；安全性从 61.3% 提升至 81.3%，将人机接触率减半；无人时的成功率为 73.2%，与 agentic baseline 73.8% 相当。</li><li><strong>消融实验</strong>：固定 tripwire（智能体首轮编写后不再更新）安全性降至 61.3%；预定义 tripwire 安全性最高 86.0% 但成功率仅 16.1%；更换智能体为 GPT-6 Astra 成功率 38.1%、安全性 73.8%。</li><li><strong>调用效率</strong>：TRIP 的智能体工具调用为 19.4 次/分钟，agentic baseline 为 30.3 次/分钟；每回合观察调用 TRIP 10.1 次 vs baseline 28.7 次。</li><li><strong>真实机器人</strong>：在挂马克杯和挂毛巾两个任务上，TRIP 在“挡住手臂”和“移动目标”两种干扰下共 40 次试验中成功 25 次，而 agentic harness 成功 5 次、策略单独运行成功 1 次；tripwire 单次检查平均延迟 0.24 s，智能体回合平均 4.3 s。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.27187/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SCAP: Stochastic Context for Action Expert Pretraining</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.27171/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Learning from Incomplete Actions: Interval Motion Supervision for Vision-Language-Action Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

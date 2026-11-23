@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>BeyondEgo: Learning to Act Beyond Egocentric Perception via Humanoid Ego-Exo Foresight - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 BeyondEgo，一种用于人形机器人 loco-manipulation 的视觉-语言-动作（VLA）模型，旨在解决仅依赖自我中心（egocentric）视角感知的局限性 通过引入外部（exocentric）视角作为空间扩展，并利用双视角未来观测作为特权监督进行时间扩展，来增强策略对全身动作和场景演化的理解 论文还构建了 HELM 基准，这是首个具备同步 ego-exo 视角的闭环人形 loco-manipulation 基准，用于系统评估感知扩展方法" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.27047">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">BeyondEgo: Learning to Act Beyond Egocentric Perception via Humanoid Ego-Exo Foresight</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.27047" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.27047" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 BeyondEgo，一种用于人形机器人 loco-manipulation 的视觉-语言-动作（VLA）模型，旨在解决仅依赖自我中心（egocentric）视角感知的局限性</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.27047.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.27047.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.27047.webp" alt="BeyondEgo: Learning to Act Beyond Egocentric Perception via Humanoid Ego-Exo Foresight 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者来自 Tongji University、Yingwang Intelligent Technol…</p>
+        <ul class="article-facts"><li>arXiv 2611.27047</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者来自 <strong>Tongji University</strong>、<strong>Yingwang Intelligent Technology</strong>、<strong>Université de Montréal</strong> 以及 <strong>The Chinese University of Hong Kong</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>BeyondEgo</strong>，一种用于人形机器人 loco-manipulation 的视觉-语言-动作（VLA）模型，旨在解决仅依赖自我中心（egocentric）视角感知的局限性</li><li>通过引入外部（exocentric）视角作为空间扩展，并利用双视角未来观测作为特权监督进行时间扩展，来增强策略对全身动作和场景演化的理解</li><li>论文还构建了 <strong>HELM</strong> 基准，这是首个具备同步 ego-exo 视角的闭环人形 loco-manipulation 基准，用于系统评估感知扩展方法</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出基于外部视角的空间扩展方法，通过冻结的 <strong>DINOv3</strong> 编码器提取外部视角特征并与 VLM 特征融合，注入动作专家，提升对全身空间关系的感知</li><li>提出双视角未来预测（foresight）目标，使用未来观测作为特权监督，通过残差适配器将未来动态嵌入 VLM 特征，训练后丢弃 foresight 专家，仅保留轻量适配器</li><li>构建 <strong>HELM</strong> 基准，包含五个需要超出自我中心视角的全身操作任务，提供同步的 ego 和 exo 视角、受控分布偏移场景以及逐阶段评估指标</li><li>通过大量实验验证了空间与时间扩展的有效性，并分析了特征融合策略、预测目标空间、监督视图和外部相机摆放对泛化的影响</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>整体架构</strong>采用三层系统：System-2 为 <strong>Qwen3-VL-2B-Instruct</strong> VLM 处理自我中心图像和语言指令；System-1 包括动作专家（基于 flow matching 的 MM-DiT）和隔离的 foresight 专家；System-0 为 <strong>AMO</strong> 基于 RL 的全身控制器</li><li><strong>空间扩展</strong>：使用冻结的 <strong>DINOv3 ViT-L/16</strong> 编码外部视角图像，通过可学习投影将特征映射到与 VLM 特征相同维度，然后直接与 VLM 特征拼接后输入动作专家</li><li><strong>时间扩展</strong>：在 VLM 特征上应用零初始化的线性残差适配器，foresight 专家读取适配后的特征和外部特征，通过余弦相似度损失预测 0.6 秒后双视角的 DINOv3 特征；训练时联合优化动作预测损失和未来预测损失，部署时丢弃 foresight 专家</li><li><strong>训练细节</strong>：冻结 VLM 和 DINOv3，微调动作专家、适配器、foresight 专家和投影层；使用 8 张 B200 GPU 训练，全局批量大小 128，学习率余弦衰减；采用外视角 dropout（概率 0.1）和实时动作分块（RTC）策略</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：HELM 基准包含五个仿真任务（T1 后退转弯、T2 转身搜索、T3 选择通道、T4 横移转弯、T5 侧身通过），每个任务 100 条演示共 500 条演示；在 Isaac Sim 中渲染同步 ego-exo 图像（640×360）</li><li><strong>评估场景</strong>：分布内 50 个试验（每任务 10 次）；泛化评估包含 200 个冻结的分布外场景（每任务 40 个，涵盖布局、资产、材质、光照和组合偏移）</li><li><strong>模型规模</strong>：VLM 约 2B 参数（冻结），DINOv3 约 0.3B 参数（冻结），动作专家约 0.5B 参数，foresight 专家约 19.2M 参数，残差适配器 4.2M 参数</li><li><strong>训练资源</strong>：使用 8 张 <strong>B200 GPU</strong> 进行微调，每个任务训练 40k 步</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：在 <strong>SIMPLE</strong> 框架中进行闭环仿真，基于 MuJoCo 物理和 Isaac Sim 渲染，使用 29 自由度 Unitree G1 机器人配备 Dex3 手</li><li><strong>主要指标</strong>：任务成功率（分布内和泛化场景），以及 T1 的逐阶段完成率（抓取、选择正确分支、放置）</li><li><strong>主要结果</strong>：BeyondEgo 在分布内达到 <strong>92.0%</strong> 成功率（基线仅 48.0%），在 200 个泛化场景中达到 <strong>65.0%</strong>（基线 23.5%），显著优于无 foresight 的 Feature fusion 基线（84.0% 和 55.0%）</li><li><strong>消融实验</strong>：Feature fusion 优于 VLM 融合；双视角 DINOv3 未来预测优于单视角或 Qwen3-VL 特征目标；中央外部相机位置优于左右位置；随机种子实验表明性能稳定（78.2% ± 1.0%）</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.27171/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Learning from Incomplete Actions: Interval Motion Supervision for Vision-Language-Action Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.27042/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">RoboColiseum: Co-evolution of Simulation, Evaluation, and Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

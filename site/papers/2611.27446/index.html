@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>GenPA: Image Generators as Efficient Robot Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究如何将预训练图像生成模型直接适配为高效机器人动作策略，而不依赖“未来视觉预测”这一中间代理目标 提出 GenPA，在 FLUX.2 klein Base 4B 图像生成骨干上微调，使用轻量 19M 参数动作回归适配器，并复用原生生成目标进行感知协同训练 解决现有方法将预测未来视觉状态作为视觉生成预训练与动作学习之间核心桥梁的问题，证明图像生成模型本身可以转化为强动作学习器" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.27446">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">GenPA: Image Generators as Efficient Robot Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.27446" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.27446" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究如何将预训练图像生成模型直接适配为高效机器人动作策略，而不依赖“未来视觉预测”这一中间代理目标</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.27446.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.27446.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.27446.webp" alt="GenPA: Image Generators as Efficient Robot Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">复旦大学 计算机科学与人工智能学院</p>
+        <ul class="article-facts"><li>arXiv 2611.27446</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>复旦大学</strong> 计算机科学与人工智能学院</li><li><strong>北京中关村研究院</strong></li><li><strong>清华大学</strong> 车辆与运载学院</li><li><strong>清华大学</strong> 人工智能学院</li><li><strong>代尔夫特理工大学</strong> 机械工程学院</li><li><strong>SunRising AI Ltd.</strong></li><li>通讯作者：<strong>Yao Lyu</strong>、<strong>Shengbo Eben Li</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究如何将预训练图像生成模型直接适配为高效机器人动作策略，而不依赖“未来视觉预测”这一中间代理目标</li><li>提出 <strong>GenPA</strong>，在 <strong>FLUX.2 klein Base 4B</strong> 图像生成骨干上微调，使用轻量 19M 参数动作回归适配器，并复用原生生成目标进行感知协同训练</li><li>解决现有方法将预测未来视觉状态作为视觉生成预训练与动作学习之间核心桥梁的问题，证明图像生成模型本身可以转化为强动作学习器</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>GenPA</strong>，证明图像生成骨干可以直接适配为强、高效的机器人策略，且无需未来视觉预测目标</li><li>使用原生图像编辑接口进行感知协同训练，支持深度、法线、语义等多种视觉目标，无需任务特定感知头，支持统一架构下的视觉监督对比</li><li>采用 19M 参数的轻量回归动作适配器，推理仅需一次骨干前向和直接动作回归，无需视觉生成或迭代动作去噪</li><li>在多个仿真基准和真实世界操作中验证了性能和鲁棒性；编译后 H100 上每动作块 20.9 ms，较 VLA/WAM 基线快 <strong>1.7–3.4×</strong></li><li>消融研究表明当前深度监督是简单有效的训练配方，并揭示视觉生成骨干在观测编码与指令编码分离上的架构优势</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>骨干模型采用预训练整流流 Transformer <strong>FLUX.2 klein Base 4B</strong>，文本编码器和 VAE 冻结</li><li>动作路径：当前 RGB 观测经 VAE 编码为参考潜变量，语言指令经文本编码，加入可学习动作前缀，仅使用文本+参考图像 token 进行双向注意力，输出最终参考 token 特征</li><li>动作读取：4 层 Transformer 解码器，每个动作步一个可学习查询，条件化于本体感知，线性头并行预测动作块；训练使用均方动作损失</li><li>感知路径：复用原生图像编辑和整流流目标，将深度图、表面法线、分割等图像形式目标编码为 target-image token，以视觉速度预测损失联合训练共享骨干</li><li>训练时每个动作前向与一个随机采样的感知任务配对联合更新；推理时仅执行动作路径，一次骨干前向+回归，无迭代去噪</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：Spatial、Object、Goal、Long 四个套件共 40 个任务，使用 2,000 条演示回放构建视觉标签，保留 1,808 条成功演示训练</li><li><strong>LIBERO-Plus</strong>：10,030 个发布实例，覆盖 7 类扰动（相机、机器人初始状态、语言、光照、背景、噪声、布局），使用标准 LIBERO 检查点直接评估</li><li><strong>RoboTwin 2.0</strong>：50 个双手协调任务，使用 2,500 条干净演示 + 25,000 条随机化演示（含深度标注），99%/1% 训练/验证划分</li><li>真实世界 USB 转移任务：600 条演示，三种条件（标准、背景干扰、光照干扰），每策略每条件 50 次试验</li><li>模型：<strong>FLUX.2 klein Base 4B</strong> 骨干 + <strong>19M</strong> 动作适配器（LIBERO 配置）；RoboTwin 使用更宽动作适配器</li><li>训练和推理主要使用 <strong>H100 GPU</strong>；多卡训练（如 8 张 H100），推理测量包括 H100 和 L40S</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：GenPA 平均成功率 <strong>99.10%</strong>，在无外部机器人数据预训练方法中最高，与有大规模机器人数据预训练的 ABot-M0.5 仅差 0.30 个百分点</li><li><strong>LIBERO-Plus</strong>：Clean-Instruction 评估总体成功率 <strong>83.79%</strong>，高于 ImageWAM 1.66 个百分点，逼近 π₀.₅ 和 Cosmos Policy（分别 85.90%、85.60%）</li><li><strong>RoboTwin 2.0</strong>：Clean <strong>92.08%</strong>、Randomized <strong>90.82%</strong>、平均 <strong>91.45%</strong>，接近 Fast-WAM 的 91.83%</li><li><strong>真实世界</strong>：USB 转移任务平均成功率 <strong>78.0%</strong>，标准/背景/光照为 92.0/90.0/52.0%，在背景和光照扰动下显著优于 ImageWAM 和 π₀.₅</li><li>延迟：H100 编译推理每动作块 <strong>20.9 ms</strong>，未编译 <strong>27.9 ms</strong>；相对 Fast-WAM、ImageWAM、π₀.₅ 等基线实现 <strong>1.7–3.4×</strong> 加速</li><li>消融：直接回归优于 flow 动作头（LIBERO 98.87 vs 98.27；Plus 82.33 vs 81.49）；原生 flow 深度监督在 LIBERO-Plus 上优于 DPT 直接深度回归（82.33 vs 80.61）</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.27515/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Beyond a Single Human Demonstration: Learning from Scored Trajectory Alternatives for End-to-End Driving</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.27401/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Beyond Linear Decodability: Understanding and Improving Instruction Following in World Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

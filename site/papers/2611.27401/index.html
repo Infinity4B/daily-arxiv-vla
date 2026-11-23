@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Beyond Linear Decodability: Understanding and Improving Instruction Following in World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究世界行动模型（WAM）在测试时无法遵循自然语言指令的失败机制：模型倾向于执行训练时先验行为，忽略测试时的新指令。 发现非遵循（NF）与遵循（IF）模型内部都编码了指令指定的目标信息，但 IF 模型中该信息的线性可解码性显著更强。 提出线性可解码性监督（LDS）辅助训练目标，并引入先验-指令竞争机制解释模型行为，通过无训练干预提供因果证据。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.27401">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">Beyond Linear Decodability: Understanding and Improving Instruction Following in World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.27401" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.27401" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究世界行动模型（WAM）在测试时无法遵循自然语言指令的失败机制：模型倾向于执行训练时先验行为，忽略测试时的新指令。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.27401.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.27401.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.27401.webp" alt="Beyond Linear Decodability: Understanding and Improving Instruction Following in World Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中国人民大学（Bokai Ji, Jiapeng Chen, Yi Zhang, Yong Li）</p>
+        <ul class="article-facts"><li>arXiv 2611.27401</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国人民大学</strong>（Bokai Ji, Jiapeng Chen, Yi Zhang, Yong Li）</li><li><strong>北京人形机器人创新中心</strong>（Zeyuan Ding, Yong Dai, Xiaozhu Ju, Jian Tang）</li><li><strong>复旦大学</strong>（Lemao Liu, Dejing Dou）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究世界行动模型（WAM）在测试时无法遵循自然语言指令的失败机制：模型倾向于执行训练时先验行为，忽略测试时的新指令。</li><li>发现非遵循（NF）与遵循（IF）模型内部都编码了指令指定的目标信息，但 IF 模型中该信息的线性可解码性显著更强。</li><li>提出线性可解码性监督（LDS）辅助训练目标，并引入先验-指令竞争机制解释模型行为，通过无训练干预提供因果证据。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>LDS</strong>：一种简单有效的辅助训练目标，通过细粒度 token 级线性头预测 instructed target 的 grounding 图，大幅提升 WAM 的指令遵循能力，且无需收集反事实演示。</li><li>提出 <strong>先验-指令竞争机制</strong>：解释“编码但不控制”现象，认为先验标签 P 与指令标签 I 在中间表示中竞争，行为由胜者决定；通过增强 I 和转移 P 两种训练无关的表示干预因果验证该机制。</li><li>构建 <strong>RoboTwin-IF</strong> 反事实基准，用于系统比较 NF 与 IF WAM 的内部状态，并支持 LDS 训练与评估。</li><li>在 LIBERO-CF、LangGap、RoboTwin-IF 及真实机器人任务上验证 LDS 的一致有效性，并展示了对未见场景的泛化能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>Wan</strong> 架构的 WAM：语言通过交叉注意力注入视觉表示，与自注意力内竞争注意质量的方式不同。</li><li><strong>线性可解码性监督（LDS）</strong>：在训练时从浅、中、深层各选一层，在第一个去噪步对这些层的 block 输出视觉 token 添加共享线性头，将每个 patch 细分为 4×4 网格，预测目标、其他候选对象、背景三类 logits；采用区域平衡的二元交叉熵损失。辅助头仅训练时使用，推理时丢弃。</li><li>联合优化 flow-matching 损失和 LDS 辅助损失，仅需 grounding 标注，无需反事实动作或未来视频监督。</li><li>机制分析：通过配对反事实指令得到指令标签 I 和先验相关分量 U，推导并实施增强 I 或转移 U 的表示干预。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO-CF</strong>：主要评估基准，包含 CF-Spatial、CF-Object、CF-Long、CF-OOD 子集。</li><li><strong>RoboTwin-IF</strong>：本文构建的反事实基准，基于 RoboTwin2.0 合成，包含多物体场景和语言指令，用于探测与训练。</li><li><strong>LangGap</strong>：额外评估指令遵循的数据集。</li><li>模型：<strong>InternW0-Δ</strong>（主要 WAM）、<strong>OpenWAM</strong>（基线 WAM），以及 VLA 基线 <strong>OpenVLA-OFT</strong> 和 <strong>π0</strong>。</li><li>训练资源：论文未在提供的片段中明确列出 GPU 数量或型号。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：LIBERO-CF 标准基准，以及 RoboTwin-IF、LangGap 和真实机器人任务；主要指标为成功率（SR）和 grounding 率。</li><li><strong>LIBERO-CF</strong> 上，<strong>InternW0-Δ + LDS</strong> 达到 74.6% SR、89.2% grounding，相比最强基线分别提升 26.8 和 42.9 个百分点；OpenWAM 用 LDS 将 SR 从 5.1% 提升至 65.1%，grounding 从 14.4% 至 90.3%。</li><li>无训练干预：增强指令标签 I 将 SR 从 3.8% 提升至 53.0%，转移先验标签 P 达到 50.8%（LIBERO-CF picking 子集），验证了竞争机制。</li><li><strong>LangGap</strong> 上 InternW0-Δ + LDS 达到 71.4% SR，<strong>RoboTwin-IF</strong> 上达到 47.4% SR，并在真实机器人任务中表现出有效性。</li><li>在 held-out 场景划分上表现强泛化，在完全未见场景中性能保持稳定。</li><li>探测实验：IF WAM 的指令目标双向准确率从 51.5% 提升至 77.5%，证实线性可解码性增强。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.27446/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">GenPA: Image Generators as Efficient Robot Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.27372/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ReActWAM: Action-Consistent Caching for Efficient World-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

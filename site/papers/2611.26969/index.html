@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RoboDyna: A Benchmark for Evaluating Robotic Manipulation under Physically Grounded Dynamics - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 RoboDyna 基准，用于评估机器人操作策略在物理驱动的动态环境中的物理理解与动作能力 解决现有基准的问题：物理类基准只评预测不评闭环动作，机器人动态基准常使用不合理的脚本运动且评估时冻结环境，导致推理延迟与任务结果无关 基准包含 20 个概念任务（覆盖 5 类动态能力）和 10 个家庭任务，提供同步/异步配对评估协议、任务成功与部分完成指标，以及交互式人类基线工具" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26969">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">RoboDyna: A Benchmark for Evaluating Robotic Manipulation under Physically Grounded Dynamics</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26969" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26969" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 RoboDyna 基准，用于评估机器人操作策略在物理驱动的动态环境中的物理理解与动作能力</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26969.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26969.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26969.webp" alt="RoboDyna: A Benchmark for Evaluating Robotic Manipulation under Physically Grounded Dynamics 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者来自 华为技术有限公司（Huawei Technologies）</p>
+        <ul class="article-facts"><li>arXiv 2611.26969</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者来自 <strong>华为技术有限公司（Huawei Technologies）</strong></li><li>通讯作者 <strong>Amir Rasouli</strong> 同时隶属 <strong>多伦多大学（University of Toronto）</strong>，并在华为加拿大实习期间完成该工作</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>RoboDyna</strong> 基准，用于评估机器人操作策略在<strong>物理驱动的动态环境</strong>中的物理理解与动作能力</li><li>解决现有基准的问题：物理类基准只评预测不评闭环动作，机器人动态基准常使用不合理的脚本运动且评估时冻结环境，导致推理延迟与任务结果无关</li><li>基准包含 <strong>20 个概念任务</strong>（覆盖 5 类动态能力）和 <strong>10 个家庭任务</strong>，提供同步/异步配对评估协议、任务成功与部分完成指标，以及交互式人类基线工具</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>RoboDyna</strong> 基准套件：包含 <strong>20 个概念任务</strong>、<strong>5 个能力类别</strong>、每任务 4 种难度设计，以及 <strong>10 个家庭任务</strong>，覆盖滚动、碰撞、弹跳、滑动、旋转等物理现象</li><li>定义<strong>配对的同步/异步评估协议</strong>，用于分离推理延迟对任务结果的影响，并设计混合的成功率与部分完成进度分数指标</li><li>对两种 VLA（<strong>π0.5</strong>、<strong>X-VLA</strong>）和一种世界动作模型（<strong>FastWAM</strong>）在超过 <strong>5400 个回合</strong>上进行系统评估，揭示其在不同动态条件下的物理能力差异</li><li>报告 <strong>12 名参与者</strong>在遥操作和场景交互控制两种模式下的人类基线表现，并与策略进行对比</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 <strong>SAPIEN 3.0.3</strong> 模拟器和固定的 <strong>双 UR5 机械臂</strong>，策略观察 3 个 <strong>Intel RealSense D435</strong> 相机的 RGB 流（头部 1 个、手腕 2 个）及关节/夹爪状态</li><li>任务动态由<strong>刚体物理</strong>驱动（重力、摩擦、碰撞、接触），而非脚本化的目标轨迹；难度通过改变摩擦、引入障碍、遮挡、运动模式等实现，<code>var1+2</code> 组合难度在训练演示中保留用于泛化评估</li><li>同步评估在推理时暂停模拟；异步评估测量每次前向传播的墙钟时间，并让场景持续演化该时长后再执行动作块</li><li>专家演示由任务特定控制器生成末端执行器目标，再由 <strong>cuRobo</strong> 完成逆运动学和运动规划；每任务配置包含 50 条演示，总计 <strong>3500 条</strong></li><li>指标包括二元成功率和任务特异的<strong>进度分数 PS</strong>（公式 <code>PS = b · 2^{-m}</code>），用于量化部分完成并惩罚预定义错误事件</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集名称：<strong>RoboDyna</strong>（自建基准）</li><li>演示数据：<strong>3500 条专家演示</strong>，覆盖 70 个任务配置（20 概念任务 × 3 种训练配置 + 10 家庭任务）</li><li>评估规模：每策略每协议 <strong>900 个回合</strong>，3 个策略 × 2 协议共 <strong>5400 个评估回合</strong></li><li>模型：<strong>π0.5</strong>、<strong>X-VLA</strong>、<strong>FastWAM</strong>；论文未明确披露各模型的参数量</li><li>训练细节：π0.5 和 X-VLA 在 30k 梯度步微调，FastWAM 在 13k 步微调；论文未提及使用的 GPU/TPU 等具体硬件资源</li><li>模拟器参数：物理步长 250 Hz（4 ms），控制间隔 60 ms（16.7 Hz）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>SAPIEN</strong> 模拟器中的 30 个任务（20 概念 + 10 家庭），使用双 UR5 机械臂和 RGB 感知</li><li>主要指标：<strong>同步/异步成功率</strong>（Sync/Async SR）、<strong>进度分数</strong>（PS），以及视频预测的 <strong>PSNR/SSIM</strong>（仅 FastWAM）</li><li>所有策略总体成功率 <strong>低于 20%</strong>；π0.5 综合表现最好（总体 SR 约 <strong>0.19</strong> sync / <strong>0.18</strong> async），FastWAM 最低（约 <strong>0.06</strong> sync）</li><li><strong>R1</strong>：VLA 在轨迹预测、周期模式、动态避障等类别中表现较好，主要依靠反应性跟踪；FastWAM 在<strong>静态到动态理解</strong>的简单配置中领先（SR 0.18 vs 0.10/0.05）</li><li><strong>R2</strong>：FastWAM 能预测动作引起的变化，但难以处理场景中预先存在的独立运动，其整体预测保真度与任务成功不一致</li><li><strong>R3</strong>：推理延迟对平均成功率影响有限（变化不超过 3%），但会翻转 <strong>5–12%</strong> 的回合结果（π0.5 翻转 85/700，X-VLA 63/700，FastWAM 34/700）</li><li><strong>R4</strong>：在未见过的 <code>var1+2</code> 组合上，策略保留约 <strong>56–61%</strong> 的简单配置性能，绝对成功率仍很低（π0.5 0.14，X-VLA 0.09，FastWAM 0.04）</li><li><strong>人类基线</strong>：遥操作成功率 <strong>50.2%</strong>（最佳策略同期仅 <strong>14%</strong>），场景交互控制成功率 <strong>77.1%</strong>；在周期模式任务上，人类成功率 <strong>0.75</strong>，而 VLAs 接近零</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.26981/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ViewDreamer: A Robot World Model beyond Fixed Camera Setups</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26853/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">LoCo-WAM: Test-Time Training as Long Context for World-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

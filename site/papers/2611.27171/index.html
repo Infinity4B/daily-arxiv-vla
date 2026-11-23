@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Learning from Incomplete Actions: Interval Motion Supervision for Vision-Language-Action Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究视觉语言动作（VLA）策略在自我中心演示视觉标注中存在的连续动作监督空白问题 利用可靠端点提供的净平移和旋转信息，训练策略在保留可靠局部动作流匹配的同时约束缺失段的聚合运动 在 LIBERO、RoboTwin 仿真和真实机器人任务上验证方法有效性" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.27171">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">Learning from Incomplete Actions: Interval Motion Supervision for Vision-Language-Action Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.27171" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.27171" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究视觉语言动作（VLA）策略在自我中心演示视觉标注中存在的连续动作监督空白问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.27171.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.27171.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.27171.webp" alt="Learning from Incomplete Actions: Interval Motion Supervision for Vision-Language-Action Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文作者主要来自北京理工大学（Beijing Institute of Technology）</p>
+        <ul class="article-facts"><li>arXiv 2611.27171</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者主要来自<strong>北京理工大学</strong>（<strong>Beijing Institute of Technology</strong>）</li><li>通讯作者 <strong>Gang Wang</strong> 在文中明确标注单位为 <strong>Beijing Institute of Technology</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究<strong>视觉语言动作（VLA）策略</strong>在自我中心演示视觉标注中存在的<strong>连续动作监督空白</strong>问题</li><li>利用可靠端点提供的净平移和旋转信息，训练策略在保留可靠局部动作流匹配的同时约束缺失段的聚合运动</li><li>在 <strong>LIBERO</strong>、<strong>RoboTwin</strong> 仿真和真实机器人任务上验证方法有效性</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>间隔运动监督</strong>训练框架，将可靠局部动作监督与跨间隔端点运动约束相结合</li><li>设计<strong>组合目标</strong>约束缺失动作估计的聚合运动，支持跨多个固定窗口的长间隙</li><li>引入<strong>共享动作-间隔专家</strong>，其间隔分支从可靠端点学习净运动并为动作生成提供特征</li><li>系统比较缺失动作输入的多种构造（<strong>零参考</strong>、<strong>纯噪声</strong>、<strong>线性参考</strong>）及约束目标选择</li><li>在多个基准上展示优于掩码、插值等基线方法的性能</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>可靠动作流匹配（L_A）</strong>：仅对可靠动作标签使用标准流匹配目标，保留预训练动作接口</li><li><strong>间隔流匹配（L_D）</strong>：利用可靠端点计算净运动，对可变长度间隔预测进行流匹配训练</li><li><strong>端点组合约束（L_B）</strong>：将窗口内动作估计按时间顺序组合，约束其聚合运动与预测或观测端点一致</li><li>缺失动作输入提供三种构造：<strong>零参考</strong>、<strong>纯噪声</strong>和<strong>线性参考</strong>（端点插值）</li><li>共享模型通过注意力掩码控制动作和间隔标记之间的信息流，动作可读取间隔特征</li><li>推理时在固定视野内联合去噪动作和间隔，仅需当前观测；可变长度辅助调用仅在训练时使用</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：使用固定 20% 子集，包含 <strong>339</strong> 条演示、<strong>40</strong> 个任务；通过构造 1.2 秒姿态缺口得到 <strong>70.5%</strong> 缺失动作</li><li><strong>RoboTwin</strong>：Ego-informed 双机械臂仿真，从真实 Ego 数据迁移缺失模式</li><li><strong>真实机器人</strong>：五个任务，结合机器人遥操作与视觉标注的 Ego 演示</li><li>模型基于 <strong>π0.5</strong> 预训练初始化；训练设置：<strong>5,000</strong> 次更新、每次更新 <strong>256</strong> 个普通动作窗口</li><li>训练资源：LIBERO 实验的 GPU 成本约为 <strong>279 L20-equivalent GPU-hours</strong>（在匹配观测暴露的对比中列出）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>（70.5% 缺失动作）：主方法达到 <strong>87.9%</strong> 平均成功率（三次训练运行），高于 Mask（<strong>76.4%</strong>）和 Interval FM only（<strong>78.6%</strong>）；在匹配观测暴露和训练成本的一对一比较中，优势为 <strong>10.5%</strong></li><li><strong>RoboTwin</strong>（Ego-informed 缺口）：成功率为 <strong>45.4%</strong>，对比 Mask 为 <strong>40.3%</strong></li><li><strong>真实机器人</strong>：五个任务平均成功率为 <strong>59.6%</strong>，对比 Interval FM only（<strong>54.8%</strong>）和 Mask（<strong>48.8%</strong>）</li><li>消融实验表明组合约束和间隔分支各自有贡献；在 2.0 秒和 3.0 秒缺口、70% 缺失率下，方法仍保持明显优势（<strong>84.6%</strong> 和 <strong>75.4%</strong> vs Mask 的 <strong>73.9%</strong> 和 <strong>65.8%</strong>）</li><li>固定任务阶段缺口条件下，方法在严重缺失时仍优于 Mask（如无完整演示时 <strong>59.9%</strong> vs <strong>51.8%</strong>）</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.27182/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Tripwire: Robot Agents that Program Their Own Interrupts under Human Disturbance</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.27047/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">BeyondEgo: Learning to Act Beyond Egocentric Perception via Humanoid Ego-Exo Foresight</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

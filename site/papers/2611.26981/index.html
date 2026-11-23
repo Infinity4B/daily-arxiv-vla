@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ViewDreamer: A Robot World Model beyond Fixed Camera Setups - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 ViewDreamer，一个能够处理可变数量相机（1–4 路）的机器人世界模型，预测多视角一致的未来视频 解决现有视频生成模型固定相机布局或独立生成各视角导致跨视角不一致的问题 核心思路：将单视角生成与跨视角交互解耦，通过共享槽令牌实现跨视角信息交换" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.26981">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">ViewDreamer: A Robot World Model beyond Fixed Camera Setups</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.26981" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.26981" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 ViewDreamer，一个能够处理可变数量相机（1–4 路）的机器人世界模型，预测多视角一致的未来视频</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.26981.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.26981.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.26981.webp" alt="ViewDreamer: A Robot World Model beyond Fixed Camera Setups 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Meta AI</p>
+        <ul class="article-facts"><li>arXiv 2611.26981</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Meta AI</strong></li><li><strong>Imperial College London</strong></li><li>第一作者 Ye Mao 隶属两单位，工作完成于 Meta AI</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>ViewDreamer</strong>，一个能够处理可变数量相机（1–4 路）的机器人世界模型，预测多视角一致的未来视频</li><li>解决现有视频生成模型固定相机布局或独立生成各视角导致跨视角不一致的问题</li><li>核心思路：将单视角生成与跨视角交互解耦，通过共享槽令牌实现跨视角信息交换</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>ViewDreamer</strong>：首个面向可变相机集合的跨视角一致世界模型，解耦单视角生成路径与跨视角交互</li><li><strong>Cross-View Slot Agreement (CSA)</strong>：训练期对齐目标，利用 DINOv2 和 VGGT-Ω 使几何与语义相似区域共享槽；<strong>View-Count Curriculum (VCC)</strong> 从单视角渐进到多视角训练</li><li><strong>RoboView-Bench</strong>：多视角世界模型评测基准，覆盖 1–4 个相机；ViewDreamer 在该基准上取得最佳保真度并提升跨视角一致性</li><li>将 ViewDreamer 作为 <strong>世界-动作模型 (WAM)</strong> 和 <strong>动作条件世界模型 (AC-WM)</strong> 的初始化，提升分布外泛化和相机鲁棒性</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于预训练单视角视频生成器 <strong>Wan2.2-5B</strong>，共享 DiT 块逐视角处理，每块后插入 <strong>Cross-View Interaction (CVI)</strong> 模块</li><li>CVI 通过 <strong>READ-MIX-WRITE</strong> 机制将各视角 token 聚到共享槽（K=4），进行空间-时间注意力后写回，计算量与视角数线性增长</li><li><strong>CSA</strong> 监督最后一个块的 READ 注意力，使同一区域的跨视角补丁共享槽、不同区域不共享；<strong>VCC</strong> 按二项分布逐步增加训练视角数</li><li>训练目标为 flow matching 速度预测 MSE，结合 CSA 损失，λ_CSA=0.1</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>训练数据：<strong>AgiBotWorld-Beta、Galaxea、RoboCOIN、RoboMIND、RoVid-X</strong> 共 2,990,654 条 5 秒片段，涵盖 14 种机器人形态，最多保留 3 个视角</li><li>模型：底座 <strong>Wan2.2-5B</strong>（约 5B 参数），CVI 增加 86.8M 参数（&lt;2%），槽数 K=4，槽宽 256，4 个注意力头</li><li>训练资源：<strong>128 块 NVIDIA B200 GPU</strong>，全局批大小 1024，训练 32K 步；消融实验 20K 步、批大小 256</li><li>采样：40 步 Euler，引导尺度 5，shift 5；输入 81 帧 640×480 @16 FPS，DiT token 网格 21×15×20</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>多视角生成：在 <strong>RoboView-Bench</strong>（500 个留出四相机 episode）上，3 视角和 4 视角下均取得最佳 SSIM、LPIPS、FID、FVD，3 视角 CVC 最佳；4 视角 CVC 稍逊于 Cosmos3-Nano，但 FVD 低 4 倍以上</li><li>动作条件生成：在 <strong>RoboTwin 2.0</strong> 三视角 Clean (IID) 和 Random (OOD) 上，ViewDreamer 的 EWMScore 最高，且从 Clean 到 Random 性能下降最小</li><li>策略迁移：基于 <strong>FastWAM-Joint</strong> 初始化，在 <strong>LIBERO-Plus、RoboTwin 2.0、RoboDojo</strong> 及真实 Franka 机器人上均优于基线，分布外场景提升最大</li><li>消融：CVI、CSA、VCC 每个组件均改善策略成功率和几乎所有生成指标；CVI 优于全跨视角注意力且计算成本更低</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.27011/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FoRe: A Force-Guided Framework for Autonomous Grasp Recovery in Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.26969/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">RoboDyna: A Benchmark for Evaluating Robotic Manipulation under Physically Grounded Dynamics</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Efficient VLA Reinforcement Learning via Subchunk Rollouts in Latent World Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 LS-MBPO（Latent Subchunk Rollout for MBPO），一个基于潜在世界模型的轻量级残差式模型强化学习（MBRL）框架，用于改进预训练的视觉-语言-动作模型 针对现有 VLA-MBRL 方法依赖大规模图像/视频生成世界模型、计算开销巨大的问题，提出用潜在世界模型作为高效替代 解决潜在世界模型应用于 VLA 的两大核心挑战：递归预测中的复合误差问题，以及潜在状态预测与 VLA 视觉输入接口的不匹配问题" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.27645">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">Efficient VLA Reinforcement Learning via Subchunk Rollouts in Latent World Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.27645" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.27645" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 LS-MBPO（Latent Subchunk Rollout for MBPO），一个基于潜在世界模型的轻量级残差式模型强化学习（MBRL）框架，用于改进预训练的视觉-语言-动作模型</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.27645.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.27645.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.27645.webp" alt="Efficient VLA Reinforcement Learning via Subchunk Rollouts in Latent World Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">南京大学（软件新技术国家重点实验室 &amp; 人工智能学院），中国</p>
+        <ul class="article-facts"><li>arXiv 2611.27645</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>南京大学</strong>（软件新技术国家重点实验室 &amp; 人工智能学院），中国</li><li><strong>Cirquar Technologies</strong>（南京），中国</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>LS-MBPO</strong>（Latent Subchunk Rollout for MBPO），一个基于潜在世界模型的轻量级残差式模型强化学习（MBRL）框架，用于改进预训练的视觉-语言-动作模型</li><li>针对现有 VLA-MBRL 方法依赖大规模图像/视频生成世界模型、计算开销巨大的问题，提出用潜在世界模型作为高效替代</li><li>解决潜在世界模型应用于 VLA 的两大核心挑战：递归预测中的复合误差问题，以及潜在状态预测与 VLA 视觉输入接口的不匹配问题</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>LS-MBPO</strong>，首个将 VLA 与潜在世界模型结合用于模型强化学习的轻量级残差框架</li><li>提出 <strong>Hierarchical Forcing</strong>：结合时间窗口内密集因果预测监督与跨窗口自回归反馈，缓解递归预测中的复合误差</li><li>提出 <strong>Latent Subchunk Rollouts</strong>：冻结 VLA 并将其生成的动作块切分为子块，由轻量残差策略基于潜在状态逐步精修基础动作，弥合潜在想象与 VLA 执行之间的接口鸿沟</li><li>提出 <strong>Progress-Conditioned Branch-Start Curriculum（PBC）</strong>：将想象 rollout 起始点从任务后期逐步前移的课程化采样策略，使短想象 rollout 也能获得有效学习信号</li><li>在 LIBERO、RoboTwin 和真实 ALOHA 机器人上验证了方法在性能和训练效率上的双重优势</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 ViT 编码器将多视角视觉观测编码为潜在表示，训练动作条件化动力学模型直接在潜在空间预测未来状态</li><li><strong>Hierarchical Forcing</strong>：以 K 个真实潜在表示初始化窗口，递归预测时输入逐渐由模型自身预测组成，同时所有位置均施加密集监督，配合 SIGReg 防止表示坍缩，CNN 解码器仅作辅助监督</li><li><strong>Latent Subchunk Rollouts</strong>：冻结的 π₀.₅ VLA 生成基础动作块（H=50），切分为 h=5 步的子块；残差策略以预测潜在状态、基础动作子块和语言指令为输入生成动作修正；训练轻量成功检测器为想象轨迹提供 0/1 二值奖励</li><li>使用 <strong>TD3+BC</strong> 优化残差策略与价值网络，无需更新或反复查询 VLA</li><li>训练进度预测器（基于专家数据）仅用于分支起始点采样而非奖励信号，通过课程化加权分布逐步将采样从后期状态扩展到早期任务阶段</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong> 基准：4 个任务套件（Spatial/Object/Goal/Long），每任务 200 条离线轨迹（由 π₀.₅ SFT 模型加噪声采集），10 条专家轨迹</li><li><strong>RoboTwin</strong> 基准：双臂操作任务（Adjust Bottle、Beat Block Hammer、Click Alarmclock），每任务 800 条离线轨迹，50 条专家轨迹</li><li>真实世界 <strong>ALOHA</strong> 机器人：Pen into Holder 和 Plug Charger 两个任务，每任务 400 条离线轨迹，100 条专家轨迹</li><li>基础模型为 <strong>π₀.₅</strong> SFT checkpoint；残差策略轻量（动作子块 h=5，动作块 H=50，想象步长 L=50）</li><li>训练资源：世界模型训练在 <strong>4× RTX 5090</strong>（32GB）上完成（12 小时），RL 阶段仅需<strong>单张 RTX 5090</strong>（1.5 小时），远低于 VLA-MBPO 所需的 4× H100（80GB）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：LIBERO（每任务评估 50 episodes）、RoboTwin（每任务 80 episodes）、真实 ALOHA（每任务 20 episodes）；主要指标为任务成功率（%）</li><li>基线包括 π₀.₅-SFT、RLT-BC、Latent-BC、RLT-RL、Latent-RL 和 Dreamer（均采用相同的冻结 VLA + 残差策略设计）</li><li><strong>LIBERO</strong>：LS-MBPO 在 Spatial/Object/Goal/Long 上分别达 <strong>92.0/96.0/84.8/71.2</strong>，全面超越所有基线（如 Dreamer 为 88.0/92.8/77.6/69.6）</li><li><strong>RoboTwin</strong>：Adjust Bottle <strong>97.5</strong>、Beat Block Hammer <strong>95.0</strong>、Click Alarmclock <strong>83.8</strong>，均为最优</li><li><strong>Hierarchical Forcing 消融</strong>：在 LIBERO Long 上递归预测 100 步，PSNR-FINAL 达 <strong>25.22</strong>（对比 LeWM 15.53、Recursive-only 23.84），下游策略成功率从 LeWM 的 61.4% 提升至 <strong>71.2%</strong></li><li><strong>对比 VLA-MBPO</strong>：LIBERO Long 成功率 <strong>71.2% vs 64.4%</strong>，且总训练时间从 30 小时降至 13.5 小时，GPU 需求大幅降低</li><li><strong>真实世界 ALOHA</strong>：LS-MBPO 在两个任务上均超越 SFT 基线和 Dreamer，验证了方法的实际部署能力</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.27515/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Beyond a Single Human Demonstration: Learning from Scored Trajectory Alternatives for End-to-End Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
