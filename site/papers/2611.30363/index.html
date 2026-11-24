@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SOAR: temporal Structure-guided One-step Action generation for Robotic manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 SOAR，一种面向机器人操作的时间结构引导一步动作生成策略，兼顾高动作质量与毫秒级推理延迟 针对现有多步扩散/流策略需迭代推理导致延迟高、而一步策略缺乏时间结构细化的问题，SOAR 在 NFE=1 下直接生成干净动作轨迹 核心思想是使用观测条件的离散余弦变换（DCT）表示显式建模未来动作的时间结构，用于引导生成并校准动作" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30363">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">SOAR: temporal Structure-guided One-step Action generation for Robotic manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30363" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30363" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 SOAR，一种面向机器人操作的时间结构引导一步动作生成策略，兼顾高动作质量与毫秒级推理延迟</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30363.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30363.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30363.webp" alt="SOAR: temporal Structure-guided One-step Action generation for Robotic manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">主要研究机构：中国科学技术大学未来媒体计算实验室（Future Media Computing Lab…</p>
+        <ul class="article-facts"><li>arXiv 2611.30363</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要研究机构：<strong>中国科学技术大学未来媒体计算实验室</strong>（Future Media Computing Lab, University of Science and Technology of China）</li><li>合作机构：<strong>LeapWing AI</strong></li><li>作者：Di Xin、Mingfei Han（共同一作）、Genming Cui、Yuanxiang Chen、Xiaolong Wu、Siyu Ning、Xiaojun Chang、Zhihui Li</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>SOAR</strong>，一种面向机器人操作的时间结构引导一步动作生成策略，兼顾高动作质量与毫秒级推理延迟</li><li>针对现有多步扩散/流策略需迭代推理导致延迟高、而一步策略缺乏时间结构细化的问题，SOAR 在 <strong>NFE=1</strong> 下直接生成干净动作轨迹</li><li>核心思想是使用观测条件的离散余弦变换（DCT）表示显式建模未来动作的时间结构，用于引导生成并校准动作</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>SOAR</strong>，一种直接生成干净动作轨迹的一步生成策略，推理时仅需单次 U-Net 评估</li><li>引入<strong>频率域时间结构引导生成与校准</strong>：预测多频带 DCT 表示，注入动作生成并根据谱残差校准，且不增加额外骨干网络评估</li><li>设计 <strong>MeanFlow 一致性 + 推理端点对齐</strong>训练目标，从校准动作推导传输速度，并在纯噪声条件对齐训练与一步推理</li><li>在 <strong>Adroit</strong> 和 <strong>Meta-World</strong> 共 53 个任务上取得 <strong>83.9%</strong> 总成功率及 <strong>8.7 ms</strong> 推理延迟；应用于 VLA 模型 <strong>π0.5</strong> 时，在 <strong>LIBERO</strong> 达 <strong>97.2%</strong>、<strong>RoboTwin 2.0</strong> 达 <strong>71.7%</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>频率域轨迹结构学习</strong>：对动作块做 DCT，结构头从观测编码预测谱系数；将谱分解为低/中/高频带，注入观测条件形成结构增强表示；采用自适应加权结构损失进行监督</li><li><strong>结构引导动作生成</strong>：使用 FiLM 条件化的 1D U-Net 直接预测干净基础动作 A_base，而非从速度场恢复</li><li><strong>结构引导校准</strong>：计算谱残差 C^s - DCT(A_base)，经 IDCT 映射回动作空间，以可学习标量 tanh(rho) 控制校正幅度，无需额外评估生成网络</li><li><strong>训练目标</strong>：L_SOAR = λ_struct L_struct + λ_act L_act + λ_dis L_dis + L_MF + λ_end L_end；其中 L_MF 为 MeanFlow 目标，L_end 在 (t,r)=(1,0) 对齐推理端点，L_dis 为分散特征正则</li><li><strong>推理流程</strong>：预测结构 -&gt; 构造条件 -&gt; 采样高斯噪声 -&gt; 一次前向得到基础动作并校准，全程 NFE=1</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真基准：<strong>Adroit</strong>（Hammer、Door、Pen 共 3 个任务）和 <strong>Meta-World</strong>（34 或 50 个任务，分为 Easy/Medium/Hard/Very Hard 子集）</li><li>输入模态：3D 点云，下采样至 512 点；每任务使用 10 条专家演示</li><li>VLA 基准：<strong>LIBERO</strong> 和 <strong>RoboTwin 2.0</strong>，以视觉-语言-动作模型 <strong>π0.5</strong> 为基础</li><li>训练配置：观测窗口 2，预测时域 4；Adroit 每任务 3000 epoch，Meta-World 每任务 1000 epoch；批次大小 128，AdamW 优化器，学习率 1e-4，种子 0/1/2</li><li>训练资源：单张 <strong>NVIDIA RTX 4090 GPU</strong>；推理延迟约 <strong>8.7 ms</strong></li><li>模型规模与参数量：论文未明确报告参数量；动作生成器为 FiLM 条件化 <strong>1D U-Net</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>37 任务设置（3 Adroit + 34 Meta-World）：SOAR 总成功率 <strong>84.4%</strong>，显著超过 MP1（78.9%）、OMP（82.3%）等一步基线，且 NFE=1</li><li>53 任务设置（3 Adroit + 50 Meta-World）：SOAR 总成功率 <strong>83.9%</strong>，Meta-World 平均 84.1%；在 Medium 和 Hard 子集分别领先最佳基线 8.5% 和 7.4%</li><li>推理延迟：SOAR 约 <strong>8.7 ms</strong>，远低于 DP3（70.7 ms），且比 MP1 提升 8.0% 成功率</li><li>VLA 实验：SOAR 替换 π0.5 的多步动作专家后，在 <strong>LIBERO</strong> 上达到 <strong>97.2%</strong>，在 <strong>RoboTwin 2.0</strong> 上达到 <strong>71.7%</strong></li><li>真实机器人实验和广泛消融研究进一步验证了该方法的有效性与效率</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30389/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">AgentMoT: An Agentic Mixture-of-Transformers for End-to-End Autonomous Driving</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30308/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ConsisX: Cross-View Consistency Thinking in 3D for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

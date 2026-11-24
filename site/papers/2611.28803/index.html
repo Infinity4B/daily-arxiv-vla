@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DeRail: Escaping Trajectory Priors via Counterfactual Action Steering for Mid-Execution Instruction Switching - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究机器人策略在中途指令切换（mid-execution instruction switching）时的表现，发现轨迹劫持（trajectory hijacking）是导致失败的核心模式。 提出反事实动作转向（Counterfactual Action Steering, CAS），一种训练无关、模型无关的推理时方法，利用反事实指令的动作差异来逃离非目标轨迹先验的干扰。 在仿真与真实机器人实验中验证 CAS 的有效性，并展示 CAS 指导的轨迹可用于自训练以进一步增强策略。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28803">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-21">2026-11-21</time></p>
+        <h1 class="article-title">DeRail: Escaping Trajectory Priors via Counterfactual Action Steering for Mid-Execution Instruction Switching</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28803" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28803" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究机器人策略在中途指令切换（mid-execution instruction switching）时的表现，发现轨迹劫持（trajectory hijacking）是导致失败的核心模式。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">DeRail: Escaping Trajectory Priors via Counterfactual Action Steering for Mid-Execution Instruction Switching</p>
+</div></figure>
+        <p class="article-unit">中国人民大学 (RUC)</p>
+        <ul class="article-facts"><li>arXiv 2611.28803</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国人民大学 (RUC)</strong></li><li><strong>上海人工智能实验室 (SLAI)</strong></li><li><strong>北京理工大学 (BIT)</strong></li><li><strong>哈尔滨工业大学（深圳）(HITSZ)</strong></li><li><strong>香港中文大学 (CUHK)</strong></li><li><strong>香港中文大学（深圳）(CUHKSZ)</strong></li><li><strong>吉林大学 (JLU)</strong></li><li><strong>机器人研究院 (RIAS)</strong></li><li><strong>智麾 (SmartMore)</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究机器人策略在<strong>中途指令切换</strong>（mid-execution instruction switching）时的表现，发现<strong>轨迹劫持</strong>（trajectory hijacking）是导致失败的核心模式。</li><li>提出<strong>反事实动作转向</strong>（Counterfactual Action Steering, CAS），一种训练无关、模型无关的推理时方法，利用反事实指令的动作差异来逃离非目标轨迹先验的干扰。</li><li>在仿真与真实机器人实验中验证 CAS 的有效性，并展示 CAS 指导的轨迹可用于自训练以进一步增强策略。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>系统分析了多种 <strong>VLA</strong> 和 <strong>WAM</strong> 策略在指令切换下的表现，识别出<strong>轨迹劫持</strong>这一关键失败模式，并指出其源于视觉轨迹先验。</li><li>提出了 <strong>CAS</strong>，一个简单、训练无关、模型无关的推理时方法，有效缓解轨迹劫持，显著提升切换成功率。</li><li>证明了 CAS 指导的成功轨迹比普通成功轨迹包含更有效的脱轨行为，可提供更高质量的自训练监督。</li><li>展示了 <strong>CAS 引导的自训练（CAS-ST）</strong> 在匹配轨迹数量下优于普通自训练，并能泛化到未见的更晚切换点。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>CAS 在推理时通过比较当前末端执行器位置与任务演示轨迹的 <strong>K 近邻距离</strong> 识别可能干扰的非目标任务。</li><li>对每个干扰任务，用同一策略在相同观测下查询该任务指令，得到<strong>反事实动作</strong>。</li><li>利用目标指令动作与反事实动作的差异作为修正方向，按轨迹距离加权求和，得到最终动作（公式 (2)）。</li><li>可选的安全措施包括限制每任务权重和修正动作边界；还提供仅使用源任务反事实的轻量级变体 <strong>Source-only CAS</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>基准测试：<strong>LIBERO-Goal-Switch</strong>（基于 LIBERO-Goal 构建）和 <strong>CALVIN-Custom-Switch</strong>（基于 CALVIN 模拟器构建）。</li><li>评估的模型：<strong>OpenVLA-OFT</strong>、<strong>π0</strong>、<strong>π0.5</strong>、<strong>Fast-WAM</strong>、<strong>LingBot-VA</strong>。</li><li>真实机器人平台：<strong>AIRBOT Play</strong> 机械臂。</li><li>训练资源：CAS 本身无需训练；自训练微调使用成功 CAS 轨迹，具体硬件配置未在摘要中详细说明。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：LIBERO-Goal-Switch 在切换步 <code>t_s ∈ {10,15,20,25}</code> 测试；CALVIN-Custom-Switch 在切换范围 <code>[9,15]</code>、<code>[15,21]</code>、<code>[21,27]</code> 测试。</li><li>主要指标：目标任务成功率（%）。</li><li>关键结果：</li></ul>
+<p> - CAS 在所有策略上一致提高成功率，例如在 CALVIN-Custom-Switch 的 <code>[15,21]</code> 范围，<strong>π0.5</strong> 从 5.8% 提升至 54.6%，<strong>π0</strong> 从 6.7% 提升至 45.4%。</p>
+<p> - CAS 优于对比方法 <strong>PCD</strong>，且推理开销适中（平均延迟为基线的 1.54 倍，而 PCD 为 7.71 倍）。</p>
+<p> - CAS 引导的自训练（<strong>CAS-ST</strong>）相比基线自训练（<strong>Vanilla-ST</strong>）进一步提高成功率，并泛化到未见的更晚切换点。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28839/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Spatially Grounded Latent Lookahead for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28752/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">VTLA-RL: Learning Visuotactile Policies for Load-Adaptive Grasping</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

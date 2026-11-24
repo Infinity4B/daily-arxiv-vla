@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>World Models as Native Latent Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Native LAM，将预训练视频世界模型（Kairos 3.1 4B 机器人世界模型）直接作为潜在动作模型使用，同时承担逆动力学模型（IDM）和前向动力学模型（FDM）的角色，无需单独训练编码器和解码器。 针对现有 LAM 从零训练 IDM/FDM 时需在像素重建与潜在空间质量之间折衷、训练脆弱的问题，通过动力学寄存器作为唯一因果桥梁，从预训练世界模型中提取紧凑的“原生潜在动作”（native latent action）。 进一步提出 PAWlicy 预训练范式，利用冻结的 Native LAM 作为动力学教师，在大规模视频上为 VLA 策略提供潜在动作监督，而无需在训练或推理时生成视频。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30898">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">World Models as Native Latent Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30898" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30898" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Native LAM，将预训练视频世界模型（Kairos 3.1 4B 机器人世界模型）直接作为潜在动作模型使用，同时承担逆动力学模型（IDM）和前向动力学模型（FDM）的角色，无需单独训练编码器和解码器。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30898.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30898.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30898.webp" alt="World Models as Native Latent Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">SenseTime Research, Singapore（第一作者 Qinyue Li 等所属机构）</p>
+        <ul class="article-facts"><li>arXiv 2611.30898</li><li>6 节精读</li><li>约 11 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>SenseTime Research, Singapore</strong>（第一作者 Qinyue Li 等所属机构）</li><li><strong>S-Lab, Nanyang Technological University</strong>（合作机构，Chen Change Loy 等所属）</li><li><strong>ACE Robotics</strong>（合作机构）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Native LAM</strong>，将预训练视频世界模型（<strong>Kairos 3.1 4B</strong> 机器人世界模型）直接作为潜在动作模型使用，同时承担逆动力学模型（IDM）和前向动力学模型（FDM）的角色，无需单独训练编码器和解码器。</li><li>针对现有 LAM 从零训练 IDM/FDM 时需在像素重建与潜在空间质量之间折衷、训练脆弱的问题，通过<strong>动力学寄存器</strong>作为唯一因果桥梁，从预训练世界模型中提取紧凑的“原生潜在动作”（native latent action）。</li><li>进一步提出 <strong>PAWlicy</strong> 预训练范式，利用冻结的 Native LAM 作为动力学教师，在大规模视频上为 VLA 策略提供潜在动作监督，而无需在训练或推理时生成视频。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Native LAM</strong>：一个预训练视频世界模型同时作为 IDM 和 FDM，仅通过可学习的动力学寄存器桥接，无需单独编码器或解码器。</li><li>提出<strong>反事实时间对</strong>训练方法（共享首帧但运动不同的视频对）和<strong>无文本 FDM 模式</strong>，迫使世界模型依赖潜在动作，避免后验坍缩；应用于 46 个机器人、人类和仿真数据源。</li><li>提出 <strong>PAWlicy</strong> VLA 预训练范式：冻结 Native LAM 从任意视频中提取潜在动作标签，VLA 学习预测这些潜在动作并据此生成控制动作；训练和推理阶段均丢弃像素渲染。</li><li>在 <strong>LARY</strong> 基准上，Native LAM 在动作分类和底层控制回归两个维度均优于现有 LAM；在 RoboTwin 2.0、RoboDojo 和真实机器人上验证了 PAWlicy 的有效性。</li><li>证明原生潜在动作具备跨具身、跨场景、从人类到机器人的迁移能力，且潜在空间插值对应运动插值而非外观叠加。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>单一骨干双模式</strong>：Native LAM 使用预训练视频扩散 Transformer（Kairos 3.1 4B）作为共享骨干；在 IDM 模式下，动力学寄存器以只读注意力读取干净视频片段并输出潜在动作；在 FDM 模式下，同一网络从首帧和潜在动作出发，通过 MLP_in 适配器将潜在动作注入 token 序列，取代文本条件，用原始流匹配损失再生未来帧。</li><li><strong>动力学寄存器</strong>：短序列可学习 token 是 IDM 和 FDM 之间唯一的因果桥梁；IDM 模式读取潜在动作仅需一次前向传播，无需去噪。</li><li><strong>反事实时间对</strong>：对每个片段构建共享首帧但运动不同的配对片段（保持静止、暂停、变速、改变时序或倒放），两者共享噪声和扩散时间，迫使潜在动作携带运动差异。</li><li><strong>运动学接地</strong>：在 AgiBot World 2026 和 DROID 两个具有动作标签的数据集上，浅层运动学头从潜在动作预测末端执行器航点，损失权重 0.1，并在前 2000 步预热，其余 44 个数据源仅使用视频。</li><li><strong>PAWlicy 架构</strong>：由 VLM（PaliGemma，初始化为 π0.5 骨干）、<strong>潜在动作 DiT</strong>（从噪声预测潜在动作）和<strong>动作 DiT</strong>（生成动作块）组成，三者共享注意力；潜在动作 DiT 重构过去一组潜在动作并预测未来三组，动作 DiT 以潜在动作作为逐层条件生成动作。</li><li><strong>训练细节</strong>：Native LAM 使用流匹配目标（公式 4）和总损失（公式 5）训练；PAWlicy 使用双流匹配损失（公式 6）预训练和微调。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>Native LAM 训练数据：<strong>46 个视频源</strong>，包括真实机器人数据集（65% 采样率）、人类自我中心与手物交互视频（30%）和仿真（5%）；机器人数据如 <strong>AgiBot World 2026、DROID、ALOHA、Bridge V2、Galaxea、Unitree G1/Z1、Humanoid Everyday、MIME、1X World-Model、Fourier ActionNet、Fanuc Manipulation、GR00T Teleop、Jaco Play、RoboChallenge、RoboVQA、TACO Play、OXE 子集</strong>等；人类视频如 <strong>Xperience-10M、CASTLE 2024、DexYCB、EgoDex、Ego-Exo4D、EPIC-KITCHENS-100、GigaHands、HOI4D、HoloAssist、Kinetics-400、Motion-X++、OakInk2</strong> 等；仿真如 <strong>RoboCasa、RoboTwin 2.0</strong>。</li><li>仅 <strong>AgiBot World 2026</strong> 和 <strong>DROID</strong> 使用动作标签进行运动学接地，其余为纯视频。</li><li>PAWlicy 预训练数据：<strong>16 个数据集</strong>（12 个与 Native LAM 重叠 + RoboCOIN、RoboMIND、InternData-A1、CALVIN）；<strong>RoboTwin 2.0 和 RoboDojo 被排除在 PAWlicy 预训练之外</strong>。</li><li><strong>模型规模</strong>：Kairos 3.1 4B 骨干；原生潜在动作为 32 个 token、维度 128（将 3456 个维度 2560 的 token 压缩而来）；PAWlicy 总参数量约 <strong>3.78B</strong>（VLM + 两个各 0.43B 的 DiT 专家，18 层、宽度 1024）。</li><li><strong>训练资源</strong>：Native LAM 训练 13k 次迭代，使用 32 块 GPU；PAWlicy 预训练 50k 次迭代，32 块 GPU，全局批大小 512。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LARY 基准</strong>：在动作分类（top-1%）和控制回归（归一化 MSE）两个轨道上，Native LAM 均排名第一；分类平均准确率 <strong>71.77%</strong>（对比 WLA³ 的 70.75%），回归平均 MSE <strong>0.25</strong>（对比 WLA³ 的 0.37），在全部四个回归数据集（CALVIN、VLABench、RoboCOIN、AgiBot-Beta）上均优于现有 LAM，且这些数据集均未用于训练 Native LAM。</li><li><strong>运动迁移与插值</strong>：从机器人视频中读取的潜在动作可在新机器人、新场景、人类手到机器人手、仿真到真实感场景中重放相同运动；潜在空间插值产生连贯的中间运动，而非图像像素叠加。</li><li><strong>视觉对比</strong>：与 DreamDojo、AdaWorld、Moto、LAPA 等其他 LAM 比较，Native LAM 能更清晰地重建大幅运动和完整片段，支持一次性生成整个视频片段，而其他 LAM 需自回归生成且误差累积严重。</li><li><strong>RoboTwin 2.0</strong>：PAWlicy 达到 <strong>93.6%</strong> 的平均成功率（在对比方法中最高）；仅使用干净演示数据时仍比使用相同输入和增强的 π0.5 基线高出 <strong>5.5 个百分点</strong>。</li><li><strong>RoboDojo</strong>：PAWlicy 在评估的四个维度上均领先对比方法，其 Precision 指标（由论文作者评估）与公开排行榜领先条目相当。</li><li><strong>真实机器人</strong>：在 AgileX NERO 机器人上，PAWlicy 将 π0.5 基线从 <strong>23.3% 提升至 76.7%</strong>（堆叠三个积木）和从 <strong>33.3% 提升至 90.0%</strong>（将鞋放入箱子）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30907/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DexLatentWorld: 3D Cross-Embodiment Latent Action World Models for Zero-Shot Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30637/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SWEEP-Bench: Do Embodied Policies Act on the Speed They See?</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

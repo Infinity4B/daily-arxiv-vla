@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>GeoMerge-OPD: Balanced Skill Integration in Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文要解决视觉-语言-动作（VLA）模型中把多个异构机器人技能集成到统一策略时的能力崩溃问题，尤其是全身任务中操作与运动需求冲突导致单一技能严重退化。 通过任务条件响应分析发现，专家更新响应能量集中在少数主导方向，且不同专家在共享任务相关子空间中存在对立响应，与合并后出现非预期动作偏移密切相关。 提出 GeoMerge-OPD 框架，结合响应空间正则化、参数合并和在线策略蒸馏，在 SIMPLE、LIBERO、LIBERO-PRO 上实现平衡、鲁棒的多技能整合。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30632">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">GeoMerge-OPD: Balanced Skill Integration in Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30632" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30632" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文要解决视觉-语言-动作（VLA）模型中把多个异构机器人技能集成到统一策略时的能力崩溃问题，尤其是全身任务中操作与运动需求冲突导致单一技能严重退化。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30632.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30632.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30632.webp" alt="GeoMerge-OPD: Balanced Skill Integration in Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">中山大学</p>
+        <ul class="article-facts"><li>arXiv 2611.30632</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中山大学</strong></li><li><strong>香港城市大学</strong></li><li><strong>香港科技大学（广州）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文要解决<strong>视觉-语言-动作（VLA）模型</strong>中把多个异构机器人技能集成到统一策略时的<strong>能力崩溃</strong>问题，尤其是全身任务中操作与运动需求冲突导致单一技能严重退化。</li><li>通过任务条件响应分析发现，专家更新响应能量集中在少数主导方向，且不同专家在共享任务相关子空间中存在<strong>对立响应</strong>，与合并后出现非预期动作偏移密切相关。</li><li>提出 <strong>GeoMerge-OPD</strong> 框架，结合响应空间正则化、参数合并和在线策略蒸馏，在 <strong>SIMPLE</strong>、<strong>LIBERO</strong>、<strong>LIBERO-PRO</strong> 上实现平衡、鲁棒的多技能整合。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>经验性诊断多任务 VLA 集成失败</strong>：刻画任务专家合并中的能力崩溃，发现响应能量高度集中和共享子空间中的对立响应，并关联到闭环执行中的非预期行为偏移。</li><li><strong>提出 G-isometry 正则化</strong>：在任务激活子空间内约束更新响应增益，减少少数方向对响应能量的过度主导，提高专家模型的可合并性。</li><li><strong>提出 GeoMerge-OPD 框架</strong>：将 G-isometry 正则化专家微调、静态参数合并作为学生初始化、以及任务教师引导的在线策略蒸馏（OPD）结合，在环境观测和动作流状态上校准合并后的残差行为偏差。</li><li><strong>跨骨干验证与真实机器人验证</strong>：在两个 VLA 骨干（<strong>Ψ₀</strong> 和 <strong>π₀.₅</strong>）上显示一致的性能提升，并在 <strong>Unitree G1</strong> 人形机器人上验证真实世界技能保留。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>G-isometry 正则化</strong>：对每个任务专家独立微调时，在任务激活主方向子空间内，惩罚加权响应 Gram 矩阵偏离单位矩阵，同时约束响应尺度和方向相关性，避免响应能量过度集中在少数方向。</li><li><strong>参数合并与学生初始化</strong>：将 G-isometry 正则化后的任务专家参数（视觉语言模块和动作模块，包含 LoRA 更新）通过静态合并算子（默认 <strong>RegMean++</strong>）合并，得到具备初步多任务能力的学生初始化。</li><li><strong>在线策略蒸馏（OPD）</strong>：学生与环境闭环交互，生成自身访问的观测分布；在动作生成的去噪轨迹上，由任务教师提供<strong>速度场监督</strong>，利用 KL 散度推导速度场误差损失，并采用 stop-gradient 和欧拉-丸山离散化进行校准。</li><li><strong>两级采样机制</strong>：包括环境级观测分布采样和动作级去噪状态采样，使教师监督覆盖学生实际访问的状态和动作流轨迹。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>SIMPLE</strong>（3 个全身任务：BendPick、CloseDoor、OpenOven）、<strong>LIBERO</strong>（4 个 suite）、<strong>LIBERO-PRO</strong>（5 个扰动轴）；真实机器人任务 <strong>BoxPush</strong> 和 <strong>BoxLift</strong>（每任务 50 个遥操作演示）。</li><li><strong>模型骨干</strong>：<strong>Ψ₀</strong>（全身控制）和 <strong>π₀.₅</strong>（桌面操作）；VLM 使用 <strong>LoRA rank=α=64</strong>，并完全微调可学习接口。</li><li><strong>训练配置</strong>：全局 batch size 128；学习率 π₀.₅ 为 <strong>3×10⁻⁴</strong>，Ψ₀ 为 <strong>1×10⁻⁴</strong>；评估使用每任务 10 个 trials（SIMPLE）或每 suite 100 episodes × 3 个评估种子（LIBERO）。</li><li><strong>训练资源</strong>：论文未明确报告具体 GPU/TPU 型号和数量。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：<strong>SIMPLE</strong> 全身控制、<strong>LIBERO</strong> 桌面操作、<strong>LIBERO-PRO</strong> 扰动泛化，以及 <strong>Unitree G1</strong> 人形机器人真实环境。</li><li><strong>主要指标</strong>：成功率（成功次数或平均成功率）。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - <strong>SIMPLE 全身技能整合</strong>：GeoMerge-OPD 达到 <strong>26/30</strong>，优于 Joint FT（G 初始化）<strong>22/30</strong>，也显著高于 GRPO-mix 19/30 和静态合并方法（TIES 7/30、WUDI 11/30、RegMean++ 12/30）。</p>
+<p> - <strong>LIBERO</strong>：GeoMerge-OPD 平均成功率 <strong>97.1%</strong>，超过 Joint FT（B 初始化）96.2% 和 GRPO-mix 90.1%。</p>
+<p> - <strong>LIBERO-PRO</strong>：GeoMerge-OPD 平均成功率 <strong>67.3%</strong>，为所有评估策略中最高；在位置扰动、任务变化和环境变化轴上表现最佳，仅在对象扰动和语义改写上略低于 Joint FT（G）。</p>
+<p> - <strong>真实机器人</strong>：GeoMerge-OPD 总体 <strong>17/20（85%）</strong> 成功，BoxPush 100%、BoxLift 70%；单任务专家为 18/20（90%）。</p>
+<p> - <strong>消融实验</strong>：G-isometry 正则化持续提升多种静态合并算子的平均成功率；OPD 从 G 初始化获得 <strong>86.7%</strong> 平均成功率，而直接 OPD 仅 30.0%、从标准合并初始化 OPD 仅 23.3%，证明初始化与正则化对在线蒸馏至关重要。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30637/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SWEEP-Bench: Do Embodied Policies Act on the Speed They See?</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30550/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Body and Soul: Decoupling Robotic Brain and Policy with RoboHarness-Zero</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

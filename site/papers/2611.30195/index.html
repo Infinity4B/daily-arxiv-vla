@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Quantization for Action, Execution for Deployment: Joint Precision and Execution Selection for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 PTQ4WAM 框架，针对世界动作模型（World Action Models, WAMs）在资源受限设备上的部署难题，联合解决量化精度选择与执行路由选择问题。 世界动作模型在机器人规划中需反复读取权重并对比大量候选动作，后训练量化虽能缩小模型体积，但临时张量可能超出 GPU 内存限制，且微小预测误差可能改变所选动作。 研究目标是在有限任务评估预算下，找到既能保持任务性能又满足设备内存和延迟约束的逐层位宽分配方案及对应 GPU 执行实现。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30195">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Quantization for Action, Execution for Deployment: Joint Precision and Execution Selection for World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30195" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30195" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 PTQ4WAM 框架，针对世界动作模型（World Action Models, WAMs）在资源受限设备上的部署难题，联合解决量化精度选择与执行路由选择问题。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #177e89; --cover-to: #5ec2a8; --cover-spot: #c5f0de; --cover-ink: #f5fffb" aria-hidden="true">
+  <p class="note-cover-title">Quantization for Action, Execution for Deployment: Joint Precision and Execution Selection for World Action Models</p>
+</div></figure>
+        <p class="article-unit">南开大学 计算机学院 VCIP 实验室（Tianqi Li、Ming-Ming Cheng、Yun L…</p>
+        <ul class="article-facts"><li>arXiv 2611.30195</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>南开大学</strong> 计算机学院 VCIP 实验室（Tianqi Li、Ming-Ming Cheng、Yun Liu）</li><li><strong>天津理工大学</strong> 计算机科学与工程学院（Xin He）</li><li><strong>新加坡科技研究局</strong> 信息通信研究院 A*STAR（Xue Geng）</li><li><strong>电子科技大学</strong> 信息与通信工程学院（Le Zhang）</li><li><strong>南开大学</strong> 前沿交叉学科研究院、深圳福田国际先进研究院（Ming-Ming Cheng、Yun Liu）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>PTQ4WAM</strong> 框架，针对世界动作模型（World Action Models, WAMs）在资源受限设备上的部署难题，联合解决量化精度选择与执行路由选择问题。</li><li>世界动作模型在机器人规划中需反复读取权重并对比大量候选动作，后训练量化虽能缩小模型体积，但临时张量可能超出 GPU 内存限制，且微小预测误差可能改变所选动作。</li><li>研究目标是在有限任务评估预算下，找到既能保持任务性能又满足设备内存和延迟约束的逐层位宽分配方案及对应 GPU 执行实现。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>设备约束的精度选择</strong>：使用原始任务得分对整模型位宽分配进行评分，仅在通过设备内存和延迟限制的候选上花费任务试验。</li><li><strong>校准引导的候选提议</strong>：利用大语言模型（LLM）代理结合模型结构和校准测量，生成少量候选精度图，并通过确定性生成器检查约束和多样性。</li><li><strong>低内存执行</strong>：提出融合组重缩放（Fused Group Rescaling, FGR）和直接历史读取（Direct History Reads, DHR），在保持任务输出不变的前提下减少峰值内存占用。</li><li><strong>全模型路由剖析</strong>：在 GPU 上对完整调用的内存和延迟进行剖析，避免仅凭单内核或权重大小判断部署可行性。</li><li><strong>跨模型家族验证</strong>：在四个模型家族（Fast-WAM、LeWM、DINO-WM、V-JEPA 2-AC）的 15 个工作负载上验证方法有效性。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>精度图与执行路由</strong>：精度图给每个组件分配 4 位或 8 位权重位宽；执行路由指定运行该精度图的 GPU 算子实现。存储预算通过权重载荷加辅助字节计算。</li><li><strong>可行实现识别</strong>：对满足存储规则和数值检查的候选对，剖析其峰值进程内存和 95 分位延迟，筛选出同时满足设备限制的可行对集合。</li><li><strong>任务结果选择</strong>：在开发集上按源平均结果（式 3）选择最优候选对，部署时固定最快的可行路由。</li><li><strong>融合组重缩放（FGR）</strong>：将每个组的缩放乘法融入低比特算子内部，避免中间结果写入设备内存再读回，从而节省峰值内存。</li><li><strong>直接历史读取（DHR）</strong>：逻辑拼接多个历史分段时，直接读取各分段自身缓冲区的元素，避免复制到新张量，同时保留全局归一化和位置掩码。</li><li><strong>校准引导提议</strong>：LLM 接收组件形状、连接关系、校准统计、允许格式和存储预算，提议候选图；确定性生成器强制约束（如 Hamming 距离下限）并修复无效提议。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>模型家族</strong>：<strong>Fast-WAM</strong>、<strong>LeWM（LeWorldModel）</strong>、<strong>DINO-WM</strong>、<strong>V-JEPA 2-AC</strong>，均为世界动作模型。</li><li><strong>任务与基准</strong>：15 个工作负载涵盖空间推理、物体操作、目标导航、长时程控制、双臂协调等；涉及 <strong>RoboCasa</strong>、<strong>Meta-World</strong> 等环境。</li><li><strong>模型规模</strong>：V-JEPA 2-AC 使用 300M 参数预测器，单次规划需 800 个候选动作、10 次迭代，在 RTX 4090 上耗时 16 秒。</li><li><strong>训练与评测资源</strong>：实验在 <strong>NVIDIA RTX 4090</strong> GPU 上进行，包含内存剖析、延迟测量和固定输入重放。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>总体性能</strong>：在 15 个工作负载上，中位任务得分为对应 FP32 模型的 <strong>99.2%</strong>；固定 GPU 重放下，中位加速比 <strong>2.36×</strong>，峰值分配内存中位降低 <strong>71.5%</strong>。</li><li><strong>任务得分</strong>：Fast-WAM Spatial、Object、Goal 等任务得分与 FP32 接近（如 96.4 vs 98.0、99.4 vs 99.6）；LeWM Wall 得分 94.0 高于 FP32 的 78.0；DINO-WM Wall 得分 98.0 高于 FP32 的 94.0。</li><li><strong>执行效率</strong>：Fast-WAM Spatial 时间从 143.45s 降至 33.40s，峰值内存从 23.256 GiB 降至 5.103 GiB；LeWM Wall 时间从 23.13s 降至 10.71s，峰值内存从 0.439 GiB 降至 0.162 GiB。</li><li><strong>选择规则对比</strong>：以任务得分为排序依据，在所有工作负载上均获得最高保持测试得分（如 Fast-WAM Long 93.67% vs 重建误差 89.84% 和 Hessian 90.57%）。</li><li><strong>可行性检查</strong>：提前检查设备限制（12 次试验）在所有四个工作负载上均优于晚检查策略，保持测试得分提高约 2 个百分点。</li><li><strong>候选提议</strong>：LLM 代理在 12 候选预算下平均成功率 90.93%，接近全池 48 候选的 91.00%，优于灵敏度引导列表的 90.37%。</li><li><strong>低内存执行效果</strong>：固定精度图下，PTQ4WAM 在四个代表工作负载上均实现更低重放时间和峰值内存，且任务结果保持一致。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30204/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Counterfactual Velocity Steering for World Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30188/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Calibrating World Action Models: From Adaptive System 2 Takeover to Self-Evolution</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

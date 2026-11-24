@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>JKO-GRPO: Augmenting GRPO with Wasserstein Proximal Steps for Flow-Matching VLAs - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 JKO-GRPO，将 Wasserstein 近端步骤（JKO 方案）引入 Flow-GRPO，用于改进流匹配视觉-语言-动作（VLA）策略的在线强化学习 针对现有 Flow-GRPO 与 π_RL 等方法的不足：它们仅用优势函数重加权采样动作，忽略了动作之间的距离与物理运动差异 通过组支撑的离散 c-transform 构造传输目标，使策略更新既能重加权采样动作，也能在动作空间中移动采样动作" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.29646">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-22">2026-11-22</time></p>
+        <h1 class="article-title">JKO-GRPO: Augmenting GRPO with Wasserstein Proximal Steps for Flow-Matching VLAs</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.29646" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.29646" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 JKO-GRPO，将 Wasserstein 近端步骤（JKO 方案）引入 Flow-GRPO，用于改进流匹配视觉-语言-动作（VLA）策略的在线强化学习</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">JKO-GRPO: Augmenting GRPO with Wasserstein Proximal Steps for Flow-Matching VLAs</p>
+</div></figure>
+        <p class="article-unit">作者来自 普渡大学（Purdue University），所属单位为 机械工程学院（School of…</p>
+        <ul class="article-facts"><li>arXiv 2611.29646</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者来自 <strong>普渡大学（Purdue University）</strong>，所属单位为 <strong>机械工程学院（School of Mechanical Engineering）</strong> 与 <strong>数学系（Department of Mathematics）</strong></li><li>作者包括 <strong>Jiyong Kwon</strong>、<strong>Yikun Bai</strong>、<strong>Amirhossein Mollaali</strong>、<strong>Guang Lin</strong></li><li>Jiyong Kwon 与 Yikun Bai 为共同第一作者，Yikun Bai 与 Guang Lin 为通讯作者</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>JKO-GRPO</strong>，将 Wasserstein 近端步骤（JKO 方案）引入 Flow-GRPO，用于改进流匹配视觉-语言-动作（VLA）策略的在线强化学习</li><li>针对现有 Flow-GRPO 与 <strong>π_RL</strong> 等方法的不足：它们仅用优势函数重加权采样动作，忽略了动作之间的距离与物理运动差异</li><li>通过组支撑的离散 c-transform 构造传输目标，使策略更新既能重加权采样动作，也能在动作空间中移动采样动作</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将同一状态下的动作采样组视为经验分布，把策略改进建模为优势函数的 <strong>JKO 步骤</strong>，并在组内得到离散 c-transform 的闭式解</li><li>提出 <strong>软 c-transform</strong> 与共享噪声回归方案，将确定性流匹配采样器拟合到传输目标，无需策略密度，也无需额外 critic</li><li>证明传输损失在旧参数处的负梯度等价于掩码经验路径化更新，动作空间方向完全由组内样本构造</li><li>通过 <strong>随机时间分支</strong> 扩展至 <strong>π_RL</strong> 的序贯 VLA 控制，可在一条旧策略轨迹的多个动作块上独立执行组级 JKO 更新</li><li>在 <strong>ManiSkill、LIBERO、MetaWorld</strong> 上验证有效性，并在 ManiSkill 全部 13 个未见场景上提升成功率</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将流匹配策略表示为确定性 ODE 采样器 \(f_\theta\) 的推前分布 \(\pi_\theta = (f_\theta)_{\#}\mu\)；Flow-GRPO 通过 SDE 转换获得逐步高斯转移似然并做截断重要性比更新</li><li>将强化学习视为动作分布上的 Wasserstein 梯度流，其 JKO 步骤的解为 c-transform：\(T_s(a)=\arg\max_{a'}[A^{\pi}(s,a')-\\|a-a'\\|^2/(2\tau)]\)</li><li>受限于同一状态的采样动作组时，组支撑 JKO 步骤有闭式解：\(T(x_i)=\arg\max_j[A_j-c_\tau(x_i,x_j)]\)，再由软 c-transform 生成连续回归目标</li><li>使用<strong>共享噪声回归</strong>将确定性流采样器拟合到 c-transform 目标，并与截断 Flow-GRPO 目标联合优化，替换 KL 正则</li><li>对序贯 VLA 控制，在旧策略轨迹上随机选择动作块索引，恢复仿真器状态后采样候选延续动作，并在多个决策时间点独立执行组级 JKO 更新</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>在机器人学基准 <strong>ManiSkill</strong>、<strong>LIBERO</strong>、<strong>MetaWorld</strong> 上进行实验，并在受控 2D 圆形任务上进行验证</li><li>基础模型为流匹配 VLA 策略，如 <strong>π₀、π₀.₅</strong>，并建立在 <strong>π_RL</strong> / Flow-GRPO 的在线强化学习流水线之上</li><li>评估包含 ManiSkill 的 13 个未见场景以测试泛化能力</li><li>具体模型参数量与 GPU/TPU 训练资源在给定 HTML 片段中未展开，详见论文附录 G 的实现细节</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>主要评估基准为 <strong>ManiSkill、LIBERO、MetaWorld</strong>，指标为任务成功率</li><li>JKO-GRPO 获得优于或可与 Flow-GRPO / π_RL 等基线相比的结果</li><li>在 ManiSkill 的所有 <strong>13 个未见场景</strong>上均取得成功率提升</li><li>分析表明 JKO-GRPO 在抓取与放置等任务环节上具有优势，并保持可控的计算开销</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.29813/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Hierarchical Reasoning Action Head for Tiny Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29553/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Detecting Is Not Choosing: What a World Model Needs to Keep a VLA Policy Safe</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

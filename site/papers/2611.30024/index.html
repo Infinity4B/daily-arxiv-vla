@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>FlexWAM: Learning Flexible Visual Routing for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 FlexWAM，一种用于世界动作模型（World Action Models, WAMs）的灵活视觉路由方法，解决多相机机器人操作中视图贡献固定、无法根据当前观测动态调整的问题。 核心研究问题包括：视频预测是否每层都需要跨视图交互？动作专家如何集成互补视觉证据并优先关注与当前动作最相关的视图？ 通过交替的视图内/跨视图注意力、观测条件路由器和反事实视图贡献分配，FlexWAM 实现自适应视图权重，提升动作预测精度。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30024">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">FlexWAM: Learning Flexible Visual Routing for World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30024" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30024" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 FlexWAM，一种用于世界动作模型（World Action Models, WAMs）的灵活视觉路由方法，解决多相机机器人操作中视图贡献固定、无法根据当前观测动态调整的问题。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">FlexWAM: Learning Flexible Visual Routing for World Action Models</p>
+</div></figure>
+        <p class="article-unit">浙江大学 (Zhejiang University)</p>
+        <ul class="article-facts"><li>arXiv 2611.30024</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>浙江大学 (Zhejiang University)</strong></li><li><strong>上海交通大学 (Shanghai Jiao Tong University)</strong></li><li><strong>Noematrix</strong></li><li><strong>明尼苏达大学 (University of Minnesota)</strong></li><li><strong>EndlessAI</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>FlexWAM</strong>，一种用于世界动作模型（World Action Models, WAMs）的灵活视觉路由方法，解决多相机机器人操作中视图贡献固定、无法根据当前观测动态调整的问题。</li><li>核心研究问题包括：视频预测是否每层都需要跨视图交互？动作专家如何集成互补视觉证据并优先关注与当前动作最相关的视图？</li><li>通过交替的视图内/跨视图注意力、观测条件路由器和反事实视图贡献分配，FlexWAM 实现自适应视图权重，提升动作预测精度。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>有效的多视图建模策略</strong>：交替使用视图内注意力（捕捉视图特定动态）和跨视图注意力（集成互补线索），平衡局部建模与全局融合。</li><li>引入 <strong>灵活视图路由（Flexible View Routing）</strong> 和 <strong>View-Routed Action Attention</strong>：观测条件路由器预测每个视图的重要性权重，并以加性偏置形式注入动作注意力的视觉 logits，动态调节视觉贡献。</li><li>提出 <strong>反事实视图信用分配（Counterfactual View Credit Assignment）</strong>：通过掩码单个视图测量动作损失变化来估计视图贡献，并训练一个 critic 网络稳定校准路由器，避免仅使用动作损失导致的捷径学习。</li><li>在两个视频骨干（<strong>Wan2.2-TI2V-5B</strong> 和 <strong>LingBot-Video-Dense 1.3B</strong>）上，FlexWAM 在五个真实世界任务中平均任务成功率分别达到 <strong>77.2%</strong> 和 <strong>83.8%</strong>，相比最强基线提升 <strong>16.4</strong> 和 <strong>23.0</strong> 个百分点。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>视图感知世界建模</strong>：每个相机流独立编码，视频 DiT 交替采用局部视图内注意力和全局跨视图注意力，遵循时间可见性约束，并采用视图均衡监督损失。</li><li><strong>视图路由预测</strong>：从视频专家提取当前帧特征，通过空间池化和学习查询注意力构建每个视图的摘要，经轻量 MLP 和 softmax 预测归一化路由权重，零初始化消除偏置。</li><li><strong>View-Routed Action Attention</strong>：路由权重转换为对数空间，作为加性偏置加到动作-视图注意力 logits 上，再与动作自注意力和上下文注意力联合 softmax 归一化，保留视图内空间偏好和上下文评分机制。</li><li><strong>反事实视图评估</strong>：固定模型参数，将参考门全设为 1，逐视图掩码（门设为 0），使用相同噪声计算动作损失变化，并跨视图标准化得到反事实分数。</li><li><strong>Critic 引导校准</strong>：独立 critic 网络从停止梯度的视觉特征预测标准化 CF 分数，通过 MSE 回归拟合定期刷新的 CF 分数，其输出经 softmax 和 KL 散度提供稳定的路由器校准目标。</li><li><strong>四阶段训练</strong>：先均匀门训练视频与动作专家；再仅用动作损失训练路由器；接着拟合 critic 于 CF 分数；最后加入 KL 校准损失（β 从 0.33 线性升温至 0.50）。推理时仅使用路由器预测视图权重，无需 CF 评估或 critic。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>真实世界任务</strong>：5 个操作任务，包括双机械臂 <strong>AgileX PiPER</strong>（铅笔盒打包、传送带分拣）和单臂 <strong>Flexiv Rizon 4s</strong>（L 形销钉插入、圆形销钉插入、以太网线插入）。</li><li><strong>相机配置</strong>：PiPER 使用 1 个全局相机和 2 个腕部 RealSense D435；Flexiv 使用 2 个固定相机和 1 个腕部 RealSense D415。</li><li><strong>训练数据</strong>：每任务 100 条遥操作演示，30 Hz，记录多视角图像和本体感受状态。</li><li><strong>模型骨干</strong>：<strong>Wan2.2-TI2V-5B</strong>（5B 参数）与 <strong>LingBot-Video-Dense (1.3B)</strong>；视频 VAE 输入分辨率 192×224。</li><li><strong>训练/推理硬件</strong>：本地部署使用 RTX 3090（PiPER）和 RTX 4090（Flexiv），远程使用 H200。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：真实世界机器人平台；20 次静态任务试验（固定随机位置）或 100 个传送带分拣块；成功率为主要指标。</li><li><strong>基线与对比</strong>：<strong>Fast-WAM</strong>、<strong>OpenWAM</strong>、<strong>LaWAM</strong>、<strong>π0.5</strong> VLA 模型；FlexWAM 分别以 Wan 和 LingBot 为视频骨干评估。</li><li><strong>主要结果</strong>：FlexWAM (Wan) 平均成功率 <strong>77.2%</strong>，FlexWAM (LingBot) <strong>83.8%</strong>；最强基线平均分别为 60.8%（OpenWAM）和 55.6%（π0.5），相对提升显著。</li><li><strong>精度任务增益</strong>：销钉插入（L 形）FlexWAM (Wan) 达 <strong>95.0%</strong>（基线最高 70.0%）；圆形销钉插入 LingBot 达 <strong>100.0%</strong>；线缆插入 LingBot 达 <strong>75.0%</strong>。</li><li><strong>消融研究</strong>：交替注意力（cross-view interval k=2）在有无路由器下均取得最佳或并列最佳；去除路由或仅用动作损失路由导致性能下降；Critic 引导校准相比直接 CF 校准提升 <strong>17.5–50.0</strong> 个百分点。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30041/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Spiking World-Action Models for Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29873/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ProMix: Efficient Data Mixture Optimization for Robotic Imitation via Proxy-Reference DRO</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

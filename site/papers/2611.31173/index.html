@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>EmboEagle: An Efficient Agentic Embodied Framework for Long-horizon Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 EmboEagle，一个用于长时程机器人操作的闭环代理框架，旨在解决世界-动作模型（WAM）物理误差累积和无状态 VLM 监督高延迟、缺乏 3D 空间持久性的问题 框架统一了子任务条件 WAM 控制、潜在空间自适应监督和记忆引导的几何恢复，实现选择性高层次监督和物理修正 在 RMBench 和 LIBERO-Mem 基准上取得领先成功率，并通过真实世界任务验证了有效性" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31173">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">EmboEagle: An Efficient Agentic Embodied Framework for Long-horizon Robotic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31173" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31173" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 EmboEagle，一个用于长时程机器人操作的闭环代理框架，旨在解决世界-动作模型（WAM）物理误差累积和无状态 VLM 监督高延迟、缺乏 3D 空间持久性的问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.31173.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.31173.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.31173.webp" alt="EmboEagle: An Efficient Agentic Embodied Framework for Long-horizon Robotic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者所属机构未在论文摘要中明确标注；根据作者邮箱后缀（@mail.ustc.edu.cn），主要作者可…</p>
+        <ul class="article-facts"><li>arXiv 2611.31173</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者所属机构未在论文摘要中明确标注；根据作者邮箱后缀（@mail.ustc.edu.cn），主要作者可能来自<strong>中国科学技术大学（USTC）</strong></li><li>其他作者单位未详细列出，但从项目合作背景与多作者构成推断，可能涉及多个研究机构</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>EmboEagle</strong>，一个用于长时程机器人操作的<strong>闭环代理框架</strong>，旨在解决世界-动作模型（WAM）物理误差累积和无状态 VLM 监督高延迟、缺乏 3D 空间持久性的问题</li><li>框架统一了子任务条件 WAM 控制、潜在空间自适应监督和记忆引导的几何恢复，实现选择性高层次监督和物理修正</li><li>在 <strong>RMBench</strong> 和 <strong>LIBERO-Mem</strong> 基准上取得领先成功率，并通过真实世界任务验证了有效性</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>闭环代理架构</strong>：提出 EmboEagle，整合子任务条件 WAM 执行、解耦 VLM 任务编排、持久几何记忆以及强制修复后验证</li><li><strong>潜在空间自适应 VLM 调用</strong>：通过从 WAM 动作令牌转换和子任务语义中蒸馏教师决策，训练轻量级路由门控，无需辅助视觉编码器即可实现选择性监督</li><li><strong>边界感知 WAM 适应</strong>：开发两阶段流匹配适应方案（Video DiT LoRA + Action DiT 全量微调），在子任务边界截断动作监督，并采用校准固定范围损失</li><li><strong>记忆引导的几何恢复</strong>：设计结构化内存（初始参考、抓取绑定、工具痕迹）和九种参数化恢复基元，使 VLM 能输出可执行的物理修正动作</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>子任务条件 WAM 适应</strong>：从预训练 Long-WAM 初始化，对 Video DiT 添加 LoRA 适配器进行流匹配微调，随后冻结视频分支并全量微调 Action DiT；在子任务边界使用有效动作掩码和固定范围校准损失</li><li><strong>自适应 VLM 调用</strong>：路由门控为轻量 MLP，输入为 WAM Action Expert 前后块的动作令牌潜在差值（Δf_t）和子任务嵌入，输出调用概率；使用加权二元交叉熵损失训练，训练数据来自完整逐块教师监督的蒸馏</li><li><strong>记忆引导的几何恢复</strong>：VLM 响应解耦为诊断状态（ongoing/achieved/abnormal）和离散路由动作（continue/update/recovery/assist）；控制器维护结构化 JSON 内存（refs、held、last_tool），执行参数化恢复技能（lift、home、release、bind、grasp_point 等），每次干预后强制触发 VLM 验证</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>RMBench</strong>（9 个双机械臂任务，包含 M(1) 和 M(n) 两类）、<strong>LIBERO-Mem</strong>（10 个单臂任务，包括放置、计数、排序/空间推理）、两个真实世界任务（垃圾分类、面包烤制）</li><li><strong>模型规模</strong>：未明确给出参数量；基于 Long-WAM 预训练检查点（RoboTwin2.0 和 LIBERO 检查点），高 VLM 使用 <strong>GPT-6-Astra</strong>，路由门控为轻量 MLP</li><li><strong>训练资源</strong>：4 块 <strong>NVIDIA H100 80GB GPU</strong>；Video DiT LoRA 训练 10k 步，Action DiT 全量微调 30k 步；视觉历史窗口 48 步，动作块长度 H=32</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：在 RMBench 和 LIBERO-Mem 上使用全任务成功率进行评估；真实世界实验对比 VoLoAgent</li><li><strong>主要指标</strong>：任务成功率、VLM 调用次数、效率-成功率权衡</li><li><strong>关键结果</strong>：</li></ul>
+<p> - RMBench 平均成功率 <strong>91.3%</strong>，超过最强基线 MaP-WAM 8.0 个百分点；LIBERO-Mem 平均 <strong>90.6%</strong>，超过最强基线 ActMem-VLA 9.8 个百分点</p>
+<p> - 真实世界任务中，相同 WAM 执行器权重下，EmboEagle 在垃圾分类（45% vs 32%）和面包烤制（67% vs 51%）上均优于 VoLoAgent</p>
+<p> - 自适应门控相比逐块 32 步监督减少 <strong>74.2%</strong> 的 VLM 调用（3.93 vs 15.26 次），成功率仅下降 2.4 个百分点；消融实验表明恢复模块和辅助模块对任务完成至关重要</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31195/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">VITA-WAM: Manifold-Aligned World-Action Modeling for Real-Time Robot Control</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31126/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">WeaveVLA: 3D Relational Grounding for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

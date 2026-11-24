@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SWAM: State-aware World Action Model for Multi-Agent 3D Environments - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 SWAM（State-aware World Action Model），一个面向多智能体 3D 环境的状态感知世界动作模型。 核心目标是解决现有多智能体世界模型中，NPC（非玩家角色）在视野外状态无法可靠从视觉历史推断的问题，将智能体状态演化与自回归视觉生成分离。 无需显式场景几何或地图，仅通过角色动作和状态预测来保持多智能体一致性，并在自定义第一人称射击游戏中验证视觉保真度、NPC 一致性和长期稳定性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30042">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">SWAM: State-aware World Action Model for Multi-Agent 3D Environments</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30042" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30042" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 SWAM（State-aware World Action Model），一个面向多智能体 3D 环境的状态感知世界动作模型。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">SWAM: State-aware World Action Model for Multi-Agent 3D Environments</p>
+</div></figure>
+        <p class="article-unit">纽约大学（New York University）：所有作者均来自该校，包括 Jenna Kang、B…</p>
+        <ul class="article-facts"><li>arXiv 2611.30042</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>纽约大学（New York University）</strong>：所有作者均来自该校，包括 <strong>Jenna Kang</strong>、<strong>Bingxuan Li</strong>、<strong>Colin Groth</strong>、<strong>Anatolii Evdokimov</strong>、<strong>Sai Qian Zhang</strong> 和 <strong>Qi Sun</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>SWAM（State-aware World Action Model）</strong>，一个面向多智能体 3D 环境的状态感知世界动作模型。</li><li>核心目标是解决现有多智能体世界模型中，<strong>NPC（非玩家角色）在视野外状态无法可靠从视觉历史推断</strong>的问题，将智能体状态演化与自回归视觉生成分离。</li><li>无需显式场景几何或地图，仅通过角色动作和状态预测来保持多智能体一致性，并在自定义第一人称射击游戏中验证视觉保真度、NPC 一致性和长期稳定性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>分解式多玩家世界模型</strong>：无需显式场景表示，角色动作是唯一显式输入，场景几何由模型隐式学习。</li><li><strong>轻量级状态模型</strong>：仅从动作传播所有角色状态，无需渲染观测，以可忽略的计算代价模拟未见的玩家和 NPC。</li><li><strong>FOV 条件方案</strong>：基于盒指示器的投影 FOV 掩码，其大小不随角色数量增长，能保持其他玩家和 NPC 的一致性。</li><li><strong>实验验证</strong>：在自定义 Godot 第一人称射击游戏中，相比无状态基线和 Solaris，在视觉质量、角色召回率和长时间 rollout 稳定性上取得显著提升。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>状态模型</strong>：将游戏建模为离散时间动力系统，每个玩家状态包括位置、速度、偏航、俯仰、死亡和接地标志。结合确定性物理先验和学习残差，通过 MLP 预测下一状态；射击事件单独编码并聚合以预测死亡概率。</li><li><strong>世界模型</strong>：基于潜空间扩散 Transformer，接收 ego 动作、视觉历史、全局玩家状态 token 和 <strong>FOV 投影密集玩家掩码</strong>。</li></ul>
+<p> - 视频自编码器使用 DINO 基编码器和 Transformer 解码器，将视频映射到潜空间并冻结。</p>
+<p> - 玩家状态通过 MLP 和身份嵌入编码为 2048 维 token，包括屏幕外玩家。</p>
+<p> - FOV 掩码将 1.8m×0.7m 的玩家代理投影到 ego 相机，用高斯核生成空间指示，不进行显式可见性测试。</p>
+<p> - 条件视觉 Transformer 包含 16 个块，结合空间自注意力、因果时间注意力和玩家状态交叉注意力，采用流匹配损失训练，并使用扩散强制和干净过去融合。</p></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：在自定义 <strong>Godot 引擎</strong> 第一人称射击游戏中采集，包含 <strong>40 小时</strong> 四玩家游戏数据，分辨率 <strong>512×288</strong>，帧率 <strong>20 fps</strong>；额外采集 <strong>20 小时</strong> 不同角色皮肤的数据用于消融。</li><li><strong>模型规模</strong>：</li></ul>
+<p> - 世界模型：<strong>1.46B 参数</strong>（不含冻结的 900M 参数视频自编码器，总计约 <strong>2.36B</strong> 参数）。</p>
+<p> - 状态模型：仅 <strong>300K 参数</strong>。</p>
+<p> - 对比模型 Solaris：约 <strong>2.58B</strong> 参数（从官方 Minecraft 双人 checkpoint 微调，扩展到四玩家）。</p>
+<ul><li><strong>训练资源</strong>：所有实验在 <strong>单张 NVIDIA H200 GPU</strong> 上完成；世界模型训练 <strong>250k 步</strong>，状态模型训练 <strong>20k 步</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：在自定义第一人称射击游戏测试集上，使用 12 个 episode（每个含 4 个 POV），进行 10 秒、30 秒和 10 分钟的自回归 rollout；同时评估 960 个 30 秒 rollout 和 48 个完整 10 分钟 rollout。</li><li><strong>主要指标</strong>：LPIPS、MILO、SSIM、PSNR、FVD（16 帧和 32 帧窗口）、角色检测召回率和精确率、单帧推理时间及参数量。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 在 <strong>30 秒 rollout</strong> 中，SWAM 的 LPIPS 为 <strong>0.249</strong>、MILO 为 <strong>9.53</strong>、FVD₃₂ 为 <strong>137.5</strong>，均显著优于无状态基线（LPIPS 0.344、MILO 13.05、FVD₃₂ 299.8）和 Solaris。</p>
+<p> - 角色召回率和精确率在 30 秒 rollout 中分别达到 <strong>71.1%</strong> 和 <strong>70.1%</strong>，而基线仅约 22–28%，Solaris 更低。</p>
+<p> - 在 <strong>10 分钟超长 rollout</strong> 中，召回率和精确率仍保持在 <strong>57.2%</strong> 和 <strong>55.0%</strong>，对比方法则几乎完全丢失角色（召回率 ≤2%）。</p>
+<p> - 状态模型 10 分钟 rollout 的位置误差约 <strong>0.717m</strong>，速度误差约 <strong>0.463m/s</strong>，视角误差极小（<strong>3.3×10⁻⁴ 度</strong>）。</p>
+<p> - 消融表明：位置条件提升视觉质量，完整状态进一步稳定背景几何；加入 FOV 引导交叉注意力使召回率从 28.4% 提升到 66.5%；采用密集玩家掩码后达到最佳效果（召回率 71.1%、精确率 70.1%）。</p>
+<p> - 模型支持不同角色皮肤（皮肤匹配准确率 <strong>95.55%</strong>）以及在不重新训练的情况下调整玩家数量（1v1 设置召回率 68.2%）。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30083/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">MotionServe: Efficient Multi-Robot Serving by Exploiting Robot Execution Slack</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30041/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Spiking World-Action Models for Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

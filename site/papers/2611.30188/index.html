@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Calibrating World Action Models: From Adaptive System 2 Takeover to Self-Evolution - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对 世界动作模型（WAM） 在困难/分布外场景中快速退化、缺乏自我评估的问题，提出 Judgment-in-the-Loop (JiL) 框架 JiL 将快速 WAM（System 1）与基于 GPT-6-Astra 的基础模型智能体（System 2）结合，通过校准置信度实现按需接管 目标是在保持 WAM 速度的同时接近 System 2 的可靠性，并通过知识固化使 System 1 最终能在无 System 2 调用的情况下独立运行" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30188">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Calibrating World Action Models: From Adaptive System 2 Takeover to Self-Evolution</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30188" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30188" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对 世界动作模型（WAM） 在困难/分布外场景中快速退化、缺乏自我评估的问题，提出 Judgment-in-the-Loop (JiL) 框架</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">Calibrating World Action Models: From Adaptive System 2 Takeover to Self-Evolution</p>
+</div></figure>
+        <p class="article-unit">论文作者所属机构包括 中南大学（Central South University）、ACE Robot…</p>
+        <ul class="article-facts"><li>arXiv 2611.30188</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者所属机构包括 <strong>中南大学（Central South University）</strong>、<strong>ACE Robotics</strong>、<strong>悉尼大学（University of Sydney）</strong> 和 <strong>加州大学圣迭戈分校（University of California, San Diego）</strong></li><li>部分作者（如 <strong>Xiu Su</strong>、<strong>Dehao Wu</strong>、<strong>Keke Huang</strong>、<strong>Chang Xu</strong>）在 HTML 中未单独标注机构信息</li><li>作者 <strong>Yu Han</strong> 同时标注了 <strong>悉尼大学</strong>、<strong>加州大学圣迭戈分校</strong> 以及 <strong>中南大学/ACE Robotics</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对 <strong>世界动作模型（WAM）</strong> 在困难/分布外场景中快速退化、缺乏自我评估的问题，提出 <strong>Judgment-in-the-Loop (JiL)</strong> 框架</li><li>JiL 将快速 WAM（<strong>System 1</strong>）与基于 <strong>GPT-6-Astra</strong> 的基础模型智能体（<strong>System 2</strong>）结合，通过校准置信度实现按需接管</li><li>目标是在保持 WAM 速度的同时接近 System 2 的可靠性，并通过知识固化使 System 1 最终能在无 System 2 调用的情况下独立运行</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>JiL</strong> 双系统框架，统一 WAM 的速度优势与智能体的可靠性，大幅减少智能体调用次数，并能进化为独立运行的 System 1</li><li>设计非侵入式 <strong>judgment token</strong> 与 <strong>cross-fitted temporal-difference (TD) learning</strong>，仅用二元成功/失败信号训练，在 <strong>1.6 ms/chunk</strong> 内输出校准成功概率且不改变动作预测</li><li>证明 <strong>competence shrinkage law</strong>（能力收缩律），揭示修复–侵蚀权衡，指导 mastered-skill anchoring 与动态置信度门控，实现无侵蚀的能力缺口修复与自我进化</li><li>在 <strong>Fast-WAM</strong>、<strong>LingBot-VA</strong>、<strong>Kairos</strong> 以及 <strong>RoboTwin 2.0</strong>、<strong>LIBERO-Plus</strong>、真实机器人任务上验证，JiL 在 30% 智能体调用预算下全面超越基线</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>非侵入式校准自评估</strong>：在冻结 WAM 的最终去噪步加入带因果掩码的 judgment token 和 token-gated adapters（LoRA），读取内部 video–action 特征；Fast-WAM 上仅 <strong>13M</strong> 可训练参数（r=16），不改变动作输出</li><li><strong>cross-fitted TD supervision</strong>：将 rollout 场景分为 2 折，用折外 TD(λ) 预测器生成多步价值目标，并计算 out-of-fold G_k^(λ) 训练统一预测器；利用 binary log-loss 的严格 proper scoring 性质恢复真实条件成功概率</li><li><strong>自适应 System 1 &amp; 2 接管</strong>：按 chunk 评估 q_θ(o_k, a_k^base)，低于阈值 τ 时调用 <strong>GPT-6-Astra</strong>（System 2），置信度恢复到 τ_back 以上时返回 WAM；阈值直接控制调用预算与成功率之间的权衡</li><li><strong>能力缺口固化</strong>：冻结基础策略 π_base，将 System 2 接管轨迹 <strong>D_help</strong> 与 mastered-skill anchor 数据 <strong>D_own/D_replay</strong> 混合（如 1:1:2），训练独立修复专家 π_rep</li><li><strong>动态置信度门控与持续自演化</strong>：冻结 π_base 和 q_base，仅在低置信度状态切换到 π_rep，避免破坏已有技能；每轮仅更新 π_rep，并用 cross-fitted TD 训练系统级判断器</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>RoboTwin 2.0</strong>：完整 50 个任务，clean-only 训练，报告 Clean 与 Random 条件的平均值</li><li><strong>LIBERO-Plus</strong>：全部套件，包含七类扰动家族，报告 Hard/Mastered/All 条件下的成功率</li><li><strong>真实机器人操作</strong>：真实世界 manipulation 任务</li><li><strong>模型</strong>：Fast-WAM、LingBot-VA、Kairos（原生 WAM），System 2 为 <strong>GPT-6-Astra</strong>；judgment token 约 13M 参数，修复专家共享 5B 视频 backbone</li><li><strong>训练资源</strong>：基于 <strong>NVIDIA A800 GPU</strong>，单 chunk 判断延迟 1.6 ms；动态门控部署额外占用 <strong>1.7–2.0 GB BF16 VRAM</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>主实验</strong>：在 RoboTwin 2.0 与 LIBERO-Plus 全量基准上，JiL System 1 &amp; 2 在 30% 智能体调用预算下全面优于 <strong>Galbot-Astra</strong>、<strong>Spotter</strong>、<strong>CALL-Astra</strong> 等双系统基线</li><li><strong>Fast-WAM/RoboTwin 2.0</strong>：Hard 成功率从 3.1%（Base WAM）提升到 60.2%（JiL S1&amp;2），All 从 39.8% 提升到 74.5%；Standalone（0% 调用）Hard 42.4%，All 63.4%</li><li><strong>LingBot-VA</strong>：RoboTwin 2.0 Hard 从 19.8% 提升到 70.4%，LIBERO-Plus Hard 从 22.2% 提升到 68.9%；Standalone 分别达到 55.6% 和 54.8%</li><li><strong>校准与效率</strong>：判断器能预测动作质量且校准优于基线；JiL 在 30% 预算下将 Fast-WAM 失败率降低 <strong>57.6%</strong>，对比随机调用仅降低 <strong>16.3%</strong></li><li><strong>能力固化与自我进化</strong>：一轮 consolidation 后，独立 WAM 在零智能体调用下成功率提升 <strong>+13.1% 至 +24.7%</strong>；在更强大的 Kairos 原生 WAM 上同样有效</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30195/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Quantization for Action, Execution for Deployment: Joint Precision and Execution Selection for World Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30178/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Quantizing in the Loop: Drift-Aware Ultra-Low-Bit Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

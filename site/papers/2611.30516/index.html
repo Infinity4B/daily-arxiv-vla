@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>JEPA-ICL: Progress-Aligned Latent Plans for In-Context Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 JEPA-ICL，一个视觉-语言-动作（VLA）框架，将预测性规划与演示学习相结合 核心问题：机器人如何在自身执行进度与演示进度存在 embodiment、外观和执行速度差异的情况下，有效利用演示经验 通过“进度对齐的潜在计划”（progress-aligned latent plans）同时支持动作生成和演示阶段定位，使机器人能够从相关上下文中学习" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30516">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">JEPA-ICL: Progress-Aligned Latent Plans for In-Context Robotic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30516" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30516" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 JEPA-ICL，一个视觉-语言-动作（VLA）框架，将预测性规划与演示学习相结合</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30516.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30516.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30516.webp" alt="JEPA-ICL: Progress-Aligned Latent Plans for In-Context Robotic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Mohamed bin Zayed University of Artificial Intellig…</p>
+        <ul class="article-facts"><li>arXiv 2611.30516</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Mohamed bin Zayed University of Artificial Intelligence</strong>（Tingjun Dai、Jianxiang He、Mingfei Han、Longtao Jiang）</li><li><strong>Nanchang University</strong>（Qihao Yu）</li><li><strong>Stanford University</strong>（Changlin Li）</li><li><strong>University of Science and Technology of China</strong>（Minghao Jin、Zhihui Li、Xiaojun Chang，* 表示共同贡献）</li><li><strong>University of Technology Sydney</strong>（Xiaojun Chang）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>JEPA-ICL</strong>，一个视觉-语言-动作（VLA）框架，将预测性规划与演示学习相结合</li><li>核心问题：机器人如何在自身执行进度与演示进度存在 embodiment、外观和执行速度差异的情况下，有效利用演示经验</li><li>通过“进度对齐的潜在计划”（progress-aligned latent plans）同时支持动作生成和演示阶段定位，使机器人能够从相关上下文中学习</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>Markov 监督的潜在规划</strong>：通过循环预测子任务剩余阶段的有序 JEPA 未来状态，在中间检查点和子任务完成点进行监督，使计划保留剩余过程</li><li><strong>进度对齐的演示上下文</strong>：利用潜在计划定位演示中相关阶段，并通过 memory tokens 读取独立的 JEPA 监督内容特征，将进度对应与内容检索分离</li><li><strong>规划与演示联合学习</strong>：将未来预测、演示对齐和动作监督结合起来训练共享策略，使策略在有/无演示上下文的条件下都能运行</li><li>在多个基准（<strong>Imitator Game</strong>、<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong> 和真实机器人）上验证了方法的有效性</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 <strong>VLA backbone</strong>（如 <strong>Qwen3-VL</strong> 或 <strong>π0.5</strong>）并引入四类查询 token：plan queries、future queries、action queries 和 memory tokens</li><li><strong>潜在世界模型</strong>：以当前 JEPA 状态为起点，在 plan 条件下通过单个 Markov 转移逐步预测剩余子任务中 \(K=4\) 个有序检查点的特征</li><li>使用 frozen <strong>V-JEPA 2.1</strong> 编码器提取世界状态特征，监督采用 patch 加权 L1 损失</li><li><strong>进度对齐检索</strong>：小型 indexer 网络嵌入 plan，通过余弦相似度匹配演示帧；用 contrastive、soft-DTW order 和 cycle 损失训练对齐</li><li><strong>内容特征</strong>：future queries 预测固定偏移后的 JEPA 特征，演示帧的内容特征通过 memory adapter 转换为 memory tokens，供动作生成使用</li><li>训练目标包含 \(\mathcal{L}_{\text{action}} + \beta \mathcal{L}_{\text{plan}} + \gamma \mathcal{L}_{\text{future}} + \lambda \mathcal{L}_{\text{align}}\)，演示计划和特征由周期性更新的 policy copy 缓存</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>Imitator Game</strong>（C15 和 C45 两种预训练规模）、<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>（七种扰动维度）、真实世界双手机器人任务（gear assembly）</li><li>模型 backbone：<strong>Qwen3-VL</strong> 用于仿真主实验，<strong>π0.5</strong> 用于真实机器人部署</li><li>未明确说明模型参数量和具体训练硬件（GPU/TPU）配置；论文附录包含详细实现参数，但正文未披露</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境和协议：<strong>Imitator Game</strong>（C15/C45 预训练，见任务/未见任务 + 微调）、<strong>LIBERO</strong>（四个 suite 的成功率）、<strong>LIBERO-Plus</strong>（七种扰动维度零样本评估）、真实机器人 gear assembly</li><li>主要指标：成功率（Success Rate, SR）、子任务成功率（Sub-SR）、七维扰动下的宏平均成功率</li><li><strong>Imitator Game</strong>：C15 预训练下 seen-task 成功率达 <strong>80.0%</strong>，比 <strong>Zero-WAM</strong>（68.0%）高 12 个百分点；C45 未见任务经每任务 10 条演示微调后达 <strong>85.5%</strong></li><li><strong>LIBERO</strong>：无上下文平均成功率 <strong>97.6%</strong>，优于无人类视频预训练的 <strong>VLA-JEPA</strong> 变体（96.1%），在 Spatial、Goal、Long 子套件上取得最佳</li><li><strong>LIBERO-Plus</strong>：无演示平均成功率 <strong>73.2%</strong>（VLA-JEPA 变体为 62.9%）；加入演示上下文后提升到 <strong>75.2%</strong>，在七维扰动中有五维达到最佳或次佳</li><li><strong>真实世界</strong>：gear assembly 任务中 JEPA-ICL 使用部署场景演示成功率达 <strong>80.0%</strong>，而 <strong>π0.5</strong> 基线为 40.0%；训练场景演示的帮助小于部署场景演示，验证了进度对齐上下文的有效性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30534/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DelayOPSD: On-Policy Self-Distillation from a Synchronous Teacher for Real-time Asynchronous Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30490/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">EgoStudy: How Does Scaling Egocentric Data Affect VLA and WAM Pretraining?</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

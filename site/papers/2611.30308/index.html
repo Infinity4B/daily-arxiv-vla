@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ConsisX: Cross-View Consistency Thinking in 3D for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 ConsisX，一种新型视觉-语言-动作（VLA）框架，面向机器人操作中的跨视图一致性问题 要解决的问题：多视图观测在 VLM 中基于 2D 特征相似性进行交互，容易导致两类物理不一致——不同实体被错误关联，以及同一实体的跨视图信息碎片化 通过跨视图关联建模、实体一致性组织和一致动作条件化，使机器人能够在 3D 空间中进行一致思考和操作" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30308">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">ConsisX: Cross-View Consistency Thinking in 3D for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30308" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30308" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 ConsisX，一种新型视觉-语言-动作（VLA）框架，面向机器人操作中的跨视图一致性问题</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30308.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30308.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30308.webp" alt="ConsisX: Cross-View Consistency Thinking in 3D for Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">主要作者来自 西安电子科技大学（Xidian University）：包括 Yunhe Zhang、L…</p>
+        <ul class="article-facts"><li>arXiv 2611.30308</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要作者来自 <strong>西安电子科技大学</strong>（Xidian University）：包括 Yunhe Zhang、Long Gao、Yuedong Fu、Gang He、Li Xu、Chang Wu</li><li>Pengyu Li 来自 <strong>北京航空航天大学</strong>（Beihang University）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>ConsisX</strong>，一种新型视觉-语言-动作（VLA）框架，面向机器人操作中的跨视图一致性问题</li><li>要解决的问题：多视图观测在 VLM 中基于 2D 特征相似性进行交互，容易导致两类物理不一致——<strong>不同实体被错误关联</strong>，以及<strong>同一实体的跨视图信息碎片化</strong></li><li>通过跨视图关联建模、实体一致性组织和一致动作条件化，使机器人能够在 3D 空间中进行一致思考和操作</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ConsisX</strong>，将跨视图关联与实体一致性整合，实现 3D 跨视图一致性思考</li><li>设计 <strong>CAM</strong>（Cross-View Association Modeling）：在共享 3D 坐标系中引入空间邻近约束和特征相似性，减少跨视图错误关联</li><li>设计 <strong>ECO</strong>（Entity Coherence Organization）：将视图内局部 3D 特征组织为实体候选，并构建跨视图实体对，解决信息碎片化</li><li>设计 <strong>CAC</strong>（Consistent Action Conditioning）：检索任务相关实体对，为动作预测提供跨视图一致的 3D 实体证据</li><li>在 4 个仿真基准和 3 个真实世界操作任务上验证了框架的有效性和竞争力</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基础策略基于 <strong>π0.5</strong>，使用预训练 VLM 进行联合编码，并使用流匹配动作专家预测连续动作块</li><li><strong>CAM</strong>：通过深度反投影和相机坐标变换，将环境视图与腕部视图的 3D 特征映射到共享坐标系；结合空间距离惩罚与特征相似度，推理跨视图关联矩阵</li><li><strong>ECO</strong>：利用空间亲和性与特征兼容性定义邻域，选择代表实体中心，构建视图内实体候选；聚合 CAM 的关联矩阵，以互斥方式形成跨视图实体对</li><li><strong>CAC</strong>：通过可学习查询关注 VLM 最终层特征，计算实体对的任务相关度；在动作专家各层通过交叉注意力注入 3D 实体特征，并用门控机制加权</li><li>训练时冻结预训练 VLM 和 3D 视觉模型，仅更新动作专家以及 CAM、ECO、CAC 模块，采用流匹配目标联合优化</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真基准：<strong>LIBERO</strong>（Spatial/Object/Goal/Long 四套件，每任务 50 个演示，共 2000 次评估）、<strong>LIBERO-Plus</strong>（7 类扰动）、<strong>CALVIN</strong>（ABC→D 协议，34 个任务，1000 个序列）、<strong>LIBERO-PRO</strong></li><li>真实世界实验：3 个操作任务（具体任务名称在提供的 HTML 片段中未完整展开）</li><li>模型基础：预训练 VLM + 流匹配动作专家 + 预训练 3D 视觉模型；论文未明确披露总参数量和训练所用 GPU/TPU 资源</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 LIBERO 上，ConsisX 平均成功率达 <strong>98.8%</strong>，其中 Spatial 99.4、Object 99.6、Goal 99.0、Long 97.2，优于多个基线方法</li><li>在 LIBERO-Plus 上，总体成功率 <strong>88.0%</strong>，在 Camera、Robot、Background、Noise、Layout 等多项扰动上达到最优</li><li>在 CALVIN 上，平均完成任务序列长度为 <strong>4.47</strong>，在对比方法中最高</li><li>消融实验和定性分析验证了 CAM、ECO、CAC 各组件的贡献以及跨视图物理一致性的效果</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30363/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SOAR: temporal Structure-guided One-step Action generation for Robotic manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30291/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Beyond Which: Where, How, and When in Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>More Than Picturing the Future: Motion-Oriented Latent Reasoning for Generalizable Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对现有 视觉-语言-动作（VLA） 模型中的隐式推理（Latent Reasoning） 问题：当前隐式视觉推理从视觉-语言模型（VLM）继承了“理解导向”的范式，将每个隐式令牌与孤立未来帧对齐，导致策略过度依赖训练场景的外观，在新场景中泛化性能急剧下降。 提出 Motion-Oriented Latent Reasoning（面向运动的隐式推理），将视觉隐式令牌从“预测未来帧长什么样”转向“预测场景如何向目标演化”，从而学习运动而非外观。 该方法在仿真和真实机器人平台上显著提升了分布内（ID）和分布外（OOD）的任务成功率。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.29339">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-22">2026-11-22</time></p>
+        <h1 class="article-title">More Than Picturing the Future: Motion-Oriented Latent Reasoning for Generalizable Robot Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.29339" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.29339" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对现有 视觉-语言-动作（VLA） 模型中的隐式推理（Latent Reasoning） 问题：当前隐式视觉推理从视觉-语言模型（VLM）继承了“理解导向”的范式，将每个隐式令牌与孤立未来帧对齐，导致策略过度依赖训练场景的外观，在新场景中泛化性能急剧下降。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">More Than Picturing the Future: Motion-Oriented Latent Reasoning for Generalizable Robot Manipulation</p>
+</div></figure>
+        <p class="article-unit">华中科技大学（Huazhong University of Science and Technolog…</p>
+        <ul class="article-facts"><li>arXiv 2611.29339</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>华中科技大学</strong>（Huazhong University of Science and Technology, HUST），中国</li><li><strong>新加坡管理大学</strong>（Singapore Management University, SMU），新加坡</li><li><strong>新加坡科技研究局</strong>（Agency for Science, Technology and Research, A*STAR），新加坡，先进智能与计算研究所</li><li><strong>电子科技大学</strong>（University of Electronic Science and Technology of China, UESTC），中国</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对现有 <strong>视觉-语言-动作（VLA）</strong> 模型中的<strong>隐式推理（Latent Reasoning）</strong> 问题：当前隐式视觉推理从视觉-语言模型（VLM）继承了“理解导向”的范式，将每个隐式令牌与孤立未来帧对齐，导致策略过度依赖训练场景的外观，在新场景中泛化性能急剧下降。</li><li>提出 <strong>Motion-Oriented Latent Reasoning（面向运动的隐式推理）</strong>，将视觉隐式令牌从“预测未来帧长什么样”转向“预测场景如何向目标演化”，从而学习运动而非外观。</li><li>该方法在仿真和真实机器人平台上显著提升了分布内（ID）和分布外（OOD）的任务成功率。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>揭示问题</strong>：发现隐式 VLA 继承了 VLM 的理解导向范式，并证明将隐式令牌与孤立未来帧及其多模态特征对齐会使策略绑定于训练场景外观，损害泛化能力（例如 LaST0 在新背景下仅 2% 任务识别率）。</li><li><strong>提出方法</strong>：设计 <strong>Motion-Oriented Latent Reasoning</strong>，将视觉隐式令牌组织为逻辑结构化的推导过程：语义隐式令牌作为逻辑脚手架，运动隐式令牌按从粗到细（全局场景→交互区域→机器人状态）逐步预测，并在时间步间链式连接形成运动路径。</li><li><strong>实验验证</strong>：在 <strong>SimplerEnv-WidowX</strong>、<strong>LIBERO</strong>、<strong>LIBERO-PRO</strong> 以及 <strong>AgileX Piper</strong> 双臂真实机器人平台上进行全面实验，在 ID 性能匹配或提升的同时大幅改善 OOD 泛化（如真实机器人 OOD 成功率从 6.7% 提升至 37.5%）。</li><li><strong>消融分析</strong>：通过消融实验明确语义隐式令牌和运动隐式令牌各自的贡献。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>语义隐式令牌</strong>：5 个令牌对应具身思维链（embodied chain-of-thought）的五个阶段（Subtask、Why、Movement、Movement reasoning、Plan）。训练时使用<strong>随机文本前缀替换</strong>（random textual prefix substitution）策略，使每个语义令牌从前序阶段推导而来，同时部分阶段通过可解码性约束（verbalizable）保留自身内容。</li><li><strong>运动隐式令牌</strong>：对 4 个未来时间步（如 t+8、t+16、t+24、t+32）各生成三类令牌：<strong>全局令牌</strong>（整帧特征平均，与 LaST0 快照目标一致）、<strong>区域令牌</strong>（仅平均交互区域边界框内 patch 特征，边界框由 Grounding DINO 和 SAM 3 离线标注）、<strong>状态令牌</strong>（未来机器人状态离散化后的嵌入平均）。三类令牌从粗到细刻画运动。</li><li><strong>训练目标</strong>：总损失 L = L_act + L_mot + λ_sem L_sem + λ_dec L_dec，其中 L_act 为 action expert 的流匹配动作生成损失，L_mot 为运动隐式令牌对齐损失，L_sem 为语义前缀对齐损失，L_dec 为语义后缀可解码损失。</li><li><strong>两遍训练</strong>：第一遍用目标（文本嵌入、视觉目标）作为隐式位置输入并计算对齐损失；第二遍将所有隐式位置填入第一遍预测的隐式令牌，仅在隐式令牌条件下训练动作专家，使动作专家使用与推理时一致的隐式令牌。</li><li><strong>推理</strong>：所有隐式令牌在连续隐藏空间中自回归生成，无需解码文本；推理流程与 LaST0 一致，保持隐式推理的高效性。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真数据集</strong>：<strong>SimplerEnv-WidowX</strong>（基于 BridgeData V2 的四个真实到仿真任务）；<strong>LIBERO</strong> 四个套件（Spatial、Object、Goal、Long，每个套件 10 个任务、500 条演示）；<strong>LIBERO-PRO</strong>（LIBERO 的五种 OOD 扰动：物体、位置交换、指令改写、任务修改、环境变化）。</li><li><strong>OOD 评估数据集</strong>：<strong>Interleave-VLA</strong> / <strong>MAPS</strong> 扩展套件（Visual、Novel Obj.、Novel Cat. 三个 OOD 划分）。</li><li><strong>真实机器人平台</strong>：<strong>AgileX Piper</strong> 双臂平台，包含训练场景和环境变化场景。</li><li><strong>模型规模</strong>：基于 <strong>Janus-Pro-1B</strong> 骨干，总参数量约 <strong>3.3B</strong>；初始化的动作专家来自预训练的 <strong>LaST0</strong>。</li><li><strong>训练资源</strong>：<strong>8 块 NVIDIA H200 GPU</strong>，总批次大小 128，优化器 AdamW，学习率 1e-4 带余弦衰减。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>SimplerEnv-WidowX</strong>（成功率，%）：ID 均值 <strong>55.2%</strong> vs. LaST0 37.5%（+17.7）；OOD 均值 <strong>30.2%</strong> vs. LaST0 22.4%（+7.8），其中 Visual 划分 32.0% vs. 18.7%。</li><li><strong>LIBERO / LIBERO-PRO</strong>（成功率，%）：ID 均值 <strong>97.2%</strong> vs. LaST0 96.4%（+0.8）；OOD 均值 <strong>53.3%</strong> vs. LaST0 49.1%（+4.2），环境变化（Env.）划分 32.8% vs. 29.8%。</li><li><strong>真实机器人</strong>（成功率，%）：训练场景 <strong>90.8%</strong> vs. LaST0 60.8%（+30.0）；环境变化场景 <strong>37.5%</strong> vs. LaST0 6.7%（+30.8）。</li><li><strong>消融实验</strong>（LIBERO 成功率，%）：仅语义隐式令牌（12 个）ID 均值从 77.3% 提升至 91.4%；加入运动隐式令牌（17 个）后 ID 均值达 <strong>97.2%</strong>，OOD 均值达 <strong>53.3%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.29377/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Contact Harness: Enabling VLM Agents to Perform Contact-Rich Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29338/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">A Glimpse of Training VLMs as Foundation Models for Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

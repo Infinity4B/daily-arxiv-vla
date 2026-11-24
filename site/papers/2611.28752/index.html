@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>VTLA-RL: Learning Visuotactile Policies for Load-Adaptive Grasping - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 VTLA-RL，用于学习负载自适应抓取的视觉触觉策略 解决物体质量变化难以从视觉判断、初始抓取易滑移、固定条件下演示数据覆盖不足的问题 核心思路：混合真实与仿真演示初始化，共享视觉编码器处理触觉图像历史和 RGB，统一动作空间联合生成运动和双侧力目标，随后仅用仿真交互进行两阶段多任务 RL 后训练，并直接部署到真实机器人" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28752">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-21">2026-11-21</time></p>
+        <h1 class="article-title">VTLA-RL: Learning Visuotactile Policies for Load-Adaptive Grasping</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28752" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28752" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 VTLA-RL，用于学习负载自适应抓取的视觉触觉策略</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #177e89; --cover-to: #5ec2a8; --cover-spot: #c5f0de; --cover-ink: #f5fffb" aria-hidden="true">
+  <p class="note-cover-title">VTLA-RL: Learning Visuotactile Policies for Load-Adaptive Grasping</p>
+</div></figure>
+        <p class="article-unit">作者主要隶属于 香港科技大学（广州） 和 NVIDIA</p>
+        <ul class="article-facts"><li>arXiv 2611.28752</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者主要隶属于 <strong>香港科技大学（广州）</strong> 和 <strong>NVIDIA</strong></li><li>作者团队包括 <strong>Qiwei Wu, Qixuan Li, Xin Xiang, Xiangyu Chen, Xiang Xiao, Daochen Shi, Ruihua Zhang, Renjing Xu</strong></li><li><strong>Xiang Xiao</strong> 和 <strong>Renjing Xu</strong> 标注为共同第一作者及通讯作者（Equal contribution / Corresponding authors）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>VTLA-RL</strong>，用于学习负载自适应抓取的视觉触觉策略</li><li>解决物体质量变化难以从视觉判断、初始抓取易滑移、固定条件下演示数据覆盖不足的问题</li><li>核心思路：混合真实与仿真演示初始化，共享视觉编码器处理触觉图像历史和 RGB，统一动作空间联合生成运动和双侧力目标，随后仅用仿真交互进行两阶段多任务 RL 后训练，并直接部署到真实机器人</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出一种<strong>负载自适应抓取的视觉触觉策略</strong>：结合触觉历史、共享视觉编码器、统一运动-力动作接口，通过混合演示初始化和仿真 RL 提升抓取，无需测试物体质量标签和持续真实演示监督</li><li>在模拟和真实机器人上系统比较<strong>两种触觉表示</strong>（TacImage 和 TacField）与<strong>三种 RL 后训练路线</strong>（VTLA-RL、RL Token、DSRL），并评估负载变化和放置扰动</li><li>验证完整方法优于监督初始化，揭示不同表示和 RL 路线在真实硬件上的增益差异，为任务相关的表示与训练选择提供经验依据</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 <strong>π0.5</strong> 作为 VLA 主干，两个 224×224 RGB 视图；<strong>TacImage</strong> 将每指 8 帧触觉图像拼接并共享预训练 RGB ViT，无需单独触觉编码器；<strong>TacField</strong> 使用因果 TCN 将触觉阵列历史映射为单个前缀 token</li><li>动作空间 13 维：末端执行器位置(3)、旋转向量(3)、夹爪(1)、双边接触力目标(每指 3 维：法向+两个切向，单位牛顿)；一个流动作专家联合生成运动与力目标，由 <strong>Tabero 风格混合力-位控制器</strong>执行</li><li><strong>Sim-Real 对齐</strong>：通过 3DGS 重建、Taxim 和 FOTS 触觉仿真、以及跨域对齐分辨率/通道/时序/坐标/历史窗口等，使仿真和真实观察与控制一致</li><li><strong>多阶段多任务 RL</strong>：从混合数据 SFT 检查点出发，使用 PPO+GAE 更新动作专家 LoRA 和价值头；阶段 1 随机位置，阶段 2 随机质量与摩擦；稀疏成功奖励；基于任务成功率的动态权重（Hebero 风格）平衡多任务优化</li><li>部署使用 <strong>FAST</strong>：20 Hz 触觉反馈的异步滚动推理，新动作块与旧目标线性融合，实现 100 Hz 低层命令，无需额外微调或在线 RL</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>未使用公开数据集；自采集<strong>遥操作真实演示</strong>每任务 30 条轨迹，与等量 <strong>Tabero 风格仿真回放</strong>按 1:1 混合用于 SFT 初始化</li><li>RL 后训练仅使用<strong>仿真交互</strong>：128 个并行环境，两个任务各半，每阶段 200 epochs；物体质量随机范围为 <strong>Cola 150–250g</strong>、<strong>Vitasoy 100–600g</strong>，位置随机 ±2 cm；评估扩展到 ±6 cm 扰动</li><li>模型基于 <strong>π0.5</strong> 的视觉-语言-动作主干，论文未明确披露总参数量；TacImage 复用预训练 RGB ViT，TacField 使用轻量因果 TCN</li><li>训练硬件：<strong>8 张 RTX PRO 6000D GPU</strong>；真实与仿真评估均使用 <strong>RTX 4090</strong>；真实机器人平台为 <strong>xArm</strong> 手臂 + <strong>Xense 触觉传感器</strong> + 定制混合力-位夹爪</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：模拟 128 并行环境（Task A 可乐罐、Task B 维他奶纸盒，含干扰物饼干盒）；真实机器人（xArm + Xense + 混合力-位夹爪）；真实测试质量层位调整为 <strong>Task A 150/550/700g</strong>、<strong>Task B 100/500/650g</strong>，并在触觉传感器上覆膜降低摩擦以诱发滑移</li><li>主要指标：<strong>成功率（SR，%）</strong>，每个任务随机种子 50 次仿真试验、真实机器人各条件 10–20 次试验；<strong>平均抓取力（AG，N）</strong></li><li>与 Tabero Gentle/Firm 基准相比，<strong>Adaptive (Ours)</strong> 在全部质量层位表现高且稳定（仿真 Task A: 98/98/96；Task B: 96/94/98）</li><li>平均抓取力分析显示 RL 前后 AG 变化仅 <strong>-1.9% ~ +2.8%</strong>，表明成功增益来自力与几何的合理使用而非单纯增大夹持力</li><li>在模拟中比较三种 RL 路线与两种表示，<strong>VTLA-RL(Img)</strong> 总体最优（平均约 96.7%），Field 表示在高负载层位退化明显（如 A T3 仅 20%）</li><li>真实机器人结果显示：固定位置 <strong>Img</strong> 达 100%，随机位置 65%；Field 初始化更强但 RL 增益较小（固定 95%→95%，随机 45%→55%）；质量层位测试中 <strong>VTLA-RL</strong> 全拼 100/95/70，优于 RLT、DSRL、无 FAST 和无 RL 变体，且在高负载 T3 优于无触觉 PiRL†（70% vs 25%）</li><li>消融证实 RL 后训练显著提升成功率（Img：83%→97%；Field：58%→76%），FAST 对 Field 提升更为关键；无触觉输入 PiRL† 平均 74%，低于 Img 全拼 97%</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28803/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DeRail: Escaping Trajectory Priors via Counterfactual Action Steering for Mid-Execution Instruction Switching</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28732/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Entangle: Scaling Human-Video In-Context World-Action Models across Unseen Tasks and Contexts</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 KineState-SWAM，一个手术世界-动作模型，通过持久交互状态耦合动作预测与视频生成 解决现有模型未显式建模仪器运动如何驱动局部组织响应、以及交互历史如何影响后续动作的问题 引入 dVRK-Chole5.2k 数据集，包含 5,255 个视频，覆盖 17 个手术子任务，用于系统评估" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28871">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-21">2026-11-21</time></p>
+        <h1 class="article-title">KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28871" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28871" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 KineState-SWAM，一个手术世界-动作模型，通过持久交互状态耦合动作预测与视频生成</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics</p>
+</div></figure>
+        <p class="article-unit">主要作者来自 香港中文大学（The Chinese University of Hong Kong）及…</p>
+        <ul class="article-facts"><li>arXiv 2611.28871</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要作者来自 <strong>香港中文大学（The Chinese University of Hong Kong）及其深圳研究院（Shenzhen Loop Area Institute）</strong></li><li>合作机构包括 <strong>深圳大学</strong>、<strong>香港科技大学（广州）</strong>、<strong>广东工业大学</strong>、<strong>南方科技大学</strong></li><li>通讯作者为 <strong>Hongliang Ren</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>KineState-SWAM</strong>，一个手术世界-动作模型，通过持久交互状态耦合动作预测与视频生成</li><li>解决现有模型未显式建模仪器运动如何驱动局部组织响应、以及交互历史如何影响后续动作的问题</li><li>引入 <strong>dVRK-Chole5.2k</strong> 数据集，包含 5,255 个视频，覆盖 17 个手术子任务，用于系统评估</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>KineState-SWAM</strong> 模型，将显式运动学条件与因果交互动力学结合，共享交互状态用于动作和视频预测</li><li>设计 <strong>Kinematic Geometry Conditioning</strong>，利用校准的 URDF 运动学将关节轨迹转换为表面运动令牌和空间对齐的仪器渲染</li><li>提出 <strong>Causal Interaction Dynamics</strong>，通过几何引导注意力、运动对齐特征传输和门控残差更新，循环更新交互状态并保留历史</li><li>引入 <strong>State–Geometry Adapter</strong>，结合状态依赖的空间调制与局部几何残差引导视频生成</li><li>发布 <strong>dVRK-Chole5.2k</strong> 数据集，包含 5,255 个手术视频，17 个手术子任务，用于评估世界模型</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>条件 flow-matching 策略</strong> 预测关节轨迹，基于交互状态、机器人配置和任务指令，学习联合位移</li><li>通过 <strong>URDF 正向运动学</strong> 提取表面运动令牌（保持表面对应关系）和渲染几何编码（空间对齐特征），提供显式运动学条件</li><li><strong>Causal Interaction Dynamics</strong> 使用空间自注意力后接几何引导交叉注意力，将仪器运动信息注入场景表示；状态更新分解为运动对齐特征传输和门控残差修正</li><li>视频生成基于预训练 <strong>Wan Video DiT</strong>，通过 <strong>State–Geometry Adapter</strong> 注入状态调制（空间变化）和局部几何残差（限制在仪器支持区域）</li><li>训练目标包括交互感知的环境监督（突出仪器工作区域附近的组织响应）和多种辅助损失（如特征传输正则化、状态-视频一致性等）</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>dVRK-Chole5.2k</strong>，从 <strong>ImitateCholec</strong> 筛选构建，共 5,255 个视频（30 FPS），17 个手术子任务；训练集 4,405 视频，测试集 850 视频</li><li>模型骨干：<strong>Wan2.2-TI2V-5B</strong>（约 5B 参数），冻结预训练权重和 VAE，插入 rank-32 LoRA 适配器和新设计模块</li><li>训练资源：<strong>4 块 NVIDIA H100 80GB GPU</strong>，约 6,000 步微调；推理时生成 48 帧（832×480）视频，动作采样 10 步，视频采样 50 步</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>基准：与三类方法比较：无动作视频生成（CogVideoX, HunyuanVideo, Cosmos-H-Predict, Wan2.2）、预测动作生成（OpenWAM, DreamZero, X-WAM）、真值动作条件生成（GigaWorld-1, OpenWAM, Cosmos-H-Dreams, DWM, Kinema4D）</li><li>指标：视频质量（SSIM, PSNR, LPIPS, FVD, FID）和运动一致性（Flow EPE, Flow MR）；动作预测（Joint nMAE, Tip ADE, Tip FDE, 旋转误差）</li><li>关键结果：在预测动作设置下，<strong>KineState-SWAM</strong> 在所有七项视频指标上取得最佳（SSIM 0.773, LPIPS 0.216, FVD 79.874, FID 14.369）；在真值动作下同样领先（SSIM 0.819, LPIPS 0.179, FVD 63.550）；动作预测误差最低（Joint nMAE 0.201, Tip ADE 5.416mm, Tip FDE 7.267mm, Rot 7.765°）；消融实验验证各组件的有效性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28873/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">NAT: Scaling Causal Neural Action Tokenizers Across Embodiments</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28867/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">LIBERO-MOR: A Multimodal Robustness Benchmark Across the Vision-Language-Action Pipeline</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

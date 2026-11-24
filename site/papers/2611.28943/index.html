@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SANA-Robot: Efficient World Action Model with Hybrid Memory - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 SANA-Robot，一个 4.5B 参数的世界动作模型（WAM），能够在边缘设备上实时运行，并具备分钟级长期记忆。 解决现有 WAM 的两大问题：视频预测带来的高延迟无法满足实时控制，以及缺乏有效长期记忆导致无法处理依赖历史信息的操作任务。 通过统一模型同时支持策略、前向动力学模型（FDM）和逆动力学模型（IDM），并实现高成功率与实时异步控制。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28943">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-21">2026-11-21</time></p>
+        <h1 class="article-title">SANA-Robot: Efficient World Action Model with Hybrid Memory</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28943" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28943" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 SANA-Robot，一个 4.5B 参数的世界动作模型（WAM），能够在边缘设备上实时运行，并具备分钟级长期记忆。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">SANA-Robot: Efficient World Action Model with Hybrid Memory</p>
+</div></figure>
+        <p class="article-unit">NVIDIA</p>
+        <ul class="article-facts"><li>arXiv 2611.28943</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>NVIDIA</strong></li><li><strong>UCSD</strong></li><li><strong>THU</strong></li><li><strong>MIT</strong></li><li><strong>HKU</strong></li><li><strong>Inco AI</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>SANA-Robot</strong>，一个 <strong>4.5B 参数</strong>的世界动作模型（WAM），能够在边缘设备上实时运行，并具备分钟级长期记忆。</li><li>解决现有 WAM 的两大问题：视频预测带来的高延迟无法满足实时控制，以及缺乏有效长期记忆导致无法处理依赖历史信息的操作任务。</li><li>通过统一模型同时支持策略、前向动力学模型（FDM）和逆动力学模型（IDM），并实现高成功率与实时异步控制。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>混合记忆恒定成本</strong>：结合线性注意力（Gated DeltaNet）维护固定大小全局状态与滑动窗口 softmax 注意力传播历史信息，在保持恒定推理速度的同时实现整集记忆。</li><li><strong>统一世界动作模型</strong>：一个网络通过动态噪声水平完成 FDM、IDM 和 Policy 三种角色，同时预测未来视频与动作。</li><li><strong>全栈训练与推理基础设施</strong>：提出多模态序列打包与任务均衡排序、chunk-causal teacher forcing、以及记忆相位异步执行（memory RTC），支持变长整集训练和 30Hz 实时控制。</li><li><strong>高效的实时部署优化</strong>：通过融合内核、CUDA graphs、前缀缓存和低比特 GEMM（FP8/NVFP4），将单请求延迟降低至 115–135ms，实现边缘设备闭环控制。</li><li><strong>大规模多源数据管道</strong>：整合 23 个数据集、19.4K 小时过滤后数据，涵盖真实机器人、UMI、仿真和人类第一视角视频。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>Sana-Video 2</strong> 构建混合线性扩散 Transformer，堆叠 8 个块，每块含 3 层 <strong>Gated DeltaNet (GDN)</strong> 和 1 层 softmax 注意力。</li><li>使用统一的 token 序列排列多视角视频、本体感知、未来视频和动作，并通过 <strong>mRoPE</strong> 将不同模态对齐到统一的物理时间坐标。</li><li>训练采用 <strong>flow matching</strong>，对视频和动作 token 分别施加不同噪声水平，实现 FDM、IDM 和 Policy 的统一学习。</li><li><strong>混合记忆</strong>：GDN 层以固定大小循环状态压缩全局历史，softmax 层通过滑动窗口关注首帧和最近 chunk，两者结合覆盖长时依赖且不增加单步成本。</li><li><strong>chunk-causal teacher forcing</strong>：在训练中一次前向/反向通过训练窗口内所有 chunk，提高训练效率和内存一致性。</li><li><strong>记忆 RTC</strong>：在异步执行中为每个相位维护独立记忆，保证部署时的 chunk 结构与训练一致。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>预训练数据来自 <strong>23 个数据集</strong>，包括 <strong>ABC-130K</strong>、<strong>MolmoAct2-BimanualYAM</strong>、<strong>FineART</strong>、<strong>AgiBotWorld</strong>、<strong>RoboCOIN</strong>、<strong>DROID</strong>、<strong>RoboMIND</strong>、<strong>HyEmbodied-UMI</strong>、<strong>InternData-A1</strong>、<strong>BEHAVIOR-1K</strong>、<strong>EgoDex</strong>、<strong>EgoVerse</strong> 等。</li><li>原始数据 <strong>23.8K 小时</strong>，过滤后 <strong>19.4K 小时</strong>，生成 <strong>133M 训练 chunks</strong>。</li><li>模型参数量：<strong>4.5B</strong>，基于 <strong>Sana-Video 2</strong> 初始化。</li><li>训练资源：使用 <strong>64 块 GB300 GPU</strong> 进行预训练。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：<strong>RoboDojo</strong>、<strong>RoboTwin 2.0</strong>、<strong>LIBERO-Plus / LIBERO-Pro / LIBERO-Max</strong>、<strong>WorldArena</strong> 以及真实机器人任务。</li><li>主要指标：成功率、记忆维度得分、延迟（每动作 chunk）、异步控制频率。</li><li>在 <strong>RoboDojo 记忆维度</strong>上，SANA-Robot 在约 5B 中等规模模型中取得最佳性能。</li><li>在 <strong>LIBERO-Plus、LIBERO-Pro、LIBERO-Max</strong> 上达到最高成功率。</li><li>作为世界模拟器，在 <strong>WorldArena</strong> 排名第二，并在 DROID 上表现出与真实环境相似的行为。</li><li>真实世界部署中，在 <strong>RTX 5090</strong> 上使用 <strong>FP8 GEMM</strong> 延迟为 <strong>135ms</strong>/chunk，使用 <strong>NVFP4 GEMM</strong> 为 <strong>115ms</strong>/chunk。</li><li>实现 <strong>30Hz</strong> 闭环实时异步机器人控制，优于 <strong>π0.5</strong> 和 <strong>OpenWAM-α</strong> 等基线。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.29096/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">JEPA-Tuner: From Predictive Fine-Tuning to Asynchronous Execution of Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28873/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">NAT: Scaling Causal Neural Action Tokenizers Across Embodiments</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

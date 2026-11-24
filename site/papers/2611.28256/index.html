@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>FlowPAC: Flow-Guided Visual Pruning and Action Caching for Efficient VLA Inference - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="FlowPAC 是一个面向 视觉-语言-动作（VLA）模型 的高效推理框架，目标是在不损失控制性能的前提下大幅降低端到端推理延迟和内存占用 论文要解决的问题是：现有视觉 token 剪枝和动作缓存等训练免费加速方法通常采用静态资源分配，与动态机器人交互不匹配，导致控制性能下降和硬件效率低下 核心思路是利用 任务感知的光流（task-aware optical flow） 作为共享物理信号，同时指导视觉 token 的保留位置与动作专家计算的刷新时机" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28256">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">FlowPAC: Flow-Guided Visual Pruning and Action Caching for Efficient VLA Inference</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28256" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28256" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">FlowPAC 是一个面向 视觉-语言-动作（VLA）模型 的高效推理框架，目标是在不损失控制性能的前提下大幅降低端到端推理延迟和内存占用</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">FlowPAC: Flow-Guided Visual Pruning and Action Caching for Efficient VLA Inference</p>
+</div></figure>
+        <p class="article-unit">作者主要来自 香港科技大学（The Hong Kong University of Science a…</p>
+        <ul class="article-facts"><li>arXiv 2611.28256</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者主要来自 <strong>香港科技大学</strong>（The Hong Kong University of Science and Technology）</li><li>其他参与机构包括 <strong>华南师范大学</strong>（South China Normal University）</li><li>以及 <strong>东北大学（中国）</strong>（Northeastern University, China）</li><li>以及 <strong>香港科技大学（广州）</strong>（The Hong Kong University of Science and Technology (Guangzhou)）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li><strong>FlowPAC</strong> 是一个面向 <strong>视觉-语言-动作（VLA）模型</strong> 的高效推理框架，目标是在不损失控制性能的前提下大幅降低端到端推理延迟和内存占用</li><li>论文要解决的问题是：现有视觉 token 剪枝和动作缓存等训练免费加速方法通常采用静态资源分配，与动态机器人交互不匹配，导致控制性能下降和硬件效率低下</li><li>核心思路是利用 <strong>任务感知的光流（task-aware optical flow）</strong> 作为共享物理信号，同时指导视觉 token 的保留位置与动作专家计算的刷新时机</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>方向感知轨迹传播（DATP）</strong>，将指令条件语义相关性与有符号光流结合，将视觉 token 重要性沿预测轨迹向未来交互区域传播，避免剪掉未来关键区域</li><li>提出 <strong>流条件动作块刷新（FCAR）</strong>，根据语义加权的双视图运动幅度动态调整动作专家的重算预算，在稳定阶段复用残差、在动态阶段增加刷新，且不改变原始流匹配轨迹</li><li>提出 <strong>局部性感知连续 token 选择（LACT）</strong>，通过连续块选择和延迟物理打包减少 KV-cache 碎片化，在相同预算下显著降低打包内存访问次数</li><li>在 <strong>LIBERO</strong> 基准上验证 FlowPAC 在保留 30% 视觉 token 的情况下实现 <strong>2.13× 端到端加速</strong>，同时基本保持成功率（95.80%），并将 KV cache 压缩 <strong>2.75×</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>DATP</strong>：先计算连续观测间的稠密光流并聚合为 patch 级运动向量，再以指令条件语义相关性加权估计运动中心和主导方向，沿方向传播多步形成未来关键区域走廊，最终与瞬时语义分数、运动幅度融合得到 token 选择分数</li><li><strong>LACT</strong>：将视觉 token 分组为对齐的连续块，优先选择高分数区域的完整块，剩余预算由相邻高分数块填充，从而在精确保持预算的同时强制空间局部性；延迟到指定层再执行物理打包，保留早期视觉-语言交互并缩短后续 prefix 和 KV cache</li><li><strong>FCAR</strong>：将双视图语义加权运动幅度映射为当前 episode 内的因果经验百分位数，据此线性插值得到刷新预算，并沿去噪轨迹均匀分布刷新点；在刷新点正常计算并缓存 attention 和 FFN 残差，在复用点跳过计算并重用最近残差</li><li><strong>联合推理</strong>：每次控制查询时，DATP 计算一次语义和运动证据并共享给 LACT 和 FCAR，两个分支分别优化空间（prefix 长度和 KV）与时间（动作去噪计算）维度</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO</strong> 基准的官方 <strong>π0.5</strong> 模型检查点，包含 Spatial、Object、Goal、Long 四个 suite，共 40 个任务，每个任务 50 次试验（共 2000 个 episode）</li><li>原始模型为 <strong>π0.5</strong> 流匹配 VLA 模型，采用两个主动相机视角（全局和腕部）和 10 步流匹配求解器</li><li>所有实验在 <strong>单张 NVIDIA A100-PCIE-40GB GPU</strong> 上运行，BF16 精度，batch size 为 1，使用 CUDA 事件计时</li><li>对比基线包括 <strong>FastV</strong>、<strong>VLA-ADP</strong> 和 <strong>VLA-Cache</strong>，在匹配的 70%、50%、30% 控制比例下进行比较</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>成功率</strong>：FlowPAC 在 70%、50%、30% 保留率下分别达到 97.15%、96.15% 和 95.80% 平均成功率，其中 30% 保留率下相比 FastV 和 VLA-ADP 在 LIBERO-Long 上优势明显（92.2% vs 71.2% 和 83.2%）</li><li><strong>端到端延迟</strong>：FlowPAC 在 30% 保留率下将 P50 延迟从 306.19 ms 降至 143.45 ms（<strong>2.134× 加速</strong>），P95 延迟从 313.89 ms 降至 147.51 ms（2.128× 加速），显著优于视觉路径基线最多 1.09× 的加速</li><li><strong>KV cache</strong>：视觉 prefix 的 live KV state 从 17.02 MiB 降至 6.19 MiB，实现 <strong>2.75× 压缩</strong></li><li><strong>组件消融</strong>：FCAR 单独使用时刷新仅 27.5% 的动作专家块，达到 96.10% 成功率和 152.43 ms 延迟（2.01× 加速）；加入 DATP 和 LACT 后进一步降低延迟至 144.42 ms 并提高成功率至 97.15%，验证空间和时间组件的互补增益</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28289/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Intervention-Robust VLA: Diverse Demonstrations for Robot Deployment with Safety Filters</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.27645/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Efficient VLA Reinforcement Learning via Subchunk Rollouts in Latent World Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

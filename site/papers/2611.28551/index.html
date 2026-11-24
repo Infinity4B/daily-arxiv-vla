@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PhysPPF: Learning Robotic Manipulation with Past, Present, and Future Physical Representations - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 PhysPPF，一种在紧凑物理 token 空间中进行统一时空建模的视觉-语言-动作（VLA）框架，用于机器人操作。 解决复杂操作任务中既需要精确 3D 接触又需要长时域协调的挑战；现有方法通常分别增强空间感知或时序推理，缺乏统一建模。 通过结合空间物理表示（WWH）与时间状态演化（PPF），指导动作生成，提升接触丰富和长时域任务的表现。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28551">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-21">2026-11-21</time></p>
+        <h1 class="article-title">PhysPPF: Learning Robotic Manipulation with Past, Present, and Future Physical Representations</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28551" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28551" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 PhysPPF，一种在紧凑物理 token 空间中进行统一时空建模的视觉-语言-动作（VLA）框架，用于机器人操作。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">PhysPPF: Learning Robotic Manipulation with Past, Present, and Future Physical Representations</p>
+</div></figure>
+        <p class="article-unit">西北工业大学：Junjie Li、Dawei Yan、Guoting Wei、Ruike Song、H…</p>
+        <ul class="article-facts"><li>arXiv 2611.28551</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>西北工业大学</strong>：Junjie Li、Dawei Yan、Guoting Wei、Ruike Song、Haokui Zhang</li><li><strong>阿里巴巴云计算</strong>：Qingguo Chen</li><li><strong>小米公司</strong>：Zhenbo Luo</li><li><strong>浙江大学</strong>：Chunhua Shen</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>PhysPPF</strong>，一种在紧凑物理 token 空间中进行统一时空建模的视觉-语言-动作（VLA）框架，用于机器人操作。</li><li>解决复杂操作任务中既需要精确 3D 接触又需要长时域协调的挑战；现有方法通常分别增强空间感知或时序推理，缺乏统一建模。</li><li>通过结合空间物理表示（<strong>WWH</strong>）与时间状态演化（<strong>PPF</strong>），指导动作生成，提升接触丰富和长时域任务的表现。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>PhysPPF</strong> VLA 框架，在紧凑物理 token 空间中统一 3D 空间感知与时间状态演化。</li><li>设计 <strong>WWH</strong>（What-Where-How）表示，将 3D 工作空间结构、任务可达性和局部接近线索分解为紧凑物理 token，仅通过训练时教师监督学习，避免推理时 3D 编码开销。</li><li>开发 <strong>PPF</strong>（Past-Present-Future）时间建模，维护有界过去记忆，通过非对称世界模型联合推断现在和未来状态，并利用并行门控分支注入动作专家，避免跨时间干扰。</li><li>在 <strong>SimplerEnv</strong>、<strong>CALVIN</strong>、<strong>LIBERO</strong> 三个基准上验证，相对 <strong>StarVLA</strong> 基线分别提升 +17.2、+29.3（5 子任务成功率）、+3.5 个百分点。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>WWH 空间表示</strong>：将 3D 感知分解为三类物理 token：*what*（场景级几何与障碍）、*where*（指令条件化可达性）、*how*（度量深度与表面法线接近线索）；使用可学习查询经由 Transformer 与多级 VL 特征交互，输出紧凑物理 token。</li><li><strong>训练时教师监督</strong>：利用冻结的 <strong>VGGT</strong>、<strong>GLOVER++</strong>、<strong>Metric3D</strong> 教师模型仅通过轻量解码器在训练期间对齐几何场和可达性热图，推理时不使用教师和解码器。</li><li><strong>PPF 时间建模</strong>：维护一个有界双时间尺度记忆（局部缓存 + 全局状态），通过相似性合并压缩冗余准静态步骤；使用非对称掩码因果自注意力，使现在查询仅关注当前观测和过去记忆，未来查询额外单向关注现在查询，实现因果推理。</li><li><strong>并行门控条件化</strong>：在流匹配 DiT 动作专家中，通过三个平行的门控残差交叉注意力分支分别注入过去、现在、未来物理 token，可学习门控标量平衡三者，避免单注意力 softmax 下的竞争干扰。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用三个机器人操作基准：<strong>SimplerEnv</strong>（WidowX 机器人，四个任务：Put Spoon、Put Carrot、Stack Block、Put Eggplant）、<strong>CALVIN</strong>（ABC→D，5 个子任务序列）、<strong>LIBERO</strong>。</li><li>主干网络为 <strong>StarVLA</strong>（3B 参数）作为基线；PhysPPF 在其上增加世界模型与动作专家，总体参数规模仍为 3B 级别（作者声称参数开销适度）。</li><li>训练和评估使用的具体 GPU/TPU 类型及数量在提供的 HTML 片段中未明确给出。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 <strong>SimplerEnv</strong> 的四个 WidowX 操作任务上，<strong>PhysPPF</strong> 平均成功率达到 <strong>79.7%</strong>，相比基线 StarVLA 的 62.5% 提升 +17.2 个百分点；各任务分别取得 Put Spoon 93.8%、Put Carrot 62.5%、Stack Block 75.0%、Put Eggplant 87.5%。</li><li>在 <strong>CALVIN</strong> ABC→D 基准上，<strong>PhysPPF</strong> 在 5/5 子任务成功率上相对 StarVLA 提升 <strong>+29.3</strong> 个百分点（摘要数据），展现出显著的长时域协调优势。</li><li>在 <strong>LIBERO</strong> 基准上，<strong>PhysPPF</strong> 相对 StarVLA 提升 <strong>+3.5</strong> 个百分点，验证了方法在不同操作任务上的泛化性。</li><li>与现有空间、历史感知和世界模型 VLA 方法相比，<strong>PhysPPF</strong> 在保持适度推理延迟和参数开销的同时取得最优性能。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28585/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">AsyncMixVLA: Runtime Asynchronous Robot Policy Switching for Adaptation to Dynamic Environments</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28509/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">AlpaSafe: Risk-Aware Trajectory Selection for Vision-Language-Action Models in Autonomous Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

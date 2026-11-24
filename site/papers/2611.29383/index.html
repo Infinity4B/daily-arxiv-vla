@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Self-Refining VLA Sampling - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究将 Predict-and-Perturb (P&amp;P) 自修正采样技术从视频生成领域适配到 视觉-语言-动作（VLA） 模型的机器人动作生成中 针对 VLA 动作采样的高度随机性，探索无需外部批评器或大量候选生成的 test-time 修正方法 目标是利用模型自身的流匹配速度场，将生成的动作引导至学习到的动作分布中的高概率区域，从而提高任务成功率" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.29383">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-22">2026-11-22</time></p>
+        <h1 class="article-title">Self-Refining VLA Sampling</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.29383" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.29383" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究将 Predict-and-Perturb (P&amp;P) 自修正采样技术从视频生成领域适配到 视觉-语言-动作（VLA） 模型的机器人动作生成中</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff" aria-hidden="true">
+  <p class="note-cover-title">Self-Refining VLA Sampling</p>
+</div></figure>
+        <p class="article-unit">所有作者均来自 加州理工学院（Caltech）</p>
+        <ul class="article-facts"><li>arXiv 2611.29383</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>所有作者均来自 <strong>加州理工学院（Caltech）</strong></li><li>作者包括 <strong>Jeff Duan</strong>、<strong>Arjun Sharma</strong>、<strong>Jennifer Cruden</strong>、<strong>Vansh Tibrewal</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究将 <strong>Predict-and-Perturb (P&amp;P)</strong> 自修正采样技术从视频生成领域适配到 <strong>视觉-语言-动作（VLA）</strong> 模型的机器人动作生成中</li><li>针对 VLA 动作采样的高度随机性，探索无需外部批评器或大量候选生成的 test-time 修正方法</li><li>目标是利用模型自身的流匹配速度场，将生成的动作引导至学习到的动作分布中的高概率区域，从而提高任务成功率</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>将 <strong>P&amp;P</strong> 流程成功应用于 <strong>SmolVLA</strong> 策略，并针对 VLA 数据结构调整了细化过程（不同于视频的像素区域选择性细化）</li><li>提出 <strong>refined aggregation（细化聚合）</strong> 方法：对 stock 动作块和细化动作块的均值再次进行 P&amp;P 细化，使其回到策略学习的动作流形上</li><li>在 <strong>LIBERO</strong> 的 400 个评估回合上，细化聚合将成功率提升 <strong>5.25%</strong>（相比最佳 stock 配置）</li><li>发现 episode 级别的 P&amp;P 自洽不确定性 <strong>U₁₀</strong> 与任务失败高度相关，<strong>AUC 达 0.851</strong>，可用于失败预测</li><li>通过 NFE 计算和计算匹配基线，证明改进并非单纯来自额外计算量</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>SmolVLA</strong> 的流匹配动作生成范式：动作块长度 H=50，维度 C=7，默认执行前 E 步（实验中对比 E=1 和 E=10）</li><li><strong>P&amp;P 细化</strong>：在选定的流匹配时间步（s=0.9, 0.8, 0.7）上迭代执行“预测”（用速度场从当前噪声估计干净动作）和“扰动”（加噪声回到同一步），以引导动作向高概率模式收敛</li><li><strong>细化聚合</strong>：为每个决策边界生成 stock 和 refined 两个动作块（共享初始噪声），取二者平均得到 z₀，再在近干净时间步 s=0.3 处进行 K=3 次 P&amp;P 迭代，最后使用普通流求解器恢复到 s=0</li><li>定义 episode 级不确定性 <strong>Ū_E</strong>：将每次 P&amp;P 迭代中干净动作估计的逐维变化平均到每个动作步，再在 episode 内聚合（仅考虑前 E 个被执行步）</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>评估数据集：<strong>LIBERO</strong> 四个标准套件（<strong>LIBERO-Spatial</strong>、<strong>LIBERO-Goal</strong>、<strong>LIBERO-Object</strong>、<strong>LIBERO-10</strong>），共 <strong>400 个评估回合</strong>（每个任务状态 0-9），另有 50 个验证回合</li><li>模型：公开的 <strong>HuggingFaceVLA/smolvla_libero</strong> 检查点，参数规模约 <strong>450M</strong>，未做额外微调</li><li>训练资源：单张 <strong>NVIDIA L4 GPU</strong>，batch size 8；所有实验使用 <strong>10 个 Euler 积分步</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>LIBERO</strong> 模拟环境，每套件 10 个任务，成功率基于 400 个匹配回合</li><li>主要指标：总体成功率、每套件成功率、episode 转换（失败↔成功）比、不确定性 AUC、NFE（神经网络函数评估）成本</li><li>关键实验结果：</li></ul>
+<p> - <strong>细化聚合</strong>（E=10）总体成功率最高，达到 <strong>5.25%</strong> 提升（stock E=1 为 264/400，细化聚合为 285/400）</p>
+<p> - 单独 P&amp;P 细化在 E=10 时提升明显（255→267），但在 E=1 时反而下降（264→257），显示细化过度校正风险</p>
+<p> - 细化聚合在 <strong>LIBERO-Spatial</strong>（成功率 +12%）和 <strong>LIBERO-10</strong>（+9%）上提升最大，恢复/退化比改善显著</p>
+<p> - episode 级不确定性 <strong>U₁₀</strong> 预测失败的 <strong>AUC 为 0.851</strong>，各套件 AUC 从 0.826（LIBERO-10）到 0.959（LIBERO-Object）</p>
+<p> - NFE 匹配：细化聚合每块 31 NFE，30 步 Euler 基线仅小幅提升 (255→261)，三路平均与朴素 P&amp;P 聚合相当但低于细化聚合 2.75%</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.29483/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Representation Alignment Is Only as Good as the Teacher&#x27;s Behavioral Structure</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29377/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Contact Harness: Enabling VLM Agents to Perform Contact-Rich Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

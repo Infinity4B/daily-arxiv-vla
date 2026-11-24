@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>AgentMoT: An Agentic Mixture-of-Transformers for End-to-End Autonomous Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 AgentMoT，一种面向端到端自动驾驶的智能体混合 Transformer 模型，将代理推理和系统调度内置于统一的驾驶模型中。 解决驾驶模型如何选择使用哪些能力（直接动作、视觉语言动作、世界动作预测）、何时委派技能，以及何时根据执行反馈重新考虑任务决策的问题。 通过相对能力原则和双循环演化，使模型在闭环驾驶中动态选择计算通路、工具和调用时机。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30389">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">AgentMoT: An Agentic Mixture-of-Transformers for End-to-End Autonomous Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30389" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30389" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 AgentMoT，一种面向端到端自动驾驶的智能体混合 Transformer 模型，将代理推理和系统调度内置于统一的驾驶模型中。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30389.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30389.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30389.webp" alt="AgentMoT: An Agentic Mixture-of-Transformers for End-to-End Autonomous Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">南洋理工大学（Nanyang Technological University）</p>
+        <ul class="article-facts"><li>arXiv 2611.30389</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>南洋理工大学（Nanyang Technological University）</strong></li><li><strong>同济大学（Tongji University）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>AgentMoT</strong>，一种面向端到端自动驾驶的<strong>智能体混合 Transformer 模型</strong>，将代理推理和系统调度内置于统一的驾驶模型中。</li><li>解决驾驶模型如何选择使用哪些能力（直接动作、视觉语言动作、世界动作预测）、何时委派技能，以及何时根据执行反馈重新考虑任务决策的问题。</li><li>通过<strong>相对能力原则</strong>和<strong>双循环演化</strong>，使模型在闭环驾驶中动态选择计算通路、工具和调用时机。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>统一多范式驾驶架构</strong>：将直接动作（A）、视觉语言动作（VLA）和世界动作模型（WAM）三条原生通路整合到共享代理专家的混合 Transformer 中，并学习选择计算、委派任务和重考虑决策。</li><li><strong>双重闭环演化机制</strong>：内环利用闭环经验训练路由器、代理任务决策和自调度器；外环通过失败归因和技能修复持续优化技能与执行反馈。</li><li><strong>执行反馈驱动的自调度</strong>：引入唤醒请求、强制请求和双视图查询，实现事件触发的代理调用与证据补充，减少冗余调用并提升紧急场景响应。</li><li><strong>领先的基准性能</strong>：在 <strong>Bench2Drive v0.0.3</strong> 和 <strong>v0.0.4</strong> 上取得最先进的驾驶得分（94.48 / 92.33）和成功率（85.45% / 82.73%），并在所有五个官方能力组中领先。</li><li><strong>计算效率优势</strong>：完整模型相比固定最强大通路和固定间隔代理调用减少约 <strong>50.5%</strong> 的每控制周期计算时间。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>混合 Transformer 架构</strong>：以 BEV 编码器融合 RGB 与 LiDAR 特征，通过代理专家、世界专家和动作专家构建 A、VLA、WAM 三条通路；Router 从 BEV tokens 和上下文选择计算通路。</li><li><strong>代理推理与任务决策</strong>：代理专家 <strong>G</strong> 基于驾驶上下文和技能-目标菜单选择原生驾驶或技能；使用 LoRA 适配器共享视觉语言骨干，支持任务适配器后训练。</li><li><strong>自调度与执行反馈</strong>：执行层生成唤醒请求（普通、强制），自调度器学习是否调用代理；强制请求直接调用 G，支持双视图查询补充后视证据。</li><li><strong>双循环演化训练</strong>：开环初始化后，内环采用 one-step offline RL（Router）、任务适用性监督（G）和加权交叉熵（自调度器）；外环由 GPT 归因失败并驱动编码代理修复技能与反馈规则。</li><li><strong>相对能力原理</strong>：将额外计算或干预的收益减去成本作为选择依据，指导通路选择、技能委派和重考虑决策的学习。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>评测数据集</strong>：<strong>Bench2Drive v0.0.3</strong> 和 <strong>v0.0.4</strong>（各 220 条评测路线），基于 <strong>CARLA 0.9.15</strong> 模拟器。</li><li><strong>训练数据</strong>：Router 使用 264 条开发路线的配对通路上计划；代理后训练和自调度使用 476 条闭环 episode（按路线划分训练/验证）；训练路线与评测路线分离。</li><li><strong>模型规模</strong>：视觉语言骨干为 <strong>Qwen3-VL-2B</strong>；Router 参数量约 <strong>0.84M</strong>（两组 5 成员集成）；代理任务适配器 rank 64。</li><li><strong>训练资源</strong>：论文未明确说明训练硬件；推理延迟测量使用 <strong>NVIDIA RTX 5090</strong> GPU。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：CARLA 0.9.15 闭环仿真，Bench2Drive v0.0.3 / v0.0.4 官方 220 路线，训练与评测路线不重叠。</li><li><strong>主要指标</strong>：驾驶得分（DS）、成功率（SR，DS=100 的路线百分比）、五项官方能力（超车、汇入、紧急刹车、让行、交通标志）分别评测。</li><li><strong>总体性能</strong>：AgentMoT 在 v0.0.3 上 DS <strong>94.48</strong>、SR <strong>85.45%</strong>；在 v0.0.4 上 DS <strong>92.33</strong>、SR <strong>82.73%</strong>，均领先所列模型。</li><li><strong>能力维度</strong>：五项能力平均 SR 在 v0.0.3 为 <strong>89.48%</strong>，v0.0.4 为 <strong>84.79%</strong>，每项能力均最高。</li><li><strong>学习路由收益</strong>：技能禁用时，学习路由达 DS <strong>89.70</strong> 和 SR <strong>73.64%</strong>，比最强固定通路（WAM）高 <strong>1.79 DS</strong> 和 <strong>4.09 个百分点 SR</strong>。</li><li><strong>消融实验</strong>：去掉双视图查询 DS 降 <strong>3.26</strong>、SR 降 <strong>10%</strong>；去掉事件触发唤醒 DS 降 <strong>2.52</strong>、SR 降 <strong>5%</strong>；使用开环代理 DS 降 <strong>1.11</strong>、SR 降 <strong>5%</strong>。</li><li><strong>计算效率</strong>：完整模型每控制周期总计算 <strong>103.57 ms</strong>，相对固定 WAM + 固定间隔代理减少 <strong>50.51%</strong>；Router 选择 A / VLA / WAM 的比例为 <strong>54.84% / 10.52% / 34.65%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30477/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">OVOGO: Offline Value-Guided On-Policy Generative Optimization for Flow-Based Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30363/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SOAR: temporal Structure-guided One-step Action generation for Robotic manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

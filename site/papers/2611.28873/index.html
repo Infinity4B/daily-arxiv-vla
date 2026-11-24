@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NAT: Scaling Causal Neural Action Tokenizers Across Embodiments - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究机器人学习中的动作分词器在大规模、多具身数据上的扩展问题，提出 Neural Action Tokenizer (NAT) NAT 是一种因果神经动作分词器，将动作块编码为短 token 序列，并支持边生成 token 边执行动作的流式推理 在 49k 小时、156 个数据集的混合动作语料上训练，解决现有神经分词器仅在小型数据集上训练、难以泛化到未知机器人具身的问题" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28873">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-21">2026-11-21</time></p>
+        <h1 class="article-title">NAT: Scaling Causal Neural Action Tokenizers Across Embodiments</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28873" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28873" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究机器人学习中的动作分词器在大规模、多具身数据上的扩展问题，提出 Neural Action Tokenizer (NAT)</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef" aria-hidden="true">
+  <p class="note-cover-title">NAT: Scaling Causal Neural Action Tokenizers Across Embodiments</p>
+</div></figure>
+        <p class="article-unit">Ahad Jawaid：所属机构未在论文 HTML 中明确标注</p>
+        <ul class="article-facts"><li>arXiv 2611.28873</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Ahad Jawaid</strong>：所属机构未在论文 HTML 中明确标注</li><li><strong>Alexander Swerdlow</strong>：斯坦福大学（Stanford University）</li><li><strong>Yu Xiang</strong>：德克萨斯大学达拉斯分校（The University of Texas at Dallas）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究机器人学习中的<strong>动作分词器</strong>在大规模、多具身数据上的扩展问题，提出 <strong>Neural Action Tokenizer (NAT)</strong></li><li>NAT 是一种<strong>因果神经动作分词器</strong>，将动作块编码为短 token 序列，并支持边生成 token 边执行动作的流式推理</li><li>在 <strong>49k 小时、156 个数据集</strong>的混合动作语料上训练，解决现有神经分词器仅在小型数据集上训练、难以泛化到未知机器人具身的问题</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>NAT 达到最优神经动作分词效果</strong>：在未见过的机器人具身上，NAT 的平均成功率优于 FAST、OAT、ActionCodec 和 NAC</li><li><strong>通用流式动作分词器</strong>：在真实机器人、手持夹爪（UMI）、仿真和人类手部数据上训练；因果解码器支持即时执行，时间有序 token 支持无需重训练的动作前缀条件化</li><li><strong>仅用人类手部数据即可学习有效动作空间</strong>：人类数据训练的 NAT 接近使用全部数据训练的 tokenizer，表明机器人数据可能并非必需</li><li><strong>支持视觉-语言-动作模型（VLA）预训练</strong>：通过 NAT token 在 1.8k 小时机器人数据上进一步预训练 VLA，在四个仿真基准上提升平均成功率</li><li><strong>流式动作头与动作 token 对比</strong>：NAT token 可更快产生首批动作，并且在部分基准（如 LIBERO）上与流匹配动作头成功率相当</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>NAT 基于 <strong>Neural Action Codec (NAC)</strong> 改造：编码器采用 <strong>SEANet</strong> 堆叠的一维卷积 + LSTM，将动作块展平后下采样为潜在向量</li><li>量化器使用 <strong>多尺度有限标量量化（multi-scale FSQ）</strong> 替代 RVQ，按多个时间尺度进行残差量化，生成粗到细的 token</li><li>解码器采用 <strong>Vocos 风格</strong> 卷积、自注意力和 ConvNeXt 块，并改为<strong>因果结构</strong>（仅左侧填充、窗口注意力、逐潜在归一化），支持流式解码</li><li>不同动作维度按臂分组并零填充到固定宽度 <code>D̄=7</code>，每个组独立 token 化后拼接；训练目标为动作重建的均方误差</li><li>策略为自回归 Transformer 解码器，冻结 NAT 后以 next-token 预测训练；推理时按潜在向量逐步解码动作，支持实时分块将正在执行的动作作为 token 前缀冻结</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>动作语料</strong>：约 <strong>49k 小时（5.5B 动作帧）</strong>，来自 <strong>156 个数据集</strong>，涵盖真实机器人遥操作、仿真机器人、<strong>UMI</strong> 手持夹爪、人类手部动作四类来源</li><li>评估基准：<strong>LIBERO-Long</strong>、<strong>Meta-World</strong>、<strong>RoboMimic</strong>、<strong>RoboCasa</strong> 四个仿真基准</li><li>分词器参数量：神经分词器约 <strong>63M</strong>；策略模型约 <strong>162M 或 280M</strong></li><li>词汇表大小：<strong>51,200 tokens</strong>；每个动作块约 <strong>28 tokens</strong>（FAST 平均 29.8）</li><li>训练资源：论文未明确给出 GPU/TPU 等硬件资源</li><li>发布资源：NAT 分词器权重可通过 Hugging Face 获取；项目网站为 <code>https://www.ahadjawaid.com/nat</code></li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在四个仿真基准的跨具身策略上，<strong>NAT 平均成功率 47.0%</strong>，超过 <strong>FAST 43.4%</strong>、ActionCodec 40.9%、OAT 36.6%、NAC 29.0%、Diffusion Policy 35.9%</li><li>在 LIBERO-Long 单独策略中，<strong>NAT 达到 77.9%</strong>，显著高于 FAST 的 66.2%</li><li>仅使用人类手部数据训练时，<strong>NAT 成功率为 74.4%</strong>（全数据 NAT 为 77.9%），而 OAT/NAC 等下降 18–33 个百分点</li><li>架构消融：<strong>FSQ 优于 RVQ</strong>（69.3% vs 60.5%）；<strong>线性输出头与 ISTFT 相当</strong>；<strong>因果结构仅比非因果低 1.7 个百分点</strong>；4 个尺度（28 tokens）提供最佳成功率</li><li>NAT 在 LIBERO 上表示一秒动作仅需 <strong>9 tokens</strong>，而 FAST+ 需要 24、逐维分箱需要 140</li><li>NAT token 在部分基准（如 LIBERO）上与流匹配动作头成功率相当，且可更早产出首批动作；实时分块降低相邻块连接处的动作跳变</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28943/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SANA-Robot: Efficient World Action Model with Hybrid Memory</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28871/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

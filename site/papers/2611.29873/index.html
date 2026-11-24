@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ProMix: Efficient Data Mixture Optimization for Robotic Imitation via Proxy-Reference DRO - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 ProMix，一个面向机器人模仿学习的计算高效数据混合优化框架，解决异构机器人数据下 VLA 模型性能饱和的问题。 核心思想是用 15M 参数的 proxy 模型和冻结的 reference 模型进行分布鲁棒优化（DRO），学习每个数据域的采样权重，再将权重迁移到大模型（最高 7B），避免为权重搜索反复训练大规模策略。 在 Open-X Embodiment 数据集上，ProMix 将平均成功率从均匀混合的 68.4% 提升至 76.2%，同时将混合优化成本降至与骨干规模无关的 11 GPU-hours。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.29873">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">ProMix: Efficient Data Mixture Optimization for Robotic Imitation via Proxy-Reference DRO</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.29873" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.29873" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 ProMix，一个面向机器人模仿学习的计算高效数据混合优化框架，解决异构机器人数据下 VLA 模型性能饱和的问题。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">ProMix: Efficient Data Mixture Optimization for Robotic Imitation via Proxy-Reference DRO</p>
+</div></figure>
+        <p class="article-unit">作者：Qie Sima、Wei Xue、Yike Guo</p>
+        <ul class="article-facts"><li>arXiv 2611.29873</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者：<strong>Qie Sima</strong>、<strong>Wei Xue</strong>、<strong>Yike Guo</strong></li><li>所属机构：<strong>香港科技大学（Hong Kong University of Science and Technology）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>ProMix</strong>，一个面向机器人模仿学习的计算高效数据混合优化框架，解决异构机器人数据下 <strong>VLA 模型</strong>性能饱和的问题。</li><li>核心思想是用 <strong>15M 参数的 proxy 模型</strong>和<strong>冻结的 reference 模型</strong>进行分布鲁棒优化（DRO），学习每个数据域的采样权重，再将权重迁移到大模型（最高 <strong>7B</strong>），避免为权重搜索反复训练大规模策略。</li><li>在 <strong>Open-X Embodiment</strong> 数据集上，ProMix 将平均成功率从均匀混合的 <strong>68.4%</strong> 提升至 <strong>76.2%</strong>，同时将混合优化成本降至<strong>与骨干规模无关的 11 GPU-hours</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ProMix</strong> 框架，将数据混合优化成本降至固定的 <strong>11 GPU-hours</strong>，对比 Re-Mix 在 50M 规模需 16 GPU-hours、在 7B 规模需 192 GPU-hours。</li><li>首次对机器人 DRO 中 <strong>reference 模型</strong>的作用进行受控分析，证明 excess-loss 目标能避免对噪声域的过度悲观，并识别出<strong>熵正则化</strong>是防止权重崩溃的必要组件。</li><li>量化了跨尺度迁移性：15M proxy 学到的域权重直接迁移到 <strong>50M</strong> 和 <strong>7B</strong> VLA 模型，平均成功率提升 <strong>+7.8%</strong>，最差域成功率提升 <strong>+17.1%</strong>。</li><li>公开了在 <strong>9500 个真实世界 episode</strong> 上的完整实验设置与消融结果，为资源受限实验室提供了可复现的数据优化方案。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>两阶段训练流程</strong>：第一阶段在 15M proxy 与冻结的 15M reference 之间进行 minimax 优化，学习域权重；第二阶段使用学到的权重训练最终 VLA 模型。</li><li><strong>Proxy-Reference 架构</strong>：使用紧凑 VLA 模型（<strong>EfficientNet-B0</strong> 视觉编码器、<strong>T5-Base</strong> 语言编码器、6 层 Transformer 解码器），proxy 与 reference 均为 15M 可训练参数。</li><li><strong>优化目标</strong>：最小化最坏情况 <strong>excess loss</strong>（即 proxy 损失减去 reference 损失），并加入<strong>熵正则化项</strong> \(\lambda H(\bm{p})\) 防止权重坍缩；权重更新采用<strong>指数梯度上升</strong>。</li><li><strong>训练细节</strong>：每个域每迭代独立采样 128 个样本，proxy 训练 100k 步，reference 使用均匀混合训练 100k 步后冻结，最终权重取最后 10k 步的平均。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>Open-X Embodiment</strong> 数据集的子集，包含 <strong>9500 个真实世界 episode</strong>，按机器人实施例和任务类型划分为 <strong>7 个域</strong>（如 pick-and-place、stacking cups、door opening 等）。</li><li>模型规模：proxy/reference 模型约 <strong>15M</strong> 可训练参数；最终模型验证了 <strong>15M</strong>、<strong>50M</strong> 和 <strong>7B</strong>（使用 <strong>OpenVLA 7B</strong> checkpoint，冻结视觉/语言骨干，仅训练 decoder）三个尺度。</li><li>训练资源：proxy/reference 训练使用 <strong>NVIDIA H100 GPU</strong>；混合优化总成本为 <strong>11 GPU-hours</strong>（reference 训练 3h，proxy 搜索 8h）；最终模型训练成本为 15M/2.1 GPU-hours、50M/8.0 GPU-hours（4 H100）、7B/96.0 GPU-hours（8 H100）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：在对应物理机器人平台上进行<strong>封闭环真实机器人 rollout</strong>，使用 OXE 评估 split，<strong>15 个 held-out 任务</strong>，每个任务 <strong>20 次试验</strong>，报告 5 个随机种子的平均成功率与 95% 置信区间。</li><li>主要指标：平均成功率（Avg. SR）和最差域成功率（Min Domain SR）。</li><li>关键结果：</li></ul>
+<p> - <strong>ProMix</strong> 平均成功率达 <strong>76.2%</strong>，较均匀混合（68.4%）提升 <strong>+7.8%</strong>，较 Re-Mix（74.8%）高 <strong>+1.4%</strong>（在评估噪声范围内视为相当）。</p>
+<p> - 最差域成功率从 <strong>51.4%</strong> 提升至 <strong>68.5%</strong>（<strong>+17.1%</strong>），验证了 minimax 公式对长尾域的提升作用。</p>
+<p> - 消融实验：去掉 reference 模型导致平均成功率下降 <strong>-3.8%</strong>、最差域下降 <strong>-14.3%</strong>；去掉熵正则化导致权重熵从 1.24 降至 0.31，最差域成功率跌至 <strong>48.7%</strong>。</p>
+<p> - 跨尺度迁移：15M proxy 学到的权重迁移到 50M 和 7B 模型，相对均匀混合分别获得 <strong>+7.3% ~ +11.4%</strong> 的持续提升。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30024/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FlexWAM: Learning Flexible Visual Routing for World Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29813/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Hierarchical Reasoning Action Head for Tiny Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

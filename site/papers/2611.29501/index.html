@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>MAWAM: Joint Imagination for Collaborative Robot Manipulation with a Multi-Agent World Action Model - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 MAWAM（Multi-Agent World Action Model），一种多智能体世界动作模型，旨在解决多机器人协作操作中缺乏时空对齐与个体身份/角色意识的问题 现有世界动作模型（WAM）局限于单个具身智能体，而现实操作常需多个机器人跨工作空间、时序耦合协作，甚至异构 embodiment 协作 论文核心思想是让机器人团队“一起想象未来，然后各自行动”，通过联合预测多智能体未来观测并解码各自动作，实现真正协同操作" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.29501">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-22">2026-11-22</time></p>
+        <h1 class="article-title">MAWAM: Joint Imagination for Collaborative Robot Manipulation with a Multi-Agent World Action Model</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.29501" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.29501" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 MAWAM（Multi-Agent World Action Model），一种多智能体世界动作模型，旨在解决多机器人协作操作中缺乏时空对齐与个体身份/角色意识的问题</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">MAWAM: Joint Imagination for Collaborative Robot Manipulation with a Multi-Agent World Action Model</p>
+</div></figure>
+        <p class="article-unit">作者主要来自 University of Science and Technology of Chin…</p>
+        <ul class="article-facts"><li>arXiv 2611.29501</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者主要来自 <strong>University of Science and Technology of China（中国科学技术大学）</strong>、<strong>Nanjing University（南京大学）</strong>、<strong>Zhongguancun Academy（中关村实验室）</strong></li><li>部分作者来自 <strong>Tsinghua University（清华大学）</strong> 和 <strong>Manifold AI</strong></li><li>通讯作者为 <strong>Chen Gao</strong> 和 <strong>Zhibo Chen</strong>，所属机构为中国科学技术大学等</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>MAWAM（Multi-Agent World Action Model）</strong>，一种多智能体世界动作模型，旨在解决多机器人协作操作中缺乏时空对齐与个体身份/角色意识的问题</li><li>现有世界动作模型（WAM）局限于单个具身智能体，而现实操作常需多个机器人跨工作空间、时序耦合协作，甚至异构 embodiment 协作</li><li>论文核心思想是让机器人团队<strong>“一起想象未来，然后各自行动”</strong>，通过联合预测多智能体未来观测并解码各自动作，实现真正协同操作</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>形式化 <strong>multi-agent-necessary</strong> 操作概念，从 <strong>why（互补性）</strong>、<strong>when（时序耦合）</strong>、<strong>who（embodiment）</strong> 三个轴刻画多机器人协作需求，并提供里程碑式细粒度指标</li><li>开发 <strong>MA-Task Harness</strong>，一个编码智能体管道，通过生成器与评估器协同演化自动合成仿真数据和评估包</li><li>基于上述管道构建 <strong>MA-Bench</strong> 基准，包含 7 个任务、700 个演示对，覆盖所有轴（异步/部分同步/同步，信息/空间/能力互补，同构/异构团队）</li><li>提出 <strong>MAWAM</strong> 模型：通过 <strong>agent-axis curriculum</strong> 将单智能体 WAM 扩展为多智能体，使用联合自注意力实现跨智能体时空对齐，并利用层次语言、身份编码和 embodiment 掩码绑定角色与身份</li><li>在 MA-Bench 上，MAWAM 达到 <strong>82.7%</strong> 平均联合成功率，比最强基线高 <strong>30.7</strong> 个百分点，并在真实异构机器人团队上实现实时闭环协作</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>LingBot-VA</strong>（30 层、约 5B 参数的视频扩散 Transformer）构建，引入 <strong>agent axis</strong>：将所有机器人的 token 序列拼接，参数共享，联合自注意力跨所有智能体</li><li>采用 <strong>联合因果注意力</strong>：训练时使用 teacher forcing，每个帧有噪声预测目标和干净历史副本，阶段索引决定注意力顺序，确保动作解码基于想象视频</li><li><strong>层次语言</strong>：保留每个机器人的局部角色指令交叉注意力，同时增加全局目标指令的门控交叉注意力，将团队目标注入所有智能体</li><li><strong>身份与角色编码</strong>：为每个机器人添加固定物理 ID 的傅里叶特征和角色文本均值向量，避免使用可学习 ID 表，从而支持异构 embodiment</li><li><strong>训练</strong>：使用流匹配目标，对视频和动作分别预测速度，并用 agent-axis curriculum 从单智能体轨迹逐步扩展到多智能体同步轨迹</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>MA-Bench</strong>：包含 7 个协作任务（如 Joint bowl placing、Find common color、Hold and scan、Open door place pot、Lift tray keep blocks、Lift tray pour food、Pour and catch），每个任务 100 个演示对，共 700 个演示对</li><li>每个机器人记录三个 RGB 视角（头部和两个手腕）、本体感知和原生末端执行器动作，频率 25Hz，视频下采样至 6.25Hz</li><li>模型基础为 <strong>LingBot-VA</strong>，拥有 30 层、约 <strong>5B</strong> 参数，MAWAM 在其上扩展，参数数量不随智能体数量增加</li><li>训练资源在论文正文中未明确提及 GPU/TPU 数量，但模型规模为约 5B 参数，推理可在真实机器人上实时运行</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估设置在 <strong>MA-Bench</strong> 上，每个任务进行 100 次独立轨迹试验，指标包括 <strong>角色分数（Role Score）</strong>、<strong>协作分数（Collaboration Score）</strong> 和 <strong>联合成功率（Success Rate）</strong></li><li>MAWAM 取得 <strong>82.7%</strong> 平均联合成功率，较最强基线（如 MA-VLA 或 LingBot-VA joint）高出 <strong>30.7</strong> 个百分点</li><li>消融实验显示联合想象和 agent-axis 条件化能够促进跨智能体信息共享、3D 未来对齐和及时适应</li><li>在真实异构机器人团队（Franka 和 Cobot）上实现了实时闭环协作，验证了方法的实际可行性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.29553/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Detecting Is Not Choosing: What a World Model Needs to Keep a VLA Policy Safe</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29483/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Representation Alignment Is Only as Good as the Teacher&#x27;s Behavioral Structure</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

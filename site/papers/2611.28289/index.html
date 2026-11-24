@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Intervention-Robust VLA: Diverse Demonstrations for Robot Deployment with Safety Filters - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对 Vision-Language-Action (VLA) 模型在真实机器人部署中的安全问题，提出 InteR-VLA 框架，解决测试时安全滤波器干预导致的分布偏移和任务性能下降问题 核心思想：通过收集多样化的任务完成演示来扩大任务相关状态覆盖，使 VLA 在安全滤波器干预后仍能保持任务能力，而无需直接学习安全行为或修改滤波器 通过真实世界实验验证，InteR-VLA 在保持安全性的同时，将 Safe Success Rate 从名义策略的 0% 提升至最高 90%，并在两个主流 VLA 模型上一致优于名义数据训练" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28289">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">Intervention-Robust VLA: Diverse Demonstrations for Robot Deployment with Safety Filters</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28289" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28289" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对 Vision-Language-Action (VLA) 模型在真实机器人部署中的安全问题，提出 InteR-VLA 框架，解决测试时安全滤波器干预导致的分布偏移和任务性能下降问题</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">Intervention-Robust VLA: Diverse Demonstrations for Robot Deployment with Safety Filters</p>
+</div></figure>
+        <p class="article-unit">Tzu-Yuan Huang、Shao-Hsuan Chang、Stefan Sosnowski、Sa…</p>
+        <ul class="article-facts"><li>arXiv 2611.28289</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Tzu-Yuan Huang</strong>、<strong>Shao-Hsuan Chang</strong>、<strong>Stefan Sosnowski</strong>、<strong>Sandra Hirche</strong>：慕尼黑工业大学（Technical University of Munich）信息导向控制讲席教授团队，德国</li><li><strong>Dai-Jie Wu</strong>、<strong>Kenneth Marino</strong>：SPARK Lab，犹他大学，美国</li><li><strong>Ralf Römer</strong>、<strong>Angela P. Schoellig</strong>：慕尼黑工业大学学习系统与机器人实验室（Learning Systems and Robotics Lab），德国；Angela P. Schoellig 同时隶属于慕尼黑机器人与机器智能研究所（MIRMI）</li><li><strong>Yung-Hui Li</strong>：鸿海研究院 AI 研究中心，台湾</li><li><strong>Sandra Hirche</strong> 同时隶属于 MIRMI 和慕尼黑数据科学研究所（MDSI）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对 <strong>Vision-Language-Action (VLA) 模型</strong>在真实机器人部署中的安全问题，提出 <strong>InteR-VLA</strong> 框架，解决测试时安全滤波器干预导致的<strong>分布偏移</strong>和任务性能下降问题</li><li>核心思想：通过收集<strong>多样化的任务完成演示</strong>来扩大任务相关状态覆盖，使 VLA 在安全滤波器干预后仍能保持任务能力，而无需直接学习安全行为或修改滤波器</li><li>通过真实世界实验验证，InteR-VLA 在保持安全性的同时，将 Safe Success Rate 从名义策略的 <strong>0%</strong> 提升至最高 <strong>90%</strong>，并在两个主流 VLA 模型上一致优于名义数据训练</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>干预引起的协变量偏移分析</strong>：形式化分析了安全滤波器（特别是 CBF 基滤波器）如何改变动作分布，导致训练数据与部署状态分布不匹配，并定义了“部署相关”数据收集策略的充分条件（命题 1）</li><li><strong>干预鲁棒的数据收集策略</strong>：提出 <strong>Diverse</strong> 和 <strong>Multi</strong> 两种离线演示收集方法，在固定数据预算下增加行为模式而非数据量，无需策略 rollout 或滤波器调参，即可有效覆盖安全干预后的状态</li><li><strong>真实世界验证与跨模型泛化</strong>：在两个 VLA 模型（<strong>π₀.₅</strong> 和 <strong>GR00T N1.5</strong>）上，在 ID 和 OOD 障碍物条件下，证明 InteR-VLA 显著提升 Safe Success Rate，并开展了多项消融研究</li><li><strong>与现有安全学习方法的定位区分</strong>：强调测试时安全滤波器与训练时数据覆盖的互补性，避免了对大规模安全关键场景采集的依赖</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>安全滤波器建模</strong>：使用控制障碍函数（CBF）构造二次规划（QP），在部署时最小化对 VLA 动作的修改以满足安全约束；障碍物通过 GroundingDINO 检测、深度点云重建、椭球近似，与机器人末端执行器椭球间距离定义安全集</li><li><strong>分布偏移分析</strong>：将安全滤波器视为动作分布变换算子，分析其引起的动作分布和状态访问分布偏移；引入总变差距离（TV）度量，证明若新增数据分布更接近安全滤波后部署分布，则混合训练数据可改善部署覆盖</li><li><strong>多样化演示收集</strong>：</li></ul>
+<p> - <strong>Diverse 策略</strong>：收集不包含障碍物的不同任务路径（如弯曲、左偏、右偏），扩展任务相关状态覆盖</p>
+<p> - <strong>Multi 策略</strong>：设置路径阻挡障碍物，收集多种成功避障模式（如上方、左侧、右侧），直接针对避障干预引起的状态偏差</p>
+<ul><li><strong>离线训练与部署分离</strong>：VLA 仅在增强数据集 \(\mathcal{D}' = \mathcal{D} \cup \mathcal{D}_{\nu}\) 上离线训练，安全滤波器仅在测试时介入，二者协同完成安全且成功的任务执行</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：自行采集的机器人遥操作演示数据；每个任务首先收集 <strong>50 个名义演示</strong> 作为基础数据集，然后按固定数据预算添加 Diverse 或 Multi 演示</li><li><strong>模型</strong>：评估两个代表性 VLA 模型——<strong>π₀.₅</strong> 和 <strong>GR00T N1.5</strong>；未在论文中提供具体参数量</li><li><strong>机器人平台</strong>：<strong>Franka Emika Panda</strong> 机械臂，配备 Franka parallel-jaw gripper；两个 <strong>Intel RealSense D435 RGB-D</strong> 相机（腕部视角和第三人称视角）</li><li><strong>数据采集</strong>：使用 <strong>CRISP</strong> 领导者-跟随者遥操作系统；VLA 推理频率 <strong>15 Hz</strong>，低层控制器 <strong>1 kHz</strong></li><li><strong>训练资源</strong>：论文未明确提及 GPU/TPU 等具体训练硬件</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：真实世界桌面操作任务，两个语言指令任务——“将海绵放入篮子”（Task 1）和“关上茶柜抽屉”（Task 2）；每个任务在名义路径上放置障碍物阻挡直行</li><li><strong>评估设置</strong>：分为 <strong>In-distribution (ID)</strong>（障碍物类型、尺寸和位置与训练匹配）和 <strong>Out-of-distribution (OOD)</strong>（障碍物尺寸、类型或位置变化）两类；每个设置 20 次 rollout</li><li><strong>评估指标</strong>：Safety（无碰撞比例）、Score（部分任务进度）、Success Rate (S-Rate)、Safe Success Rate (SS-Rate)</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 仅使用安全滤波器（VLA-SF Normal）虽然保证 Safety 为 1.0，但 SS-Rate 很低（如 Task 1 上 π₀.₅ 为 0.05，GR00T N1.5 为 0.05）</p>
+<p> - 使用 <strong>Diverse</strong> 和 <strong>Multi</strong> 演示训练后，SS-Rate 大幅提升：Task 1 上 π₀.₅ 的 Diverse 达到 0.65，Multi 达到 0.75；Task 2 上 GR00T N1.5 的 Multi 达到 0.90</p>
+<p> - 在 OOD 障碍物条件下，InteR-VLA 仍保持优势，证明其泛化能力</p>
+<ul><li><strong>消融研究</strong>：包括减少数据集大小、比较不同避让模式、跨任务迁移、移除安全滤波器时的安全性、以及极端 OOD 评估等，进一步验证了多样化演示对干预鲁棒性的关键作用</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28308/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Probing Invisible Actuation Shifts for Test-time Calibration of Visuomotor Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28256/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">FlowPAC: Flow-Guided Visual Pruning and Action Caching for Efficient VLA Inference</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SWEEP-Bench: Do Embodied Policies Act on the Speed They See? - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="引入 SWEEP-Bench 基准，用于评估具身策略是否根据看到的物体速度采取行动，包含 80 个传送带操作任务、16 个技能类别和 13 个速度等级。 针对现有基准缺乏跨任务、跨速度的成功率测量，SWEEP-Bench 通过控制传送带速度、提供静态对照任务和专家检查，确保任务可行性。 论文微调 8 个视觉-语言-动作和世界-动作模型，发现多数模型在中间速度达到成功率峰值，表明其产生适应平均演示速度的动作而非实际速度。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30637">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">SWEEP-Bench: Do Embodied Policies Act on the Speed They See?</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30637" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30637" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">引入 SWEEP-Bench 基准，用于评估具身策略是否根据看到的物体速度采取行动，包含 80 个传送带操作任务、16 个技能类别和 13 个速度等级。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30637.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30637.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30637.webp" alt="SWEEP-Bench: Do Embodied Policies Act on the Speed They See? 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者所属机构为 The University of Tokyo, Japan</p>
+        <ul class="article-facts"><li>arXiv 2611.30637</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者所属机构为 <strong>The University of Tokyo, Japan</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>引入 <strong>SWEEP-Bench</strong> 基准，用于评估具身策略是否根据看到的物体速度采取行动，包含 80 个传送带操作任务、16 个技能类别和 13 个速度等级。</li><li>针对现有基准缺乏跨任务、跨速度的成功率测量，SWEEP-Bench 通过控制传送带速度、提供静态对照任务和专家检查，确保任务可行性。</li><li>论文微调 8 个视觉-语言-动作和世界-动作模型，发现多数模型在中间速度达到成功率峰值，表明其产生适应平均演示速度的动作而非实际速度。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>SWEEP-Bench</strong>：包含 80 个任务、16 个技能类别、13 个速度，每个任务有静态对照，并通过专家验证任务可行性。</li><li>对 8 个模型进行有无过去帧的广泛评估，揭示 6 个模型在中间速度出现成功率峰值，以及它们倾向于产生适应平均速度的动作。</li><li>通过线性探针和速度条件化实验，发现过去帧仅对速度最可线性解码的三个模型有效，且图像估计的速度能保留大部分地面真值速度的增益。</li><li>在真实机器人上验证了模拟结论：速度输入显著提升 <strong>π0.5</strong> 模型得分，过去帧的增益方向与模拟一致。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>构建 <strong>SWEEP-Bench</strong>：使用 <strong>ManiSkill 3</strong> 仿真器，Franka Panda 机械臂配合传送带，任务覆盖 16 类技能（如拾取、放置、推动等），每个任务在 13 个恒定速度（0.10–0.40 m/s）下评估。</li><li>设计速度控制：传送带通过物理接触移动物体，纹理滚动使速度可见，每个评估场景在所有速度下保持一致以隔离速度因素。</li><li>引入静态对照任务：每个动态任务都有传送带停止且物体在臂可达范围内的版本，用于检验策略是否能学习无运动操作。</li><li>微调 8 个模型（6 个 VLA 和 2 个世界-动作模型），比较仅当前帧与当前帧加两个过去帧的输入条件，并在部分模型中加入地面真值速度或图像估计速度作为额外输入。</li><li>使用线性探针测量策略中间表示对传送带速度的解码性，以解释过去帧的增益来源。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>SWEEP-Bench</strong> 数据集：包含 80 个任务（16 类），每个任务收集 200 条专家演示（速度均匀分布在 0.10–0.40 m/s，共 16,000 条演示），40 个任务另有 200 条加速带演示（共 8,000 条）。</li><li>环境随机化：185 种背景、39 种平台材质、668 个物体、随机光照、传送带方向和相机位置等。</li><li>模型规模：评估的模型包括 <strong>π0.5</strong>、<strong>π0-FAST</strong>、<strong>OpenVLA-OFT</strong>、<strong>GR00T N1.7</strong>、<strong>VLA-JEPA</strong>、<strong>DynamicVLA</strong>、<strong>Cosmos Policy</strong> 和 <strong>Fast-WAM</strong>；论文未提供具体参数量。</li><li>训练资源：使用东京大学 Wisteria/BDEC-01、Miyabi、Genkai、TSUBAME4.0 等超级计算机；真实机器人推理使用远程 H100 GPU。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：主要仿真评估在 <strong>ManiSkill 3</strong> 上进行，80 任务 × 13 速度 × 20 集数；真实机器人评估在 reBot 机械臂和 1 m 传送带上进行，3 个任务 × 4 速度 × 10 次试验。</li><li>主要指标：成功率（按速度和任务加权）、峰值分数 <strong>P</strong>（衡量成功率是否在中间速度达到峰值）、线性探针 <strong>R²</strong>（速度解码性）。</li><li>关键结果：6 个模型（包括 <strong>π0.5</strong>、<strong>π0-FAST</strong>、<strong>OpenVLA-OFT</strong>、<strong>GR00T N1.7</strong>、<strong>VLA-JEPA</strong>、<strong>Cosmos Policy</strong>）的成功率在中间速度出现峰值；过去帧使 <strong>Fast-WAM</strong>、<strong>Cosmos Policy</strong> 和 <strong>DynamicVLA</strong> 的成功率分别提升 26.4、9.6 和 39.5 个百分点，其他模型几乎无增益。</li><li>线性探针显示这三者的速度可解码性最高（R²=0.86–0.99），其余模型 R²≤0.58；地面真值速度输入使 <strong>π0.5</strong>、<strong>Fast-WAM</strong>、<strong>VLA-JEPA</strong>、<strong>DynamicVLA</strong> 的成功率分别提升 34、20、12、15 个百分点，图像估计速度可恢复大部分增益。</li><li>真实机器人实验：<strong>π0.5</strong> 加入速度输入后得分从 31 提升至 80（地面真值）和 66（估计），证实速度信息的重要性；过去帧增益方向与模拟一致但统计不显著。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30898/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">World Models as Native Latent Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30632/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">GeoMerge-OPD: Balanced Skill Integration in Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

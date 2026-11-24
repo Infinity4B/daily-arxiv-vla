@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Beyond Which: Where, How, and When in Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 W³H-VLA 框架，将 VLA 模型的感知与动作预测组织为 Which（哪个实体）、Where（空间位置）、How（几何约束）、When（自适应时机） 四个维度 针对传统 VLA 模型仅依赖 VLM 语义感知（Which）的局限，系统性地补充空间距离感知、几何结构感知和自适应空间几何引导 旨在解决精确机器人操作中对空间布局、几何约束和动态协调的需求，提升 VLA 模型在复杂物理环境中的动作预测精度" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30291">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Beyond Which: Where, How, and When in Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30291" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30291" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 W³H-VLA 框架，将 VLA 模型的感知与动作预测组织为 Which（哪个实体）、Where（空间位置）、How（几何约束）、When（自适应时机） 四个维度</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">Beyond Which: Where, How, and When in Vision-Language-Action Models</p>
+</div></figure>
+        <p class="article-unit">西安电子科技大学（Xidian University）</p>
+        <ul class="article-facts"><li>arXiv 2611.30291</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>西安电子科技大学</strong>（Xidian University）</li><li>论文作者：Yunhe Zhang、Long Gao、Yuedong Fu、Gang He、Li Xu、Chang Wu、Songyuheng Gao</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>W³H-VLA</strong> 框架，将 VLA 模型的感知与动作预测组织为 <strong>Which（哪个实体）</strong>、<strong>Where（空间位置）</strong>、<strong>How（几何约束）</strong>、<strong>When（自适应时机）</strong> 四个维度</li><li>针对传统 VLA 模型仅依赖 VLM 语义感知（Which）的局限，系统性地补充空间距离感知、几何结构感知和自适应空间几何引导</li><li>旨在解决精确机器人操作中对空间布局、几何约束和动态协调的需求，提升 VLA 模型在复杂物理环境中的动作预测精度</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出将 VLA 感知与动作预测统一为 <strong>Which、Where、How、When</strong> 四维框架的理论表述</li><li>设计 <strong>W³H-VLA</strong> 框架，在保留 VLM 语义感知的基础上，引入空间距离感知分支（Where）和几何结构感知分支（How），分别基于预训练深度估计模型和视觉几何模型提取任务相关特征</li><li>提出 <strong>自适应空间几何引导</strong>（When）机制，根据当前任务语义上下文和演变的动作状态动态协调空间距离与几何结构感知的贡献权重</li><li>在 <strong>LIBERO、LIBERO-Plus、CALVIN、LIBERO-PRO</strong> 四个基准和 4 个真实世界操作任务上验证了方法的有效性和优越性</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>基础 VLA 模型</strong>：采用 <strong>π₀.₅</strong> 作为基础模型，包含预训练 <strong>PaliGemma VLM</strong> 和动作专家，通过条件流匹配预测连续动作块</li><li><strong>Which（语义实体感知）</strong>：VLM 联合编码视觉观测和语言指令，生成视觉语言特征和逐层键值缓存，保留完整语义上下文</li><li><strong>Where（空间距离感知）</strong>：使用预训练 <strong>Depth Anything V2-L</strong> 深度估计模型提取空间距离特征，通过任务查询和交叉注意力提取任务相关空间布局信息</li><li><strong>How（几何结构感知）</strong>：使用预训练 <strong>VGGT-Ω</strong> 视觉几何模型提取几何结构特征，捕获与物理交互约束相关的几何细节</li><li><strong>When（自适应空间几何引导）</strong>：在动作专家层中通过 MLP 和 sigmoid 函数联合估计空间距离与几何结构贡献权重，条件依赖于动作查询、任务语义特征和当前动作状态</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：LIBERO（4 套件，共 40 个任务）、LIBERO-Plus（7 类扰动，10,030 评估回合）、CALVIN（34 个任务，ABCD 协议）、LIBERO-PRO（LIBERO 扩展扰动）</li><li><strong>真实世界任务</strong>：AgileX Piper 机器人上 4 个操作任务，每个任务 50 次演示，20 次试验</li><li><strong>模型规模</strong>：VLM 18 层，隐藏维度 2048；动作专家 18 层，隐藏维度 1024；空间距离和几何结构感知分支各 3 层交互层</li><li><strong>视觉输入分辨率</strong>：VLM 224×224，深度估计模型 518×518，视觉几何模型 512×512</li><li><strong>动作视界</strong>：仿真 H=10，真实世界 H=30</li><li>预训练 VLM、深度估计模型和视觉几何模型在训练中保持冻结</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO 基准</strong>：<strong>W³H-VLA</strong> 平均成功率达 <strong>98.9%</strong>，显著优于基础模型 π₀.₅（96.9%），其中 Spatial 和 Object 套件均达 99.6%，Long 套件提升 +5.2%</li><li><strong>LIBERO-Plus 基准</strong>：整体成功率 <strong>88.2%</strong>，在 7 类扰动中均取得最优或次优结果，特别是 Camera（79.1%）、Background（97.9%）、Noise（90.2%）、Layout（88.5%）表现突出</li><li><strong>CALVIN 基准</strong>：平均连续完成长度 <strong>4.46</strong>，优于所有对比方法</li><li><strong>LIBERO-PRO 基准</strong>：成功率 <strong>62.2%</strong>，大幅超越基础模型 π₀.₅（53.3%）和其他对比方法</li><li><strong>真实世界实验</strong>：4 个真实操作任务分别验证 Which、Where、How、When 各维度感知的有效性，论文报告了各任务的成功率和平均成功率</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30308/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ConsisX: Cross-View Consistency Thinking in 3D for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30254/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Innata-0: A Native Embodied World System with Model-Agent Co-Design</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

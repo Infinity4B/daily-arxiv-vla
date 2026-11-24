@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NoveltyGate: Novelty, Not Error, Decides Which VLA Prefix Tokens to Compute Exactly - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对 Flow-matching 视觉-语言-动作（VLA）模型（如 π0.5）中，2B 参数骨干网络在每个控制步骤重新编码图像和指令、其中前馈层占据大部分计算的问题，提出一种训练无关的低秩计算路由方法。 核心目标是在保持动作精度的同时加速 VLA 前缀，通过仅对部分 token 进行精确 MLP 计算、其余 token 使用低秩近似来实现。 论文发现：决定哪些 token 需要精确计算的正确信号是输入新颖性（token 是否超出校准子空间），而非通常认为的近似输出误差，从而提出 NoveltyGate 方法。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31099">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">NoveltyGate: Novelty, Not Error, Decides Which VLA Prefix Tokens to Compute Exactly</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31099" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31099" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对 Flow-matching 视觉-语言-动作（VLA）模型（如 π0.5）中，2B 参数骨干网络在每个控制步骤重新编码图像和指令、其中前馈层占据大部分计算的问题，提出一种训练无关的低秩计算路由方法。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.31099.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.31099.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.31099.webp" alt="NoveltyGate: Novelty, Not Error, Decides Which VLA Prefix Tokens to Compute Exactly 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Johns Hopkins University</p>
+        <ul class="article-facts"><li>arXiv 2611.31099</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Johns Hopkins University</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对 <strong>Flow-matching 视觉-语言-动作（VLA）模型</strong>（如 π0.5）中，2B 参数骨干网络在每个控制步骤重新编码图像和指令、其中前馈层占据大部分计算的问题，提出一种训练无关的低秩计算路由方法。</li><li>核心目标是<strong>在保持动作精度的同时加速 VLA 前缀</strong>，通过仅对部分 token 进行精确 MLP 计算、其余 token 使用低秩近似来实现。</li><li>论文发现：决定哪些 token 需要精确计算的正确信号是<strong>输入新颖性</strong>（token 是否超出校准子空间），而非通常认为的近似输出误差，从而提出 <strong>NoveltyGate</strong> 方法。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>新颖性优于误差用于 VLA 前缀 token 分发</strong>：输入新颖性测试（Gated Subspace Inference 的门控）比完美的输出误差验证器选择的 token 更好，动作偏差低 1.31–1.74 倍，差距与 token 所属相机视角相关。</li><li><strong>每层每 token 一次决策、在乘法之前进行</strong>：单个 2048×544 乘积同时返回 gate/up 低秩系数和输出 sketch，下投影使用输出最优低秩，一次决策覆盖整个 gated MLP。</li><li><strong>在 π0.5 和 LIBERO 上的实证证据</strong>：在未见过任务和初始状态下，NoveltyGate 比通道剪枝、固定秩和能量分配秩压缩在等算力下更接近原始策略 2.7–2.9 倍，前缀实测加速 1.18–1.61 倍，f=0.3 时闭环成功率 10/10。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>低秩草稿（Drafts）</strong>：对 17 个活跃层拟合秩-256 的输出最优低秩近似，gate 和 up 投影使用输入空间中的输出最优投影，down 投影使用输出协方差 top 特征向量，秩-256 MLP 算术量为原始 0.14。</li><li><strong>token 选择评分</strong>：比较三种可在乘积前计算的评分：输入残差（相对校准子空间的重构误差）、输出 sketch（随机投影估计误差）、两者并集；同时评估随机选择、静态位置评分和完美验证器（不计成本）。</li><li><strong>每层一次决策</strong>：所有评分仅依赖 MLP 输入 y，因此每个 token 和层只做一次路由决策；一个 2048×544 乘积返回 draft 系数和输出 sketch，输入残差额外增加一个 256×2048 乘积；固定配额 k=⌈fn⌉ 使所有张量形状静态，整个 dispatched 前缀可捕获为单个 CUDA 图。</li><li><strong>对比逐乘积决策</strong>：逐乘积决策需要移动 16384 宽中间行，在 GPU 上导致数据搬移开销，eager 执行下加速比最高仅 1.12x，故采用每层决策。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：LIBERO-10（10 个任务，使用任务 0,1,3,5,7 校准，任务 2,4,6,8,9 评估；另有 held-out set A/B）</li><li><strong>模型</strong>：π0.5（基于 PaliGemma 的 2B 参数骨干网络，前缀包含 256 tokens per camera、指令和离散状态，共约 968 slots）</li><li><strong>训练资源</strong>：RTX 5060 Laptop GPU（AC 电源，功率限制 115W），PyTorch 2.7，BF16 精度；校准使用 31 个闭环 rollout 观测。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境与基准</strong>：在 LIBERO-10 未见任务和初始状态上评估，使用 CUDA graph 捕获整个前缀，与原始前缀交替重放 72 对；偏差以策略自身 seed-to-seed 变化为单位（RMS 姿态差）。</li><li><strong>主要评估指标</strong>：动作偏差（seed units）、前缀 GPU 加速比、闭环任务成功率、末端夹爪指令符号一致性。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - NoveltyGate 在 f=0.2 时实测加速 <strong>1.61x</strong>、偏差 2.44；f=0.4 时加速 1.26x、偏差 1.57，优于 75% 通道剪枝（偏差 1.83）。</p>
+<p> - 输入残差评分在所有精确比例下优于输出 sketch 和完美验证器，完美验证器/残差偏差比在 1.31–1.74 之间。</p>
+<p> - 闭环测试：原始策略 10/10 成功，NoveltyGate f=0.3 为 10/10，f=0.6 为 9/10，未检查低秩前缀为 0/10。</p>
+<p> - 每层一次决策使 eager 执行加速比从逐乘积的 ≤1.12x 提升至 1.50x（f=0.3），且偏差无显著差异。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31126/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">WeaveVLA: 3D Relational Grounding for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31038/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Boltz-Flow: Generating High-Quality Robot Action from Boltzmann Machine</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

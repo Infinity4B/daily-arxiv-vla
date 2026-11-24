@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DelayOPSD: On-Policy Self-Distillation from a Synchronous Teacher for Real-time Asynchronous Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究基于 flow 的视觉-语言-动作（VLA）策略在异步执行中的延迟失配问题；异步执行虽然消除了机器人停顿，但新动作块基于过期观测生成，延迟越大性能下降越明显 作者发现延迟对专家演示状态上的动作影响很小，但在策略自身延迟 rollout 中、尤其是失败片段上，动作差异显著 因此提出 DelayOPSD：在策略自身 rollout 上进行 on-policy 自蒸馏，由同步策略作为教师提供监督，使延迟策略在不增加部署模块的情况下逼近同步策略表现" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30534">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">DelayOPSD: On-Policy Self-Distillation from a Synchronous Teacher for Real-time Asynchronous Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30534" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30534" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究基于 flow 的视觉-语言-动作（VLA）策略在异步执行中的延迟失配问题；异步执行虽然消除了机器人停顿，但新动作块基于过期观测生成，延迟越大性能下降越明显</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30534.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30534.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30534.webp" alt="DelayOPSD: On-Policy Self-Distillation from a Synchronous Teacher for Real-time Asynchronous Policies 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">韩国科学技术院（KAIST）：主要作者单位，包括 Hyeonjae Kim、Jeongsol Kim、…</p>
+        <ul class="article-facts"><li>arXiv 2611.30534</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>韩国科学技术院（KAIST）</strong>：主要作者单位，包括 Hyeonjae Kim、Jeongsol Kim、Sunwoo Park、Chanyu Moon、Yoojin Oh、Youngjun Jun、Jong Chul Ye 等</li><li><strong>成均馆大学（Sungkyunkwan University）</strong>：Kyumin Choi</li><li>部分作者为同等贡献，Jong Chul Ye 为通讯作者</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究基于 flow 的视觉-语言-动作（VLA）策略在<strong>异步执行</strong>中的延迟失配问题；异步执行虽然消除了机器人停顿，但新动作块基于过期观测生成，延迟越大性能下降越明显</li><li>作者发现延迟对专家演示状态上的动作影响很小，但在策略自身延迟 rollout 中、尤其是失败片段上，动作差异显著</li><li>因此提出 <strong>DelayOPSD</strong>：在策略自身 rollout 上进行 on-policy 自蒸馏，由同步策略作为教师提供监督，使延迟策略在不增加部署模块的情况下逼近同步策略表现</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>将异步执行建模为从同步策略的 on-policy 自蒸馏</strong>：用同一策略在同步条件下作为教师，对学生自身延迟 rollout 提供监督；SmolVLA 在延迟 \(K=10\) 时成功率从 70.2% 提升到 78.7%</li><li><strong>在物理时间和去噪时间两个维度使用学生自身状态</strong>：在学生的延迟 rollout 状态和自身去噪轨迹上匹配速度场，而不是仅在教师重加噪样本上训练；该方法平均带来 3.4 个成功点提升</li><li><strong>无需在部署时增加模块</strong>：在 LIBERO（SmolVLA、\(\pi_{0.5}\)）和 Kinetix 上取得所比较方法中的最高平均成功率</li><li><strong>真实机器人验证</strong>：将真实机器人成功率从 46% 提升到 62%，并保持异步执行速度、改善动作块切换的平滑性</li><li><strong>训练效率高</strong>：一次性收集延迟 rollout 后离线蒸馏，不需要训练过程中持续与环境交互</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>DelayOPSD 构建非对称师生对：<strong>学生</strong>以延迟执行时可获得的上下文 \(c_t=(o_t,p_t)\) 为条件，其中 \(o_t\) 是推理时观测，\(p_t\) 是已提交动作前缀；<strong>教师</strong>是同一策略以执行时观测 \(o_{t+K}\) 为条件的同步版本</li><li>对每个延迟 \(K\)，预先用基础策略在 naive 异步执行下收集一次三元组 \((o_t,p_t,o_{t+K})\) 到缓冲区；训练离线进行，避免在线 rollout 开销</li><li>训练中采样学生自身去噪轨迹的中间状态 \(a^\tau\)，计算学生与教师在这些状态上的速度场，使用加权平方损失 \(\mathcal{L}=\mathbb{E}\\|v_S-\mathrm{sg}(v_T)\\|_w^2\) 进行蒸馏，教师梯度停止</li><li>理论分析将轨迹级 reverse KL 分解为逐步 chunk 级 KL，并进一步由学生自身采样路径上的速度误差上界控制（定理 1 和定理 2）</li><li>对失败片段采用场景过滤：如果基础策略在同步执行时也失败，则从缓冲区移除对应片段，避免低质量教师监督</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：用于 SmolVLA 和 \(\pi_{0.5}\) 的仿真评测，包含 10 步延迟等设置</li><li><strong>Kinetix</strong>：用于进一步验证的仿真环境</li><li><strong>真实机器人（YAM）</strong>：在 15 步延迟设置下进行真实硬件评测</li><li>模型：<strong>SmolVLA</strong>、<strong>\(\pi_{0.5}\)</strong>、Kinetix 策略</li><li>代码库：https://github.com/present091/DelayOPSD</li><li>论文未在提供的正文部分披露详细的模型参数量和 GPU/TPU 训练资源；训练采用一次性收集延迟 rollout 后离线蒸馏</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境与基准：LIBERO（SmolVLA、\(\pi_{0.5}\)）、Kinetix、真实机器人；延迟步长包括 \(K=10\)、\(K=15\)</li><li>在 SmolVLA 的 \(K=10\) 设置下：仅用演示数据训练为 70.2%，naive 异步执行为 70.4%，DelayOPSD 在自身 rollout 上蒸馏达到 <strong>78.7%</strong></li><li>在 LIBERO 和 Kinetix 上，DelayOPSD 取得所比较方法中的<strong>最高平均成功率</strong></li><li>真实机器人实验中，成功率由 46% 提升到 <strong>62%</strong>，同时保持异步执行速度并改善动作块切换的平滑性</li><li>消融显示：使用学生自身去噪状态（而非重加噪教师样本）平均增加 3.4 成功点；失败片段场景过滤和一次性收集策略也贡献明显</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30550/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Body and Soul: Decoupling Robotic Brain and Policy with RoboHarness-Zero</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30516/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">JEPA-ICL: Progress-Aligned Latent Plans for In-Context Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

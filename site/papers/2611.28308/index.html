@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Probing Invisible Actuation Shifts for Test-time Calibration of Visuomotor Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究视觉运动策略（如 VLAs 和 WAMs）在部署时遭遇的执行器偏移（actuation shifts）问题；这类偏移（如控制器增益变化、控制延迟、外部负载）不会改变初始观测图像，因此策略无法感知，导致成功率急剧下降 现有方法依赖执行过程中的反馈或随机激励，但证据晚到且不易辨识；论文提出 PEA（Probe, Estimate, Act）测试时校准方法，在执行任务前通过主动探测来辨识执行器偏移 目标是在保持策略权重冻结、仅允许至多 30 步预交互、且无测试时调优的约束下，最大化策略在偏移环境下的成功率" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.28308">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-20">2026-11-20</time></p>
+        <h1 class="article-title">Probing Invisible Actuation Shifts for Test-time Calibration of Visuomotor Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.28308" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.28308" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究视觉运动策略（如 VLAs 和 WAMs）在部署时遭遇的执行器偏移（actuation shifts）问题；这类偏移（如控制器增益变化、控制延迟、外部负载）不会改变初始观测图像，因此策略无法感知，导致成功率急剧下降</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">Probing Invisible Actuation Shifts for Test-time Calibration of Visuomotor Policies</p>
+</div></figure>
+        <p class="article-unit">作者来自 Eindhoven University of Technology（埃因霍温理工大学）和…</p>
+        <ul class="article-facts"><li>arXiv 2611.28308</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者来自 <strong>Eindhoven University of Technology</strong>（埃因霍温理工大学）和 <strong>The University of Hong Kong</strong>（香港大学）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究视觉运动策略（如 <strong>VLAs</strong> 和 <strong>WAMs</strong>）在部署时遭遇的<strong>执行器偏移</strong>（actuation shifts）问题；这类偏移（如控制器增益变化、控制延迟、外部负载）不会改变初始观测图像，因此策略无法感知，导致成功率急剧下降</li><li>现有方法依赖执行过程中的反馈或随机激励，但证据晚到且不易辨识；论文提出 <strong>PEA</strong>（Probe, Estimate, Act）测试时校准方法，在执行任务前通过主动探测来辨识执行器偏移</li><li>目标是在保持策略权重冻结、仅允许至多 30 步预交互、且无测试时调优的约束下，最大化策略在偏移环境下的成功率</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>区分了<strong>视觉偏移</strong>和<strong>执行器偏移</strong>，并实证表明执行器偏移（单独或与相机偏移耦合）会严重降低 <strong>WAM</strong> 和 <strong>VLA</strong> 的性能</li><li>提出 <strong>PEA</strong> 方法：设计了一个 30 步的探测序列（单轴激发、零和命令），并由闭式辨识器估计每个轴的增益、全局延迟和漂移，然后对策略命令进行补偿，<strong>无需策略训练</strong></li><li>设计了一个可移除的 <strong>LoRA 适配器</strong>，以探测响应为条件处理视觉偏移（如相机移动），保持基础策略冻结</li><li>在 <strong>LIBERO</strong> 基准上使用 <strong>Cosmos-Policy</strong>（WAM）和 <strong>OpenVLA-OFT</strong>（VLA）进行广泛实验，证明 PEA 能大幅恢复因偏移损失的成功率，并泛化到训练中未见过的动态偏移</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>探测阶段</strong>：在每个回合前，机器人执行一个 30 步的固定探测序列，以零和命令一次激发一个臂轴，使每个轴的增益、全局延迟和漂移在响应中留下可分离的痕迹</li><li><strong>估计阶段</strong>：使用闭式辨识器（由经典组件组装，离线校准一次），从探测响应中估计每个轴的增益、共享延迟和漂移校正</li><li><strong>行动阶段</strong>：对策略产生的每个命令进行补偿：按增益缩放并加入偏移项；对于延迟，在每个动作块后保持相应步数</li><li><strong>视觉偏移处理</strong>：在冻结的策略权重上附加一个低秩适配器（LoRA），该适配器以探测编码为条件生成逐层调制，从而适应视觉偏移，同时最小化对名义性能的影响</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用的数据集：<strong>LIBERO</strong> 基准（包括 <strong>LIBERO-Spatial</strong> 等场景）</li><li>模型：<strong>Cosmos-Policy</strong>（基于 Cosmos-Predict2-2B 视频模型和 T5 指令嵌入的 WAM）和 <strong>OpenVLA-OFT</strong>（VLA）</li><li>训练和评估均在仿真环境（LIBERO）中进行，论文未提供具体 GPU/TPU 细节；PEA 的辨识器不需要训练，适配器训练使用遥操作演示数据</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：<strong>LIBERO</strong> 仿真环境，指标为任务成功率</li><li>在 <strong>LIBERO-Spatial</strong> 上，无策略训练的情况下，PEA 辨识器将 <strong>Cosmos-Policy</strong> 在未见偏移（刚度、负载、延迟等）下的成功率从 <strong>61.0%</strong> 提升至 <strong>89.7%</strong>，将 <strong>OpenVLA-OFT</strong> 从 <strong>63.5%</strong> 提升至 <strong>89.0%</strong></li><li>结合视觉适配器，<strong>Cosmos-Policy</strong> 在耦合的相机+增益偏移下成功率从 <strong>42.8%</strong> 提升至 <strong>93.0%</strong></li><li>真实机器人实验和消融实验验证了 PEA 各组件的有效性，并表明探测设计对辨识精度至关重要</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.28346/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Defending Vision-Language-Action Models against Transferable Attacks via Visual-Proprioceptive Consistency</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.28289/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Intervention-Robust VLA: Diverse Demonstrations for Robot Deployment with Safety Filters</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

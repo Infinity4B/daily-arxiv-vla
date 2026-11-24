@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>InfoField3D: Differentiable Information Field for Embodied Task-Oriented View Planning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 InfoField3D，一种将几何表面信息映射到可微分析场的新范式，用于具身任务导向的视角规划 解决现有方法难以在新场景中灵活加入约束（如可达性）以及需要大量候选视角评估效率低下的问题 通过球谐函数编码方向信息响应和高斯占有函数的线积分建模遮挡，将视角选择转化为约束连续优化问题" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.29230">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-22">2026-11-22</time></p>
+        <h1 class="article-title">InfoField3D: Differentiable Information Field for Embodied Task-Oriented View Planning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.29230" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.29230" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 InfoField3D，一种将几何表面信息映射到可微分析场的新范式，用于具身任务导向的视角规划</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef" aria-hidden="true">
+  <p class="note-cover-title">InfoField3D: Differentiable Information Field for Embodied Task-Oriented View Planning</p>
+</div></figure>
+        <p class="article-unit">Huan Lyu：ReLER Lab，浙江大学</p>
+        <ul class="article-facts"><li>arXiv 2611.29230</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Huan Lyu</strong>：<strong>ReLER Lab</strong>，<strong>浙江大学</strong></li><li><strong>Yawei Luo</strong>（通讯作者）：<strong>ReLER Lab</strong>，<strong>浙江大学</strong>，邮箱：<strong>yaweiluo@zju.edu.cn</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>InfoField3D</strong>，一种将几何表面信息映射到可微分析场的新范式，用于具身任务导向的视角规划</li><li>解决现有方法难以在新场景中灵活加入约束（如可达性）以及需要大量候选视角评估效率低下的问题</li><li>通过球谐函数编码方向信息响应和高斯占有函数的线积分建模遮挡，将视角选择转化为约束连续优化问题</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>构建 <strong>可微信息场</strong>，将任务相关信息的空间可达性表示为连续的解析函数，支持解析梯度优化</li><li>利用 <strong>低阶球谐函数</strong> 对方向信息响应进行紧凑编码，大幅降低参数量并保持高保真度</li><li>将遮挡建模为 <strong>高斯占有函数的沿视线路径积分</strong>，实现可微的透射率计算，并提供可见性余量梯度</li><li>通过 <strong>几何划分</strong> 构造局部计算单元，避免整对象表示引入的映射损失，适应复杂场景</li><li>证明该范式可灵活引入新约束，并在标准优化器（SHGO/SLSQP）下高效搜索高质量、鲁棒的观察位置</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>问题形式化</strong>：以带有语义特征的点云为输入，定义任务相关度图，目标是最大化观察位置处的信息可达性函数</li><li><strong>信息传播建模</strong>：对每个表面点，用核函数（指数形式）处理其法向与指向观察位置方向的夹角余弦，求和得到总响应；再通过参考球面上的球谐展开得到紧凑表示（复杂度与点数无关）</li><li><strong>遮挡建模</strong>：将物体占有表示为连续高斯函数，沿源中心到观察位置的线段积分得到累积占有，透射率 = exp(-累积占有)，将其与方向响应相乘得到单目标目标函数</li><li><strong>场景聚合</strong>：递归沿主轴分割点云得到局部几何单元，每个单元作为信息源和遮挡体，聚合所有单元的透射率加权方向响应得到全局目标函数</li><li><strong>优化求解</strong>：目标函数处处可微，可直接使用带解析梯度的约束优化器（如 SHGO 或 SLSQP）在可行域内求解</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong> 和 <strong>LIBERO-Plus</strong> 基准</li></ul>
+<p> - 表示保真度实验：<strong>1,655 个静态场景</strong>，每场景约 800 个均匀采样测试位置</p>
+<p> - 视角优化实验：<strong>80 个 LIBERO-Plus 场景</strong>（每套件 20 个）</p>
+<p> - VLA 下游评估：<strong>80 个场景</strong>，生成 <strong>697 个信息受限的初始视点</strong></p>
+<ul><li><strong>模型与资源</strong>：InfoField3D 为解析场表示，无需训练；优化器使用 <strong>SciPy</strong> 的 <strong>SHGO</strong> 和 <strong>SLSQP</strong>；下游评估使用冻结的 <strong>π0.5 VLA 模型</strong>（Black et al. 2025）；未报告 GPU/TPU 训练资源</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>表示保真度</strong>：</li></ul>
+<p> - 与原始点云逐点计算相比，InfoField3D 参数预算仅为点云的约 <strong>1/15</strong></p>
+<p> - 在均匀相关度图和任务相关度图下，最优值达成率分别达到 <strong>97.93%</strong> 和 <strong>97.97%</strong>，形状一致性 <strong>92.28%</strong> 和 <strong>93.86%</strong>，排序一致性 <strong>90.51%</strong> 和 <strong>91.29%</strong></p>
+<p> - 点云密度提升至 16 倍（参数比约 239:1）时，三项指标降幅均小于 <strong>0.4 个百分点</strong></p>
+<ul><li><strong>优化质量与效率</strong>：</li></ul>
+<p> - <strong>InfoField3D（SHGO + 解析梯度）</strong> 在 0.1 秒内即达到高质量解，最终任务可见性 <strong>46.51%</strong>（0.1s）和 <strong>46.32%</strong>（20s），方向响应 <strong>27.59%</strong>，GPT-4o 评分 <strong>83.42</strong>（0.1s）</p>
+<p> - 相比使用采样梯度的 SLSQP，解析梯度变体在早期达到显著更高解（如 0.1s 时任务可见性 40.30% vs 39.29%）</p>
+<p> - 显著优于 GP-BO、CMA-ES、GradientNBV、VISO-grasp、Sobol 和随机搜索等基线</p>
+<ul><li><strong>鲁棒性</strong>：</li></ul>
+<p> - 推荐视点在位置扰动下的最大任务可见性损失（脆弱性）低于其他方法</p>
+<p> - 场的一阶+二阶导数组合信号与外部脆弱性呈一定相关性，可辅助脆弱性分析</p>
+<ul><li><strong>下游 VLA 评估</strong>：</li></ul>
+<p> - 在信息受限初始视点的局部近邻救援协议中，InfoField3D 推荐视点使任务完成率平均提升 <strong>+11.73 个百分点</strong>，显著高于两个等距离控制视点</p>
+<p> - 对于初始完成率 <strong>0–25%</strong> 的任务，提升高达 <strong>+42.4 个百分点</strong>；对于高完成率任务影响较小（-2.4 pp），表明在观测成为瓶颈时收益最大</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.29277/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">$ζ_0$: A Framework for World Action Models with Joint Scene and Body Foresight in Humanoid Control</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29125/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SilentWAM: Planning in the Masked State of a Diffusion World Model</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

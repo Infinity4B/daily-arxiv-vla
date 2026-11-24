@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Body and Soul: Decoupling Robotic Brain and Policy with RoboHarness-Zero - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文解决 VLA 策略在多步操作任务中因选择错误目标或丢失任务进度而失败的问题，审计显示 Xiaomi-Robotics-1 约 43% 失败源于此类决策错误。 提出 RoboHarness-Zero，将“大脑”（VLM 的任务规划与进度监控）与“身体/策略”（冻结 VLA 的连续运动控制）解耦，用 VLM 在零样本条件下监督冻结 VLA。 目标是实现理想 harness 的三个性质：新任务最少准备、新策略无需重新设计、不破坏策略已能独立完成的任务。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30550">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Body and Soul: Decoupling Robotic Brain and Policy with RoboHarness-Zero</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30550" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30550" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文解决 VLA 策略在多步操作任务中因选择错误目标或丢失任务进度而失败的问题，审计显示 Xiaomi-Robotics-1 约 43% 失败源于此类决策错误。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.30550.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.30550.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.30550.webp" alt="Body and Soul: Decoupling Robotic Brain and Policy with RoboHarness-Zero 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Polyadic Research Group（Yihao Shen、Yuxuan Chen、Xuan…</p>
+        <ul class="article-facts"><li>arXiv 2611.30550</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Polyadic Research Group</strong>（Yihao Shen、Yuxuan Chen、Xuantong Liu、Tianyang Hu）</li><li><strong>SAGA Lab, The Chinese University of Hong Kong, Shenzhen</strong>（Yihao Shen、Tianyang Hu）</li><li><strong>The Hong Kong University of Science and Technology</strong>（Yuxuan Chen、Xuantong Liu）</li><li><strong>NVIDIA</strong>（Jun Gao）</li><li><strong>Dots Studio, Xiaohongshu</strong>（Weijian Luo）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文解决 VLA 策略在多步操作任务中因选择错误目标或丢失任务进度而失败的问题，审计显示 <strong>Xiaomi-Robotics-1</strong> 约 43% 失败源于此类决策错误。</li><li>提出 <strong>RoboHarness-Zero</strong>，将“大脑”（VLM 的任务规划与进度监控）与“身体/策略”（冻结 VLA 的连续运动控制）解耦，用 VLM 在零样本条件下监督冻结 VLA。</li><li>目标是实现理想 harness 的三个性质：新任务最少准备、新策略无需重新设计、不破坏策略已能独立完成的任务。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>RoboHarness-Zero</strong>：固定监督规则、可自动校准到新策略的 VLM 外骨骼，无需任务级演示或脚本。</li><li>新任务零准备：VLM 仅从指令和当前场景生成并跟踪子阶段计划，不依赖参考场景记忆或逐任务准备。</li><li>新策略零重新设计：只需一个轻量接口适配器和自动剖析得到的技能成功率、典型时长与停滞窗口；同一套规则可迁移到五种冻结策略。</li><li>设计并报告保留率（retention）与救援率（rescue）的成对评估协议，分离 harness 保留的成功与挽救的失败，并证明收益来自 VLM 判断而非简单指令重发。</li><li>在 200 个 <strong>RoboCasa365</strong> 场景中将 <strong>Xiaomi-Robotics-1</strong> 成功率从 57.5% 提升至 70.5%，保留 90.4% 的既有成功。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基本前提：VLM 能够零样本理解指令、规划子步骤并检测执行漂移；冻结 VLA 负责处理连续、接触丰富的运动控制。</li><li>执行时 VLA 接收完整任务指令；VLM 在检查点观察左/右/腕部相机、机器人状态和近期动作，判断当前子阶段是否有进展。</li><li>进展判断在子阶段内进行：通过 3D 距离估计、抓取验证和目标物追踪确认阶段完成，避免“正在接近”掩盖“抓取停滞”。</li><li>出现停滞或错误目标时先改写指令（如指明“绿色手柄削皮器”）；若两次验证的物理失败，VLM 可进行有界接管，通过生成的代码调用通用运动原语，然后交还控制权给 VLA。</li><li>新策略接入仅需适配器和自动剖析：在 65 个原子任务上每任务 15 个 episode 运行策略，估计技能成功率、典型时长和停滞窗口；监督规则保持不变。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>RoboCasa365</strong>，50 个任务；主评估 200 个场景（episode index 1–4）；共享 50 场景子集用于跨策略和基线比较。</li><li>模型：冻结 VLA 策略包括 <strong>Xiaomi-Robotics-1</strong>（主评估）、<strong>RLDX-1</strong>、<strong>WorldDreamer</strong>、<strong>GR00T N1.5</strong>、<strong>π0.5</strong>；监督 VLM 为 <strong>GPT-6 Astra</strong>（主）和 <strong>GPT-6.1 Sol</strong>（消融）。</li><li>标定资源：每策略剖析 975 次 rollout（65 个原子任务 × 15 episodes），<strong>GR00T N1.5</strong> 剖析约 6.16 累计 worker-hours；主评估中 harness 运行平均每次约 71 次 VLM 请求和 1136 控制步。</li><li>代码：<strong>github.com/polyadic-research/roboharness0</strong>；项目页：<strong>odessey159.github.io/roboharness-zero/</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估协议：成对 rollout 共享初始状态和随机种子；报告成功率、保留率与救援率；使用双侧精确 McNemar 检验和按任务置换检验。</li><li>主结果：<strong>Xiaomi-Robotics-1</strong> 单独成功率 57.5%（115/200）；加 <strong>GPT-6 Astra</strong> harness 后 70.5%（141/200），净提升 +13.0 pp（95% CI 6.5–19.5）；保留 104/115（90.4%），救援 37/85（43.5%）。</li><li><strong>GPT-6.1 Sol</strong> 版本达到 63.0%；无 VLM 的固定指令重发基线为 56.5%，低于策略单独表现。</li><li>跨策略迁移：同一套规则在共享 50 场景上使 <strong>RLDX-1</strong>（40%→50%）、<strong>WorldDreamer</strong>（36%→44%）、<strong>GR00T N1.5</strong>（26%→34%）、<strong>π0.5</strong>（16%→24%）各提升 8–10 pp；四个新策略合计仅损失 1 个原有成功。</li><li>消融与失败分析：37 个增益中 27 个涉及改写或接管，23 个有证据表明介入有效；接管仅占 9.3% 的控制步；恢复仍是瓶颈（35 次技能尝试中 22 次介入后仍未达到目标）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30632/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">GeoMerge-OPD: Balanced Skill Integration in Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30534/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">DelayOPSD: On-Policy Self-Distillation from a Synchronous Teacher for Real-time Asynchronous Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

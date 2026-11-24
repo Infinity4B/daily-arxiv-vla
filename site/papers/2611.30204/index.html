@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Counterfactual Velocity Steering for World Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对世界动作模型（World Action Models, WAMs）中的条件依赖失衡问题，提出反事实速度引导框架，用于诊断和缓解动作预测对视觉观测的过度依赖 核心研究发现：在 Fast-WAM 模型上，将任务指令替换为其他任务指令后仍保留 25.1% 成功率，而动态替换视觉观测则成功率降至 1.5%，表明模型可能过度依赖视觉而忽视语言指令 直接减去参考速度会同时删除有用的生成传输分量；论文提出几何校准动作去偏（GCAD），仅保留与任务速度正交的修正分量，避免破坏生成轨迹" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.30204">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Counterfactual Velocity Steering for World Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.30204" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.30204" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对世界动作模型（World Action Models, WAMs）中的条件依赖失衡问题，提出反事实速度引导框架，用于诊断和缓解动作预测对视觉观测的过度依赖</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">Counterfactual Velocity Steering for World Action Models</p>
+</div></figure>
+        <p class="article-unit">论文原文未标注作者所属机构；仅列出作者：Xufeng Zhan、Yuanzhi Liang、Ye Lu…</p>
+        <ul class="article-facts"><li>arXiv 2611.30204</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文原文未标注作者所属机构；仅列出作者：<strong>Xufeng Zhan</strong>、<strong>Yuanzhi Liang</strong>、<strong>Ye Lu</strong>、<strong>Haibin Huang</strong>、<strong>Chi Zhang</strong>、<strong>Xuelong Li</strong></li><li>论文发表于 arXiv，编号 <strong>arXiv:2611.30204v1 [cs.RO]</strong>，日期 2026 年 11 月 23 日</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对世界动作模型（World Action Models, WAMs）中的<strong>条件依赖失衡</strong>问题，提出<strong>反事实速度引导</strong>框架，用于诊断和缓解动作预测对视觉观测的过度依赖</li><li>核心研究发现：在 <strong>Fast-WAM</strong> 模型上，将任务指令替换为其他任务指令后仍保留 <strong>25.1%</strong> 成功率，而动态替换视觉观测则成功率降至 <strong>1.5%</strong>，表明模型可能过度依赖视觉而忽视语言指令</li><li>直接减去参考速度会同时删除有用的生成传输分量；论文提出<strong>几何校准动作去偏</strong>（GCAD），仅保留与任务速度正交的修正分量，避免破坏生成轨迹</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>贡献点 1：建立<strong>受控诊断框架</strong>，分离动作空间静止与速度空间共享传输分量，量化 Fast-WAM 的条件依赖偏向</li><li>贡献点 2：提出<strong>几何感知修正公式</strong>，结合中心化残差、正交投影和校准尺度，并扩展为相似度加权和相对范数加权的训练目标</li><li>贡献点 3：在 <strong>RoboTwin 2.0</strong> 和 <strong>LIBERO-Plus</strong> 上系统评估参考选择和修正强度，识别任务相关收益、朴素减法的失败模式，以及离线校准与在线部署之间的差距</li><li>贡献点 4：证明修正信号在困难语言指令下可提升鲁棒性，例如在 <strong>LIBERO-Plus Level 5</strong> 上相似度加权模型相对基线提升 <strong>2.93 个百分点</strong>，但收益并非一致</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 <strong>Fast-WAM</strong> 的流匹配动作专家：给定噪声动作、调度时间、观测、本体感觉和指令，预测速度场</li><li>构建<strong>同状态参考预测</strong>：在同一噪声动作、时间、观测和本体感觉下，用平均指令查询参考分支；计算 <code>b = v_mean - v_noop</code>，其中 <code>v_noop</code> 取自解析无操作场</li><li>对残差进行<strong>掩码正交投影</strong>，保留与任务速度 <code>v_task</code> 正交的分量，防止修正移除共享传输方向</li><li>使用<strong>停止梯度</strong>的修正 <code>Δ = sg(s*r)</code>，<code>s=0.05</code>，得到修正目标 <code>u = v_task - Δ</code></li><li>训练时采用两种<strong>样本加权</strong>方案：相似度加权 <code>w = 1 + γ*(1 - cos(v_task, u))</code> 和相对范数加权 <code>w = 1 + γ*\|\|Δ\|\|/\|\|v_task\|\|</code>；仅对 <code>σ_t ≥ 0.25</code> 的样本生效</li><li>从 Fast-WAM 检查点微调 <strong>5000 步</strong>，学习率 <strong>1e-5</strong>，批量 <strong>128</strong>，使用余弦调度和种子 <strong>42</strong>；部署时使用原始采样器，推理修正禁用</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>RoboTwin 2.0</strong>（50 个双手操作任务，干净和随机化场景），<strong>LIBERO</strong>（四个套件，每套件 200 集），<strong>LIBERO-Plus</strong> 语言指令难度划分（1537 个指令变体，5 个难度级别）</li><li>模型：<strong>Fast-WAM</strong> 流匹配动作专家；论文未明确披露参数量或模型规模</li><li>训练资源：未提供具体 GPU/TPU 信息；微调使用全局批量 128、5000 优化步数</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：RoboTwin 2.0 每个任务 100 集（干净/随机化），评估成功率为 50 任务平均；LIBERO 使用 200 集每个套件；LIBERO-Plus 每个变体 1 集</li><li>主要指标：<strong>任务成功率</strong>（百分比），对比基线为标准微调 Fast-WAM 控制组</li><li>关键实验结果：</li></ul>
+<p> - 干预研究：错误指令保留 <strong>25.1%</strong> 随机化成功率；动态错误观测仅 <strong>1.5%</strong>（RoboTwin）和 <strong>0%</strong>（LIBERO），显示强视觉依赖</p>
+<p> - RoboTwin 微调：相似度加权（γ=5）和相对范数加权（γ=5）均比控制组平均成功率提升 <strong>+0.64 个百分点</strong>（控制组 91.93%，修正模型 92.57%），干净场景增益更显著</p>
+<p> - LIBERO-Plus：相对范数加权（γ=5）在 Level 3 达到 <strong>74.90%</strong>（+1.15），相似度加权（γ=10）在 Level 5 达到 <strong>49.42%</strong>（+2.93），但在简单 Level 1 出现性能下降</p>
+<p> - 修正强度 γ 的影响呈非单调：γ 过高或过低会降低平均收益，表明修正信号应作为选择性正则化器而非无条件提升</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.30209/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RoboAda: Adapting Frozen Robot Policies at Test Time to Physics They Cannot See</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.30195/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Quantization for Action, Execution for Deployment: Joint Precision and Execution Selection for World Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

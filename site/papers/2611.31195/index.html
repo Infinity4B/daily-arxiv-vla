@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>VITA-WAM: Manifold-Aligned World-Action Modeling for Real-Time Robot Control - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 VITA-WAM，一种面向视觉运动控制的世界-动作模型架构，旨在解决现有 WAM 依赖大型生成模型和迭代采样、导致动作生成长延迟、难以实时部署的问题。 核心思想是联合学习并对齐观测源潜在表示与动作目标潜在表示，使流匹配直接从有信息的源出发，减少 ODE 步数并降低计算开销。 引入 Flow Latent Alignment (FLA) 机制实现流形对齐，简化输运路径、消除重复的跨注意力条件化，在保持高成功率的同时显著提升推理速度。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31195">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">VITA-WAM: Manifold-Aligned World-Action Modeling for Real-Time Robot Control</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31195" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31195" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 VITA-WAM，一种面向视觉运动控制的世界-动作模型架构，旨在解决现有 WAM 依赖大型生成模型和迭代采样、导致动作生成长延迟、难以实时部署的问题。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.31195.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.31195.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.31195.webp" alt="VITA-WAM: Manifold-Aligned World-Action Modeling for Real-Time Robot Control 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">论文提供的 HTML 摘要中未明确列出作者所属机构，仅显示作者姓名：Boqi Zhao、Dechen…</p>
+        <ul class="article-facts"><li>arXiv 2611.31195</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文提供的 HTML 摘要中未明确列出作者所属机构，仅显示作者姓名：<strong>Boqi Zhao</strong>、<strong>Dechen Gao</strong>、<strong>Hanchu Zhou</strong>、<strong>Hang Wang</strong>、<strong>Junshan Zhang</strong>。</li><li>如需确切机构信息，请以论文完整版或正式发表页面为准。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>VITA-WAM</strong>，一种面向视觉运动控制的<strong>世界-动作模型</strong>架构，旨在解决现有 WAM 依赖大型生成模型和迭代采样、导致动作生成长延迟、难以实时部署的问题。</li><li>核心思想是联合学习并对齐<strong>观测源潜在表示</strong>与<strong>动作目标潜在表示</strong>，使流匹配直接从有信息的源出发，减少 ODE 步数并降低计算开销。</li><li>引入 <strong>Flow Latent Alignment (FLA)</strong> 机制实现流形对齐，简化输运路径、消除重复的跨注意力条件化，在保持高成功率的同时显著提升推理速度。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>VITA-WAM 高效 WAM 架构</strong>：用可学习的观测源潜变量替代高斯先验，融合视觉、语言和本体感觉信息，使动作模型无需在每一步对观测做注意力。</li><li><strong>Flow Latent Alignment (FLA)</strong>：形式化 FLA 并建立理论分析，证明 FLA 促进源流形与目标流形对齐、降低流曲率，从而用更少 ODE 步即可准确生成动作。</li><li><strong>无需蒸馏的领先性能</strong>：单步 ODE 下，VITA-WAM 在 <strong>LIBERO-Plus</strong> 上比 10 步 <strong>FastWAM</strong> 高 <strong>21.47 pp</strong>，在 <strong>LIBERO</strong> 上高 <strong>1.65 pp</strong>。</li><li><strong>规模扩展能力</strong>：将 VITA 流匹配从约 30M 参数、任务专用的小模型扩展到 <strong>6B</strong> 级 WAM，并支持语言条件，展现了通用性和扩展性。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>架构组成</strong>：采用预训练 <strong>Wan2.2-TI2V-5B</strong> 视频 DiT 作为视觉主干，<strong>T5</strong> 文本编码器编码语言指令，<strong>Q-Former</strong> 将视觉、语言、本体感觉融合为源潜变量 \(z_0\)，动作编码器将动作块映射为目标潜变量 \(z_1\)。</li><li><strong>VITA 流匹配</strong>：从 \(z_0\) 直接流向 \(z_1\)，动作 DiT 在 ODE 积分过程中仅处理动作潜变量，不需要对多模态观测进行重复注意力计算。</li><li><strong>训练目标</strong>：联合优化流匹配损失 \(\mathcal{L}_{\mathrm{FM}}\)、动作自编码器损失 \(\mathcal{L}_{\mathrm{AE}}\) 和流潜变量对齐损失 \(\mathcal{L}_{\mathrm{FLA}}\)；FLA 通过 ODE 生成端点的动作重建误差反向传播到源编码器、动作解码器和流网络。</li><li><strong>理论支撑</strong>：定理表明 FLA 和 AE 损失可收紧源-目标耦合成本的上界，减少流路径曲率和训练-推理差距，从而支持少步 Euler 求解、降低推理延迟。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：使用 <strong>LIBERO</strong> 和 <strong>LIBERO-Plus</strong> 进行模拟评估。</li><li><strong>真实机器人</strong>：在 <strong>Franka Research 3</strong> 机械臂上执行四个真实世界任务。</li><li><strong>模型规模</strong>：VITA-WAM 为约 <strong>6B</strong> 参数规模的世界-动作模型，视觉主干为 <strong>Wan2.2-TI2V-5B</strong> 视频 DiT。</li><li><strong>训练资源</strong>：提供的论文片段中未明确列出 GPU 型号、数量及训练时长。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>主要指标</strong>：任务成功率、推理延迟（毫秒）、ODE 步数。</li><li><strong>仿真性能</strong>：单步 ODE 的 VITA-WAM 在 <strong>LIBERO-Plus</strong> 上比 10 步 <strong>FastWAM</strong> 高出 <strong>21.47 pp</strong>；在 <strong>LIBERO</strong> 上高出 <strong>1.65 pp</strong>。</li><li><strong>推理效率</strong>：单步 VITA-WAM 推理延迟为 <strong>55.67 ms</strong>，显著低于 10 步 FastWAM 的 <strong>116.65 ms</strong>，也低于 1 步 FastWAM 的 <strong>62.32 ms</strong>；相对 10 步 FastWAM 实现约 <strong>2.10×</strong> 加速。</li><li><strong>消融与分析</strong>：论文对 VITA 流匹配源的随机性、Q-Former 作用、视觉条件化和 FLA 机制等进行了消融研究，详细结果在正文及附录中。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31240/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Pruning Autonomous Driving VLAs: What to Preserve for Reasoning and Action</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31173/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">EmboEagle: An Efficient Agentic Embodied Framework for Long-horizon Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>A2I-VLA: A Two-Stage Vision-Language-Action model with Semantic-Physical Alignment and Integration - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 A2I-VLA，一个融合 力觉（wrench）与触觉（tactile） 的两阶段 视觉-语言-动作（VLA） 模型，用于接触丰富的机器人操作。 解决现有 VLA 方法中 视觉-语言语义特征与物理量测特征之间存在表示鸿沟 的问题，避免直接拼接导致的训练冲突。 在真实机器人任务上，将基线 π0.5 的平均成功率从 70.00% 提升到 95.00%。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.29279">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-22">2026-11-22</time></p>
+        <h1 class="article-title">A2I-VLA: A Two-Stage Vision-Language-Action model with Semantic-Physical Alignment and Integration</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.29279" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.29279" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 A2I-VLA，一个融合 力觉（wrench）与触觉（tactile） 的两阶段 视觉-语言-动作（VLA） 模型，用于接触丰富的机器人操作。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">A2I-VLA: A Two-Stage Vision-Language-Action model with Semantic-Physical Alignment and Integration</p>
+</div></figure>
+        <p class="article-unit">哈尔滨工业大学（Harbin Institute of Technology）：Kun Dai、Tia…</p>
+        <ul class="article-facts"><li>arXiv 2611.29279</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>哈尔滨工业大学</strong>（Harbin Institute of Technology）：Kun Dai、Tianqi Wang、Chaoyang Li、Fuyuan Qiu、Lijun Zhao、Ruifeng Li、Tao Xie</li><li><strong>海康威视研究院</strong>（Hikvision Research Institute）：Haibo Lei、Kai Zhang、Wenming Tan</li><li><strong>安徽工程大学</strong>（Anhui Polytechnic University）：Chuqing Cao</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>A2I-VLA</strong>，一个融合 <strong>力觉（wrench）与触觉（tactile）</strong> 的两阶段 <strong>视觉-语言-动作（VLA）</strong> 模型，用于接触丰富的机器人操作。</li><li>解决现有 VLA 方法中 <strong>视觉-语言语义特征与物理量测特征之间存在表示鸿沟</strong> 的问题，避免直接拼接导致的训练冲突。</li><li>在真实机器人任务上，将基线 <strong>π0.5</strong> 的平均成功率从 <strong>70.00%</strong> 提升到 <strong>95.00%</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>A2I-VLA</strong> 两阶段框架，系统性将力觉与触觉反馈引入 VLA 动作生成。</li><li>设计 <strong>第一阶段的语义-物理对齐与层次化多模态融合</strong>，通过未来力/力矩预测与动作预测联合学习任务相关的力-触觉表示。</li><li>设计 <strong>第二阶段的门控交叉注意力桥模块</strong>，让物理特征自适应地引导动作专家输出。</li><li>在 <strong>环轴插入、黑板擦拭、以太网接头插入</strong> 三个真实接触丰富任务上验证有效性，显著优于 <strong>π0.5</strong> 和 <strong>ForceVLA</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Stage I（力-触觉表示学习）</strong>：并行使用冻结的 <strong>π0.5 语义编码器</strong>（提取视觉-语言-状态特征）和 <strong>MLP 物理编码器</strong>（分别编码六维力/力矩与二值触觉），用共享查询的交叉注意力和方差正则化实现 <strong>语义-物理对齐</strong>。</li><li><strong>层次化多模态融合网络</strong>：语义与物理特征通过可学习模态嵌入后拼接，再经 <strong>4 层 Transformer</strong> 融合；每层保留触觉和力觉 token，并用注意力选择器生成物理描述符。</li><li><strong>物理感知损失</strong>：拼接各层描述符，用两个 MLP 头分别预测 <strong>未来力/力矩序列</strong> 与 <strong>未来动作序列</strong>，与真值计算 L2 损失。</li><li><strong>Stage II（力-触觉特征集成）</strong>：将 Stage I 学到的物理编码器和融合网络作为特征提取器，提取各层触觉与力觉特征；<strong>门控交叉注意力桥</strong> 以动作专家输出为查询，分别聚合触觉和力觉特征，并经可学习门控融合后加入动作特征。</li><li><strong>训练策略</strong>：Stage II 先只训练桥模块（基础 VLA 与特征提取器冻结），再联合微调；融合时线性层零初始化以保持初始输出不变。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>自采集真实机器人操作数据</strong>，未公开命名数据集；平台包含 <strong>UR10 机械臂、GoPro 鱼眼相机、Intel RealSense D405 相机、六轴力/力矩传感器、两块触觉传感器</strong>。</li><li>任务为 <strong>环轴插入、黑板擦拭、以太网接头插入</strong>；物体随机放置，训练数据通过遥操作设备采集。</li><li>输入包括两路 RGB 图像、语言指令、机器人状态、六维力/力矩（wrench）和二值触觉值。</li><li>模型骨干基于 <strong>π0.5</strong> VLA；论文未明确给出参数量。</li><li>训练资源：<strong>8 块 A100 GPU</strong>，AdamW 优化器；Stage I 训练 1 万迭代，batch size 512，学习率最高 1e-4；Stage II 训练 5 万迭代，batch size 64，学习率 5e-5。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：三个真实接触丰富任务，每个 checkpoint 20 次真实机器人试验，取最后 5 个 checkpoint 中最高成功率。</li><li><strong>主要成功率（Table 1）</strong>：<strong>A2I-VLA</strong> 在环轴插入 <strong>100%</strong>、黑板擦拭 <strong>100%</strong>、以太网接头插入 <strong>85%</strong>，平均 <strong>95.00%</strong>；对比 <strong>π0.5</strong> 分别为 85%、80%、45%，平均 70.00%；<strong>ForceVLA</strong> 分别为 90%、80%、50%，平均 73.33%。</li><li><strong>跨训练检查点一致性（Table 3）</strong>：<strong>A2I-VLA</strong> 在 5 个检查点上平均成功率 <strong>78.67%</strong>，高于 <strong>π0.5</strong> 的 <strong>54.67%</strong>，且在 15 个比较中 14 次更优。</li><li><strong>消融实验</strong>：单阶段直接拼接平均仅 <strong>70.00%</strong>；去掉语义-物理对齐损失降至 <strong>85.00%</strong>；去掉第一阶段未来动作预测降至 <strong>90.00%</strong>；去掉力觉数据增强降至 <strong>83.33%</strong>。</li><li><strong>效率对比</strong>：训练时间 <strong>A2I-VLA</strong> 44.23 小时（6.41 + 37.82），高于 <strong>π0.5</strong> 的 32.52 小时；推理速度 <strong>396.63ms</strong>，相比 <strong>π0.5</strong> 的 386.82ms 仅增加约 9.81ms。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.29338/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">A Glimpse of Training VLMs as Foundation Models for Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.29277/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">$ζ_0$: A Framework for World Action Models with Joint Scene and Body Foresight in Humanoid Control</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
