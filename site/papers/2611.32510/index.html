@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>GeoVLDrive: Geometry-Grounded Vision-Language Reasoning for Autonomous Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 GeoVLDrive，一种面向自动驾驶的几何基视觉-语言-动作（VLA）框架，用于 3D 时空推理与规划 解决现有 VLA 规划器虽继承语义知识、但推理缺乏 3D 场景结构及未来演变基础的问题 通过结构化潜在思维链连接未来场景几何、关键智能体运动与元动作，并联合生成和评分轨迹提案" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32510">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">GeoVLDrive: Geometry-Grounded Vision-Language Reasoning for Autonomous Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32510" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32510" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 GeoVLDrive，一种面向自动驾驶的几何基视觉-语言-动作（VLA）框架，用于 3D 时空推理与规划</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32510.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32510.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32510.webp" alt="GeoVLDrive: Geometry-Grounded Vision-Language Reasoning for Autonomous Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Xiaomi Corporation（小米）：JiaHui Huang、Hanbing Li、Hanc…</p>
+        <ul class="article-facts"><li>arXiv 2611.32510</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Xiaomi Corporation</strong>（小米）：<strong>JiaHui Huang</strong>、<strong>Hanbing Li</strong>、<strong>Hanchao Leng</strong>、<strong>Kuiyuan Yang</strong>、<strong>Guang Chen</strong>、<strong>Hangjun Ye</strong></li><li><strong>Nanyang Technological University</strong>（南洋理工大学）：<strong>Songyan Zhang</strong>、<strong>Chen Lv</strong></li><li><strong>University of Missouri</strong>（密苏里大学）：<strong>Guang Chen</strong>（同时隶属小米）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>GeoVLDrive</strong>，一种面向自动驾驶的几何基视觉-语言-动作（VLA）框架，用于 3D 时空推理与规划</li><li>解决现有 VLA 规划器虽继承语义知识、但推理缺乏 3D 场景结构及未来演变基础的问题</li><li>通过结构化潜在思维链连接未来场景几何、关键智能体运动与元动作，并联合生成和评分轨迹提案</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>GeoVLDrive</strong> 框架，用结构化潜在 CoT 连接未来场景几何、关键智能体运动与元动作，在相同动作专家架构下将 NAVSIM v1 PDMS 从 <strong>90.1</strong> 提升至 <strong>91.8</strong></li><li>设计 <strong>动作专家</strong>，基于潜在 CoT 和多深度场景特征联合生成与评分轨迹提案；专用评分 token 交换候选间信息，较 MLP 评分提升 PDMS <strong>1.6</strong></li><li>构建 <strong>NAVSIM 3DQA</strong> 数据集，包含约 <strong>1.28M</strong> 框条件问答对，覆盖对象类别、米制位置、车辆尺寸和运动行为；几何基骨干总体精度 <strong>89.2%</strong>，比微调 Qwen3-VL-2B 基线高 <strong>4.6</strong> 个百分点</li><li>开发 <strong>NAVSIM-WM-CoT</strong> 注释，为未来深度、关键智能体运动和元动作提供监督，并支持文本 CoT 训练</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>几何基视觉-语言骨干</strong>：使用 <strong>Qwen3-VL-2B-Instruct</strong> 与冻结的 <strong>StreamVGGT</strong>，在多个深度进行门控交叉注意力注入（GCAI），并使用共享 2D 正弦位置编码对齐语义与几何特征</li><li><strong>结构化潜在 CoT</strong>：将未来场景几何、关键智能体运动和元动作组织为三个分别监督的潜在状态组；注意力掩码允许运动状态读取几何状态、元动作读取两者，并阻断反向连接</li><li><strong>未来场景几何预测</strong>：使用 32 个潜在 token 对每个预测时步进行残差更新，解码未来深度图和置信度图，并通过深度回归、置信度加权回归和多尺度梯度一致性损失监督</li><li><strong>关键智能体运动与元动作</strong>：关键智能体 latent 编码类别、当前位置和未来位置偏移；元动作 token 表示纵向与横向意图，分别由分类和回归损失监督</li><li><strong>动作专家</strong>：专用 transformer 结合潜在推理状态、ego 状态、动作 token 和评分 token，执行多深度联合注意力；轨迹采用 winner-takes-all 回归，评分 token 进行跨提案交互并由模拟轨迹分数监督</li><li><strong>训练目标</strong>：联合轨迹回归、潜在链监督、文本 CoT 交叉熵、评分 BCE 及辅助智能体/元动作损失进行训练</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>NAVSIM v1/v2</strong>：规划评估基准；训练使用 <code>navtrain</code>，评估使用 <code>navtest</code> 的 12,146 个场景</li><li><strong>NAVSIM 3DQA</strong>：从 NAVSIM 注释构建，约 <strong>1.28M</strong> QA 对，来自 <strong>95K</strong> 锚定帧，训练集 <strong>1.12M</strong>，验证集 <strong>165K</strong></li><li><strong>LingoQA</strong>：驾驶视觉问答数据集，用于 Lingo-Judge 精度评估</li><li><strong>NAVSIM-WM-CoT</strong>：为未来场景几何、关键智能体运动、元动作和文本 CoT 提供注释和监督</li><li><strong>模型规模</strong>：视觉-语言骨干为 <strong>Qwen3-VL-2B-Instruct</strong>，几何编码器为冻结的 <strong>StreamVGGT</strong>，推理过程使用单前视相机和 ego 状态，不依赖 LiDAR</li><li><strong>训练资源</strong>：使用 <strong>NVIDIA H20 GPU</strong>，分四阶段训练：QA 对齐 3 epoch、未来几何/运动 5 epoch、潜在链 10 epoch、链与动作专家联合 30 epoch</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>NAVSIM v1</strong>：在 <code>navtest</code> 上达到 <strong>91.8 PDMS</strong>，超过 SGDrive（SFT）<strong>87.4</strong>、CoWorld-VLA <strong>90.0</strong>、DriveWorld-VLA <strong>91.3</strong>、RL 训练的 LaST-VLA-2B <strong>91.1</strong>、iPad <strong>91.7</strong> 和 GeoWorldAD <strong>91.0</strong></li><li><strong>NAVSIM v2</strong>：达到 <strong>90.9 EPDMS</strong>，在 Ego Progress 上达到 <strong>91.4</strong>，优于 PerceptDrive <strong>90.2</strong> 和 GeoWorldAD <strong>90.4</strong></li><li><strong>NAVSIM 3DQA</strong>：总体精度 <strong>89.2%</strong>，其中类别 <strong>98.0%</strong>、运动 <strong>91.0%</strong>、位置 <strong>76.7%</strong>、尺寸 <strong>89.1%</strong>；微调 Qwen3-VL-2B 基线总体为 <strong>84.6%</strong></li><li><strong>LingoQA</strong>：Lingo-Judge 精度 <strong>68.6%</strong>，相比微调 Qwen3-VL-2B 基线 <strong>67.0%</strong> 有适度提升</li><li><strong>消融结果</strong>：几何注入和空间对齐提升 3DQA 表现；潜在 CoT 与几何注入将 PDMS 从 <strong>90.1</strong> 提升至 <strong>91.8</strong>；交叉提案评分设计较 MLP 评分提升 <strong>1.6 PDMS</strong></li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32564/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">MXI-MemICL: Towards In-Context Robot Manipulation through Self-Retrieved Interaction Memory</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32483/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">CodeWAM: A Code World Action Model for End-to-End Autonomous Driving</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

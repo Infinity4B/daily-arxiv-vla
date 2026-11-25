@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>VLAs Execute, Code Recovers: 3D Skill Envelopes Bridge the Compositional Gap in Agentic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对将多个冻结的视觉-语言-动作（VLA）技能在智能体规划器下组合成长时程操作任务时，技能转换点（seams）频繁失败的问题。 通过因果干预发现，即使机器人归位（re-homing）后，失败主要由物理碰撞（且与具体策略相关）而非视觉移位导致。 提出“技能包络”（Skill Envelope）——一种通过测量策略自身成功执行时扫过的 3D 体积得到的几何先决条件，用于在执行前检测障碍物并引导代码修复，实现“VLA 执行、代码恢复”的分工。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32245">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">VLAs Execute, Code Recovers: 3D Skill Envelopes Bridge the Compositional Gap in Agentic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32245" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32245" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对将多个冻结的视觉-语言-动作（VLA）技能在智能体规划器下组合成长时程操作任务时，技能转换点（seams）频繁失败的问题。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32245.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32245.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32245.webp" alt="VLAs Execute, Code Recovers: 3D Skill Envelopes Bridge the Compositional Gap in Agentic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">香港科技大学（广州）：Jiajie Zhang, Changhao Chen</p>
+        <ul class="article-facts"><li>arXiv 2611.32245</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>香港科技大学（广州）</strong>：Jiajie Zhang, Changhao Chen</li><li><strong>上海科技大学</strong>：Yankai Xiang</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对将多个冻结的视觉-语言-动作（VLA）技能在智能体规划器下组合成长时程操作任务时，技能转换点（seams）频繁失败的问题。</li><li>通过因果干预发现，即使机器人归位（re-homing）后，失败主要由物理碰撞（且与具体策略相关）而非视觉移位导致。</li><li>提出“技能包络”（Skill Envelope）——一种通过测量策略自身成功执行时扫过的 3D 体积得到的几何先决条件，用于在执行前检测障碍物并引导代码修复，实现“VLA 执行、代码恢复”的分工。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>因果缝诊断</strong>：在 640 个交接状态上分解身体、视图和世界状态偏移，证明残余失败主要由策略特异性的物理碰撞主导，而非视觉干扰。</li><li><strong>技能包络</strong>：提出一种无需人类演示、失败样本或符号模型、复杂度为 O(n) 的 3D 包络构建方法，捕捉冻结技能扫过的体积。</li><li><strong>几何工具</strong>：设计 <strong>Check</strong> 和 <strong>Free</strong> 两个经典 3D 工具，使智能体能在执行前检测障碍物并规划安全放置区域，将冻结 VLA 的刚性弱点转化为可测量的先验条件。</li><li><strong>分布感知分工</strong>：建立“VLA 执行分布内操作、代码修复分布外状态”的清晰边界，通过测量而非语言猜测确定边界。</li><li><strong>实验验证</strong>：在 LIBERO-Goal 上验证包络检测碰撞（AUROC 0.946）、击败前沿 VLM 的缝就绪预测（0.902 vs 0.793）、提升两步缝成功率（82.8%→92.3%）和多步链成功率（29.7%→93.8%），与特权世界重置相当。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>技能包络测量</strong>：在隔离环境中运行技能，记录成功执行时机械臂、抓持器和携带物体的 3D 扫过体积，聚合为逐体素的占用概率，得到技能包络 E_k(x)。</li><li><strong>几何工具</strong>：<strong>Check(k,s)</strong> 计算残留元素与包络的重叠（峰值概率和总体积），若超过阈值则标记阻塞；<strong>Free(K,s)</strong> 返回剩余步骤包络之外的最近安全放置位姿，避免未来步骤阻塞。</li><li><strong>就绪评分</strong>：将重叠和残余归位误差映射为就绪概率，使用轻量共享校准头（逻辑回归或乘法风险模型），用于技能排序和对比 VLM。</li><li><strong>分工循环</strong>：智能体选择最高就绪的技能顺序，执行前调用 Check 检测残留，若有阻塞则调用 Free 引导的经典修复代码清除障碍，然后 VLA 在分布内执行。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO-Goal</strong>，使用其 64 个有序技能对（640 个交接状态）进行实验。</li><li><strong>模型</strong>：冻结的 <strong>π0.5</strong> VLA 策略（来自 Physical Intelligence）。</li><li><strong>资源需求</strong>：方法无需训练，包络构建只需成功执行的记录（每个技能 37-89 次 rollout），计算成本低（仅需前向运动学和体素化）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>碰撞检测（RQ1）</strong>：状态重叠达到 0.946 AUROC（抽屉 0.986，自由对象 0.847）；单 RGB-D 深度差分达到 0.944 AUROC。</li><li><strong>泛化性（RQ2）</strong>：在未见前置任务、多物体、跨类别等分割上，包络模型优于查找表和去除几何的基线；去除几何后 AUROC 降至机会水平（0.499）。</li><li><strong>对比 VLM（RQ3）</strong>：包络就绪模型（0.902 AUROC）超过所有九个前沿 VLM 运行（最佳 0.793），且在策略特异性上表现更优。</li><li><strong>两步修复（RQ4）</strong>：Check 门控的主动代码修复（92.3%）与特权世界重置（92.8%）相当，且优于被动修复（91.4%），并在抽屉交接上完美检测 70/70 失败状态。</li><li><strong>多步链（RQ5）</strong>：在 128 条含抽屉的 3-4 步链上，包络引导的排序和修复将成功率从 29.7%（随机+归位）提升至 93.8%（提升 64.1 点），匹配世界重置（90.6%）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32260/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">EgoLoAF: Learning Humanoid Loco-Manipulation from Egocentric Demonstrations with Hand-Object Affordances</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32241/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Motion Chain of Thought: Disentangling Motion Semantics from Visual Appearance for Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

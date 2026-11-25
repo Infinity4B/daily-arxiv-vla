@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>LeanWAM: Learning Latent World Action Models from Frozen Video Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出LeanWAM，一种潜在世界动作模型，旨在将冻结视频生成模型的先验知识转移到轻量级机器人策略中，避免在部署时运行大型视频生成器。 针对现有世界动作模型（WAM）训练和部署成本高的问题，通过探测研究发现策略真正需要的未来信息可以压缩为少数几个 token，从而设计紧凑的预测监督。 采用两阶段训练：第一阶段学习将观察到的转换压缩为 32 个预测 token 和世界 token，并条件化冻结视频模型；第二阶段将这些表示蒸馏到仅 1.4B 参数的轻量级策略中，该策略直接从当前观测预测未来表示并生成动作。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31740">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">LeanWAM: Learning Latent World Action Models from Frozen Video Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31740" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31740" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出LeanWAM，一种潜在世界动作模型，旨在将冻结视频生成模型的先验知识转移到轻量级机器人策略中，避免在部署时运行大型视频生成器。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">LeanWAM: Learning Latent World Action Models from Frozen Video Models</p>
+</div></figure>
+        <p class="article-unit">论文作者来自密歇根大学（University of Michigan）。</p>
+        <ul class="article-facts"><li>arXiv 2611.31740</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>论文作者来自<strong>密歇根大学</strong>（University of Michigan）。</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出<strong>LeanWAM</strong>，一种潜在世界动作模型，旨在将冻结视频生成模型的先验知识转移到轻量级机器人策略中，避免在部署时运行大型视频生成器。</li><li>针对现有世界动作模型（WAM）训练和部署成本高的问题，通过探测研究发现策略真正需要的未来信息可以压缩为少数几个 token，从而设计紧凑的预测监督。</li><li>采用两阶段训练：第一阶段学习将观察到的转换压缩为 32 个预测 token 和世界 token，并条件化冻结视频模型；第二阶段将这些表示蒸馏到仅 1.4B 参数的轻量级策略中，该策略直接从当前观测预测未来表示并生成动作。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>LeanWAM 两阶段框架</strong>：利用冻结视频生成器的先验，通过紧凑预测代码和世界 token 将未来信息蒸馏到轻量级部署策略，无需在推理时运行视频模型。</li><li>通过<strong>探测研究</strong>揭示：互补的未来表示（视频特征、语义特征、VAE 潜变量）可以被压缩到少量 token 而几乎不损失动作解码能力；仅一个 token 即可保留大部分性能，且中间帧提供额外时序信息。</li><li>在 <strong>LIBERO、LIBERO-Plus 和 RoboTwin 2.0</strong> 三个基准上，LeanWAM 以 1.4B 参数、无大规模具身预训练，超越多个强大的 VLA 和 WAM 基线，并大幅降低推理延迟（A100 上 25.1ms，比代表性 WAM 快 12.3–41.5 倍）。</li><li>通过行为分析和注意力可视化，证明学习到的预测代码具有跨任务一致性，并且 Future Extractor 能够关注与动作相关的区域。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>两阶段训练</strong>：Stage 1 使用冻结的 <strong>Cosmos-Predict2.5-2B</strong> 视频模型，通过 Future Extractor 将观察到的短片段压缩为 32 个预测 token（<code>z</code>），条件化冻结生成器进行未来视频预测；同时利用动作、RGB、语义（DINOv3）和几何（VGGT-Ω）监督共同塑造该代码；从生成器中间层提取世界 token（<code>w</code>）作为补充。</li><li><strong>动作监督</strong>：动作 DiT 读取预测代码和世界 token，通过流匹配损失生成动作，梯度通过冻结模型传播，使代码对动作解码更友好。</li><li><strong>蒸馏策略</strong>：Stage 2 采用 <strong>Mixture-of-Transformers</strong> 架构，包含一个视觉-语言骨干（Qwen3.5-0.8B 截断 12 层）、一个世界专家和一个动作专家；世界专家预测 Stage 1 产生的预测代码和世界 token，动作专家生成动作块。通过蒸馏目标将未来信息压缩到策略中，部署时仅使用该策略。</li><li><strong>注意力掩码</strong>：设计稀疏注意力，动作专家仅通过当前 token 与世界专家交互，语言和预测未来信息经由世界专家整合，提高效率。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO</strong>（4 个套件：Spatial, Object, Goal, Long）、<strong>LIBERO-Plus</strong>（7 种扰动零样本泛化）、<strong>RoboTwin 2.0</strong>（50 个双手操作任务，选取 10 个任务训练和评估）。</li><li>模型规模：部署策略 <strong>1.4B 参数</strong>；冻结视频模型 <strong>Cosmos-Predict2.5-2B</strong>；视觉-语言骨干 <strong>Qwen3.5-0.8B</strong>（截断）。</li><li>训练资源：论文未在正文中明确训练 GPU 数量，推理效率在 <strong>A100 GPU</strong> 上测量，单个动作块预测延迟 25.1ms。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估基准：LIBERO（每套件 500 集）、LIBERO-Plus（共 10,030 集，含 7 种扰动）、RoboTwin 2.0（干净与随机化设置各 100 集/任务）。</li><li>主要指标：任务成功率（%）、推理延迟（ms）。</li><li>关键结果：</li></ul>
+<p> - <strong>LIBERO</strong>：LeanWAM 平均成功率 <strong>98.4%</strong>，在四个套件上均达到或接近最佳，尤其在 Long 套件上 98.0% 为最高。</p>
+<p> - <strong>LIBERO-Plus</strong>：零样本泛化中整体成功率领先，且推理延迟仅为 <strong>25.1ms</strong>，比代表性 WAM（如 Fast-WAM, OpenWAM-α）快 12.3–41.5 倍。</p>
+<p> - <strong>RoboTwin 2.0</strong>：在双手操作任务上同样超越强基线（具体数值见论文）。</p>
+<p> - 消融实验证明每个组件（预测代码、世界 token、语义/几何对齐、蒸馏）对最终性能均有贡献。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31822/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">G0.7: Scaling Up a Fast World Action Model with Long Context</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31715/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Sparks of Weight-Space Programming for Robot Foundation Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

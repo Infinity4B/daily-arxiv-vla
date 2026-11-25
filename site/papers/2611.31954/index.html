@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Perception Is Enough, at the Right Scale: Scale-Adaptive Token Pruning for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对 视觉-语言-动作（VLA）模型 在实时机器人控制中因连续处理视觉观测而导致的高计算成本问题，提出一种无需训练的 尺度自适应 token 剪枝方法。 核心观点：感知信息本身足以指导 token 选择，但前提是感知表征的语义尺度必须与场景演化的语义结构相匹配；固定尺度会导致遗漏决策关键信息。 提出 TauPrune-VLA，通过一个“感知温度” τ 动态调整保留的感知表征尺度，并利用相邻帧间感知语义的时序稳定性实现异步剪枝，从而降低剪枝开销。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31954">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">Perception Is Enough, at the Right Scale: Scale-Adaptive Token Pruning for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31954" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31954" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对 视觉-语言-动作（VLA）模型 在实时机器人控制中因连续处理视觉观测而导致的高计算成本问题，提出一种无需训练的 尺度自适应 token 剪枝方法。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef" aria-hidden="true">
+  <p class="note-cover-title">Perception Is Enough, at the Right Scale: Scale-Adaptive Token Pruning for Vision-Language-Action Models</p>
+</div></figure>
+        <p class="article-unit">福州大学 物理与信息工程学院，福建省媒体信息智能处理与无线传输重点实验室（第一作者 Yifeng Li…</p>
+        <ul class="article-facts"><li>arXiv 2611.31954</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>福州大学</strong> 物理与信息工程学院，福建省媒体信息智能处理与无线传输重点实验室（第一作者 Yifeng Lin、Liuxiang Qiu、Yunfeng Chen、Tiesong Zhao 所属）</li><li><strong>中国科学技术大学</strong> 类脑智能感知与认知教育部重点实验室（通讯作者 Tiesong Zhao 的联合单位）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对 <strong>视觉-语言-动作（VLA）模型</strong> 在实时机器人控制中因连续处理视觉观测而导致的高计算成本问题，提出一种无需训练的 <strong>尺度自适应 token 剪枝方法</strong>。</li><li>核心观点：感知信息本身足以指导 token 选择，但前提是感知表征的<strong>语义尺度</strong>必须与场景演化的语义结构相匹配；固定尺度会导致遗漏决策关键信息。</li><li>提出 <strong>TauPrune-VLA</strong>，通过一个“感知温度” τ 动态调整保留的感知表征尺度，并利用相邻帧间感知语义的时序稳定性实现异步剪枝，从而降低剪枝开销。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>TauPrune-VLA</strong>，一种训练无关的 token 剪枝方法，通过单一感知温度 τ 实现尺度自适应的感知 token 选择，加速 VLA 推理。</li><li>证明基于感知的 token 剪枝的有效性取决于感知表征是否在每一步决策时以适合场景语义结构的尺度进行解读；解决了以往方法依赖内部注意力、担心感知信息不足的问题。</li><li>设计了<strong>异步流水线剪枝</strong>机制：利用当前帧计算保留索引并应用于下一帧，使 token 选择与推理并行，进一步降低剪枝额外开销。</li><li>引入<strong>感知-动作温度调制</strong>：利用核谱熵和核纯度等感知语义趋势，结合机器人状态变化与动作幅值在线调节温度 τ。</li><li>在多个 VLA 模型（OpenVLA-OFT、π₀.₅、CogACT）和仿真基准（LIBERO、SIMPLER）上验证，最高实现 <strong>1.86× 推理加速</strong>，同时保持接近基线的任务成功率；并在两台真实机器人平台上验证有效性。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>问题建模</strong>：将 token 剪枝形式化为在预算 K 下选择索引子集 I，使动作预测差异最小化；从感知角度，期望保留子集的 token 分布近似完整集合。</li><li><strong>感知语义尺度分析</strong>：通过聚类和 PCA 观察发现语义结构在相邻帧间相对稳定，主要变化为簇的位移和缩放；不同决策阶段对感知尺度的需求不同。</li><li><strong>流水线异步剪枝</strong>：在第 t 步对视觉特征执行感知 token 选择，得到保留索引 I_t，并在第 t+1 步应用到新 token 序列上；默认在第二个 decoder 层后剪枝。</li><li><strong>感知 token 选择</strong>：使用 chord 距离定义表示残差，并推导局部表示增益 δ_i(j\|S) 和全局表示增益 G(j\|S)；引入温度 τ 作为幂平均指数，得到调整后的全局增益 G_τ(j\|S)，通过贪心选择最高增益 token 直至满足预算 K。</li><li><strong>温度在线调制</strong>：从视觉特征构建高斯核矩阵并计算核谱熵 H_t 和核纯度 P_t；根据两者的变化方向确定温度更新方向 u_t ∈ {1, -1, 0}；使用近期运动强度 m_{t-1} 调节步长；目标温度 τ̂_t = clip(τ_base + β m_{t-1} u_t)，再通过指数平滑得到 τ_t（α=0.5，τ_base=0.25）。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真数据集</strong>：<strong>LIBERO</strong>（四个任务套件：Spatial、Object、Goal、Long）和 <strong>SIMPLER</strong>（Visual Matching 和 Variant Aggregation，含 PickCan、MoveNear、Drawer、DrawerApple 任务）。</li><li><strong>真实机器人平台</strong>：<strong>Aloha 双机械臂平台</strong>（执行 PickBanana 和 FoldCloth 任务）和 <strong>TIANJI Marvin M6</strong>（执行 PickCable 任务）。</li><li><strong>模型</strong>：<strong>OpenVLA-OFT</strong>、<strong>π₀.₅</strong>、<strong>CogACT</strong>（均为开源 VLA 模型，参数量通常超过 2B）。</li><li><strong>训练资源</strong>：方法无需训练；所有实验评估在 <strong>NVIDIA A40 GPU</strong> 上进行。</li><li><strong>剪枝设置</strong>：默认剪枝比例为 <strong>75%</strong>，感知 token 选择在第二个 VLM 层执行。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：在 LIBERO 和 SIMPLER 仿真环境中测试任务成功率、计算量（TFLOPs）和推理延迟；基线包括 Vanilla、FastV、VLA-Cache、VLA-Pruner、DivPrune、MMTok、VLA-ADP、SAFE-Pruner、SpecPrune-VLA 等。</li><li><strong>主要指标</strong>：任务成功率（%）、FLOPs（T）、推理延迟（ms）和相对 Vanilla 的加速比。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 在 <strong>OpenVLA-OFT</strong> 上，TauPrune-VLA 平均成功率 <strong>97.10%</strong>（Vanilla 96.85%），FLOPs 从 3.97T 降至 <strong>1.56T</strong>，延迟从 122.57ms 降至 <strong>65.82ms</strong>，加速 <strong>1.86×</strong>。</p>
+<p> - 在 <strong>π₀.₅</strong> 上，平均成功率 <strong>96.70%</strong>（Vanilla 97.20%），FLOPs 从 1.99T 降至 <strong>1.27T</strong>，延迟从 67.04ms 降至 <strong>38.87ms</strong>，加速 <strong>1.72×</strong>。</p>
+<p> - 在 <strong>SIMPLER</strong> Visual Matching 上，TauPrune-VLA 平均成功率 <strong>75.35%</strong>（Vanilla 74.93%），且延迟显著降低。</p>
+<p> - 在真实机器人平台上，TauPrune-VLA 能够在保持任务成功率接近基线的同时实现持续执行，验证了实际部署的可行性。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32016/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RoboHarness-RL: Agentic Reinforcement Learning for VLM-Based Robot Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31903/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Beyond Expert Replay: Cross-Instruction Anchoring for Continual Vision-Language-Action Learning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

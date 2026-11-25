@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Sparse Poison, Strong Hijack: Efficient Trajectory-Level Backdoors in Vision-Language-Action Models with Only 1\% Poisoning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究 VLA 模型（视觉-语言-动作模型）中的轨迹级目标后门攻击：攻击者通过物理触发器诱导机器人完成完整的攻击者指定多步操作任务，而非仅造成任务失败或局部动作偏差。 现有攻击通常依赖较高投毒率来获得足够的轨迹监督；但在 1% 低投毒率下，存在目标轨迹监督稀缺与干净任务更新主导导致干扰两大瓶颈。 论文提出两阶段多模态协同优化框架，在仅 1% 投毒数据条件下实现高目标成功率，同时保持干净任务性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32304">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">Sparse Poison, Strong Hijack: Efficient Trajectory-Level Backdoors in Vision-Language-Action Models with Only 1\% Poisoning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32304" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32304" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究 VLA 模型（视觉-语言-动作模型）中的轨迹级目标后门攻击：攻击者通过物理触发器诱导机器人完成完整的攻击者指定多步操作任务，而非仅造成任务失败或局部动作偏差。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32304.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32304.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32304.webp" alt="Sparse Poison, Strong Hijack: Efficient Trajectory-Level Backdoors in Vision-Language-Action Models with Only 1\% Poisoning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">华东师范大学（East China Normal University；含中关村研究院）</p>
+        <ul class="article-facts"><li>arXiv 2611.32304</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>华东师范大学</strong>（East China Normal University；含中关村研究院）</li><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>香港科技大学（广州）</strong>（The Hong Kong University of Science and Technology (Guangzhou)）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究 <strong>VLA 模型</strong>（视觉-语言-动作模型）中的<strong>轨迹级目标后门攻击</strong>：攻击者通过物理触发器诱导机器人完成完整的攻击者指定多步操作任务，而非仅造成任务失败或局部动作偏差。</li><li>现有攻击通常依赖较高投毒率来获得足够的轨迹监督；但在 1% 低投毒率下，存在<strong>目标轨迹监督稀缺</strong>与<strong>干净任务更新主导导致干扰</strong>两大瓶颈。</li><li>论文提出<strong>两阶段多模态协同优化框架</strong>，在仅 1% 投毒数据条件下实现高目标成功率，同时保持干净任务性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>多模态 3D 触发器优化</strong>：在视觉注意力、语言注意力和目标动作监督下，联合优化触发器的纹理、平移和尺度，增强低投毒率下的触发器-目标关联。</li><li>提出<strong>源选择性双 LoRA 适配</strong>：采用串行 Clean-LoRA 与 Trigger-LoRA，配合<strong>干净参考梯度投影</strong>与<strong>列级校准融合</strong>，解耦干净/后门参数更新并缓解优化干扰。</li><li>在 <strong>OpenVLA、OpenVLA-OFT、π0、π0.5</strong> 四个 VLA 模型和四个 LIBERO 套件上，以 <strong>1% 投毒数据</strong>实现平均 <strong>78.2% TSR</strong>，比最强基线高 <strong>62.7 个百分点</strong>，且干净任务退化最小；真机实验验证了轨迹级劫持。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Stage I 触发器优化</strong>：冻结 VLA 策略，通过可微渲染合成 3D 触发器，联合优化纹理、平移和尺度；使用视觉注意力、语言注意力及目标动作监督，动作损失采用各模型原生目标（交叉熵/分块 L1/流匹配）。</li><li><strong>Stage II 冲突感知双 LoRA 适配</strong>：冻结主干，引入串行 Clean-LoRA 和 Trigger-LoRA；干净示范只更新 Clean-LoRA，投毒示范只更新 Trigger-LoRA，并用 stop-gradient 隔离；通过<strong>干净参考梯度投影</strong>对 Trigger-LoRA 梯度进行非对称修正，最后学习列级校准系数并解析融合为统一稠密策略。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO</strong> 四个套件：Spatial、Object、Goal、Long。</li><li>评估模型为 <strong>OpenVLA、OpenVLA-OFT、π0、π0.5</strong>，投毒率为 1%。</li><li>论文未在提供的文本中明确列出模型参数量和 GPU/TPU 等训练硬件；代码已开源：https://github.com/vla-attack/Sparse_Poison_Strong_Hijack</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>采用 <strong>CSR（干净任务成功率）</strong> 和 <strong>TSR（目标成功率）</strong> 指标，在 1% 投毒率、四个 LIBERO 套件上进行<strong>配对闭环评估</strong>，与 <strong>GoBA、BackdoorVLA-VT</strong> 基线比较。</li><li>在 <strong>OpenVLA-OFT + LIBERO-Spatial</strong> 上，方法取得 <strong>CSR 95.2% / TSR 86.4%</strong>，目标成功率比最强基线高 <strong>71.6 pp</strong>；干净性能比最强攻击基线高 <strong>3.6 pp</strong>。</li><li>整体平均 <strong>TSR 78.2%</strong>，超过最强基线 <strong>62.7 pp</strong>，且干净任务退化最小；真机实验验证了闭环轨迹级劫持，消融和防御鲁棒性实验进一步支撑方法有效性。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32353/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Any2Act: Scaling In-Context Robot Learning from Heterogeneous Demonstrations</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32260/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">EgoLoAF: Learning Humanoid Loco-Manipulation from Egocentric Demonstrations with Hand-Object Affordances</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

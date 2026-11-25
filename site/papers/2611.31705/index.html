@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>FoveaWAM: Role-Aware 4D World-Action Modeling for Dynamic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究动态操作中的核心问题：策略计算期间目标物仍在运动，观察到的位姿在动作执行时已经过时，必须预测执行时刻的场景。 论文提出角色感知预测范式：目标物的位姿需要毫米级精确预测，周围环境只需通过稀疏运动表达，静态场景则直接使用当前帧。 基于该思想提出 FoveaWAM，一种原生 4D 世界-动作模型，在单张 RTX 5090 上动作生成仅需 15.1 ms，约为视频世界-动作基线模型的 10倍 快。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31705">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">FoveaWAM: Role-Aware 4D World-Action Modeling for Dynamic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31705" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31705" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究动态操作中的核心问题：策略计算期间目标物仍在运动，观察到的位姿在动作执行时已经过时，必须预测执行时刻的场景。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #ef6c3f; --cover-to: #f6b13d; --cover-spot: #ffd59c; --cover-ink: #fff8ef" aria-hidden="true">
+  <p class="note-cover-title">FoveaWAM: Role-Aware 4D World-Action Modeling for Dynamic Manipulation</p>
+</div></figure>
+        <p class="article-unit">北京中关村学院（Beijing Zhongguancun Academy）</p>
+        <ul class="article-facts"><li>arXiv 2611.31705</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>北京中关村学院</strong>（Beijing Zhongguancun Academy）</li><li><strong>北京大学</strong>（Peking University）</li><li><strong>北京人工智能研究院</strong>（Beijing Academy of Artificial Intelligence）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究动态操作中的核心问题：策略计算期间目标物仍在运动，观察到的位姿在动作执行时已经过时，必须预测执行时刻的场景。</li><li>论文提出<strong>角色感知预测范式</strong>：目标物的位姿需要毫米级精确预测，周围环境只需通过稀疏运动表达，静态场景则直接使用当前帧。</li><li>基于该思想提出 <strong>FoveaWAM</strong>，一种原生 4D 世界-动作模型，在单张 RTX 5090 上动作生成仅需 <strong>15.1 ms</strong>，约为视频世界-动作基线模型的 <strong>10倍</strong> 快。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出<strong>角色感知预测范式</strong>，对目标运动做精确预测、对周围运动做粗略预测、对静态几何不做预测，在保持接触精度的同时降低预测成本。</li><li>提出 <strong>FoveaWAM</strong> 模型，实现精确、低延迟的动作生成；在 <strong>OnTimeBench</strong> 上达到 <strong>82.1%</strong> 成功率，比最强基线高 <strong>20.8 个百分点</strong>，并在 <strong>DOMINO</strong> 和真实机器人任务上领先。</li><li>构建 <strong>OnTimeBench</strong> 动态操作基准，包含 <strong>14 个动态操作任务</strong>，在推理期间世界持续推进，以原生延迟评估每个策略，暴露暂停评估所隐藏的延迟代价。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>输入使用单帧 <strong>RGB-D</strong> 图像；冻结的 <strong>MAE ViT-B/16</strong> 编码器生成 196 个 patch token，并通过深度图反投影为 3D 度量锚点，加入 3D 旋转位置编码。</li><li>目标运动历史使用 <strong>SE(3) 位姿轨迹</strong>：覆盖最近 <strong>350 ms</strong>、8 个采样点，包含平移、旋转、时间间隔和有限差分速度/加速度；同时加入机器人末端状态 token。</li><li>世界流由场景 token <strong>S</strong> 和摘要 token <strong>M</strong> 组成，采用掩码注意力；动作流由 8 个噪声动作 token <strong>A</strong> 组成，动作可看到世界状态但世界不读取动作噪声。</li><li>训练时，线性解码器分别预测<strong>稀疏 3D 场景流</strong>（所有可见 patch 的位移和可见性）和<strong>目标 SE(3) 轨迹</strong>（位移与旋转增量，使用 SO(3) 测地距离损失）。</li><li>动作流使用 <strong>flow matching</strong> 训练；推理时跳过解码器，世界流一次前向并缓存 KV，动作流进行 5 步欧拉积分，单次查询耗时 <strong>15.1 ms</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>OnTimeBench</strong>：基于 <strong>MuJoCo</strong> 和 <strong>robosuite</strong> 构建，使用 <strong>Franka Panda</strong> 机械臂，控制频率 <strong>20 Hz</strong>。</li><li>包含 <strong>14 个任务、5 个任务族</strong>（抓取、放置、穿线、捕获、撞击），目标速度范围 <strong>0.03–1.14 m/s</strong>。</li><li>每个任务由特权状态专家提供 <strong>800 条演示</strong>，总计约 <strong>11,200 条</strong>；测试集包含 <strong>1,400 个留出场景</strong>，每个任务 100 个。</li><li><strong>DOMINO</strong> 基准：使用其 <strong>24 个单臂 Franka 任务</strong>（8 个 Intercept、16 个 Track）。</li><li><strong>真实机器人</strong>：6 个动态操作任务。</li><li>模型规模：FoveaWAM 主干为 <strong>12 层、宽度 1024、16 头</strong>，冻结 MAE ViT-B/16 之上约有 <strong>271.8M 可训练参数</strong>。</li><li>训练资源：单张 <strong>RTX 5090</strong>，BF16 编译运行；OnTimeBench 上从零训练 <strong>10 个 epoch</strong>（25,870 次更新）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>OnTimeBench</strong> 使用 <strong>1,400 个留出测试场景</strong>；指标为任务平衡成功率 <strong>SR</strong> 和 p95 动作可用时间 <strong>time-to-action</strong>。</li><li>评估设置：<strong>Native</strong>（原生延迟）、<strong>+150 ms</strong>（额外延迟）、<strong>Paused</strong>（推理期间暂停世界）。</li><li>OnTimeBench 结果：FoveaWAM 达到 <strong>82.1% Native SR</strong>、<strong>34.1% +150ms SR</strong>、<strong>90.3% Paused SR</strong>，p95 延迟为 <strong>15.1 ms</strong>。</li><li>最强基线 PUMA Native SR 为 <strong>61.4%</strong>，FoveaWAM 领先 <strong>20.8 个百分点</strong>；在 14 个任务中有 13 个达到最高或并列最高。</li><li>DOMINO 结果：FoveaWAM 总体 SR 为 <strong>46.8%</strong>、Manipulation Score 为 <strong>62.0</strong>，领先最强基线 <strong>19.9 个百分点</strong>（SR）；在 <strong>Track 任务</strong>上达到 <strong>55.5%</strong>，超过最强基线 <strong>23.6 个百分点</strong>。</li><li>真实机器人结果：FoveaWAM 在 6 个任务上全部取得最高成功率，平均成功率 <strong>48.3%</strong>，比最强基线高 <strong>17.5 个百分点</strong>。</li><li>消融实验：移除目标运动历史导致 Native SR 下降 <strong>19.6 个百分点</strong>，是影响最大的单一组件；角色感知精度分配和未来监督均对成功率有显著贡献。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31715/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Sparks of Weight-Space Programming for Robot Foundation Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31577/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">FabricBench: A Standardized Policy Benchmark for Bimanual Fabric Manipulation with a Contact-Driven Deformable Simulator</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

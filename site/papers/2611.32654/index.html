@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DexWAC: A Unified World-Actor-Critic Model for Dexterous Robot Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 DexWAC，一个统一的 世界-演员-评论家（World–Actor–Critic）模型，用于灵巧机器人操作 核心目标是在单一预训练阶段联合学习动作生成（actor）、动作条件世界模型（world model）和自举评论家（critic），充分利用演示数据中除动作模仿之外的监督信号 要解决的问题：现有世界-动作模型（WAMs）仅将视觉预测作为辅助损失，而策略改进方法通常需要单独训练世界模型和价值模型，导致训练开销大、表示共享不足" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32654">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">DexWAC: A Unified World-Actor-Critic Model for Dexterous Robot Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32654" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32654" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 DexWAC，一个统一的 世界-演员-评论家（World–Actor–Critic）模型，用于灵巧机器人操作</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32654.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32654.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32654.webp" alt="DexWAC: A Unified World-Actor-Critic Model for Dexterous Robot Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">University of California, San Diego（UCSD）</p>
+        <ul class="article-facts"><li>arXiv 2611.32654</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of California, San Diego</strong>（UCSD）</li><li><strong>École Polytechnique Fédérale de Lausanne</strong>（EPFL，瑞士洛桑联邦理工学院）</li><li><strong>Galbot</strong></li><li><strong>Peking University</strong>（北京大学）</li><li><strong>Tsinghua University</strong>（清华大学）</li><li><strong>Shanghai Qi Zhi Institute</strong>（上海期智研究院）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>DexWAC</strong>，一个统一的 <strong>世界-演员-评论家</strong>（World–Actor–Critic）模型，用于灵巧机器人操作</li><li>核心目标是在单一预训练阶段联合学习<strong>动作生成（actor）</strong>、<strong>动作条件世界模型（world model）</strong>和<strong>自举评论家（critic）</strong>，充分利用演示数据中除动作模仿之外的监督信号</li><li>要解决的问题：现有世界-动作模型（WAMs）仅将视觉预测作为辅助损失，而策略改进方法通常需要单独训练世界模型和价值模型，导致训练开销大、表示共享不足</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>DexWAC</strong>，在单一预训练阶段联合训练 <strong>actor、world model 和 critic</strong>，共享底层表示</li><li>在两个仿真基准（<strong>DexJoCo</strong>、<strong>RoboTwin 2.0</strong>）和两个真实机器人接触丰富操作任务上验证了预训练策略的优越性</li><li>将世界模型和评论家适配到实际执行数据，评估了世界模型的精度和效率，并展示了通过<strong>想象 PPO</strong> 和 <strong>评论家引导的 best-of-N</strong> 进行多任务策略改进</li><li>证明了联合学习动力学预测和价值监督能够提升策略性能，消融实验验证了各监督信号的必要性</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>Mixture-of-Transformers（MoT）</strong> 架构，耦合生成式世界模型骨干网络与紧凑的 actor-critic 专家模块，通过注意力机制共享 K/V 表示</li><li>世界模型基于<strong>图像编辑骨干</strong>，仅预测每个动作块端点的视觉潜在和本体感觉状态，而非生成中间视频帧，大幅提升想象效率</li><li>使用<strong>条件流匹配（conditional flow matching）</strong> 训练动作、视觉潜在和本体感觉的连续目标</li><li>引入 <strong>DreamSmooth</strong> 风格的奖励平滑，将稀疏终端成功反馈分配到前序步骤，并通过平衡正负样本的 MSE 损失训练奖励预测</li><li>采用<strong>块级时间差分（TD）学习</strong>训练状态价值，使用成对上下文在前向传播中同时计算锚点和端点价值，无需独立目标网络</li><li>在真实 rollout 上适配世界模型和评论家后，冻结世界模型进行想象 rollout，通过 <strong>PPO（带 BC 正则化）</strong> 或 <strong>评论家引导的 best-of-N</strong> 实现策略改进</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用基准：<strong>DexJoCo</strong>（8 个任务子集，含 5 个单臂任务和 3 个双臂任务）和 <strong>RoboTwin 2.0</strong>（50 个任务）</li><li>预训练数据：DexJoCo 上使用 <strong>800 条专家演示</strong>，RoboTwin 2.0 上使用 <strong>25,000 条随机设置轨迹 + 2,500 条干净设置轨迹</strong></li><li>模型规模与架构细节：论文未明确披露具体参数量，但采用 MoT 架构，包含世界模型骨干、actor-critic 专家、价值头、奖励头和延续头</li><li>训练资源配置：全局批量大小 <strong>256</strong>，DexJoCo 预训练 <strong>10,000 次优化器更新</strong>，世界模型和评论家适配 <strong>5,000 次更新</strong>；具体 GPU/TPU 资源未在片段中详细披露</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>仿真评估</strong>：DexJoCo 上 <strong>DexWAC Stage1</strong> 成功率达 <strong>65.5%</strong>，优于 π0.5 的 57.9%；PPO 改进后提升至 <strong>67.8%</strong>，超越大规模预训练 WAM 基线</li><li><strong>RoboTwin 2.0</strong>：DexWAC 在 50 个任务上取得最佳平均成功率 <strong>88.1%</strong></li><li><strong>世界模型精度</strong>：在全部 6 个图像质量指标上取得最佳结果，腕部视图 LPIPS 降低 <strong>38%</strong>，推理速度比最强基线快 <strong>8.5 倍</strong></li><li><strong>真实机器人</strong>：在两个接触丰富操作任务上分别达到 <strong>50% vs 20%</strong> 和 <strong>100% vs 70%</strong>（与 π0.5 对比），平均成功率 75% vs 45%</li><li><strong>消融实验</strong>：移除世界预测或价值监督均导致策略成功率下降，验证了联合监督的有效性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32665/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DiffGR00T: Execution-Aware Differentiable Training for Humanoid Whole-Body Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32639/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">ReFocus: Progress-Guided Adaptive Practice for Long-Horizon Robotic Manipulation Reinforcement Learning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

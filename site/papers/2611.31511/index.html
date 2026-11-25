@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Near-Zero Forgetting Is Not Enough: Out-of-Distribution Robustness in Continual Learning of Pretrained VLAs - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究预训练视觉-语言-动作模型（VLA）在持续学习中的分布外鲁棒性，重点检验“近零遗忘”是否在域偏移场景下同样成立。 通过复现 Pi0 在 LIBERO 四套基准上的经验回放持续学习范式，并在 LIBERO-Plus 的七类扰动下重新评估，揭示 ID 近零遗忘与 OOD 严重遗忘并存的现象。 利用表示分析（CKA、MMD、线性探针）进一步定位 OOD 性能崩溃的表示层面原因，提出出现象的解释：OOD 特征保留信息但发生失准。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31511">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Near-Zero Forgetting Is Not Enough: Out-of-Distribution Robustness in Continual Learning of Pretrained VLAs</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31511" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31511" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究预训练视觉-语言-动作模型（VLA）在持续学习中的分布外鲁棒性，重点检验“近零遗忘”是否在域偏移场景下同样成立。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">Near-Zero Forgetting Is Not Enough: Out-of-Distribution Robustness in Continual Learning of Pretrained VLAs</p>
+</div></figure>
+        <p class="article-unit">KU Leuven（Adrià Ruiz, Tinne Tuytelaars, Sergi Masip）</p>
+        <ul class="article-facts"><li>arXiv 2611.31511</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>KU Leuven</strong>（Adrià Ruiz, Tinne Tuytelaars, Sergi Masip）</li><li><strong>Computer Vision Center</strong>（Adrià Ruiz, Bartłomiej Twardowski）</li><li><strong>Universitat Autònoma de Barcelona</strong>（Adrià Ruiz, Bartłomiej Twardowski）</li><li><strong>IDEAS Research Institute</strong>（Bartłomiej Twardowski）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究预训练视觉-语言-动作模型（VLA）在持续学习中的<strong>分布外鲁棒性</strong>，重点检验“近零遗忘”是否在域偏移场景下同样成立。</li><li>通过复现 <strong>Pi0</strong> 在 <strong>LIBERO</strong> 四套基准上的经验回放持续学习范式，并在 <strong>LIBERO-Plus</strong> 的七类扰动下重新评估，揭示 ID 近零遗忘与 OOD 严重遗忘并存的现象。</li><li>利用表示分析（CKA、MMD、线性探针）进一步定位 OOD 性能崩溃的表示层面原因，提出出现象的解释：OOD 特征保留信息但发生<strong>失准</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>首次系统地在持续学习 VLA 的框架下解耦 <strong>ID 稳定性</strong> 与 <strong>OOD 稳健性</strong>，证明 ID 近零遗忘并不保证 OOD 泛化。</li><li>发现 OOD 遗忘模式在不同扰动类别之间高度一致，表现为共享的行为模式与表示漂移结构。</li><li>通过 CKA、MMD 和线性探针分析，表明漂移集中于 <strong>多模态表示和动作专家层</strong>，视觉编码器相对稳定；OOD 特征虽保留任务相关信息但线性读出失准。</li><li>扩展了 VLA 在持续学习中的评估维度，提出用 LIBERO-Plus 的 OOD 视角重新审视近零遗忘结论。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>Pi0</strong>（PaliGemma VLM 骨干 + 流匹配动作专家）进行经验回放持续微调：每任务回放缓冲 1000 帧，当前任务与回放样本 1:1 混合，使用 LoRA（VLM r=16, 动作专家 r=32）。</li><li>在 <strong>LIBERO</strong> 四套序列任务上训练，保存每个任务后的检查点，构成评估矩阵 C(k,i,p) 用于追踪跨检查点、跨任务、跨域的成败率。</li><li>使用 <strong>LIBERO-Plus</strong> 的七类扰动（背景纹理、机器人初始状态、相机视角、物体布局、光照、指令改写、传感器噪声）作为 OOD 评估集，与 ID 集配对比较。</li><li>表示分析：提取视觉编码器、多模态（VLM 输出）和第一流匹配步骤的动作特征；用 <strong>Linear CKA</strong> 衡量表示漂移，<strong>MMD</strong> 测量 ID–OOD 分布差异，<strong>线性探针 R²</strong> 评估信息可读性。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>ID 数据集</strong>：LIBERO 四套官方的 Spatial、Object、Goal、LIBERO-10，每套包含 10 个顺序任务。</li><li><strong>OOD 数据集</strong>：LIBERO-Plus 对 LIBERO 任务施加七类扰动，每类对应一个 OOD 评估域。</li><li><strong>模型</strong>：Pi0 预训练 VLA（PaliGemma VLM 骨干 + 流匹配动作专家），未明确报告总参数量。</li><li><strong>训练与评估硬件</strong>：主要使用 NVIDIA A100-SXM4-80GB GPU；部分评估与表示分析使用 RTX 3090。</li><li><strong>超参数</strong>：AdamW（β₁=0.9, β₂=0.95, wd=1e-10）、余弦学习率（峰值 2.5e-5，结束 2.5e-6）、每任务 10,000 步、批量大小 8。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>ID 性能</strong>：四套 LIBERO 的 NBT 接近零或为负（Spatial +0.026，Object -0.005，Goal -0.017，LIBERO-10 -0.036），确认 ID 近零遗忘。</li><li><strong>OOD 性能</strong>：LIBERO-Plus 上 OOD NBT 大幅上升（Spatial +0.40，Object +0.48，Goal +0.42，LIBERO-10 +0.16），OOD 成功率在 1–2 个后续任务后普遍塌缩至 0。</li><li><strong>行为模式</strong>：Spatial 和 Object 套件中，OOD 存活单元格在七类扰动间 Pearson 相关极高（均值 r=0.73/0.82），表明失败结构共享。</li><li><strong>表示漂移</strong>：CKA 显示视觉编码器漂移最小（ID–OOD 差距 ≤0.02），多模态漂移中等，动作专家漂移最大；MMD 的跨扰动相关性为 0.67–0.77，CKA 相关性 0.64–0.84。</li><li><strong>线性探针</strong>：ID→OOD 迁移读出的 R² 最差（端到端位置 96.6% 单元格、物体位置 92.9% 单元格为三者最低），而 OOD-CV 部分恢复，支持“信息保留但失准”的解释。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31535/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Hi3R-VLA: Grounding Semantics and Actions in 3D</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31488/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Embodied Neuro-symbolic AI: Making Robot Behavior Auditable, Safe, and Scalable</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

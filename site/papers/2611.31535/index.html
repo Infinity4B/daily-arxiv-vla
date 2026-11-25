@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Hi3R-VLA: Grounding Semantics and Actions in 3D - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出了 Hi3R-VLA，一种将视觉、语言和动作三类异构模态显式建模在 3D 几何 空间中的机器人操作策略。 主要解决现有视觉-语言-动作（VLA）模型主要依赖 2D 视觉表示、难以有效利用度量级 3D 结构进行精确动作预测的问题。 目标是提升语言引导的机器人操作在单臂、双臂和灵巧手等多种机器人形态上的精确性与泛化性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31535">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Hi3R-VLA: Grounding Semantics and Actions in 3D</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31535" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31535" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出了 Hi3R-VLA，一种将视觉、语言和动作三类异构模态显式建模在 3D 几何 空间中的机器人操作策略。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">Hi3R-VLA: Grounding Semantics and Actions in 3D</p>
+</div></figure>
+        <p class="article-unit">作者：Shizhe Chen、Paul Pacaud、Cordelia Schmid</p>
+        <ul class="article-facts"><li>arXiv 2611.31535</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者：<strong>Shizhe Chen</strong>、<strong>Paul Pacaud</strong>、<strong>Cordelia Schmid</strong></li><li>隶属机构：<strong>Inria, École normale supérieure, CNRS, PSL Research University</strong></li><li>项目主页：<strong>https://cshizhe.github.io/projects/hi3r_vla.html</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出了 <strong>Hi3R-VLA</strong>，一种将视觉、语言和动作三类异构模态显式建模在 <strong>3D 几何</strong> 空间中的机器人操作策略。</li><li>主要解决现有视觉-语言-动作（VLA）模型主要依赖 2D 视觉表示、难以有效利用度量级 3D 结构进行精确动作预测的问题。</li><li>目标是提升语言引导的机器人操作在单臂、双臂和灵巧手等多种机器人形态上的精确性与泛化性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Hi3R-VLA</strong>：以显式 3D 点云为共同几何参考，连接多模态感知与空间对齐的动作生成。</li><li>系统研究了 3D 策略中的关键设计选择，包括 <strong>多模态融合位置</strong>、<strong>空间锚点</strong>、<strong>3D 位置编码</strong> 和 <strong>DROID 预训练</strong>，为构建高效 3D 策略提供经验结论。</li><li>在 <strong>RoboCasa24</strong>、<strong>RLBench</strong>、<strong>RoboTwin2</strong>、<strong>DexJoCo</strong>、<strong>DexSuite</strong> 以及真实机器人任务上取得 SOTA，可训练参数少于 <strong>250M</strong>。</li><li>公开模型、代码和数据集。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用冻结的 <strong>SigLIP2</strong> 编码器提取图像和语言特征；点云由校准的 RGB-D 相机构建，建立点-像素空间对应关系。</li><li>点编码器基于 <strong>Point Transformer v3 (PTv3)</strong>，采用编码器-解码器分层结构，输出 5 个尺度特征；在每一编码阶段注入空间对齐的图像特征，并通过 <strong>AdaLN</strong> 注入语言条件，实现任务相关的 3D 语义增强。</li><li>动作专家为 <strong>conditional flow-matching transformer</strong>，以 <strong>coarse-to-fine</strong> 方式逐步关注从粗到细的点特征，同时直接条件图像和文本 token。</li><li>引入 <strong>spatial anchors</strong>：将动作表示与 3D 末端执行器位置绑定，使用 <strong>3D RoPE</strong> 在动作自注意力和动作-点交叉注意力中建模相对空间位移；频率参数设置为 ω_max=<strong>50 rad/m</strong>，θ=<strong>100</strong>。</li><li>训练采用 flow matching 损失，推理使用 10 步 Euler 积分；在 <strong>DROID</strong> 数据集上预训练，使用 <strong>PointWorld</strong> 重建的 RGB-D 数据和 <strong>RoboInter</strong> 语言标注。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>RoboCasa24</strong>：24 个操作任务，每任务 <strong>50</strong> 个演示用于主实验和消融。</li><li><strong>RLBench</strong>：10 个桌面单臂操作任务，每任务 <strong>100</strong> 个演示。</li><li><strong>RoboTwin2</strong>：50 个双臂协调操作任务，每任务 <strong>50</strong> 个干净演示，并在 clean 和 randomized 两种环境评估。</li><li><strong>DexJoCo</strong>：10 个 Allegro 灵巧手操作任务。</li><li><strong>DexSuite</strong>：灵巧操作评估套件。</li><li><strong>DROID 预训练集</strong>：由 PointWorld 重建得到的 RGB-D 版本，包含 <strong>35.2k</strong> 条演示和 <strong>25.4k</strong> 条不同指令。</li><li>模型可训练参数少于 <strong>250M</strong>；图像/文本编码器保持冻结，仅微调最终投影层。</li><li>训练资源：<strong>2 块 NVIDIA H100 GPU</strong>，全局批大小 <strong>128</strong>，优化器 <strong>AdamW</strong>，学习率 <strong>1e-4</strong>，余弦调度。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估协议：RoboCasa24 每任务 50 个 episode × 3 个种子；RLBench 每任务 100 个 episode × 3 个种子；RoboTwin2 在 clean 和 randomized 环境各 100 个 episode/任务；真实机器人 5 个任务 × 10 次试验。</li><li>主要指标：平均成功率（%），报告均值和标准差。</li><li><strong>RoboCasa24</strong>：<strong>Hi3R-VLA 78.8 ± 0.8</strong>，比最强 2D 基线 CosmosPolicy（67.1）高 11.7 点，比 SA-WAM（76.6）高 2.2 点。</li><li><strong>RLBench-10Task</strong>：<strong>90.6 ± 0.3</strong>，比之前最佳 3D 方法 PointACT（82.3）高约 8 点。</li><li><strong>RoboTwin2</strong>：clean 环境 <strong>90.1</strong>，randomized 环境 <strong>50.5</strong>，平均 <strong>70.3</strong>，显著优于此前最好方法 4D-WAM（平均 61.6）。</li><li><strong>DexJoCo / DexSuite</strong>：同样取得 SOTA，覆盖单臂、双臂到高自由度灵巧手操作。</li><li>真实机器人：在 5 个任务中，Hi3R-VLA 在部分成功和完全成功上均优于 <strong>π0.5</strong>，在精细操作（如烤面包、冲咖啡）上提升尤为明显。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31577/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FabricBench: A Standardized Policy Benchmark for Bimanual Fabric Manipulation with a Contact-Driven Deformable Simulator</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31511/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Near-Zero Forgetting Is Not Enough: Out-of-Distribution Robustness in Continual Learning of Pretrained VLAs</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

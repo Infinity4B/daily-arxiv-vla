@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>What Does a Skill Vocabulary Cost? A Closed-Loop Decomposition over Demonstrated Motions - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究离散技能策略中“技能词汇表”的代价，提出Movement Prototype Quantization (MPQ)，将演示运动库置于策略之后而非内部，从而在闭环中分解量化、选择与执行的代价。 针对现有方法将词汇表作为潜在码本与选择器、解码器联合训练，导致失败无法追溯的问题，MPQ 通过显式库和库参考提供可测量的基准。 核心目标是回答“技能词汇表代价是什么”，并验证离线重建指标是否能可靠指导库的设计与选择。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32858">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">What Does a Skill Vocabulary Cost? A Closed-Loop Decomposition over Demonstrated Motions</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32858" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32858" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究离散技能策略中“技能词汇表”的代价，提出Movement Prototype Quantization (MPQ)，将演示运动库置于策略之后而非内部，从而在闭环中分解量化、选择与执行的代价。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32858.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32858.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32858.webp" alt="What Does a Skill Vocabulary Cost? A Closed-Loop Decomposition over Demonstrated Motions 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Intuitive Robots Lab, Karlsruhe Institute of Techno…</p>
+        <ul class="article-facts"><li>arXiv 2611.32858</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Intuitive Robots Lab, Karlsruhe Institute of Technology (KIT), Germany</strong></li><li><strong>Robotics Institute Germany (RIG)</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究离散技能策略中“技能词汇表”的代价，提出<strong>Movement Prototype Quantization (MPQ)</strong>，将演示运动库置于策略之后而非内部，从而在闭环中分解量化、选择与执行的代价。</li><li>针对现有方法将词汇表作为潜在码本与选择器、解码器联合训练，导致失败无法追溯的问题，MPQ 通过显式库和库参考提供可测量的基准。</li><li>核心目标是回答“技能词汇表代价是什么”，并验证离线重建指标是否能可靠指导库的设计与选择。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出闭环分解方法，将离散技能策略的差距分解为<strong>量化、选择、执行</strong>三部分，并以<strong>库参考（library reference）</strong>为基准。</li><li>提出 <strong>MPQ</strong> 执行层：将每个预测动作块替换为最近的演示段并施加有界校正，与未包装策略统计等价（全池化变化 +0.6 点）。</li><li>在三个骨干网络上验证：选择器的差距主要来自<strong>执行所选元素</strong>而非词汇或选择，选择代价最多 0.9 点，执行代价高达 12.1 点。</li><li>证明离线重建指标会误导库大小、设计和跨套件迁移的判断，无法替代闭环评估。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用 <strong>B-spline 控制点</strong>表示动作块，通过 <strong>Gram 矩阵</strong>定义轨迹距离（Gram metric），直接在系数上计算而不需解码。</li><li>对演示段进行<strong>偏航规范化（yaw canonicalization）</strong>，仅旋转水平方向，保留垂直与水平运动的区别。</li><li>库构建：从演示中分割重叠段，使用 k-means 聚类，并将聚类中心投影到真实段上；每个<strong>运动原型（movement prototype）</strong>附带基于簇内距离分位数的<strong>容差（tolerance）</strong>。</li><li>执行时，将策略预测块替换为最近原型，旋转到预测帧，并根据容差和预算 β 施加有界校正（偏差界限）；策略作为冻结黑盒，执行路径上无任何可训练参数。</li><li>混合模型 \(L_{\mathrm{idx}}\) 用选择器的选择替换参考策略的选择，但保留参考的放置与校正，从而分离选择与执行代价。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主要基准：<strong>LIBERO-90</strong>（90 任务，每任务 10 回合）、<strong>LIBERO-10</strong>（每任务 50 回合）、<strong>RoboCasa</strong>。</li><li>鲁棒性评估：<strong>LIBERO-Plus</strong>（6 种观察偏移 × 100 变体）。</li><li>策略模型：<strong>ACT</strong>、<strong>Diffusion Policy</strong>、<strong>Flow-matching DiT</strong>、<strong>QueST</strong>、<strong>VQ-BeT</strong>、<strong>OpenVLA-OFT (7B)</strong>。</li><li>库参数：\(K=256\) 运动原型，\(H=20\) 步，\(w_g=5\)，\(β=0.5\)；这些值由 ACT 在 LIBERO-90 的不相交初始状态上选定，并统一用于所有策略、套件和真机。</li><li>真机实验：<strong>Franka Panda</strong> 机器人（DROID 配置），微调 <strong>π0.5</strong> 策略，400 个微调演示。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 13 个策略-基准组合上，MPQ 包装后成功率变化平均 <strong>+0.6 点</strong>（95% CI [-0.8, +1.9]），统计等价于未包装策略（等价检验 \(p&lt;0.001\)）。</li><li>分解结果（LIBERO-90, K=256, β=0.5）：量化代价在噪声范围内；选择代价最多 0.9 点；执行代价为 ACT 选择器 <strong>-12.1 点</strong>、Diffusion Policy 选择器 <strong>-10.3 点</strong>、Flow DiT 选择器 <strong>0.0 点</strong>。</li><li>观察偏移下 MPQ 代价不增（LIBERO-Plus 六个偏移轴上均无显著损失）。</li><li>真机实验：15 次尝试中裸策略 15/15 成功，包装策略 13/15 成功（Fisher 检验 \(p=0.48\)）。</li><li>离线重建指标在闭环成功后仍持续改善，错误排序库设计，并遗漏了 4-8 点的跨套件迁移损失。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33010/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Embodied AI Fails the Mirror Test: How a Simple Mirror Breaks Robot Policies</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32722/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">AG-WAM: Attention-Guided World Action Model for Accurate and Efficient Robot Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

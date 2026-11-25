@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Ground, Guide, Act: Improving VLA Spatial Generalization with Multimodal Foundation Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对视觉-语言-动作（VLA）模型在物体位置和任务目标变化时泛化能力差的问题，提出利用多模态基础模型（MFM）增强 VLA 空间泛化能力的框架 通过系统能力分析发现，VLA 失败主要源于目标定位和全局空间路径规划，而局部操作技能大多仍可用 提出 MFM-VLA，一种选择性协作框架，由 MFM 提供目标定位和空间引导，控制器执行自由空间运动，VLA 保留精细操作控制" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31452">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-23">2026-11-23</time></p>
+        <h1 class="article-title">Ground, Guide, Act: Improving VLA Spatial Generalization with Multimodal Foundation Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31452" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31452" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对视觉-语言-动作（VLA）模型在物体位置和任务目标变化时泛化能力差的问题，提出利用多模态基础模型（MFM）增强 VLA 空间泛化能力的框架</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">Ground, Guide, Act: Improving VLA Spatial Generalization with Multimodal Foundation Models</p>
+</div></figure>
+        <p class="article-unit">中国科学技术大学（University of Science and Technology of Ch…</p>
+        <ul class="article-facts"><li>arXiv 2611.31452</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国科学技术大学</strong>（University of Science and Technology of China）</li><li>作者：Guangting Zheng、Shaoxuan Wang、Yu Yuan、Zhipeng Tang、Jiajun Deng、Yanyong Zhang</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对视觉-语言-动作（VLA）模型在物体位置和任务目标变化时泛化能力差的问题，提出利用多模态基础模型（MFM）增强 VLA 空间泛化能力的框架</li><li>通过系统能力分析发现，VLA 失败主要源于目标定位和全局空间路径规划，而局部操作技能大多仍可用</li><li>提出 <strong>MFM-VLA</strong>，一种选择性协作框架，由 MFM 提供目标定位和空间引导，控制器执行自由空间运动，VLA 保留精细操作控制</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>通过反事实指令测试和相位解耦干预阶梯（PDIS）对多个预训练 VLA 进行系统分析，揭示视觉场景捷径现象，明确目标定位、空间路径和局部操作在失败中的角色</li><li>提出 <strong>MFM-VLA</strong> 框架，整合密集几何策略自适应、扰动状态恢复、开发集校准的能力路由和基于 MFM 的空间引导</li><li>在 <strong>LIBERO-PRO</strong>、<strong>ALOHA-Sim-PRO</strong>、<strong>RoboCasa365</strong> 和真实世界化学任务上验证有效性，成功率分别提升 14.9、74.0、3.6 和 30.9 个百分点</li><li>进一步探索扩展系统 <strong>MFM-VLA + Code Policy</strong>，由 MFM 在自适应 VLA 和任务专用代码控制器之间选择，显著提升整体性能</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>密集几何策略自适应</strong>：对 VLA 进行微调，使用动作块级密集几何标注（包含场景、子目标、几何偏移和短视域动作描述），并利用扰动状态恢复数据提升从非熟悉交接状态恢复的能力</li><li><strong>开发集校准能力路由</strong>：在开发集上比较直接执行和辅助执行的成功率，冻结路由决策，仅在辅助执行增益超过阈值且任务支持空间交接接口时选择辅助模式</li><li><strong>任务感知定位与空间引导</strong>：MFM 根据任务要求识别操纵目标点（如瓶盖、篮子内部），通过双视图三角化估计 3D 目标位置；控制器执行 Reach 和 Carry 阶段，VLA 执行 Grasp/Lift 和 Place/Release 阶段</li><li><strong>抓取验证与局部恢复</strong>：独立监控器检查抓取成功、物体保持和误抓，检测失败时进行有界的重试恢复</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO-PRO</strong>：160 任务、16 个套件、4 类扰动，使用 14,075 条轨迹微调</li><li><strong>ALOHA-Sim-PRO</strong>：双臂搬运任务，含语义、物体、位置、任务扰动</li><li><strong>RoboCasa365</strong>：50 个移动操作任务（18 原子已见、16 复合已见、16 复合未见），微调使用 1,437 条已见任务轨迹</li><li><strong>真实世界化学任务</strong>：Franka-XHand 平台，11 个玻璃器皿操作任务</li><li>使用的 VLA 模型：<strong>π₀.₅</strong>（LIBERO-PRO、RoboCasa365、真实世界）和 <strong>π₀</strong>（ALOHA-Sim-PRO）</li><li>MFM：<strong>GPT-6 Astra</strong></li><li>训练和推理使用的计算资源在提供的文本中未详细说明</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO-PRO</strong>：MFM-VLA 将整体成功率从 54.9% 提升至 69.8%；加入 Code Policy 后达 84.4%</li><li><strong>ALOHA-Sim-PRO</strong>：平均扰动成功率从 23.5% 提升至 97.5%；Position 和 Task 扰动下分别达 92.0% 和 100.0%</li><li><strong>RoboCasa365</strong>：整体成功率从 16.9% 提升至 20.5%；Composite-Seen 任务从 7.1% 提升至 17.1%；加入 Code Policy 后整体达 30.3%</li><li><strong>真实世界任务</strong>：原子任务平均成功率从 15.3% 提升至 54.4%，多阶段任务从 0.8% 提升至 31.7%</li><li><strong>零样本 MFM 对比</strong>：GPT-6 Astra 直接控制在 LIBERO-PRO 上仅达 3.5% 成功率，远低于 MFM-VLA 的 74.3%，验证了 VLA 接触控制的重要性</li><li>消融实验验证了策略自适应、路由和空间引导各组件的贡献</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31488/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Embodied Neuro-symbolic AI: Making Robot Behavior Auditable, Safe, and Scalable</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31240/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Pruning Autonomous Driving VLAs: What to Preserve for Reasoning and Action</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>EgoLoAF: Learning Humanoid Loco-Manipulation from Egocentric Demonstrations with Hand-Object Affordances - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 EgoLoAF 范式，首次实现完全从自我中心（egocentric）人类演示生成人形机器人 loco-manipulation 训练数据，无需穿戴式运动追踪器。 解决现有方法依赖穿戴式追踪器和真实机器人遥操作、手物交互线索隐式化导致精确接触难以学习的问题。 仅使用转换后的自我中心数据进行视觉-语言-动作（VLA）模型后训练，并通过显式手-物 affordance 引导动作生成，在真实人形机器人上接近遥操作性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32260">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">EgoLoAF: Learning Humanoid Loco-Manipulation from Egocentric Demonstrations with Hand-Object Affordances</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32260" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32260" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 EgoLoAF 范式，首次实现完全从自我中心（egocentric）人类演示生成人形机器人 loco-manipulation 训练数据，无需穿戴式运动追踪器。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32260.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32260.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32260.webp" alt="EgoLoAF: Learning Humanoid Loco-Manipulation from Egocentric Demonstrations with Hand-Object Affordances 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">西安交通大学（Xi’an Jiaotong University）</p>
+        <ul class="article-facts"><li>arXiv 2611.32260</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>西安交通大学</strong>（Xi’an Jiaotong University）</li><li><strong>香港科技大学（广州）</strong>（The Hong Kong University of Science and Technology (Guangzhou)）</li><li><strong>Xbotics Research Team</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>EgoLoAF</strong> 范式，首次实现完全从自我中心（egocentric）人类演示生成人形机器人 loco-manipulation 训练数据，无需穿戴式运动追踪器。</li><li>解决现有方法依赖穿戴式追踪器和真实机器人遥操作、手物交互线索隐式化导致精确接触难以学习的问题。</li><li>仅使用转换后的自我中心数据进行视觉-语言-动作（VLA）模型后训练，并通过显式手-物 affordance 引导动作生成，在真实人形机器人上接近遥操作性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>EgoLoAF</strong> 数据转换范式：从相机姿态估计躯干轨迹，从视频重建双手轨迹，生成动作目标与手-物 affordance，无需穿戴式传感器或遥操作数据。</li><li>发布 <strong>EgoLoAF dataset</strong>：包含 128,400 个自我中心演示片段，总计 1,000 小时，覆盖 1,284 个任务，并提供渲染的机器人视角观察、动作轨迹和 affordance 标注。</li><li>提出 <strong>affordance 条件化后训练方法</strong>：将当前物体-相对手部姿态编码为交互 affordance，通过 cross-attention 注入动作专家，同时冻结 VLM 骨干网络。</li><li>在四个真实任务上验证：EgoLoAF 平均任务进度得分（TPS）73.1，接近遥操作基线 74.4，同时数据收集效率平均提升 <strong>4.03 倍</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>动作重建</strong>：利用相机轨迹标定躯干姿态，使用 <strong>HaWoR</strong> 重建 MANO 手部网格和关键点，定义手部工具中心点（TCP），生成躯干和双手的未来动作目标。</li><li><strong>渲染观察</strong>：将人手替换为 <strong>G1</strong> 机械臂和 <strong>O6</strong> 灵巧手网格，使用 <strong>LaMa</strong> 修复被移除区域，并保留手-物遮挡关系。</li><li><strong>手-物 affordance 构建</strong>：使用 <strong>Depth Anything V2</strong> 对齐深度， <strong>F2G-Pose</strong> 估计物体姿态，将手与物体的相对位姿编码为固定尺寸的 affordance token。</li><li><strong>后训练与部署</strong>：在 <strong>π0.5</strong> VLA 模型上后训练，通过残差 cross-attention 注入 affordance token，冻结视觉语言骨干；部署时在线构建相同 affordance 表示，并由 <strong>ScaleBFM</strong> 控制器执行动作。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>发布 <strong>EgoLoAF dataset</strong>：128,400 个演示片段，1,000 小时，1,284 个任务；每个片段包含原始 RGB 观察、指令、躯干/双手轨迹、手部开合状态、物体姿态和 affordance 标注。</li><li>提供渲染观察：使用 <strong>Unitree G1</strong> 手臂和 <strong>LinkerHand O6</strong> 灵巧手替换人手，生成与真实实验匹配的机器人视角图像。</li><li>后训练使用 <strong>π0.5</strong> VLA 模型，每任务使用 150 个自我中心演示（100 个来自数据集，50 个额外收集）。</li><li>论文未明确列出训练硬件、模型参数量或具体 GPU/TPU 配置。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：真实 <strong>Unitree G1</strong> 人形机器人，配备 <strong>LinkerHand O6</strong> 灵巧手和 <strong>Intel RealSense D435</strong> RGB-D 摄像头。</li><li><strong>评估任务</strong>：四个真实任务（Tissue-to-Box、Tissue-to-Bin、Pick-Turn-Place、Tissue-to-Cabinet），覆盖抓取、转身、下蹲、行走、双手协调和关门等复杂动作。</li><li><strong>评估指标</strong>：任务进度得分（TPS，0-100），每个任务 20 次试验，多个批次取平均。</li><li><strong>关键结果</strong>：EgoLoAF 平均 TPS 为 <strong>73.1</strong>，接近遥操作基线 <strong>74.4</strong>；引入 affordance 后，人类数据策略平均 TPS 从 53.2 提升至 73.1，机器人数据策略从 74.4 提升至 86.3；数据收集效率平均提升 <strong>4.03 倍</strong>，其中长程任务 Tissue-to-Cabinet 提升达 <strong>8.00 倍</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32304/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Sparse Poison, Strong Hijack: Efficient Trajectory-Level Backdoors in Vision-Language-Action Models with Only 1\% Poisoning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32245/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">VLAs Execute, Code Recovers: 3D Skill Envelopes Bridge the Compositional Gap in Agentic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

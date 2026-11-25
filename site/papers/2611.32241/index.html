@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Motion Chain of Thought: Disentangling Motion Semantics from Visual Appearance for Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 PILOT（Physical Inference for Latent Optimized Trajectories），一种新的世界-动作模型（WAM）框架，用于机器人操作任务。 针对现有 WAM 中高层物理状态演化与低层动作轨迹生成之间的表征纠缠，以及视觉分支只预测静态观测、缺乏状态转移信息导致的结构瓶颈，提出以表示演绎（Representational Deduction, RD）机制将运动语义链（Motion-CoT）原生集成到模型中。 核心目标是将运动语义从视觉外观中解耦，用显式的状态转移 token 作为推理空间中的 CoT，引导细粒度轨迹生成，提升操作成功率和泛化能力。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32241">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">Motion Chain of Thought: Disentangling Motion Semantics from Visual Appearance for Robotic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32241" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32241" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 PILOT（Physical Inference for Latent Optimized Trajectories），一种新的世界-动作模型（WAM）框架，用于机器人操作任务。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32241.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32241.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32241.webp" alt="Motion Chain of Thought: Disentangling Motion Semantics from Visual Appearance for Robotic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">南京大学</p>
+        <ul class="article-facts"><li>arXiv 2611.32241</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>南京大学</strong></li><li><strong>香港中文大学（深圳）</strong></li><li><strong>清华大学</strong></li><li><strong>香港科技大学</strong></li><li><strong>京东未来学院（Joy Future Academy, JD）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>PILOT（Physical Inference for Latent Optimized Trajectories）</strong>，一种新的<strong>世界-动作模型（WAM）</strong>框架，用于机器人操作任务。</li><li>针对现有 WAM 中高层物理状态演化与低层动作轨迹生成之间的<strong>表征纠缠</strong>，以及视觉分支只预测静态观测、缺乏状态转移信息导致的<strong>结构瓶颈</strong>，提出以<strong>表示演绎（Representational Deduction, RD）</strong>机制将<strong>运动语义链（Motion-CoT）</strong>原生集成到模型中。</li><li>核心目标是将运动语义从视觉外观中解耦，用显式的状态转移 token 作为推理空间中的 CoT，引导细粒度轨迹生成，提升操作成功率和泛化能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>PILOT</strong> 框架，通过 <strong>Representational Deduction</strong> 机制解耦运动意图与轨迹生成，并将潜在状态转移信息内化为 <strong>Motion-CoT</strong>，缓解表征纠缠。</li><li>设计 <strong>Causal Dynamics Engine (CDE)</strong> 和 <strong>Action-Perceiver</strong> 中的<strong>因果解耦注意力机制</strong>，阻止带噪动作影响运动语义查询，支持无未来像素重建的动作推理。</li><li>引入基于 <strong>VJEPA2-AC</strong> 冻结编码器的<strong>未来表征监督</strong>，以丰富的状态转移监督信号缓解动作生成中的稀疏监督问题。</li><li>在 <strong>LIBERO、LIBERO-Plus、RoboCasa-GR1</strong> 上分别达到 97.9%、80.3%、59.75% 成功率，在 8 个真实世界任务上平均 82.5% 成功率；仅动作推理比“先预测后行动”管线延迟降低 91.6%。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>总体架构</strong>：PILOT 由三个分支组成——基于 <strong>Cosmos-Predict2.5</strong> 的世界模型分支（视觉语言编码 + 未来帧潜变量预测）、基于 <strong>Perceiver</strong> 风格的动作模型分支（可学习运动语义查询 + 流匹配动作解码）、以及 <strong>Representational Deduction</strong> 分支（<strong>VJEPA2-AC</strong> 冻结编码器 + <strong>Causal Dynamics Engine</strong>）。</li><li><strong>运动语义查询</strong>：使用 K=64 个可学习查询 token（内部宽度 768，输出宽度 1024）从当前观测、指令和本体感受状态中蒸馏 Motion-CoT；未来观测仅作为训练监督，不参与推理。</li><li><strong>因果解耦注意力</strong>：动作 token 可关注上下文、运动语义和自身，但运动语义 token 不关注带噪动作 token；只有动作 token 使用时间条件 AdaLN，语义 token 对流匹配时间 τ 保持不变。</li><li><strong>流匹配动作解码</strong>：以条件流匹配速度目标训练，推理时从高斯噪声经 Euler 积分生成动作块，条件为 Motion-CoT、视觉上下文和状态。</li><li><strong>Causal Dynamics Engine</strong>：将运动语义和状态投影到 VJEPA 特征维度（1408）后，与当前帧 patch 特征一起输入 CDE，预测未来帧的 VJEPA2-AC 表征；用 SmoothL1 损失（L_RD）监督，梯度回传到可学习查询，促使运动语义编码可预测未来状态转移的信息。</li><li><strong>训练目标</strong>：总损失为动作损失、加权世界模型损失和加权 RD 损失之和；世界模型保留辅助未来帧潜变量预测目标，推理时禁用未来预测生成以消除视觉瓶颈。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>仿真基准</strong>：<strong>LIBERO</strong>（Spatial、Object、Goal、Long-horizon 四个套件）；<strong>LIBERO-Plus</strong>（Camera、Robot、Language、Light、Background、Noise、Layout 七种扰动零样本迁移）；<strong>RoboCasa-GR1</strong>（24 个任务，含 PnP Close、Cuttingboard、Placemat、Tray、Plate 等类别）。</li><li><strong>真实世界</strong>：在 <strong>Agibot-G1</strong> 机器人上进行标准任务和泛化迁移评估，包括更换桌面、闪光/相机偏移等条件。</li><li><strong>模型规模</strong>：PILOT 约 <strong>2.5B 可训练参数</strong>；世界模型为预训练 Cosmos-Predict2.5 视频扩散 transformer；动作模型 K=64 查询、隐藏宽度 768、输出宽度 1024；流匹配解码器为 DiT，20 步去噪；VJEPA2-AC 编码器冻结，输出 256×1408 的 patch 表征；CDE 内部宽度 1024。</li><li><strong>训练资源</strong>：论文未明确列出 GPU/TPU 型号及数量；代码基于 <strong>StarVLA</strong> 项目，使用预训练 Cosmos-Predict2.5 和 VJEPA2-AC 权重。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong>：平均成功率 <strong>97.9%</strong>，超过 Motus（97.7%）、π0.5（96.9%）等基线；Goal 达到 98.1%、Long-horizon 达到 97.2%，体现长程意图理解优势。</li><li><strong>LIBERO-Plus</strong>：条件计数加权平均成功率 <strong>80.3%</strong>，超过 PokeVLA（79.3%）；其中 Robot 70.0% vs 46.1%、Layout 82.0% vs 77.2%，表明学到的是转移动态而非浅层外观。</li><li><strong>RoboCasa-GR1</strong>：整体成功率 <strong>59.75%</strong>（1200 次 rollout 中 717 次成功），在 Tray（73.20%）、Cuttingboard（70.00%）等类别上取得最佳或次佳。</li><li><strong>真实世界</strong>：8 个标准任务平均成功率 <strong>82.5%</strong>；在更换桌面、闪光/相机偏移等泛化条件下仍保持较高成功率。</li><li><strong>推理效率</strong>：仅动作推理比“先预测未来帧再反推动作”的管线延迟低 <strong>91.6%</strong>，因为 RD 分支和未来帧预测仅在训练时使用，不增加推理开销。</li><li><strong>消融与表征分析</strong>：验证 RD 带来的运动语义聚类和可解释性，注意力可视化显示 PILOT 更关注末端执行器与物体的交互，而基线被背景分散。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32245/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">VLAs Execute, Code Recovers: 3D Skill Envelopes Bridge the Compositional Gap in Agentic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32233/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Roboclock: A Unified Benchmark for Time-Aware Robotic Intelligence</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PreWAM: Exploring the Design of Latent Future Prediction for World-Action Modeling - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究世界-动作模型（World-Action Model）中未来预测的表示空间与时间组织方式，探索如何利用视觉转移监督提升策略的泛化性与鲁棒性 通过受控实验发现：在相近的标准任务成功率下，不同预测空间对视觉扰动的泛化表现差异显著，空间语义监督整体更优 提出 PreWAM，在预训练 DINOv3 特征空间中组织未来状态变化，联合动作学习与预测学习" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.31901">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">PreWAM: Exploring the Design of Latent Future Prediction for World-Action Modeling</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.31901" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.31901" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究世界-动作模型（World-Action Model）中未来预测的表示空间与时间组织方式，探索如何利用视觉转移监督提升策略的泛化性与鲁棒性</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">PreWAM: Exploring the Design of Latent Future Prediction for World-Action Modeling</p>
+</div></figure>
+        <p class="article-unit">主要完成单位：同济大学（Tongji University）、Rimbot</p>
+        <ul class="article-facts"><li>arXiv 2611.31901</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>主要完成单位：<strong>同济大学（Tongji University）</strong>、<strong>Rimbot</strong></li><li>合作单位：<strong>西安电子科技大学（Xi’an University of Electronic Science and Technology）</strong>、<strong>东南大学（Southeast University）</strong>、<strong>清华大学（Tsinghua University）</strong></li><li>通讯作者：<strong>Yanjun Huang</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究<strong>世界-动作模型（World-Action Model）</strong>中未来预测的表示空间与时间组织方式，探索如何利用视觉转移监督提升策略的泛化性与鲁棒性</li><li>通过受控实验发现：在相近的标准任务成功率下，不同预测空间对视觉扰动的泛化表现差异显著，<strong>空间语义监督</strong>整体更优</li><li>提出 <strong>PreWAM</strong>，在预训练 <strong>DINOv3</strong> 特征空间中组织未来状态变化，联合动作学习与预测学习</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>受控对比表明，支持相似分布内性能的预测空间会导致显著不同的策略泛化能力，<strong>空间语义监督</strong>对视觉扰动具有更强鲁棒性</li><li>提出 <strong>PreWAM</strong>，通过未来状态变化和跨时间尺度的监督塑造共享视觉-语言表征</li><li>设计 <strong>Residual World Prediction（RWP）</strong>：预测相对于源状态的残差变化，并同时监督未来状态与变化量</li><li>设计 <strong>Temporal-Scale Prediction（TSP）</strong>：利用可学习的时间距离嵌入条件化世界查询，覆盖短期局部运动和长期状态演化</li><li>在 <strong>LIBERO</strong> 系列基准、<strong>SimplerEnv</strong>、<strong>RoboTwin 2.0</strong> 以及真实 <strong>Piper</strong> 机器人上验证了有效性和鲁棒性</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用共享 <strong>Qwen VLM</strong> 骨干，同时处理动作生成和世界预测；动作专家使用流匹配（flow matching）生成动作块</li><li>世界状态由冻结的 <strong>DINOv3</strong> 编码器提取，相邻两帧特征按通道拼接构成一个状态</li><li><strong>Residual World Prediction</strong>：世界预测器以源状态和世界查询为输入，预测残差变化，未来状态通过“源状态 + 残差变化”重建；损失包括未来余弦对齐与变化 SmoothL1 回归</li><li><strong>Temporal-Scale Prediction</strong>：世界查询加入学习的时间距离嵌入，在同一个 VLM 前向中处理短、中、长多个时间尺度的转移预测</li><li>预训练阶段联合机器人演示与人类视频提供预测监督；下游后训练继续联合预测与动作学习；部署时仅使用 VLM 和动作专家</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用数据集：<strong>LIBERO</strong>、<strong>LIBERO-Plus</strong>、<strong>LIBERO-Pro</strong>、<strong>LIBERO-Pro2.0</strong>、<strong>SimplerEnv</strong>、<strong>RoboTwin 2.0</strong>，以及真实 <strong>Piper</strong> 机器人操作数据</li><li>模型主干为 <strong>Qwen VLM</strong>；预测目标使用冻结 <strong>DINOv3</strong> 特征，对比实验中还使用了 <strong>Wan 2.1 视频 VAE</strong> 和 <strong>V-JEPA 2</strong> 特征</li><li>对比实验训练配置：全局 batch size <strong>256</strong>，下游训练 <strong>36,000</strong> 次更新</li><li>论文提供片段未明确公开模型参数量和 GPU/TPU 等硬件训练资源细节</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 <strong>LIBERO</strong> 上平均成功率达 <strong>98.1%</strong>；<strong>LIBERO-Plus</strong> 零样本平均 <strong>79.1%</strong></li><li><strong>LIBERO-Pro</strong> 平均成功率 <strong>58.7%</strong>；<strong>LIBERO-Pro2.0</strong> 基础任务 <strong>92.1%</strong>，静态扰动 <strong>64.0%</strong>（下降 28.1 个百分点），运行时扰动 <strong>70.1%</strong>（下降 22.0 个百分点）</li><li><strong>SimplerEnv</strong> 视觉匹配：Google Robot 场景平均 <strong>78.9%</strong>，WidowX 场景平均 <strong>69.8%</strong>（其中 Drawer 75.0%、Place 75.9%、Eggplant 100.0%）</li><li>与 <strong>OpenVLA-OFT</strong>、<strong>π0</strong>、<strong>JEPA-WAM</strong>、<strong>LaWAM</strong>、<strong>Fast-WAM</strong> 等基线相比，PreWAM 在多个扰动类别和任务上取得领先或具有竞争力的鲁棒性</li><li><strong>RoboTwin 2.0</strong> 和真实 <strong>Piper</strong> 平台上的单臂/双臂操作进一步验证了模型的泛化性与实用性</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.31903/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Beyond Expert Replay: Cross-Instruction Anchoring for Continual Vision-Language-Action Learning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.31822/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">G0.7: Scaling Up a Fast World Action Model with Long Context</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

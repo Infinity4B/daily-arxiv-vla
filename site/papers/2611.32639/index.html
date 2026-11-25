@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ReFocus: Progress-Guided Adaptive Practice for Long-Horizon Robotic Manipulation Reinforcement Learning - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 ReFocus，一个面向长视野机器人操作的进度引导强化学习框架，通过交替全局与局部强化学习解决稀疏反馈和瓶颈练习不足的问题。 针对在线强化学习在长视野操作中稀疏成功/失败反馈难以定位瓶颈、以及重复全任务 rollout 导致瓶颈分析不足和练习不充分的问题，ReFocus 利用任务 DAG 分解和进度奖励来诊断并强化瓶颈阶段。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32639">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">ReFocus: Progress-Guided Adaptive Practice for Long-Horizon Robotic Manipulation Reinforcement Learning</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32639" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32639" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 ReFocus，一个面向长视野机器人操作的进度引导强化学习框架，通过交替全局与局部强化学习解决稀疏反馈和瓶颈练习不足的问题。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32639.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32639.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32639.webp" alt="ReFocus: Progress-Guided Adaptive Practice for Long-Horizon Robotic Manipulation Reinforcement Learning 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者主要来自 浙江大学 与 香港大学</p>
+        <ul class="article-facts"><li>arXiv 2611.32639</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者主要来自 <strong>浙江大学</strong> 与 <strong>香港大学</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>ReFocus</strong>，一个面向长视野机器人操作的进度引导强化学习框架，通过交替全局与局部强化学习解决稀疏反馈和瓶颈练习不足的问题。</li><li>针对在线强化学习在长视野操作中稀疏成功/失败反馈难以定位瓶颈、以及重复全任务 rollout 导致瓶颈分析不足和练习不充分的问题，ReFocus 利用任务 DAG 分解和进度奖励来诊断并强化瓶颈阶段。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ReFocus</strong> 框架，交替 <strong>Global RL</strong> 与 <strong>Local RL</strong>，识别任务特定瓶颈并分配针对性练习。</li><li>在 Global RL 中使用 <strong>DAG-based progress reward</strong> 提供密集反馈并解决奖励不平衡问题，同时用于瓶颈诊断。</li><li>设计 <strong>Adaptive Practice Windows</strong> 和三种 rollout 模式（Normal、Prefix、Suffix），将局部练习与全任务执行连接。</li><li>在 <strong>LIBERO-Long</strong>、<strong>RoboCasa365</strong> 及真实世界任务上验证有效性，大幅提升成功率。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将每个长视野任务表示为 <strong>Directed Acyclic Graph (DAG)</strong>，节点为子任务，边为前置依赖，相同前置条件的子任务组成一个阶段。</li><li><strong>DAG-based Progress Reward</strong>：为每个阶段分配均等的进度奖励预算（总预算为 2），阶段内子任务均分，避免分解粒度影响权重；结合子任务完成记录进行瓶颈诊断。</li><li><strong>LLM-based Scheduler</strong> 根据验证 rollout 的进度序列和视觉观察识别停滞阶段，并结合历史记录（History Buffer）选择 <strong>Adaptive Practice Windows</strong>（定义从入口阶段到目标阶段的任务段）和里程碑奖励。</li><li><strong>Local RL</strong> 使用三种 rollout 模式：Normal window（从恢复入口开始聚焦瓶颈）、Prefix window（从正常任务开始到窗口目标）、Suffix window（从恢复入口继续到全任务完成）。此时用里程碑奖励替代目标子任务奖励。</li><li>两个阶段均使用 <strong>PPO</strong> 优化共享策略，交替多轮迭代，每轮后评估全任务成功率并更新历史缓冲。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO-Long</strong>（10 个桌面任务）和 <strong>RoboCasa365 Composite-Seen</strong>（16 个厨房任务）基准。</li><li>基础模型为 <strong>π0.5</strong>（通过监督微调初始化），具体参数量未在文中明确提及；训练资源（GPU/TPU）未在摘要中提供，详情见论文附录。</li><li>真实世界实验在三个长视野任务（<strong>BreadBaker</strong>、<strong>StackBowl</strong>、<strong>PickFruit</strong>）上进行，使用 RECAP 适配。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>在 <strong>LIBERO-Long</strong> 上，<strong>ReFocus</strong> 取得 97.8% 成功率（基线 π0.5 为 90.6%），在 <strong>RoboCasa365</strong> 上取得 51.3%（基线为 39.3%）。</li><li>与 <strong>Sparse-RL</strong>、<strong>SimpleVLA-RL</strong>、<strong>PolicyTrim</strong>、<strong>StructRL</strong> 等基线相比，ReFocus 均取得最优，尤其在长视野任务组中增益最大（如 RoboCasa365 1400–2900 步任务从 39.4% 提升至 46.4%）。</li><li>真实世界实验中，<strong>BreadBaker</strong> 任务成功率从 30%（π0.5）提升至 95%（ReFocus）；<strong>StackBowl</strong> 和 <strong>PickFruit</strong> 均达到 100%，优于 RECAP 的 90% 和 85%。</li><li>消融实验表明：单独使用 Progress Reward 或 Practice Window 只能部分提升（96.8% 和 93.4%），两者结合达到 97.8%；Local RL 的三种 rollout 模式组合（Normal+Suffix+Prefix）效果最佳。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32654/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DexWAC: A Unified World-Actor-Critic Model for Dexterous Robot Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32564/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">MXI-MemICL: Towards In-Context Robot Manipulation through Self-Retrieved Interaction Memory</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

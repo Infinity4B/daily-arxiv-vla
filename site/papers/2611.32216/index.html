@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NativeDrive: Native Multimodal Foundations for Autonomous Driving - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 NativeDrive，一种面向自动驾驶的原生多模态基础模型框架，旨在统一语义理解、场景感知与驾驶动作预测。 现有视觉-语言-动作模型（VLA）或视频世界-动作模型（WAM）存在动作标签监督弱、外观重建开销大等问题；NativeDrive 在统一理解与生成骨干上直接设计策略接口和驾驶专用密集监督。 核心目标是让驾驶策略既复用骨干的语义先验，又不引入与规划无关的图像重建成本，推理时仅运行规划策略分支。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.32216">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">NativeDrive: Native Multimodal Foundations for Autonomous Driving</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.32216" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.32216" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 NativeDrive，一种面向自动驾驶的原生多模态基础模型框架，旨在统一语义理解、场景感知与驾驶动作预测。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.32216.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.32216.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.32216.webp" alt="NativeDrive: Native Multimodal Foundations for Autonomous Driving 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Li Auto（理想汽车）</p>
+        <ul class="article-facts"><li>arXiv 2611.32216</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Li Auto</strong>（理想汽车）</li><li><strong>上海交通大学</strong></li><li><strong>浙江大学</strong></li><li><strong>清华大学智能产业研究院（AIR）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>NativeDrive</strong>，一种面向自动驾驶的<strong>原生多模态基础模型框架</strong>，旨在统一语义理解、场景感知与驾驶动作预测。</li><li>现有视觉-语言-动作模型（VLA）或视频世界-动作模型（WAM）存在动作标签监督弱、外观重建开销大等问题；NativeDrive 在统一理解与生成骨干上直接设计策略接口和驾驶专用密集监督。</li><li>核心目标是让驾驶策略既复用骨干的语义先验，又不引入与规划无关的图像重建成本，推理时仅运行规划策略分支。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>NativeDrive</strong> 框架，将原生统一多模态骨干适配到驾驶策略学习，支持离散动作预测与连续轨迹生成或训练期语义编辑两种配置。</li><li>设计 <strong>Native Action Interface</strong>：离散策略复用理解专家的 token 预测接口预测量化动作 token；连续策略将生成专家适配为轻量动作专家。</li><li>引入 <strong>Driving Semantic Editing</strong>：利用生成专家预训练的编辑能力生成语义地图，作为训练期密集场景结构监督，推理时不额外增加计算。</li><li>系统研究动作接口、视觉任务和联合训练等关键设计选择，在 <strong>NAVSIM v1</strong> 和 <strong>NAVSIM v2</strong> 上验证有效性。</li><li>NativeDrive-D 在 NAVSIM v1 达到 <strong>88.8 PDMS</strong>，在 NAVSIM v2 达到 <strong>88.5 EPDMS</strong>；best-of-6 下分别达到 <strong>93.8 PDMS</strong> 和 <strong>93.3 EPDMS</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>SenseNova-U1-8B-MoT-SFT</strong> 作为原生多模态骨干，其无编码器架构支持直接图像 patch 输入和像素预测输出。</li><li>输入包括多视角视觉观测、导航指令和自车状态；输出为未来 5 秒、2 Hz 的 10 个轨迹航点。</li><li><strong>离散动作 token 化</strong>：使用基于 Perceiver 的 VQ 编码器-解码器，对局部运动增量进行量化，每 1 秒轨迹段生成 4 个动作 token，码本大小 2048，隐维度 512。</li><li>离散策略采用<strong>块级自回归预测</strong>（BAR），逐块预测、块内并行，减少解码长度和误差累积。</li><li><strong>连续策略</strong>将生成专家缩减宽度后初始化为轻量动作专家，使用条件流匹配（flow matching）从高斯噪声生成连续轨迹。</li><li><strong>Driving Semantic Editing</strong> 用冻结的 <strong>Mask2Former</strong> 生成八类驾驶场景语义伪标签，并进行规则过滤与人工审核；训练时将语义编辑损失与离散策略损失联合优化。</li><li>两种配置共享注意力掩码：动作 token 和生成 token 均只能关注观测上下文，彼此不可互相关注；离散推理只保留观测和动作 token，连续推理只保留观测和生成 token。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>主要基准：<strong>NAVSIM v1</strong> 和 <strong>NAVSIM v2 navtest</strong>（使用官方划分与协议）。</li><li>轨迹 tokenizer 训练数据：<strong>NAVSIM</strong> 与 <strong>Waymo E2E</strong> 轨迹按等概率采样。</li><li>语义编辑数据：NAVSIM 和 Waymo 数据集中的前视图像，经 Mask2Former 伪标注和人工审核构建。</li><li>骨干模型：<strong>SenseNova-U1-8B-MoT-SFT</strong>；冻结观察图像嵌入模块和动作 tokenizer。</li><li>训练资源：tokenizer 训练使用 <strong>8 块 GPU</strong>，全局 batch size 16,384；策略训练使用 <strong>8 块 H20 GPU</strong>，全局 batch size 32。</li><li>离散策略训练 5 个 epoch；离散与连续联合训练 10 个 epoch；优化器为 <strong>AdamW</strong>，峰值学习率 5e-5，权重衰减 0.1。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：NAVSIM v1（PDMS）和 NAVSIM v2 navtest（EPDMS），包含 NC、DAC、TTC、Comf、EP 等子指标。</li><li><strong>NAVSIM v1 结果</strong>：NativeDrive-D 单轨迹 <strong>88.8 PDMS</strong>，best-of-6 <strong>93.8 PDMS</strong>；NativeDrive-C 单轨迹 <strong>88.4 PDMS</strong>，best-of-6 <strong>91.1 PDMS</strong>。</li><li><strong>NAVSIM v2 结果</strong>：NativeDrive-D 单轨迹 <strong>88.5 EPDMS</strong>，best-of-6 <strong>93.3 EPDMS</strong>；NativeDrive-C 单轨迹 <strong>88.1 EPDMS</strong>，best-of-6 <strong>91.0 EPDMS</strong>。</li><li>在无驾驶域骨干预训练的 SFT 统一模型中，NativeDrive-D 仅用 5 个策略训练 epoch 即取得领先，并达到所列模型中最高的 best-of-6 分数。</li><li>消融实验验证了动作 token 化、联合离散-连续策略训练、视觉监督等组件的有效性；定性可视化展示了辅助视觉预测效果。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.32233/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Roboclock: A Unified Benchmark for Time-Aware Robotic Intelligence</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.32206/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Seeing Is Not Reaching: Instruction Shortcuts Override Visual Grounding in Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
