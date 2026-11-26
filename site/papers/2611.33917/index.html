@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Event-WAM: Learning to Act with Event-Derived Futures - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Event-WAM，将事件派生的视觉变化作为辅助未来监督信号，与 RGB 未来预测共同用于机器人动作学习 解决现有世界动作模型（WAM）中 RGB 未来建模对动态变化不敏感、对场景静态外观过度关注的问题 利用从 RGB 演示视频合成的事件表示（由 v2e 模拟），在不增加事件相机感知的情况下，为动作学习提供变化导向的训练监督" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33917">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Event-WAM: Learning to Act with Event-Derived Futures</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33917" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33917" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Event-WAM，将事件派生的视觉变化作为辅助未来监督信号，与 RGB 未来预测共同用于机器人动作学习</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">Event-WAM: Learning to Act with Event-Derived Futures</p>
+</div></figure>
+        <p class="article-unit">作者均来自 Yonsei University（延世大学）</p>
+        <ul class="article-facts"><li>arXiv 2611.33917</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者均来自 <strong>Yonsei University（延世大学）</strong></li><li>主要作者包括 <strong>Jongseong Bae</strong>、<strong>Hyunwoo Kim</strong>、<strong>Yeongin Lee</strong>、<strong>Eubin So</strong>、<strong>Ha Young Kim</strong></li><li>通信作者为 <strong>Ha Young Kim</strong>，邮箱域名为 <strong>yonsei.ac.kr</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Event-WAM</strong>，将事件派生的视觉变化作为辅助未来监督信号，与 RGB 未来预测共同用于机器人动作学习</li><li>解决现有世界动作模型（WAM）中 RGB 未来建模对动态变化不敏感、对场景静态外观过度关注的问题</li><li>利用从 RGB 演示视频合成的事件表示（由 v2e 模拟），在不增加事件相机感知的情况下，为动作学习提供变化导向的训练监督</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>系统研究了事件派生视觉变化作为 WAM 补充生成目标的可行性，及其对机器人动作学习和策略泛化的影响</li><li>提出 <strong>Event-WAM</strong>，通过共享预训练视频 backbone 上的流匹配联合建模 RGB 和事件未来，无需训练事件专用 VAE</li><li>在多个仿真基准与真实世界操作任务上评估，证明了在 LIBERO-Plus、RoboTwin 2.0-Plus 及真实世界扰动条件下的鲁棒性提升</li><li>通过消融和分析表明，动作性能的提升不一定伴随更高的未来预测保真度，提示变化导向监督的潜在价值</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>使用视频到事件模拟器 <strong>v2e</strong> 从 RGB 演示中生成事件流，进行时间分箱、极性分离与对数压缩，构造三通道伪 RGB 事件帧</li><li>事件帧与 RGB 序列共用同一个 <strong>冻结的预训练 RGB 视频 VAE</strong> 编码到统一的潜在空间，避免训练事件专用编码器</li><li>在共享视频 backbone 中，将 RGB 未来潜在与事件未来潜在沿通道拼接，并扩展输入/输出投影层，RGB 权重使用预训练初始化，事件输入为零初始化</li><li>训练时采用 <strong>联合流匹配损失</strong>：对 RGB 和事件潜在独立采样噪声，分别计算速度预测误差；总损失为 <code>λ_RGB * L_RGB + λ_Event * L_Event + L_act</code></li><li>推理时遵循 Simple-WAM 的单次前向策略：将完全噪声的未来 RGB 与事件 token 拼接，通过一次视频模型前向得到 KV 特征，固定该 KV 并迭代去噪动作块，<strong>无需事件观测或未来生成</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真基准：<strong>LIBERO</strong>（40 个任务，4 个套件）、<strong>LIBERO-Plus</strong>（含扰动，区分原始与修正指令协议）、<strong>RoboTwin 2.0</strong>（clean-to-randomized 协议）、<strong>RoboTwin 2.0-Plus</strong>（7 种扰动，50 个任务）</li><li>真实世界：使用 <strong>SO-101 机械臂</strong>，4 个操作任务（笔入杯、收集玩偶、开抽屉、叠方块），每任务 100 条遥操作演示，训练单一多任务策略 30k 步（全局批大小 128）</li><li>观测输入：640×480 前视与腕部 RGB 图像（25 fps），6 维关节状态；事件表示由 RGB 视频离线合成，不依赖事件相机</li><li>模型架构基于 <strong>Simple-WAM</strong>，使用因果视频 VAE 和流匹配；具体参数量未在可见原文中披露</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境覆盖仿真与真实世界，主要指标为成功率（%），扰动评估包括相机视角、背景、传感器噪声、物体布局、光照、语言指令、机器人初始状态等</li><li>在 LIBERO 平均成功率上，Event-WAM 达到 <strong>98.8%</strong>，与基线 Simple-WAM（98.9%）相当；在 LIBERO-Plus Original 上 <strong>81.0%</strong>，Corrected 上 <strong>85.9%</strong>，优于 Simple-WAM 的 78.9%/84.0%</li><li>在 RoboTwin 2.0 clean-to-randomized 上，Event-WAM 随机环境成功率 <strong>1.9%</strong>，平均 <strong>41.3%</strong>，与 Simple-WAM 基本持平；在 RoboTwin 2.0-Plus 上，Event-WAM 在部分扰动（如相机、机器人初始状态）上优于 Simple-WAM，整体平均成功率更高（部分数据可见，具体均值未完全展示）</li><li>真实世界操作中，Event-WAM 在标准条件与未见扰动条件下均提升了操作成功率（定性结论来自摘要与实验描述）</li><li>消融与分析显示，联合 RGB–事件损失权重、事件重构方式、视觉变化目标选择（事件 vs RGB 差值）等均影响动作表现；且策略提升并不总伴随未来预测保真度的提升</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33934/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Towards 360$^\circ$ Embodied UAV Tracking Without Turning</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33880/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Integration of Vision-Language-Action Control for Autonomous Forklift Unloading with Limited Real-World Data</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

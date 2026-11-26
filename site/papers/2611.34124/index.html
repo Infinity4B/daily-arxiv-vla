@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>WAtcher: Watching Ahead for Safe Robotic Manipulation with Efficient World-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 WAtcher，一个安全感知的世界-动作模型（World-Action Model, WAM）框架，在执行动作块之前想象其结果并进行风险检测。 解决现有 WAM 盲目执行所有生成动作块、忽略潜在碰撞、滑落等危险的问题。 核心思想是复用 WAM 自身的视频专家进行快速未来预览，并由外部轻量模块 Safe-Guard 评估风险，高风险时触发有界回退。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34124">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">WAtcher: Watching Ahead for Safe Robotic Manipulation with Efficient World-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34124" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34124" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 WAtcher，一个安全感知的世界-动作模型（World-Action Model, WAM）框架，在执行动作块之前想象其结果并进行风险检测。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34124.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34124.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34124.webp" alt="WAtcher: Watching Ahead for Safe Robotic Manipulation with Efficient World-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Nanyang Technological University</p>
+        <ul class="article-facts"><li>arXiv 2611.34124</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Nanyang Technological University</strong></li><li><strong>KTH Royal Institute of Technology</strong></li><li><strong>NVIDIA</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>WAtcher</strong>，一个安全感知的世界-动作模型（World-Action Model, WAM）框架，在执行动作块之前想象其结果并进行风险检测。</li><li>解决现有 WAM 盲目执行所有生成动作块、忽略潜在碰撞、滑落等危险的问题。</li><li>核心思想是复用 WAM 自身的视频专家进行快速未来预览，并由外部轻量模块 <strong>Safe-Guard</strong> 评估风险，高风险时触发有界回退。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>构建了一个<strong>自主危险数据收集管道</strong>，在 RoboTwin 2.0、LIBERO 和真实 UR7e 机器人上扰动专家轨迹并自动标注约 25,000 个窗口，涵盖四类危险（意外接触、失去支撑、通用运动错误、语义危险）。</li><li>提出 <strong>Safe-Guard</strong>，一个可拆卸的轻量风险头，仅用 1.7M 参数，通过融合当前视图、机器人状态、候选动作块及其想象结果，在 32ms 内输出步级和块级风险分数，无需修改策略权重即可应用于其他 WAM。</li><li>建立了 <strong>300-question benchmark</strong> 和更大的 blind set，用于公平评估风险检测器，并证明 Safe-Guard 显著优于零样本多模态大模型和 ContactGuard 风格监测器。</li><li>提出完整的 <strong>WAtcher</strong> 系统，在仿真和真实机器人上同时降低危险执行率并保持任务成功率。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>紧凑世界-动作策略</strong>：将大型视频生成器（Wan2.2-TI2V-5B）蒸馏为 0.8B 参数的视频专家，仅用 2 步去噪想象低分辨率未来帧；0.2B 参数的动作专家通过联合注意力与视频专家交互生成连续动作块。</li><li><strong>Safe-Guard</strong>：一个三层的 Transformer 编码器，接收当前视图、想象帧、机器人状态和候选动作块（每个命令嵌入为绝对值和位移的加和），通过共享分类头输出每个命令的风险概率和一个块级风险分数（取最大值）。</li><li><strong>风险感知执行与有界恢复</strong>：当块级风险超过阈值时，执行机器人特定的恢复控制器（如移回先前接受块起点），移动增量受限，连续三次拒绝触发保护性停止。</li><li><strong>危险数据标注</strong>：基于执行过程中记录的物理事件（接触、高度变化等）自动标记，LLM 代理审查模糊案例，真实机器人数据由人类验证。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>RoboTwin 2.0</strong> 和 <strong>LIBERO</strong> 仿真器，以及真实 <strong>UR7e</strong> 机器人平台收集危险数据。</li><li>数据集包含 <strong>25,434</strong> 个标注窗口，其中 <strong>7,392</strong> 个为危险窗口；训练/验证场景不重叠。</li><li>模型规模：主策略 <strong>1.0B</strong> 参数（视频专家 0.8B + 动作专家 0.2B）；Safe-Guard <strong>1.7M</strong> 参数。</li><li>训练资源：论文未明确说明 GPU/TPU 型号或数量。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>风险检测</strong>：Safe-Guard 在 300-question benchmark 上达到 <strong>94.2%</strong> 平衡准确率，在 blind set（1,352 窗口）上达到 <strong>92.1%</strong>，显著优于零样本 GPT-6-Astra（72.5%）、Claude Opus 5.5（63.3%）和 ContactGuard-style（87.9%）。</li><li><strong>闭环干预</strong>：在四个训练任务的新场景中，Safe-Guard 将危险试验率从 <strong>27.0%</strong> 降至 <strong>10.8%</strong>（政策单独），而随机拒绝仅降至 25.0%；任务成功率保持不变（约 88.8% vs 86.3%）。</li><li><strong>仿真性能</strong>：在 RoboTwin 2.0 的 50 个任务上，WAtcher 平均成功率为 <strong>90.4%</strong>（clean 91.0%，random 89.8%），与 AHA-WAM（90.9%）和 LingBot-VA（90.8%）相当；在 ManiSkill3 的 7 个任务上用 10 个演示达到 <strong>82.4%</strong> 平均成功率，排名第一。</li><li><strong>真实机器人</strong>：在 UR7e 上五个真实任务平均成功率为 <strong>74.0%</strong>（Safe-Guard 开启），对比 π0.5 的 <strong>59.5%</strong>；安全上，Safe-Guard 将 staged hazards 从 43 次降至 6 次（共 60 次）。</li><li><strong>效率</strong>：策略每决策耗时 92ms，Safe-Guard 额外增加 32ms，总计约 124ms，满足实时控制需求。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34257/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CamAct: Learning Robotic Manipulation from In-the-Wild Videos via Camera Motion</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34117/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">CoTacWAM: Joint Modeling of Vision and Touch for Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>CamAct: Learning Robotic Manipulation from In-the-Wild Videos via Camera Motion - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 CamAct，一种统一的视觉-语言-动作（VLA）框架，利用野外第一人称视频中的相机运动作为额外监督信号，与机器人演示数据联合训练。 解决的问题：机器人演示数据收集成本高昂，现有方法主要依赖包含物体操作演示的人类视频，而本文探索不含操作演示的野外视频能否提升机器人操作策略。 核心思想：从野外步行视频中恢复相机轨迹并转换为伪动作，为策略学习提供运动监督，从而增强机器人操作的泛化能力。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34257">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">CamAct: Learning Robotic Manipulation from In-the-Wild Videos via Camera Motion</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34257" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34257" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 CamAct，一种统一的视觉-语言-动作（VLA）框架，利用野外第一人称视频中的相机运动作为额外监督信号，与机器人演示数据联合训练。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34257.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34257.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34257.webp" alt="CamAct: Learning Robotic Manipulation from In-the-Wild Videos via Camera Motion 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Haoming Gu：哈尔滨工业大学、ACE Robotics</p>
+        <ul class="article-facts"><li>arXiv 2611.34257</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Haoming Gu</strong>：<strong>哈尔滨工业大学</strong>、<strong>ACE Robotics</strong></li><li><strong>Yunpeng Qing</strong>：<strong>浙江大学</strong>、<strong>ACE Robotics</strong></li><li><strong>Zhi Hou</strong>：所属机构未在文中明确标注</li><li><strong>Weinan Zhang</strong>：所属机构未在文中明确标注</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>CamAct</strong>，一种统一的视觉-语言-动作（VLA）框架，利用野外第一人称视频中的<strong>相机运动</strong>作为额外监督信号，与机器人演示数据联合训练。</li><li>解决的问题：机器人演示数据收集成本高昂，现有方法主要依赖包含物体操作演示的人类视频，而本文探索<strong>不含操作演示的野外视频</strong>能否提升机器人操作策略。</li><li>核心思想：从野外步行视频中恢复相机轨迹并转换为伪动作，为策略学习提供运动监督，从而增强机器人操作的泛化能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>首次探索野外视频（无物体操作演示）中的<strong>相机运动</strong>作为机器人操作学习的有效监督信号，突破了仅依赖视觉语义或操作演示的限制。</li><li>提出 <strong>CamAct</strong> 框架，将恢复的相机轨迹转换为 <strong>SE(2) 伪动作</strong>，与机器人动作在共享 VLA 骨干和动作头中通过掩码损失进行联合训练。</li><li>在 <strong>LIBERO</strong>、<strong>RoboCasa 365</strong> 以及真实世界 <strong>Franka Research 3</strong> 机器人上验证了方法的有效性，显著提升成功率和分布外泛化能力。</li><li>通过大量消融实验（观察视角、视频监督、视频属性、混合比例）和运动分布分析，揭示了相机运动监督发挥作用的条件和机理。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>视频数据处理</strong>：收集 44.40 小时第一人称步行视频，使用 <strong>Depth Anything 3</strong> 恢复相机轨迹，经过去除静态片段、对齐重叠窗口重建、轨迹滤波与平滑后，投影到地平面得到 <strong>SE(2)</strong> 中的平面平移和偏航变化。</li><li><strong>伪动作构建</strong>：将相邻帧的相对运动定义为三维伪动作（前向位移、左向位移、航向变化），每个动作块包含 H 个连续伪动作。</li><li><strong>策略架构</strong>：基于 <strong>StarVLA</strong>，使用 <strong>Qwen3-VL-4B</strong> 作为视觉-语言骨干，共享 <strong>流匹配动作头</strong>；机器人输入包含视觉观测和指令，视频输入仅包含帧图像（指令为空）。</li><li><strong>动作表示与联合训练</strong>：机器人动作与伪动作分别按各自分布的 1st/99th 百分位归一化，拼接为 <code>d_R + 3</code> 维向量，通过掩码仅监督对应来源的维度；采用 80:20 的机器人-视频采样比例和条件流匹配损失进行端到端优化。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>野外视频数据</strong>：从互联网收集第一人称步行视频共 <strong>44.40 小时</strong>，过滤后得到 <strong>36.09 小时</strong>有效视频。</li><li><strong>仿真基准</strong>：<strong>LIBERO</strong>（Spatial、Object、Goal、Long 四个套件）和 <strong>RoboCasa 365</strong>（Human300 用于训练，Target50 用于评估，含 18 个原子已见、16 个复合已见、16 个复合未见任务）。</li><li><strong>分布外评估</strong>：<strong>LIBERO-Plus</strong>（未经训练，零样本评估）。</li><li><strong>模型规模</strong>：骨干为 <strong>Qwen3-VL-4B</strong>（约 40 亿参数），搭配两种流匹配动作头（<strong>GR00T</strong> 和 <strong>π</strong> 变体）。</li><li><strong>训练资源</strong>：论文未明确列出 GPU/TPU 型号和数量；训练采用联合微调，机器人-视频采样比默认 <strong>80:20</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>仿真结果</strong>：在 <strong>LIBERO</strong> 上，CamAct 将整体成功率从 <strong>96.40%</strong> 提升至 <strong>98.10%</strong>（GR00T 变体）；在 <strong>RoboCasa 365</strong> 上从 <strong>22.96%</strong> 提升至 <strong>29.32%</strong>；在 <strong>LIBERO-Plus</strong> 上分布外成功率从 <strong>71.90%</strong> 提升至 <strong>74.49%</strong>。</li><li><strong>真实世界结果</strong>：在 <strong>Franka Research 3</strong> 机器人上执行 4 个操作任务，平均成功率从 <strong>54.69%</strong> 提升至 <strong>68.75%</strong>（+14.06 个百分点），且在随机初始位置下仍保持增益。</li><li><strong>消融发现</strong>：使用<strong>手腕相机</strong>视角时增益最大（+2.10 pp），仅使用第三人称视角则下降（-1.90 pp）；移除相机运动监督导致成功率下降 <strong>5.68 pp</strong>，移除视频视觉条件下降 <strong>4.32 pp</strong>；较小相机运动和分散转弯模式的视频子集带来更高性能；采样比例 <strong>80:20</strong> 在 120k 更新时表现最佳。</li><li><strong>分析结论</strong>：野外视频的相机运动与机器人手腕相机运动在平面运动特征上存在部分重叠分布，联合训练可加快任务进度并缩短完成时间。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34280/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Escapingthe instruction blackhole of vision-language-action policies via optimal-transport wormholes</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34124/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">WAtcher: Watching Ahead for Safe Robotic Manipulation with Efficient World-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

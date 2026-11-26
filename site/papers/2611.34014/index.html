@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究少样本演示模仿中的“检索-修正”策略，重点探讨演示记忆应向修正器提供怎样的读出（readout）才能最大化修正效果 发现对整段记忆进行平滑 softmax 加权的 软召回（soft recall） 作为修正基底，显著优于传统的最近邻检索（top-1），尤其适用于稀疏、多样的人类演示 提出 异质联想视觉运动记忆（HAVM） 模型，将联想记忆与学习残差相结合，以极低的训练和推理成本达到甚至超越大型预训练策略的性能" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34014">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34014" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34014" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究少样本演示模仿中的“检索-修正”策略，重点探讨演示记忆应向修正器提供怎样的读出（readout）才能最大化修正效果</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #177e89; --cover-to: #5ec2a8; --cover-spot: #c5f0de; --cover-ink: #f5fffb" aria-hidden="true">
+  <p class="note-cover-title">Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation</p>
+</div></figure>
+        <p class="article-unit">作者 Runcong Wang 来自 慕尼黑工业大学（Technical University of…</p>
+        <ul class="article-facts"><li>arXiv 2611.34014</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者 <strong>Runcong Wang</strong> 来自 <strong>慕尼黑工业大学（Technical University of Munich）</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究少样本演示模仿中的“检索-修正”策略，重点探讨演示记忆应向修正器提供怎样的读出（readout）才能最大化修正效果</li><li>发现对整段记忆进行平滑 softmax 加权的 <strong>软召回（soft recall）</strong> 作为修正基底，显著优于传统的最近邻检索（top-1），尤其适用于稀疏、多样的人类演示</li><li>提出 <strong>异质联想视觉运动记忆（HAVM）</strong> 模型，将联想记忆与学习残差相结合，以极低的训练和推理成本达到甚至超越大型预训练策略的性能</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>通过受控实验证明：在 ALOHA Human（40 个演示）上，修正软召回基底比修正 top-1 基底的成功率高出 <strong>22.4 个百分点</strong>；这一优势在稀疏、多样的人类演示上尤其明显，但在密集、脚本化或生成数据上减弱或反转</li><li>提出 <strong>HAVM</strong>，一个仅 <strong>14M 参数</strong>的检索-修正策略，离线训练约 <strong>5 分钟</strong>，推理耗时 <strong>1.1 ms</strong>，在 ALOHA、robomimic、LIBERO 和真实机器人上取得与 <strong>Diffusion Policy</strong>、<strong>ACT</strong> 等大型模型相当或更优的结果（例如 24s 内成功率达 <strong>76.4%</strong>）</li><li>引入 <strong>动作感知键（action-aware keys）</strong> 和 <strong>留一演示训练（leave-one-demonstration-out training）</strong> 等关键技术，使软召回基底在稀疏数据上有效，并避免头部过拟合精确召回</li><li>系统刻画了检索方法的失败模式（如首次接触时失败、无法外推到演示工作空间之外），为后续改进提供方向</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>异质联想记忆</strong>：每个演示帧存储一个键（由视觉和状态编码器生成）和一个未来动作块（值），共约 <strong>16,000 行</strong>（40 个 ALOHA 演示）</li><li><strong>软召回基底</strong>：通过 softmax 加权平均整个记忆库形成基底 \(A_{\mathrm{base}} = \sum_i w_i V_i\)，其中权重由键相似度和可学习温度 \(\beta\) 决定</li><li><strong>动作感知键</strong>：编码器采用 ImageNet 初始化的 <strong>ResNet-18</strong> 提取视觉特征，并结合状态和指令信息；训练时同时使用 SimCLR 对比损失和 <strong>动作感知对齐损失</strong>，使相似未来动作的帧在键空间中靠近</li><li><strong>残差注意力头</strong>：一个 <strong>2.8M 参数</strong>的 Transformer 头部，接收软召回基底、top-4 候选块和原始观察，预测加性修正；最终线性层初始化为零，保证初始策略等于纯召回</li><li><strong>留一演示训练</strong>：训练时排除当前帧所在的整个演示，迫使头部从其他演示的召回误差中学习修正，避免对自身演示的过拟合</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：ALOHA cube transfer（Human 和 Scripted，40/50 演示）、robomimic（Can、Square）、MimicGen（Square、Stack、Threading、Coffee）、LIBERO（四个语言条件套件，共 40 任务）、真实 SO-101 手臂（50 演示）</li><li><strong>模型规模</strong>：HAVM 总参数 <strong>14M</strong>（编码器约 11M + 头部约 2.8M），额外存储记忆银行约 <strong>13M 个数字</strong>（随演示数量线性增长）</li><li><strong>训练资源</strong>：单张 <strong>RTX 5090 GPU</strong>；编码器训练约 2 分钟，头部训练约 3 分钟（含学习 \(\beta\) 则约 5 分钟）；推理调用 <strong>1.1 ms</strong>（使用 CUDA graph 重放，否则约 2.6 ms）</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：仿真基准（ALOHA、robomimic、MimicGen、LIBERO）和真实 SO-101 机械臂；主要指标为任务成功率（24s 和 8s 时间限制）、严格成功（strict success）等</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - <strong>ALOHA Human（40 演示）</strong>：HAVM 达到 <strong>76.4%</strong>（24s）和 <strong>74.6%</strong>（8s），与 <strong>Diffusion Policy</strong>（78.8%，264M 参数，训练 6.7h）无显著差异，超过 <strong>ACT</strong>（71.7%）和微调 <strong>VLA</strong>（65.2–75.2%）</p>
+<p> - <strong>LIBERO（40 任务记忆）</strong>：总体成功率 <strong>92.2%</strong>；在指令重述测试中性能下降远小于 SmolVLA</p>
+<p> - <strong>真实 SO-101</strong>：以 <strong>30 Hz</strong> 控制频率稳定运行，无卡顿</p>
+<p> - <strong>对照检索基线</strong>：在 DARP 协议下，HAVM 在 Square 上领先 <strong>10.3 个百分点</strong>；在 ALOHA Human 上，软基底比 top-1 基底高 <strong>22.4 个百分点</strong>（新编码器、新头部、新重置）</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34117/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">CoTacWAM: Joint Modeling of Vision and Touch for Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33993/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Aegis-VLA: Reliability-Gated Action Refinement via a Trajectory World Model for Dynamic Object Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

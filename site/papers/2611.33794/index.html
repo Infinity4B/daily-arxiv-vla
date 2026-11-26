@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Keep or Roll Back? Out-of-Loop Judges for Self-Improving VLA and End-to-End Embodied Policies - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 SealedLoop 评估框架，用于判断自改善具身策略（VLA 和端到端驾驶策略）是否真正改进。 要解决的问题：自改善循环中的策略评估通常由循环内部的 judge 完成，该 judge 的证据不独立于被评估的策略，可能因 judge error（judge 本身测量错误）和 transfer gap（在循环自身数据上的真实收益无法迁移到未见条件）而误判。 SealedLoop 引入一个 密封 judge（out-of-loop judge），其数据、参数和时间表对改进者隐藏，并通过序列测试以受控错误率决定是否保留新策略。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33794">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Keep or Roll Back? Out-of-Loop Judges for Self-Improving VLA and End-to-End Embodied Policies</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33794" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33794" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 SealedLoop 评估框架，用于判断自改善具身策略（VLA 和端到端驾驶策略）是否真正改进。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">Keep or Roll Back? Out-of-Loop Judges for Self-Improving VLA and End-to-End Embodied Policies</p>
+</div></figure>
+        <p class="article-unit">University of Wisconsin–Madison（作者：Zilin Huang、Zhen…</p>
+        <ul class="article-facts"><li>arXiv 2611.33794</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of Wisconsin–Madison</strong>（作者：Zilin Huang、Zhengyang Wan、Zihao Sheng、Sikai Chen）</li><li><strong>University of California, Santa Cruz</strong>（作者：Kangan Qian）</li><li>通信作者：Sikai Chen（sikai.chen@wisc.edu）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>SealedLoop</strong> 评估框架，用于判断自改善具身策略（VLA 和端到端驾驶策略）是否真正改进。</li><li>要解决的问题：自改善循环中的策略评估通常由循环内部的 judge 完成，该 judge 的证据不独立于被评估的策略，可能因 <strong>judge error</strong>（judge 本身测量错误）和 <strong>transfer gap</strong>（在循环自身数据上的真实收益无法迁移到未见条件）而误判。</li><li>SealedLoop 引入一个 <strong>密封 judge</strong>（out-of-loop judge），其数据、参数和时间表对改进者隐藏，并通过序列测试以受控错误率决定是否保留新策略。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>SealedLoop</strong> 框架：用密封的 judge 代替循环内 judge 做出每次更新决策，并通过在同一循环下分别运行两个 judge 将一个虚假收益分离为 <strong>judge error</strong> 和 <strong>transfer gap</strong>。</li><li>证明 <strong>循环内部的证据不足以批准更新</strong>：在 <strong>LIBERO</strong> 操作和 <strong>NAVSIM</strong> 驾驶中，循环内 judge 保留了并不更好的策略，且即使一个在循环自身数据上零误差的 judge 也会保留 8/15 个在未见城市中表现更差的驾驶策略。</li><li>在 <strong>全尺寸真实车辆</strong>上对已发布的改进步骤进行盲测：RL 版本在 6 对驾驶中均在弯道中行驶更远（平均 +10.4 m），但两个版本都未能完成弯道。</li><li>展示了 <strong>密封顺序测试</strong> 的有效性：在已知密封增益的驾驶策略对上，测试接受 11/12 个真实增益，且不接受任何损失（0/59）。</li><li>对现有外挂式 judge（视觉语言模型、奖励模型等）进行了系统比较，发现它们仍不能替代密封 judge。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>密封 judge</strong> ：在循环外部定义评估池（如未见过城市的驾驶日志或新环境种子），其数据、参数和采样时间表在改进者运行前固定，且改进者无法访问或优化。</li><li><strong>顺序测试（sequential test）</strong> ：使用 betting confidence sequence 构建置信区间，在每对评估条件后检查区间是否排除零增益；如果下界 &gt; 0 则接受，上界 &lt; 0 则拒绝，否则继续直到预算用尽。该测试保证错误接受或拒绝的概率不超过预先设定的 α（论文中 α=0.05）。</li><li><strong>Judge gap 分解</strong>：将循环内 judge 报告的增益与密封 judge 测得的增益之差分解为 \(E_g\)（judge error，循环自身数据上的测量误差）和 \(T_g\)（transfer gap，真实收益在未见数据上的不可迁移部分）。</li><li><strong>运行设置</strong>：每个循环运行多个变体，分别由循环内 judge 或密封 judge 做出接受/拒绝决策，两者均用密封 judge 评分以计算每代的 judge gap。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>操作（Manipulation）</strong>：使用 <strong>LIBERO-Object</strong> 基准，3 个任务；起点策略为 <strong>OpenVLA-OFT</strong>（few-shot 适应）；每代在 300 个新起始条件上收集情节，用 LoRA 微调；密封池跨越 50 个起始状态并与环境种子交叉。</li><li><strong>驾驶（Driving）</strong>：使用 <strong>NAVSIM</strong> 模拟器，以 <strong>Boston</strong> 作为未见城市；起点策略为 <strong>DiffusionDrive</strong>（从 20,000 帧训练）；critic 预测 PDMS 分数；密封池包含 16,685 帧 Boston 日志。</li><li><strong>真实车辆</strong>：全尺寸线控电动货车，配备 RTK 校正惯性导航系统和车载 GPU；测试 <strong>ReCogDrive-2B</strong> 的 IL（模仿学习）和 RL（强化学习）两个版本；主路线长 144 m，含约 55° 左弯。</li><li><strong>训练资源</strong>：论文致谢提及使用 <strong>NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition GPUs</strong>（具体数量未在正文中给出）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>操作（LIBERO）</strong>：密封 judge 保留了 12 代（平均认证增益 +0.147）；分类器保留了 1 个被密封 judge 认证为更差的策略，并错误回滚了 3 个认证增益。在 196 个失败样例中，分类器在一个代中接受了 65 个；跨 45 个分类器决策代，用真值谓词替换分类器改变了 6 个决策。</li><li><strong>驾驶（NAVSIM）</strong>：第一代 judge gap 为 +0.095（critic 使用自身标签刷新）或 +0.045（使用真实标签刷新）；密封 judge 回滚了所有 15 个驾驶候选（平均密封增益 -0.028）。从已发布 checkpoint 起始的运行在循环自身帧上增益 +0.047 至 +0.058，但在 Boston 损失 -0.075 至 -0.107。</li><li><strong>密封测试已知增益</strong>：在 76 对驾驶策略中，测试接受 11/12 个真实增益，不接受任何损失（0/59）或接近零增益的 5 对。</li><li><strong>循环构建以改进</strong>：在模仿专家循环中，11 个第一步候选均获得 +0.029 至 +0.043 PDMS 的真实增益，密封测试全部接受；循环内 critic 仅接受 1 个。最终策略从 0.638 提升到 0.674（密封）、0.649（critic）、0.689（真实分数在循环自身帧上）。</li><li><strong>真实车辆</strong>：RL 版本在 6/6 个盲对中进入弯道更远（平均 +10.4 m，即 +0.072 路线完成比例，单侧符号检验 p=0.016），但在主路线上没有车辆完成弯道（0/12）。直道两个版本均完成（6/6）；右弯的唯一一对中 RL 行驶更远。顺序测试在 6 对后仍未作出决定（置信区间 [-0.50, +0.57]）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33797/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DriftWAM: Faster World-Action Models via Action-Aware Video Drifting</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33769/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">FailPoint-X: A Policy-Matched, Failure-Anchored Benchmark for Offline VLA Post-Training from Human Takeovers</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

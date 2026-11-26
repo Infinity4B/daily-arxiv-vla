@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SplatWAM: Splatting World Action Models for Real-Time 3D Imagination - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 SplatWAM，一种直接在紧凑的 3D 高斯原语上学习动作条件动力学的新型生成式世界模型 解决现有像素/潜变量世界模型无法直接表示真实 3D 场景演化、视角不一致及渲染慢的问题 实现从无位姿 RGB 视图出发，预测可渲染、可探索的未来 3D 场景状态，并同时支持策略控制" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33467">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">SplatWAM: Splatting World Action Models for Real-Time 3D Imagination</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33467" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33467" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 SplatWAM，一种直接在紧凑的 3D 高斯原语上学习动作条件动力学的新型生成式世界模型</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">SplatWAM: Splatting World Action Models for Real-Time 3D Imagination</p>
+</div></figure>
+        <p class="article-unit">CVSSP, University of Surrey：Frank Tsu-Fang Lu、Karth…</p>
+        <ul class="article-facts"><li>arXiv 2611.33467</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>CVSSP, University of Surrey</strong>：Frank Tsu-Fang Lu、Karthik Sundar Senthilkumar、Christopher Thirgood、Simon Hadfield</li><li><strong>Locus Robotics</strong>：Oscar Mendez</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>SplatWAM</strong>，一种直接在紧凑的 <strong>3D 高斯原语</strong>上学习动作条件动力学的新型生成式世界模型</li><li>解决现有像素/潜变量世界模型无法直接表示真实 3D 场景演化、视角不一致及渲染慢的问题</li><li>实现从无位姿 RGB 视图出发，预测可渲染、可探索的未来 3D 场景状态，并同时支持策略控制</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>紧凑且几何接地的 3D 状态</strong>：SplatWAM-𝒯 将可变数量的未定位视图映射到固定数量的高斯 token，作为策略输入时最多比像素基线高 <strong>24.8 个百分点</strong></li><li><strong>高斯空间中的直接生成动力学</strong>：SplatWAM-𝒟 直接学习动作条件的高斯状态转移，无需单独的潜变量编解码阶段；在单张 RTX 5090 上以约 <strong>80 FPS</strong> 执行 rollout，且任意预测状态可从任意视角渲染</li><li><strong>预测与控制共享主干</strong>：SplatWAM-𝒫 在 SplatWAM-𝒟 上添加 agent token 和 flow-matching 动作头，联合优化预测与控制；在 OGBench Scene 上超越 <strong>LPWM</strong>，匹配 <strong>HIQL</strong>，在 LIBERO 上无需机器人预训练即可与大规模 VLA 竞争</li><li><strong>高斯专用动力学设计</strong>：引入 3D 位置嵌入、可微分渲染监督和 log-Euclidean 协方差参数化，显著提升长时程 rollout 质量</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>SplatWAM-𝒯</strong>：采用 VGGT 骨干网络编码无位姿视图，通过固定查询 token 解码出 N 个高斯原语（位置、旋转四元数、尺度、不透明度、颜色），使用摄影测量损失、几何损失（深度/法线蒸馏）和正则化损失训练</li><li><strong>SplatWAM-𝒟</strong>：基于 <strong>diffusion forcing</strong> 的因果 Transformer，逐帧独立加噪，采用 <strong>x-prediction</strong> 缓解误差累积；使用 <strong>shortcut forcing</strong> 目标、动作 dropout（CFG）和可渲染损失</li><li><strong>高斯专用动力学</strong>：使用训练集平均位置的 3D 正弦嵌入作为位置先验；渲染预测帧与目标帧的 2D 一致性损失辅助监督；将协方差从四元数-尺度因子化转为 6 维 log-Euclidean 坐标，消除表示歧义</li><li><strong>SplatWAM-𝒫</strong>：在 𝒟 上附加轻量策略头，agent token 与当前帧世界 token 交叉注意力、自回归历史注意力，并读取目标 token（OGBench 用高斯目标状态，LIBERO 用 CLIP 文本 token）；使用 flow-matching 生成 k 步动作 chunk</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>OGBench</strong>：使用 Scene 和 Cube play 数据集训练 tokenizer 和世界模型；在 5 个官方的 goal-conditioned 任务评估控制</li><li><strong>LIBERO</strong>：在 Spatial、Object、Goal 和 90 四个套件上预训练 tokenizer，保留 Long 套件做分布外评估；世界模型和策略按 OpenVLA 协议在每个套件演示上训练</li><li><strong>模型规模</strong>：SplatWAM 约 <strong>1B 参数</strong>（对照 WorldVLA ~7B、OpenVLA ~7B）</li><li><strong>推理硬件</strong>：单张 <strong>RTX 5090</strong> 上实现约 <strong>80 FPS</strong> 的 rollout 渲染速度</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>表示质量（OGBench Scene，2 个上下文视图）</strong>：SplatWAM-𝒯 仅用 <strong>2K 高斯</strong>取得 AbRel <strong>0.055</strong>、Normal <strong>37.9°</strong>，优于 pixelSplat（100K 高斯）、AnySplat（~370K）和 C3G（2K）</li><li><strong>动作条件 rollout（OGBench Scene）</strong>：SplatWAM-𝒟 在 H=16/32 的输入视图 PSNR 分别达 <strong>24.57/24.15</strong>，新视角 PSNR <strong>23.37/23.02</strong>，FPS <strong>83.8/83.9</strong>；对比 iVideoGPT（20.56/19.28 PSNR，11.0 FPS）、Cosmos3-Edge（25.30/23.73 PSNR，18.9 FPS）和 GWM（19.57/17.91 PSNR，54.6 FPS）</li><li><strong>控制性能</strong>：跨 8 个任务套件，模型无关的高斯 token 策略比像素策略最多高 <strong>24.8 pp</strong>；SplatWAM-𝒫 在 OGBench Scene 上超过 LPWM <strong>12 pp</strong>，匹配 HIQL 且无需学习价值函数</li><li><strong>LIBERO 语言条件控制</strong>：约 <strong>1B</strong> 参数的 SplatWAM 超过约 <strong>7B</strong> 的 WorldVLA 和机器人预训练 OpenVLA，并在无大规模机器人预训练时与 OpenVLA-OFT 持平</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33635/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FreshVLA: Frequency-Regularized Time Scale Hierarchical Latent Actions for Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33398/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Best-of-$N$ Test-Time Steering Can Lead to Reward Hacking in Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

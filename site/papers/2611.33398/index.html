@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Best-of-$N$ Test-Time Steering Can Lead to Reward Hacking in Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究视觉语言动作（VLA）模型在 best-of-N（BoN）测试时引导 中，因验证器不完美而导致的 推理时奖励黑客（reward hacking） 问题 证明当验证器存在预测误差时，增加采样数量 N 并不总能提升真实性能，反而会偏向利用验证器误差的高分动作，导致任务完成率下降、安全违规增加 在 LIBERO-Safety 基准上使用 π₀.₅ 策略进行实证研究，并探究缓解方法" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33398">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-24">2026-11-24</time></p>
+        <h1 class="article-title">Best-of-$N$ Test-Time Steering Can Lead to Reward Hacking in Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33398" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33398" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究视觉语言动作（VLA）模型在 best-of-N（BoN）测试时引导 中，因验证器不完美而导致的 推理时奖励黑客（reward hacking） 问题</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">Best-of-$N$ Test-Time Steering Can Lead to Reward Hacking in Vision-Language-Action Models</p>
+</div></figure>
+        <p class="article-unit">Virginia Tech（Vanshaj Khattar、Ming Jin）</p>
+        <ul class="article-facts"><li>arXiv 2611.33398</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Virginia Tech</strong>（Vanshaj Khattar、Ming Jin）</li><li><strong>Mitsubishi Electric Research Laboratories</strong>（Jing Liu、Toshiaki Koike-Akino、Ye Wang）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究视觉语言动作（VLA）模型在 <strong>best-of-N（BoN）测试时引导</strong> 中，因验证器不完美而导致的 <strong>推理时奖励黑客（reward hacking）</strong> 问题</li><li>证明当验证器存在预测误差时，增加采样数量 N 并不总能提升真实性能，反而会偏向利用验证器误差的高分动作，导致任务完成率下降、安全违规增加</li><li>在 <strong>LIBERO-Safety</strong> 基准上使用 <strong>π₀.₅</strong> 策略进行实证研究，并探究缓解方法</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>首次系统揭示 VLA 模型 <strong>best-of-N 测试时引导</strong> 易受推理时奖励黑客影响，即使验证器误差可控</li><li>通过 <strong>MuJoCo 验证器</strong> 引入两类受控误差（输出噪声和动力学误差），量化代理奖励与干净奖励之间的差距随 N 增大而扩大</li><li>决策级分析表明，随着 N 增大，被验证器 <strong>预测为安全但实际不安全</strong> 的动作被选中的数量增加，安全过滤无法消除此类错误</li><li>评估两种缓解策略：<strong>软 best-of-N 采样</strong>（softmax 选择）和 <strong>共享权重校准</strong>，显示在部分条件下能有效缓解奖励黑客，但非通用</li><li>在 <strong>60 个 LIBERO-Safety 任务案例</strong> 上进行了多轮重复实验，提供了可靠的实证证据</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>采用 <strong>best-of-N 测试时引导</strong>：从固定 VLA 策略采样 N 个动作块，用验证器预测短期轨迹，计算安全分数和任务分数，加权选出最佳动作执行</li><li>验证器误差注入方式：<strong>输出噪声</strong>（对预测物体位置添加高斯噪声）和 <strong>动力学误差</strong>（改变 MuJoCo 仿真器的执行器强度、阻尼、摩擦等，分为欠反应和过反应）</li><li>定义 <strong>代理奖励</strong>（来自有误差验证器）和 <strong>干净奖励</strong>（来自无扰动仿真器），通过比较两者变化检测奖励黑客</li><li>缓解方法：<strong>软 best-of-N</strong> 基于 softmax 概率选择候选而非硬性取最高分；<strong>共享权重校准</strong> 通过拟合安全与任务权重来降低不可靠分数的影响</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO-Safety</strong> 基准，包含 60 个任务级案例，来自四个任务套件（affordance-aware grasping、human-robot interaction、tabletop obstacle avoidance、hand-object avoidance），每个套件含 5 个任务指令 × 3 个难度级别（L0-L2）</li><li>模型：<strong>π₀.₅</strong>（Physical Intelligence 的 VLA 模型），使用 LIBERO-Safety 微调检查点</li><li>训练资源：论文未报告具体 GPU/TPU 数量，使用 <strong>MuJoCo</strong> 物理模拟器进行验证器预测与评分</li><li>实验设置：每个案例进行 10 次策略采样重复，每集最多 200 个控制步，评估 N 取值 {1, 5, 10, 30, 50, 75}</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：<strong>LIBERO-Safety</strong> 基准，使用 <strong>安全任务完成率</strong> 和 <strong>约束违规率</strong> 作为主要指标</li><li>完美验证器下，N 从 1 增至 75，安全完成率从 43.8% 升至约 50%，违规率从 10.3% 降至 4.5%</li><li>不完美验证器下出现奖励黑客：例如过度反应动力学下的 <strong>人类安全 L2 任务</strong>，N 从 30 增至 75，安全完成率从 82% 降至 70%，违规率从 10% 升至 18%</li><li>输出噪声下的 <strong>苏打水交接任务</strong>，N 从 5 增至 75，任务完成率从 50% 降至 10%，同时违规率保持为 0</li><li>缓解评估：<strong>软 best-of-N</strong>（β=16）在欠反应动力学下将安全完成率从 48.7% 提升至 53.0%，违规率从 7.8% 降至 5.2%；<strong>共享权重校准</strong> 在部分任务组（如人类安全 L2）将安全完成率提升至 86%、违规率降至 4%，但在其他任务上效果有限或不稳定</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33467/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">SplatWAM: Splatting World Action Models for Real-Time 3D Imagination</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33390/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">RoboARC: Physical Puzzles for Robotic Manipulation under Spatial Constraints</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

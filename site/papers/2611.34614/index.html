@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Commit2Drive，一个面向视觉-语言-动作（VLA）自动驾驶模型的框架，将语言决策作为轨迹规划的一致性约束。 解决现有 VLA 模型中语言决策与规划轨迹经常不一致的问题，使语言决策不再只是冗余的索引或并行输出。 通过将决策建模为“承诺”（包含机动类别和连续目标值），并利用反事实数据与一致性损失训练，确保轨迹执行与语言决策保持一致。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34614">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34614" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34614" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Commit2Drive，一个面向视觉-语言-动作（VLA）自动驾驶模型的框架，将语言决策作为轨迹规划的一致性约束。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34614.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34614.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34614.webp" alt="Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">杜伦大学计算机科学系（Department of Computer Science, Durham U…</p>
+        <ul class="article-facts"><li>arXiv 2611.34614</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>杜伦大学计算机科学系</strong>（Department of Computer Science, Durham University）</li><li>作者：<strong>Zikai Zhang</strong>、<strong>Hubert P. Shum</strong>、<strong>Toby Breckon</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Commit2Drive</strong>，一个面向视觉-语言-动作（VLA）自动驾驶模型的框架，将语言决策作为轨迹规划的一致性约束。</li><li>解决现有 VLA 模型中语言决策与规划轨迹经常不一致的问题，使语言决策不再只是冗余的索引或并行输出。</li><li>通过将决策建模为“承诺”（包含机动类别和连续目标值），并利用反事实数据与一致性损失训练，确保轨迹执行与语言决策保持一致。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Commit2Drive 框架</strong>，引入 <strong>Maneuver Bank</strong> 和一致性损失，将语言决策从模式索引转变为具有运动学语义的约束，显著提升语言决策与轨迹的一致性。</li><li>设计<strong>自动数据管道</strong>，结合规则函数与视觉语言模型（VLM）生成、审查并细化语言标注，首次将反事实推理建立在视觉感知事实之上，并联合训练语言决策与轨迹。</li><li>在 <strong>Bench2Drive</strong> 闭环基准上以轻量级 <strong>0.5B 语言模型</strong>取得 <strong>78.50 DS</strong> 和 <strong>55.91% SR</strong>，将语言-动作不一致率降至 <strong>1.8%</strong>，同时框架可无缝扩展至规则式决策模块。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将规划问题形式化为在一致性约束下选择最优轨迹：语言决策 \(d\) 先于轨迹生成，生成策略以 \(d\) 为条件，并引入指示函数约束 \(\Phi(a)=d\)。</li><li>设计 <strong>Maneuver Bank</strong>：将决策（如 stop、slow、keep、accel）映射到具有运动学含义的代码，通过查找表、傅里叶特征和 MLP 生成标称速度剖面，并融合到动作专家的速度分支。</li><li>设计<strong>三类一致性损失</strong>：grounding loss 绑定代码与运动、semantic loss 要求解码剖面读回为原决策、execution loss 监督各可采纳决策下的轨迹执行，使用反事实专家轨迹作为监督目标。</li><li>构建<strong>反事实决策-动作数据管道</strong>：从专家未来 3 秒轨迹读取决策标签，对每个可采纳决策重定时生成反事实轨迹，通过占用栅格检测碰撞，并由 VLM 审查与细化语言标注一致性。</li><li>由于 Maneuver Bank 的查找不依赖语言模型隐藏状态，框架可扩展至规则式决策：规则函数输出承诺，直接由同一动作专家执行，无需重新训练。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>Bench2Drive</strong> 官方基础集（1000 个片段，950 训练/50 验证），数据管道生成 <strong>234,769</strong> 个训练帧和 <strong>12,806</strong> 个验证帧；闭环评估使用官方 220 条短路线（44 个交互场景）。</li><li><strong>模型规模</strong>：视觉编码器 <strong>EVA-02-L</strong>；语言模型 <strong>Qwen2-0.5B</strong>（0.5B 参数）；Maneuver Bank 含 4 个维度 64 的条目；决策空间为 4 个速度决策（stop/slow/keep/accel），每个带连续目标值。</li><li><strong>训练资源</strong>：<strong>4 块 NVIDIA A100</strong> GPU 上进行 IL 与在线 RL 两阶段训练；<strong>单块 RTX 4090</strong> 上进行闭环在线推理。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：CARLA 模拟器上的 <strong>Bench2Drive</strong> 闭环基准，评测 220 条路线、44 个交互场景。</li><li><strong>主要指标</strong>：<strong>Driving Score (DS)</strong>、<strong>Success Rate (SR)</strong>、<strong>Multi-Ability</strong>（五项高级驾驶技能）以及 <strong>say-do gap</strong>（语言决策与轨迹不一致率）。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - <strong>Commit2Drive</strong> 取得 <strong>DS 78.50</strong>、<strong>SR 55.91%</strong>，与使用相同基础集训练的方法相比具有竞争力。</p>
+<p> - 语言-动作不一致率 <strong>say-do gap 低至 1.8%</strong>，大幅优于现有 VLA 模型（如 MindDrive）。</p>
+<p> - 消融实验验证了 Maneuver Bank、反事实数据与一致性损失对一致性和驾驶性能的贡献；规则式决策扩展无需重训练即可执行。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34655/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Nav4Manip: From Navigation to Dexterous Mobile Manipulation through Co-Evolution</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34560/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">M$^{2}$AdaptVLA: Multimodal Memory-Augmented Vision-Language-Action Model with Predictive Test-Time Adaptation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

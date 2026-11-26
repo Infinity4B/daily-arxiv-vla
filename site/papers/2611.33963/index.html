@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Targeted Adaptation of World-Action Models via Interaction and Motion Heads - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究世界-动作模型（World-Action Models, WAMs）的定向适配，重点关注交互定位与运动建模两个操纵核心能力。 指出标准适配方法（全量微调、LoRA）未显式选择与操纵能力相关的参数，可能导致模型只拟合视觉细节而忽略交互与运动。 提出两个功能特化的注意力头家族：Next-Interaction Heads（定位即将发生的抓取/释放目标）和 Motion Heads（追踪跨帧运动），并基于它们提出参数高效的精调方法 HeadLight。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33963">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Targeted Adaptation of World-Action Models via Interaction and Motion Heads</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33963" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33963" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究世界-动作模型（World-Action Models, WAMs）的定向适配，重点关注交互定位与运动建模两个操纵核心能力。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #177e89; --cover-to: #5ec2a8; --cover-spot: #c5f0de; --cover-ink: #f5fffb" aria-hidden="true">
+  <p class="note-cover-title">Targeted Adaptation of World-Action Models via Interaction and Motion Heads</p>
+</div></figure>
+        <p class="article-unit">University of California, Berkeley</p>
+        <ul class="article-facts"><li>arXiv 2611.33963</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>University of California, Berkeley</strong></li><li><strong>University of Toronto</strong></li><li><strong>University of Southern California</strong></li><li><strong>Massachusetts Institute of Technology</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究世界-动作模型（World-Action Models, WAMs）的定向适配，重点关注交互定位与运动建模两个操纵核心能力。</li><li>指出标准适配方法（全量微调、LoRA）未显式选择与操纵能力相关的参数，可能导致模型只拟合视觉细节而忽略交互与运动。</li><li>提出两个功能特化的注意力头家族：<strong>Next-Interaction Heads</strong>（定位即将发生的抓取/释放目标）和 <strong>Motion Heads</strong>（追踪跨帧运动），并基于它们提出参数高效的精调方法 <strong>HeadLight</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>发现并验证功能特化的注意力头</strong>：在预训练 WAM 中识别出 Next-Interaction Heads 和 Motion Heads，通过因果消融证明它们在操纵成功中至关重要（消融 Motion Heads 成功率从 57.89% 降至 0.94%，消融 Next-Interaction Heads 降至 40.61%）。</li><li><strong>提出 HeadLight 方法</strong>：参数高效精调框架，利用两个头家族引导互补适配路径——精调 Next-Interaction Heads 改善目标定位，精调与冻结 Motion Heads 配对的动作头改善动作执行。</li><li><strong>跨架构与真实环境验证</strong>：在两个不同 WAM 架构（Zero-WAM 和 LingBot-VA）以及 Franka 真实机器人上展示优于全量微调和 LoRA 的泛化性能。</li><li><strong>参数效率优势</strong>：仅更新约 1.1% 参数即可达到更高成功率，不引入额外推理开销。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Next-Interaction Heads 识别</strong>：通过因果干预，遮蔽即将交互的目标 token，测量输出变化；与四个控制 token（随机、等距、上一个交互目标、再下一个交互目标）比较 log-ratio margin，选择对所有控制均保持正 margin 的头部。最终选取 top \(K_N=24\) 个头。</li><li><strong>Motion Heads 识别</strong>：从跨帧注意力中构造注意力诱导的运动场，计算其与参考光流之间的期望余弦相似度，选择 top \(K_M=48\) 个头部。</li><li><strong>HeadLight 精调</strong>：两条互补路径——视频路径中仅精调 Next-Interaction Heads（冻结其他视频头）以优化交互目标定位；动作路径中保持视频 Motion Heads 冻结，仅精调它们对应的动作头（\((\ell,h)_a\)），使动作预测跟随预测视频轨迹。</li><li><strong>方法通用性</strong>：适用于具有联合注意力机制的 WAM 架构，包括 Zero-WAM（分离视频/动作头，条件于人类演示）和 LingBot-VA（共享 transformer，条件于语言指令）。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：RoboTwin 仿真基准；训练使用 43 个已见双手任务，评估在 6 个未见任务上（每任务 100 episodes × 3 seeds）。真实机器人使用 4 个已见任务（每个 100 次遥操作演示）和 4 个未见任务（每个 20 次物理 rollout）。</li><li><strong>模型</strong>：Zero-WAM（总参数量约 10B，Full FT 更新 10.0B 参数）和 LingBot-VA（具体参数量未在正文中明确，但同样进行全量微调/LoRA/HeadLight 对比）。</li><li><strong>HeadLight 参数量</strong>：Zero-WAM 上更新 113.3M 参数（约占 1.1%）；LoRA 使用 rank \(r=77\) 匹配相同可训练参数量。</li><li><strong>训练资源</strong>：原文未明确列出具体 GPU/TPU 硬件配置。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：RoboTwin 仿真基准（排除有模拟器问题的 Open Microwave 任务）和 Franka Panda 真实机器人。</li><li><strong>主要指标</strong>：任务成功率（Success Rate, %，mean ± std）。</li><li><strong>仿真结果</strong>：Zero-WAM 上 HeadLight 平均成功率 <strong>62.28%</strong>，高于 Full FT（57.89%）和 LoRA（58.66%）；LingBot-VA 上 HeadLight 平均成功率 <strong>38.17%</strong>，高于 Full FT（32.61%）和 LoRA（34.11%）。</li><li><strong>消融实验</strong>：仅精调 Next-Interaction Heads 或 Motion Heads 均优于相等数量的随机头；两者结合 HeadLight 达到最优，表明两条路径功能互补。</li><li><strong>真实机器人</strong>：HeadLight 在 Zero-WAM 和 LingBot-VA 上均取得最高成功率，重点体现在未见任务上（Zero-WAM 68.75%，高于 LoRA 8.75 个百分点；LingBot-VA 72.50%，高于 LoRA 11.25 个百分点）。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33993/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Aegis-VLA: Reliability-Gated Action Refinement via a Trajectory World Model for Dynamic Object Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33934/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Towards 360$^\circ$ Embodied UAV Tracking Without Turning</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Escapingthe instruction blackhole of vision-language-action policies via optimal-transport wormholes - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="识别并定义 VLA 策略的“指令黑洞” 现象：机器人一旦在静态演示下学会任务后，执行过程中收到的新指令会被吸收，导致机器人继续旧任务或冻结。 提出 Wormhole：一种训练无关的即插即用模块，不再尝试重新指令策略，而是通过最优传输将机器人重新定位到新任务的“承诺区域”，诱导未修改的策略自然执行新任务。 在 LIBERO 基准上验证：Wormhole 将 π0 和 π0.5 的承诺切换成功率从 0–1.2% 提升至 93.1%，且动作不连续性仅为脚本化 retreat-and-restart 的五分之一。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34280">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Escapingthe instruction blackhole of vision-language-action policies via optimal-transport wormholes</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34280" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34280" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">识别并定义 VLA 策略的“指令黑洞” 现象：机器人一旦在静态演示下学会任务后，执行过程中收到的新指令会被吸收，导致机器人继续旧任务或冻结。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34280.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34280.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34280.webp" alt="Escapingthe instruction blackhole of vision-language-action policies via optimal-transport wormholes 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">武汉大学（计算机学院、机器人学院、技术科学研究院）</p>
+        <ul class="article-facts"><li>arXiv 2611.34280</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>武汉大学</strong>（计算机学院、机器人学院、技术科学研究院）</li><li><strong>Style3D Research</strong></li><li><strong>长安汽车智能车辆安全技术国家重点实验室</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>识别并定义 <strong>VLA 策略的“指令黑洞”</strong> 现象：机器人一旦在静态演示下学会任务后，执行过程中收到的新指令会被吸收，导致机器人继续旧任务或冻结。</li><li>提出 <strong>Wormhole</strong>：一种训练无关的即插即用模块，不再尝试重新指令策略，而是通过最优传输将机器人重新定位到新任务的“承诺区域”，诱导未修改的策略自然执行新任务。</li><li>在 <strong>LIBERO</strong> 基准上验证：Wormhole 将 π0 和 π0.5 的承诺切换成功率从 <strong>0–1.2%</strong> 提升至 <strong>93.1%</strong>，且动作不连续性仅为脚本化 retreat-and-restart 的五分之一。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>指令黑洞的识别与量化</strong>：定义传输比、事件视界及行为特征（捕获、冻结、潮汐撕裂），建立中执行切换评估协议。</li><li><strong>可识别性理论</strong>：证明静态模仿无法区分“倾听”与“失聪”策略（命题1）；将机器人置于新任务的承诺区域内即可执行新任务（命题2），将逃脱转化为重新定位。</li><li><strong>Wormhole 方法</strong>：训练无关、无需切换演示、无需模型权重，通过最优传输将语言指令转导为状态空间几何信息，并利用速率受限的遍历将机器人送入新任务的“盆地”。</li><li><strong>实证分析与知识蒸馏</strong>：通过配对反事实实验揭示黑洞与任务可识别性的关联；用 Wormhole 生成的切换数据训练的 π0.5 在无插件情况下跟随 <strong>92.1%</strong> 的承诺切换。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>机制形式化</strong>：定义承诺区域（状态已能唯一确定指令的区域）、传输比（策略动作修正与所需位移的对齐程度）及事件视界（新指令不再生效的时刻）。</li><li><strong>Wormhole 核心流程</strong>：</li></ul>
+<p> - <strong>开口</strong>：采样旧策略在旧指令下的延续（A 口）；收集新指令成功执行的接近阶段状态（B 口）。</p>
+<p> - <strong>构建喉咙</strong>：利用<strong>熵正则化最优传输</strong>耦合 A、B 两口的状态，并依据“到完成新任务所需步数”的期望值选出远端出口 y*。</p>
+<p> - <strong>穿过喉咙</strong>：以速率受限的平稳方式将机器人运送到 y*（打开夹爪、提起、移动、落下），随后恢复原策略执行新指令。</p>
+<ul><li><strong>关键设计</strong>：最优传输负责状态空间映射，速率受限遍历降低潮汐撕裂（动作离散度仅为 retreat-and-restart 的五分之一）；整个过程不修改底层策略参数。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO</strong>（Spatial、Goal、Object 三个套件）；测试任务如“将碗从炉子拿到柜子”等对称场景、LIBERO-Goal 的任务目标切换、字母汤与沙拉酱等物体切换。</li><li>模型：<strong>π0</strong> 和 <strong>π0.5</strong> 流匹配 VLA 策略；动作空间桥接、脚本化 retreat-and-restart 作为基线；蒸馏实验中训练了带接地点 token 的 π0.5（注意力分析使用 Qwen2.5-VL-7B）。</li><li>训练资源：文中未明确给出 GPU/TPU 数量；Wormhole 本身无需训练，蒸馏实验仅使用 <strong>589 条</strong>由插件生成的切换轨迹（无人类演示）。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：LIBERO 测试集（初态 0–19，双向切换，共 40 个早期限、160 个承诺切换、80 个迟到切换）；指标包括承诺切换成功率、捕获/冻结率、完成步数、动作离散度、加加速度。</li><li>关键实验结果：</li></ul>
+<p> - 原生 π0 和 π0.5 的承诺切换成功率仅为 <strong>0% 和 1.2%</strong>；动作空间桥接最高 <strong>33.1%</strong>；retreat-and-restart 达到 <strong>83.8–90.0%</strong>，但动作不连续性较高（离散度 1.44–1.49）。</p>
+<p> - <strong>Wormhole</strong> 在两个骨干上均达到 <strong>93.1%</strong> 的承诺切换成功率，从不发生捕获，且动作离散度仅为 <strong>0.30–0.32</strong>，加加速度也显著更低。</p>
+<p> - 迟到切换（机器人已抓取旧物体）方面，Wormhole 在 π0.5 和 π0 上分别达到 <strong>86.2% 和 91.2%</strong>，显著优于原生策略和动作空间桥接。</p>
+<p> - 知识蒸馏结果：用 Wormhole 数据训练的 π0.5（带接地点 token）在无插件时承诺切换成功率达到 <strong>92.1%</strong>，超过在相同数据上的行为克隆（85.2%）。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34287/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">DataForgeVLA: Fully Synthetic Manipulation Demonstrations for Vision-Language-Action Training</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34257/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">CamAct: Learning Robotic Manipulation from In-the-Wild Videos via Camera Motion</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

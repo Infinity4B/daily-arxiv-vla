@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Aegis-VLA: Reliability-Gated Action Refinement via a Trajectory World Model for Dynamic Object Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 Aegis-VLA，一个世界模型引导的视觉-语言-动作（VLA）框架，用于动态物体操纵。 核心目标是解决动态操纵中“准确预测物体运动”与“判断是否应该修改动作”之间的脱节问题，即在目标持续运动时，决定是否以及如何对现有动作进行修正。 Aegis-VLA 通过分离动作修正的生成与采纳，利用轨迹世界模型提供预测证据，并通过可靠性门控决定修正的强度和是否应用。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33993">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Aegis-VLA: Reliability-Gated Action Refinement via a Trajectory World Model for Dynamic Object Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33993" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33993" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 Aegis-VLA，一个世界模型引导的视觉-语言-动作（VLA）框架，用于动态物体操纵。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">Aegis-VLA: Reliability-Gated Action Refinement via a Trajectory World Model for Dynamic Object Manipulation</p>
+</div></figure>
+        <p class="article-unit">哈尔滨工业大学计算学部计算机科学与技术学院：Lennox Wei、Jiaqi Yao、Shixin S…</p>
+        <ul class="article-facts"><li>arXiv 2611.33993</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>哈尔滨工业大学计算学部计算机科学与技术学院</strong>：Lennox Wei、Jiaqi Yao、Shixin Sun、Shaohui Liu、Wangmeng Zuo</li><li><strong>南加州大学</strong>：Yuanzheng Zhang</li><li><strong>上海引望智能技术有限公司</strong>：Jianhua Han、Meng Tian</li><li><strong>新加坡国立大学</strong>：Meng Tian</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>Aegis-VLA</strong>，一个世界模型引导的视觉-语言-动作（VLA）框架，用于动态物体操纵。</li><li>核心目标是解决动态操纵中“准确预测物体运动”与“判断是否应该修改动作”之间的脱节问题，即在目标持续运动时，决定是否以及如何对现有动作进行修正。</li><li>Aegis-VLA 通过分离动作修正的生成与采纳，利用轨迹世界模型提供预测证据，并通过可靠性门控决定修正的强度和是否应用。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>轨迹世界模型（Trajectory World Model）</strong>：结合运动学外推、学习残差动力学和位置不确定性估计，为动作修正提供共享运动上下文和预测证据。</li><li><strong>差异引导的动作修正（Discrepancy-Guided Action Refinement）</strong>：利用历史仅预测与基础动作条件预测的末端执行器轨迹之间的位置和姿态差异，生成有界的手臂修正量，并将修正与基础动作关联。</li><li><strong>可靠性门控（Reliability Gate）</strong>：将修正的生成与采纳分离，通过学习基于演示相对改进的准入机制，并在推理时利用预测不确定性和物体-末端执行器接近度调节修正的应用。</li><li>在 <strong>DOM</strong> 基准上，Aegis-VLA 以仅约 <strong>2.45M 可训练参数</strong> 取得了 <strong>56.72%</strong> 的成功率，相比 <strong>DynamicVLA</strong> 基线 <strong>45.44%</strong> 提升了 <strong>11.28 个百分点</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于冻结的 <strong>DynamicVLA</strong> 骨干生成基础动作块（20 步），新增的可训练模块仅占骨干参数的 0.57%。</li><li><strong>轨迹世界模型</strong> 使用共享卷积编码器和时间 GRU 提取运动上下文，输出当前物体位置、速度、加速度，并用恒定加速度模型外推未来轨迹；同时学习残差动力学修正和异方差高斯不确定性估计。</li><li><strong>差异引导的动作修正</strong> 构建两个预测分支：仅依赖历史的末端执行器轨迹预测和额外以基础动作块为条件的预测；两者差异经分量封装和线性插值映射到动作索引后，通过 MLP 生成有界残差（tanh 激活，最大边界 ζ_max=0.60）。</li><li><strong>可靠性门控</strong> 包含三部分：(1) 基于候选动作相对基础动作的误差减少、预测精度等指标学习二值准入标签；(2) 推理时利用平均预测不确定性、历史有效性、选择器分数和接近度进行硬门控（veto/floor）；(3) 使用不确定性衰减因子和接近度抑制系数对通过的修正进行连续缩放，最终动作为基础动作加上缩放后的残差。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：使用 <strong>Dynamic Object Manipulation (DOM)</strong> 基准的模拟训练数据，约 <strong>20 万</strong> 条演示，涵盖 <strong>2,800</strong> 个场景和 <strong>206</strong> 个物体。</li><li><strong>评估环境</strong>：Isaac Sim 仿真器，机器人平台为 <strong>Franka Emika Panda</strong> 臂，使用双 RTX 4090 GPU（仿真和策略推理分离）。</li><li><strong>模型规模</strong>：Aegis-VLA 新增可训练参数约 <strong>2.45M</strong>；骨干 DynamicVLA 参数约 430M（推测，未在 HTML 中直接给出，但可训练参数占比 0.57%）。</li><li><strong>训练资源</strong>：使用 <strong>8 张 A100 GPU</strong> 进行离线训练，全局批量大小 <strong>352</strong>，bfloat16 精度，约 <strong>8 万</strong> 次更新；分组学习率：世界/轨迹 5e-5，修正器 1e-4，选择器/接近度 3e-5。</li><li><strong>推理设置</strong>：动作块长度 K=20，残差边界 ζ_max=0.60，最大修正乘子 α_max=0.70，准入阈值 τ=0.985。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估基准</strong>：DOM 仿真基准，包含 9 个评估维度（交互、感知、泛化三类），每维度 10 个配置、每配置 20 次试验，共 <strong>1,800</strong> 次评估。</li><li><strong>主要指标</strong>：成功率（%）、平均末端执行器路径长度（米）、平均名义回合时长（秒）。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - Aegis-VLA 总体成功率 <strong>56.72%</strong>，显著超过复现的 DynamicVLA 基线 <strong>45.44%</strong>（+11.28 个百分点），在 9 个子维度中 8 个有提升，1 个持平。</p>
+<p> - 最大提升出现在 Dynamic Adaptation（+27.00 个百分点）和 Motion Perception（+25.50 个百分点）。</p>
+<p> - 平均路径长度从 2.41 m 降至 <strong>1.87 m</strong>，回合时长保持不变（8.43 s）。</p>
+<p> - 消融实验表明：差异引导修正器本身优于朴素残差适配器（48.11% vs 22.00%）；加入物体预测提升至 50.56%；完整门控进一步提升至 56.72%。推理时绕过学习准入会显著降低成功率（降至 51.33%），说明门控机制对性能至关重要。</p>
+<p> - 计算效率：单 GPU 推理延迟仅增加约 <strong>5.40%</strong>（227.06 ms → 239.31 ms）。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34014/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33963/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Targeted Adaptation of World-Action Models via Interaction and Motion Heads</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

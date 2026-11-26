@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Dynamic Task Update Benchmark (DTU-Bench): Evaluating Runtime Task Adaptation in Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 Dynamic Task Update Benchmark (DTU-Bench)，用于评估机器人操作策略在任务指令执行过程中发生变化时的适应能力 基于 LIBERO 仿真基准构建，涵盖 40 个任务修订、7 种更新类型和 3 个执行阶段，系统比较新指令在执行前给定与执行中给定的性能差异 针对 13 种视觉-语言-动作（VLA）策略配置进行评测，发现固定指令任务平均成功率达 95.8%，但执行中改变操作对象时成功率骤降至 1.6%，揭示现有基准忽略的适应性问题" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34538">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Dynamic Task Update Benchmark (DTU-Bench): Evaluating Runtime Task Adaptation in Robotic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34538" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34538" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 Dynamic Task Update Benchmark (DTU-Bench)，用于评估机器人操作策略在任务指令执行过程中发生变化时的适应能力</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34538.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34538.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34538.webp" alt="Dynamic Task Update Benchmark (DTU-Bench): Evaluating Runtime Task Adaptation in Robotic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">CSIRO Technology, Australia（主要研究单位，所有作者均隶属）</p>
+        <ul class="article-facts"><li>arXiv 2611.34538</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>CSIRO Technology, Australia</strong>（主要研究单位，所有作者均隶属）</li><li><strong>Monash University, Australia</strong>（作者 Dana Kulić 同时隶属）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>Dynamic Task Update Benchmark (DTU-Bench)</strong>，用于评估机器人操作策略在任务指令执行过程中发生变化时的适应能力</li><li>基于 <strong>LIBERO</strong> 仿真基准构建，涵盖 <strong>40 个任务修订</strong>、<strong>7 种更新类型</strong>和 <strong>3 个执行阶段</strong>，系统比较新指令在执行前给定与执行中给定的性能差异</li><li>针对 <strong>13 种视觉-语言-动作（VLA）策略配置</strong>进行评测，发现固定指令任务平均成功率达 <strong>95.8%</strong>，但执行中改变操作对象时成功率骤降至 <strong>1.6%</strong>，揭示现有基准忽略的适应性问题</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>DTU-Bench</strong>：一个策略无关的运行时任务更新评估框架，覆盖 7 类任务修订和 3 个执行阶段，并计划公开基准和评估代码</li><li>对 <strong>13 种 VLA 配置</strong>进行系统性评估，发现固定指令评估无法暴露的限制，包括更新类型间差异、新目标延迟满足以及临时目标达成与最终目标达成之间的巨大差距</li><li>通过受控实验分析机器人执行状态对指令更新响应的影响，证明前进物理干预（释放物体、退回初始位姿）虽能提升部分任务成功率，但可能引发非期望物体运动</li><li>提出多维度评估协议，区分更新后目标达成、持续时间保持和最终状态维持，揭示“达到新目标”不等于“适应成功”</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>将任务更新建模为指令在时间 \( t=\tau \) 从 \( I_0 \) 切换到 \( I_1 \) 的过程，策略从原始指令执行中间状态 \( s_\tau \) 继续执行，而非重置环境</li><li>依据经典规划问题表示，将更新分类为 <strong>7 种类型</strong>：空间指代、对象身份、目标位置、放置关系、终端状态、子目标替换和复合目标</li><li>在三个执行阶段（早、中、晚）引入指令变更，阶段由任务进度事件触发（如接近、抓取、搬运），而非固定动作步数</li><li>采用 <strong>三条件对照</strong>（原始任务、从初始状态执行更新任务、运行时更新）以及 <strong>多指标评估</strong>：Ever（至少一次满足目标）、Held-10（连续 10 步保持）、Final（执行结束时仍满足）和匹配状态行为诊断</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>使用 <strong>LIBERO</strong> 基准，覆盖 <strong>Spatial、Object、GOAL、Long</strong> 四个任务套件</li><li>构建 <strong>40 个任务更新场景</strong>，每个场景使用 50 个官方初始状态，总计划试验数 <strong>10,000 次/策略配置</strong></li><li>评估 <strong>13 种 VLA 配置</strong>：OpenVLA、OpenVLA-OFT、π0、π0.5、DM0.5、WorldVLA、RynnVLA-002、UniVLA、VLA-JEPA、InstructVLA、τ0-VLA、MolmoAct2、FlashVLA-π0.5</li><li>使用预训练 LIBERO checkpoint，无额外训练；训练资源信息未在论文中报告</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO 仿真，300 动作步更新后执行预算，部分实验延长至 600 步</li><li><strong>主要指标</strong>：Original Final → Runtime Final（%）、Held-10、Final、更新投递率、目标达成与保持差异</li><li><strong>关键结果</strong>：</li></ul>
+<p> - 目的地更新运行时 Final 成功率最高达 <strong>68.8%</strong>（π0.5），而对象身份更新最高仅 <strong>13.5%</strong>（DM0.5），空间指代更新最高 <strong>1.2%</strong>（WorldVLA）</p>
+<p> - 从初始状态执行更新任务的成功率显著高于运行时更新，例如 OpenVLA-OFT 在复合目标更新上差距达 <strong>96.7 个百分点</strong></p>
+<p> - 干预阶段效果因更新类型而异，目的地更新在更晚阶段通常成功率下降（DM0.5 从 64.4% 降至 48.8%），但对象身份更新几乎在所有阶段接近 0</p>
+<p> - 在 94 组匹配状态对照中，37 组两种指令都满足临时目标，但仅 5 组更新指令在最终状态仍保持目标，表明临时目标达成不能代表适应</p>
+<p> - 简单物理辅助（释放抓取物+退回初始位姿）将对象更新成功率从 2% 提升至 38%（π0.5），从 8% 提升至 48%（DM0.5），但伴随 49/50 次非期望物体下落</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34560/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">M$^{2}$AdaptVLA: Multimodal Memory-Augmented Vision-Language-Action Model with Predictive Test-Time Adaptation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34449/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">HoloBrain-0.5 Technical Report</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

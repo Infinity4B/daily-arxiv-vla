@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ELMO: Emergent Representations In Imitation Learning Via Dynamic Hierarchical Action Chunking - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 ELMO（Emergent Latent-action MOdel），一个端到端的分层视觉-语言-动作（VLA）策略框架 核心目标是解决现有潜在动作模型将动作块压缩为“运动码”（motion codes）而非“语义码”（semantic codes）的问题 通过动态分层动作分块与观测条件下的解码器联合训练，ELMO 学习基于场景的语义动作表示（grounded semantic codes），使策略能捕捉行为意图而非仅复制运动学轨迹" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34741">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">ELMO: Emergent Representations In Imitation Learning Via Dynamic Hierarchical Action Chunking</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34741" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34741" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 ELMO（Emergent Latent-action MOdel），一个端到端的分层视觉-语言-动作（VLA）策略框架</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34741.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34741.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34741.webp" alt="ELMO: Emergent Representations In Imitation Learning Via Dynamic Hierarchical Action Chunking 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Vector Institute（Jasper Gerigk、Yang Xu、Igor Gilitsc…</p>
+        <ul class="article-facts"><li>arXiv 2611.34741</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Vector Institute</strong>（Jasper Gerigk、Yang Xu、Igor Gilitschenski 等）</li><li><strong>University of Toronto</strong>（Igor Gilitschenski）</li><li>Nicholas Rhinehart 未在文中标注具体单位，但作者整体所属机构为上述两所</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>ELMO（Emergent Latent-action MOdel）</strong>，一个端到端的分层视觉-语言-动作（VLA）策略框架</li><li>核心目标是解决现有潜在动作模型将动作块压缩为“运动码”（motion codes）而非“语义码”（semantic codes）的问题</li><li>通过动态分层动作分块与观测条件下的解码器联合训练，ELMO 学习<strong>基于场景的语义动作表示（grounded semantic codes）</strong>，使策略能捕捉行为意图而非仅复制运动学轨迹</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>ELMO</strong>：将动态时间分块（H-Net 机制）与单阶段联合训练 VLA 规划器和观测条件解码器相结合，学习语义级动作表示</li><li>系统分析现有潜在动作方法（如 MINT、EDAR、FAST），通过线性探针和 t-SNE 揭示其潜在空间主要编码运动学而非任务语义</li><li>引入 <strong>Blocks</strong> 基准：一个消除捷径（spurious shortcuts）的双臂 ALOHA 仿真基准，用于严格评估语言指令 grounding 与泛化能力</li><li>在 LIBERO、LIBERO-Plus、CALVIN 等标准基准上取得领先，并在 Blocks 上以 38.6% vs 基线 &lt;5% 的成功率展示出极强泛化优势</li><li>在真实双臂 ALOHA 机器人上验证 sim-to-real 迁移：push 13/25、placement 8/25 成功</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>动态分块与路由</strong>：递归状态编码器输出隐状态，路由器通过相邻步余弦相似度判断是否开始新的动作块（boundary），从而将轨迹分割为可变长度语义段</li><li><strong>分层结构</strong>：高层 VLA 规划器仅在边界步运行，利用多视角视觉与语言 token 预测连续语义码 \(z_k\)；低层动作策略在每一步结合当前语义码、编码器状态和手腕相机反馈，通过 flow matching 生成动作窗口</li><li><strong>端到端单阶段训练</strong>：同时优化编码器、路由器、规划器、解码器与动作头，视觉骨干（SmolVLM2）冻结</li><li><strong>边界加权 flow matching</strong>：对边界步预测的动作窗口给予更高权重（\(\alpha=4\)），确保语义码更新传递有效梯度</li><li><strong>路由器正则化</strong>：使用目标压缩比损失和早期运动学启发式 warm-start，引导边界与接触事件对齐</li><li><strong>历史正则化</strong>：通过轨迹拼接（splicing）打破轨迹连续性，避免策略依赖历史记忆；采用 onset-prioritised sampling 集中训练难以正确起始的任务</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>标准仿真基准</strong>：LIBERO（Spatial、Object、Goal、LIBERO-10）、CALVIN（ABCD→D 长时程）、LIBERO-Plus（零样本扰动鲁棒性）</li><li><strong>自建基准 Blocks</strong>：双 ViperX 臂、三 RGB 相机、五色方块随机放置，包含 10,000 条 scripted 演示和 2,500 条恢复轨迹</li><li><strong>真实机器人</strong>：双机械臂 ALOHA 平台，利用仿真 checkpoint 微调 10k 步，30 条人类演示/任务组合</li><li><strong>模型规模</strong>：视觉骨干使用 SmolVLM2；ELMO 可训练参数约 <strong>22M</strong>（编码器、路由器、规划器动作头、解码器），对比 SmolVLA 动作头约 100M</li><li><strong>训练资源</strong>：论文未明确列出 GPU/TPU 型号或数量；主要提及 CALVIN 消融训练 16,000 步、3 个随机种子</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：LIBERO、LIBERO-Plus、CALVIN、Blocks 仿真和真实机器人，均采用闭环评估</li><li><strong>主要指标</strong>：任务成功率（%）、CALVIN 平均连续完成子任务数、Blocks ID/OOD 成功率</li><li><strong>LIBERO</strong>：ELMO 平均成功率 <strong>90.2%</strong>，与 MINT-30M（使用图像增强）持平，优于 SmolVLA、SmolVLA+FAST、SmolVLA+EDAR</li><li><strong>LIBERO-Plus</strong>：ELMO 达到 <strong>64.0%</strong> 零样本成功率；在不使用图像增强的方法中比次好方法高 <strong>9.6 个百分点</strong></li><li><strong>CALVIN ABCD→D</strong>：ELMO 平均完成 <strong>4.08</strong> 个连续子任务，比 SmolVLA+FAST 高 +0.75</li><li><strong>Blocks</strong>：ELMO 获得 <strong>38.6% ID</strong>、<strong>31.7% OOD</strong> 成功率，所有基线均低于 5%，证明其语言 grounding 和泛化能力</li><li><strong>真实机器人</strong>：push 任务 <strong>13/25</strong>、placement 任务 <strong>8/25</strong>，大幅优于 SmolVLA（2/25、0/25）</li><li><strong>消融实验</strong>：去除路由器 warm-start 使边界与抓取事件对齐率从 82% 降至 39%；去除手腕交叉注意力或 skip connection 分别降低平均完成子任务 1.05 和 0.58；固定分块替代动态路由导致性能下降（4.04→3.89）</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34778/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Toward Agentic Robotics: A Large-Scale Study of Harness Design for Robot-Use Agents</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34698/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">A Failure-Driven Data Flywheel for Post-Training Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

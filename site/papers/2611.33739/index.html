@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RegHarness: Regulating What Code-as-Policy Agents Keep from Steps to Skills - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对 Code-as-Policy 智能体（如 RATs）缺乏对步骤级“保留哪些动作”和跨轮次“保留哪些代码修改”的显式治理问题，提出 RegHarness 双层治理框架。 RegHarness 在单个 trial 内通过从重置场景逐步测试并重放已提交步骤，结合固定规则控制器和任务长上下文 LLM 审计器，规范步骤提交；在多个运行之间通过编码智能体根据失败日志改进技能、原语和规则。 仅使用一个低成本模型、不依赖 VLA 策略或演示，在 LIBERO-PRO 和 MolmoSpaces 上显著优于 RATs，并在真实机器人上进行了初步验证。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33739">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">RegHarness: Regulating What Code-as-Policy Agents Keep from Steps to Skills</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33739" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33739" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对 Code-as-Policy 智能体（如 RATs）缺乏对步骤级“保留哪些动作”和跨轮次“保留哪些代码修改”的显式治理问题，提出 RegHarness 双层治理框架。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #3f6ee8; --cover-to: #6fa7ff; --cover-spot: #d5e6ff; --cover-ink: #f7fbff" aria-hidden="true">
+  <p class="note-cover-title">RegHarness: Regulating What Code-as-Policy Agents Keep from Steps to Skills</p>
+</div></figure>
+        <p class="article-unit">厦门大学马来西亚分校人工智能与机器人学院（Shengming Liu、Yunyi Gao、Xinyi…</p>
+        <ul class="article-facts"><li>arXiv 2611.33739</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>厦门大学马来西亚分校人工智能与机器人学院</strong>（Shengming Liu、Yunyi Gao、Xinyi Wang、Shuai Wang、Yi Deng、Li Chenye、Sim Kuan Goh）</li><li><strong>北京中科慧灵机器人科技有限公司具身智能部</strong>（Jianyong Sun）</li><li><strong>中国科学院自动化研究所</strong>（Mingcai Zhou）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对 <strong>Code-as-Policy 智能体</strong>（如 RATs）缺乏对步骤级“保留哪些动作”和跨轮次“保留哪些代码修改”的显式治理问题，提出 <strong>RegHarness</strong> 双层治理框架。</li><li>RegHarness 在单个 trial 内通过<strong>从重置场景逐步测试并重放已提交步骤</strong>，结合固定规则控制器和任务长上下文 LLM 审计器，规范步骤提交；在多个运行之间通过编码智能体根据失败日志改进技能、原语和规则。</li><li>仅使用一个低成本模型、不依赖 VLA 策略或演示，在 LIBERO-PRO 和 MolmoSpaces 上显著优于 RATs，并在真实机器人上进行了初步验证。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>规则驱动的步骤提交 + 作者门控的共享技能库细化</strong>，围绕现有 Code-as-Policy 智能体实现，不依赖 VLA 策略或演示。</li><li>在 180 个配对 <strong>LIBERO-PRO</strong> 试验上完成 <strong>2×2 消融实验</strong>（控制循环 vs. 技能库），并以 RATs 原生 stepwise replay 作为对照。</li><li>详细报告 trial 内部行为、失败原因和运行成本，包括运行期治理自身引起的失败。</li><li>在 <strong>MolmoSpaces</strong> 和真实 <strong>Kinova Gen3</strong> 机器人上验证方法的可迁移性与初步真实世界潜力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>运行期治理</strong>：复用 RATs 的 planner、coder、verifier 和执行器，新增任务长上下文 <strong>auditor</strong> 和六规则固定 <strong>controller</strong>；每次步骤测试都从初始场景 reset 并重放已提交步骤。</li><li><strong>提交条件</strong>：步骤只有在执行正常、验证器判定 <code>succeeded</code> 且审计器建议 <code>commit</code> 时才会被提交；即使尝试次数耗尽，验证器未通过的步骤也绝不会被强制提交。</li><li><strong>四类审计</strong>：计划审计、代码审计、步骤审计、最终审计，输出结构化 JSON；步骤审计可提出 <code>commit</code>、<code>retry</code>、<code>replan</code> 或 <code>abort</code>。</li><li><strong>跨轮次细化</strong>：编码智能体 <strong>Claude Opus 5.5</strong> 在 Claude Code 中读取失败日志和帧，为单位测试通过、默认关闭、字节等价的技能/原语/规则开关，最后由作者手动启用。</li><li>关键创新是<strong>重置场景与任务长记忆结合</strong>：重置清除失败测试的物理影响，而审计器上下文保留失败信息供下一计划或草稿使用。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>LIBERO-PRO</strong>：60 个任务，每任务 5 个初始状态；主要 180 配对试验使用 states 0–2，扩展评估使用 states 0–4。</li><li><strong>MolmoSpaces</strong>：40 项技能库/场景，200 个试验（每场景 5 次重复）。</li><li><strong>真实机器人</strong>：7-DoF <strong>Kinova Gen3</strong> 机械臂，单固定 RGB-D 相机，3 个任务，每任务 15 次试验。</li><li><strong>模型</strong>：所有运行期角色使用 <strong>deepseek-flash</strong>（低成本模型，high thinking effort）；跨轮次编码智能体使用 <strong>Claude Opus 5.5</strong>。</li><li><strong>技能规模</strong>：LIBERO-PRO 技能库从 59 项增至 71 项；MolmoSpaces 使用 40 项技能；文中未报告 GPU/TPU 训练资源，不使用 VLA 策略或演示。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO-PRO 主结果</strong>：RegHarness 在 180 配对 trial 上成功率 <strong>87.8% (158/180)</strong>，显著高于 RATs 的 <strong>39.4% (71/180)</strong>；在 300 trial（states 0–4）上为 <strong>86.7% (260/300)</strong>。</li><li><strong>消融结果</strong>：仅使用 refined skills 为 <strong>135/180 (75.0%)</strong>；仅使用 run-time governance 为 <strong>105/180 (58.3%)</strong>；RATs 原生 stepwise replay 仅 <strong>46/180 (25.6%)</strong>；技能细化带来的提升份额更大。</li><li><strong>MolmoSpaces</strong>：成功率 <strong>72.0% (144/200)</strong>；6 条无放置目标的指令导致 30 次失败。</li><li><strong>真实机器人</strong>：RegHarness <strong>28/45</strong> 成功，RATs <strong>21/45</strong> 成功，差异无统计学显著性（Fisher 精确检验 p=0.20）。</li><li><strong>成本与失败</strong>：RegHarness 每 trial 约 <strong>CNY 2.16 / US$0.32</strong>，RATs 约 <strong>CNY 1.51 / US$0.23</strong>；剩余主要失败来自物体身份混淆、扁平盘子抓取和低把手够取。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33769/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">FailPoint-X: A Policy-Matched, Failure-Anchored Benchmark for Offline VLA Post-Training from Human Takeovers</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33710/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">$\mathrm{M}^{2}$-WAM: Efficient Hierarchical Memory Across Modalities and Timescales for World-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

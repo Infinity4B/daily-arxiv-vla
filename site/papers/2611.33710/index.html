@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>$\mathrm{M}^{2}$-WAM: Efficient Hierarchical Memory Across Modalities and Timescales for World-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 M²-WAM，一种面向世界-动作模型的高效分层记忆方法，同时建模视觉观测与已执行动作交互历史 解决长时程机器人操作中的部分可观测问题：现有 WAM 依赖当前观测或有限上下文，全量视觉历史存储/检索成本随 episode 增长，而激进压缩又会丢失细粒度信息 通过短时密集记忆 + 固定尺寸联想长时记忆的分层结构，在保留近期视觉细节的同时，将更早期信息压缩为固定开销的长期状态，实现与 episode 长度无关的线上记忆预算" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33710">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">$\mathrm{M}^{2}$-WAM: Efficient Hierarchical Memory Across Modalities and Timescales for World-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33710" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33710" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 M²-WAM，一种面向世界-动作模型的高效分层记忆方法，同时建模视觉观测与已执行动作交互历史</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">$\mathrm{M}^{2}$-WAM: Efficient Hierarchical Memory Across Modalities and Timescales for World-Action Models</p>
+</div></figure>
+        <p class="article-unit">哈尔滨工业大学（深圳）（Harbin Institute of Technology, Shenzhe…</p>
+        <ul class="article-facts"><li>arXiv 2611.33710</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>哈尔滨工业大学（深圳）</strong>（Harbin Institute of Technology, Shenzhen）：Xiaopeng Zhang、Weiqi Yuan、Yanjie Li</li><li><strong>小鹏机器人基础模型团队</strong>（Robotics Foundation Model Team, XPENG）：Xiaopeng Zhang、Xin Zhu、Jiaxi Huang、Yueqi Hu、Yin Zhang、Jian Yao</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>M²-WAM</strong>，一种面向世界-动作模型的高效分层记忆方法，同时建模视觉观测与已执行动作交互历史</li><li>解决长时程机器人操作中的部分可观测问题：现有 WAM 依赖当前观测或有限上下文，全量视觉历史存储/检索成本随 episode 增长，而激进压缩又会丢失细粒度信息</li><li>通过短时密集记忆 + 固定尺寸联想长时记忆的分层结构，在保留近期视觉细节的同时，将更早期信息压缩为固定开销的长期状态，实现与 episode 长度无关的线上记忆预算</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>M²-WAM</strong>：在 <strong>Fast-WAM</strong> 的 MoT 骨干上引入模态专用的层级视觉记忆与交互记忆，覆盖短期和长期两个时间尺度</li><li>设计模态化记忆表示与联想式整合机制，包括视觉空间 KV 的 entry-level 时间衰减、标量擦除门和通道独立写门，提升训练稳定性</li><li>通过层级化、查询条件化的检索将短期记忆和长期联想状态融入动作生成，保持线上存储与检索成本有界，不随轨迹长度增长</li><li>在 <strong>MIKASA-Robo</strong>、<strong>RMBench</strong>、<strong>RoboTwin 2.0</strong> 和三项真实世界任务上进行了系统评估，证明记忆增强显著提升记忆依赖任务表现，同时保持通用操作能力</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>骨干网络：基于 <strong>Fast-WAM</strong> 的 <strong>Mixture-of-Transformers (MoT)</strong> 架构，包含 video DiT 与 action DiT；video DiT 编码当前观测并生成逐层视觉 KV，action DiT 执行迭代动作去噪</li><li>视觉短期记忆：以 FIFO 队列保留最近观测在每个 video DiT 层生成的空间 KV 表示，并将首个观测作为永久视觉锚点，不占用 FIFO 容量</li><li>交互短期记忆：将每个观测之后执行的动作前缀通过 1D 卷积、自适应平均池化和线性投影编码为紧凑时间 token，补充视觉观测缺失的行为上下文</li><li>联想长期记忆：从 FIFO 逐出的条目通过 <strong>Gated DeltaNet-2</strong> 启发的 gated delta update 写入固定尺寸状态；视觉 LTM 在 video DiT 的每一层维护独立状态，交互 LTM 在 action DiT 中跨层共享</li><li>记忆检索：动作特征在 MoT 注意力中同时关注当前观测、视觉锚点、视觉 FIFO；交互 STM 每 5 层通过共享 cross-attention 读取；LTM 读取为 \(S^\top q\) 并加回动作 DiT</li><li>训练：采用 flow matching 联合训练动作预测与视频潜变量预测；训练时随机掩码视觉 STM、对执行前缀加噪，历史视觉 KV 以 detach 方式使用以降低训练开销</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>仿真基准：<strong>MIKASA-Robo</strong>（ShellGameTouch、InterceptMedium、RememberColor 3/5/9）、<strong>RMBench</strong>（9 个记忆依赖任务）、<strong>RoboTwin 2.0</strong>（Clean 与 Randomized 设置）</li><li>真实世界任务：<strong>Put Back Block</strong>、<strong>Shell Game</strong>、<strong>Press Button</strong>，每任务收集 50 条演示轨迹</li><li>模型规模：基于 Fast-WAM 的 MoT 骨干；论文正文未明确给出具体参数量，详细配置在附录 A 中</li><li>硬件与机器人平台：<strong>Franka Research 3</strong> 7-DoF 机械臂、主视角 <strong>RealSense D435i</strong> 和腕部 <strong>RealSense D405</strong> 相机；推理在单张 <strong>NVIDIA RTX 3090</strong> GPU 上运行，控制频率 15 Hz</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估协议：仿真基准每任务 100 个 episodes；真实世界每任务 50 次连续 trials；报告任务成功率及其跨任务平均值</li><li><strong>MIKASA-Robo</strong>：<strong>M²-WAM</strong> 平均成功率 78.8%，较 <strong>Fast-WAM</strong> 提高 <strong>+53.2 个百分点</strong>，较 <strong>SimpleMemVLA</strong> 提高 4.8 个百分点</li><li><strong>RMBench</strong>：平均成功率 65.78%，较 <strong>Fast-WAM</strong> 提高 <strong>+61.22 个百分点</strong>，较 <strong>DRAM</strong> 提高 8.00 个百分点，在 PutBack、SwapT、BlocksRank 等任务上提升显著</li><li><strong>RoboTwin 2.0</strong>：Clean 91.78%、Randomized 90.70%，平均 91.24%，与 Fast-WAM 的 91.43% 基本持平，表明记忆机制不会损害通用操作能力</li><li>真实世界：平均成功率 88.7%，比最强基线 <strong>LingBot-VA</strong> 高 <strong>+29.3 个百分点</strong>，比 Fast-WAM 高 84.0 个百分点，三项任务全部最高</li><li>消融与效率：去除 LTM 或 STM、去除交互记忆、模态未分离、全历史无压缩均导致明显下降；推理延迟和 GPU 峰值内存在轨迹增长后趋于稳定</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33739/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">RegHarness: Regulating What Code-as-Policy Agents Keep from Steps to Skills</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33635/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">FreshVLA: Frequency-Regularized Time Scale Hierarchical Latent Actions for Vision-Language-Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

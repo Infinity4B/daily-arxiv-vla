@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>FlipVLA: Backdoor Attacks on Vision-Language-Action(VLA) Models Only Through Bit Flips - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="研究针对视觉-语言-动作（VLA）模型的安全威胁，探索通过有限数量的参数位翻转（bit flips）植入物体触发的后门攻击，且无需重新训练。 核心挑战在于：仅修改少量权重比特，既要使模型在特定触发物体出现时任务失败，又要保持非触发场景（含干扰物体）的正常性能。 论文提出 FlipVLA，一种两阶段 selector–amplifier 方法，利用现有 FC–GELU–FC 结构构造条件性攻击行为。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33810">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">FlipVLA: Backdoor Attacks on Vision-Language-Action(VLA) Models Only Through Bit Flips</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33810" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33810" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">研究针对视觉-语言-动作（VLA）模型的安全威胁，探索通过有限数量的参数位翻转（bit flips）植入物体触发的后门攻击，且无需重新训练。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #316b57; --cover-to: #8bb174; --cover-spot: #d9e7c7; --cover-ink: #fbfff6" aria-hidden="true">
+  <p class="note-cover-title">FlipVLA: Backdoor Attacks on Vision-Language-Action(VLA) Models Only Through Bit Flips</p>
+</div></figure>
+        <p class="article-unit">中国科学院计算技术研究所处理器国家重点实验室（State Key Lab of Processors…</p>
+        <ul class="article-facts"><li>arXiv 2611.33810</li><li>6 节精读</li><li>约 5 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>中国科学院计算技术研究所处理器国家重点实验室</strong>（State Key Lab of Processors, Institute of Computing Technology, CAS）</li><li><strong>中国科学院大学</strong>（University of Chinese Academy of Sciences）</li><li><strong>CASTEST Corporation Ltd.</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>研究针对<strong>视觉-语言-动作（VLA）模型</strong>的安全威胁，探索通过<strong>有限数量的参数位翻转</strong>（bit flips）植入<strong>物体触发的后门攻击</strong>，且无需重新训练。</li><li>核心挑战在于：仅修改少量权重比特，既要使模型在<strong>特定触发物体出现时任务失败</strong>，又要保持<strong>非触发场景（含干扰物体）的正常性能</strong>。</li><li>论文提出 <strong>FlipVLA</strong>，一种两阶段 <strong>selector–amplifier</strong> 方法，利用现有 <strong>FC–GELU–FC</strong> 结构构造条件性攻击行为。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>首次在 VLA 模型上展示通过<strong>有限参数位翻转</strong>植入<strong>物体触发后门</strong>，无需重训练，并保持非触发性能。</li><li>提出 <strong>FlipVLA</strong>：在 FC–GELU–FC 模块内构造 <strong>selector</strong>（触发依赖响应）和 <strong>amplifier</strong>（放大扰动），通过通道筛选与离散位搜索实现。</li><li>在 <strong>OpenVLA-OFT</strong> 和 <strong>GR00T N1.7</strong> 两个模型、<strong>四个 LIBERO 套件</strong>上实现 <strong>90.22%–100%</strong> 的攻击成功率，干净任务成功率最多下降 <strong>1.5 个百分点</strong>。</li><li>系统评估了触发物选择性、位置/姿态/尺寸鲁棒性，并通过激活恢复实验追踪扰动传播路径。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>Selector 构造</strong>：在投影器 FC2 层选取一个输出通道，通过位翻转优化其权重，使触发物体对应 token 的 pre-GELU 响应强正，背景 token 响应为负，利用 GELU 衰减背景。</li><li><strong>Amplifier 构造</strong>：固定 selector 后，在与该通道相连的 FC3 权重上执行位翻转，最大化触发样本的动作 MAE，从而放大对动作生成的影响。</li><li><strong>离散位搜索</strong>：每次迭代评估所有可翻转位（BF16 表示），选择使损失最优的位翻转，逐步累计至预算（默认 60 位 selector + 8 位 amplifier）。</li><li><strong>损失设计</strong>：selector 使用 log-mean-exp 池化聚合触发 token 响应，对抗背景 token 响应，实现激活分离。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：<strong>LIBERO</strong> 四个子套件（Spatial、Goal、Object、Long），每个任务构建含触发（正）、干扰（负）、干净（对照组）的观察组。</li><li><strong>模型</strong>：<strong>OpenVLA-OFT</strong>（基于 Llama 架构，L1 回归动作头）和 <strong>GR00T N1.7</strong>（流匹配扩散 Transformer）。</li><li><strong>资源</strong>：论文未明确报告模型参数量与训练 GPU/TPU 资源；使用预训练模型，位翻转攻击在推理阶段参数上离线搜索。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估设置</strong>：300 组观察用于优化，150 组用于验证；测试集共 151 个配置、18,500 个 episode；对比基</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33816/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">$\widetilde{\varepsilon}$: Does Initial Noise Induce Directional Bias in Vision-Language-Action Models?</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33799/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Dynamic Forcing: Learning Action-Grounded Sparse Dynamic Representations with Dense Future Guidance for World Action Models</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

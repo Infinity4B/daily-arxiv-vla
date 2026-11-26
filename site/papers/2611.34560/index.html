@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>M$^{2}$AdaptVLA: Multimodal Memory-Augmented Vision-Language-Action Model with Predictive Test-Time Adaptation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 M2AdaptVLA，一个多模态记忆增强的视觉-语言-动作（VLA）模型，结合视觉记忆、力矩记忆与预测性测试时自适应。 针对现有机器人策略仅保留单一模态历史（仅视觉或仅力矩）而忽略另一模态关键线索的问题，以及固定策略在部署时难以适应接触动力学变化的问题。 通过融合 TTT 快速权重视觉记忆库、上下文门控力矩记忆以及联合动作-力矩去噪的自适应机制，提升复杂接触敏感操控任务的表现。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34560">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">M$^{2}$AdaptVLA: Multimodal Memory-Augmented Vision-Language-Action Model with Predictive Test-Time Adaptation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34560" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34560" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 M2AdaptVLA，一个多模态记忆增强的视觉-语言-动作（VLA）模型，结合视觉记忆、力矩记忆与预测性测试时自适应。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34560.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34560.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34560.webp" alt="M$^{2}$AdaptVLA: Multimodal Memory-Augmented Vision-Language-Action Model with Predictive Test-Time Adaptation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">作者来自 X SQUARE ROBOT</p>
+        <ul class="article-facts"><li>arXiv 2611.34560</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li>作者来自 <strong>X SQUARE ROBOT</strong></li><li>作者来自 <strong>重庆大学</strong></li><li>作者来自 <strong>中国科学技术大学</strong></li><li>作者来自 <strong>爱丁堡大学</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>M2AdaptVLA</strong>，一个多模态记忆增强的视觉-语言-动作（VLA）模型，结合视觉记忆、力矩记忆与预测性测试时自适应。</li><li>针对现有机器人策略仅保留单一模态历史（仅视觉或仅力矩）而忽略另一模态关键线索的问题，以及固定策略在部署时难以适应接触动力学变化的问题。</li><li>通过融合 TTT 快速权重视觉记忆库、上下文门控力矩记忆以及联合动作-力矩去噪的自适应机制，提升复杂接触敏感操控任务的表现。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>M2AdaptVLA</strong>，将视觉记忆与上下文门控力矩历史相结合，联合预测未来动作和力矩。</li><li>设计 <strong>TTT 增强视觉记忆库</strong>：每个记忆条目将当前帧视觉特征与 TTT 快速权重读出融合，保留超出显式窗口的历史线索。</li><li>提出 <strong>预测性测试时自适应机制</strong>：仅通过联合去噪的最后一步反向传播力矩预测损失，更新前四层 LoRA 适配器，实现低延迟在线适应。</li><li>在八个真实机器人任务上验证，平均成功率 <strong>82.71%</strong>，比最强基线绝对提升 <strong>31.46%</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基础架构基于 <strong>WALL-X</strong> 和 <strong>Qwen3.5</strong> 视觉语言骨干，每个层组包含 Gated DeltaNet (GDN) 块和全注意力块。</li><li><strong>视觉记忆</strong>：使用测试时训练（TTT）快速权重对观察历史编码，将当前帧视觉特征与快速权重读出融合后写入有界 FIFO 记忆库。</li><li><strong>力矩记忆</strong>：使用因果时间卷积网络（TCN）编码归一化力矩历史，并通过上下文门控（基于指令、视觉上下文和力矩历史）调节力矩残差对动作专家去噪的影响。</li><li><strong>测试时自适应</strong>：模型联合去噪未来动作和力矩，利用实际测量的力矩作为自监督信号，仅通过最终去噪步骤反向传播误差来更新 LoRA 适配器。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>任务数据集：设计 <strong>8 个真实机器人任务</strong>，共 <strong>5,953 个演示</strong>，包括 Open Safe、USB-C 插入/移除、插入插头、拔插头、擦白板、OpenDrawerMem、按钮序列、双击等。</li><li>机器人平台：<strong>TeleTwin Desktop</strong>（双臂六轴）和 <strong>Tianji</strong>（双臂七轴），配备前视相机、两个腕部相机、本体感觉和六轴腕部力矩传感器。</li><li>模型骨干：<strong>WALL-X</strong> 使用 <strong>Qwen3.5</strong> 作为视觉语言骨干；LoRA 适配器参数量为 <strong>3.18M</strong>（前四层）和 <strong>19.08M</strong>（全部层）。</li><li>训练资源：<strong>8 个 NVIDIA A800 GPUs</strong>；推理与在线自适应使用 <strong>单个 NVIDIA RTX 5090</strong>。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境：8 个真实机器人任务，在两种双臂平台上进行；每个任务进行 20–30 次全任务试验，Open Safe 额外进行每阶段 60 次试验的消融评估。</li><li>主要指标：任务成功率（Success Rate），包括全任务成功率和分阶段成功率。</li><li>关键结果：</li></ul>
+<p> - 在 8 个任务上，<strong>M2AdaptVLA</strong> 平均成功率为 <strong>82.71%</strong>，比最强基线（π-Mem 51.25%）绝对提升 <strong>31.46%</strong>。</p>
+<p> - 在同时需要视觉和力矩记忆的 Open Safe 任务上，成功率达 <strong>66.7%</strong>，远超 MemoryVLA 的 26.7%。</p>
+<p> - TTT 记忆库在 Open Safe 按键阶段平均成功率达 <strong>69.7%</strong>，优于 GDN (35.0%)、Frame Bank (34.0%) 和 TTT-only (30.0%)；在 OpenDrawerMem 上达 <strong>90%</strong>，在 Button Sequence 上达 <strong>80%</strong>。</p>
+<p> - 上下文门控在 Open Safe 阶段平均成功率 <strong>79.6%</strong>，高于直接注入动作专家 (69.4%)、直接注入 VLM (31.5%) 和 GCA (48.5%)。</p>
+<p> - 预测性测试时自适应在白板接触条件变化时将平均成功率从 <strong>85.0%</strong> 提升至 <strong>97.5%</strong>（+12.5%），每次更新耗时约 <strong>159.5 ms</strong>（LoRA 1–4）。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34614/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34538/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Dynamic Task Update Benchmark (DTU-Bench): Evaluating Runtime Task Adaptation in Robotic Manipulation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

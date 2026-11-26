@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DriftWAM: Faster World-Action Models via Action-Aware Video Drifting - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文针对世界-动作模型（WAMs）在机器人控制中多步去噪导致的推理延迟问题，提出少步蒸馏框架 DriftWAM。 现有少步蒸馏方法仅追求视觉保真度，忽略预测视频对下游动作生成的影响；论文发现视觉相似性与诱导动作相似性之间存在显著分歧。 DriftWAM 通过将预测视频诱导的动作信息纳入视频学习，在保持视觉质量的同时提升少步推理下的控制性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33797">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">DriftWAM: Faster World-Action Models via Action-Aware Video Drifting</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33797" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33797" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文针对世界-动作模型（WAMs）在机器人控制中多步去噪导致的推理延迟问题，提出少步蒸馏框架 DriftWAM。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">DriftWAM: Faster World-Action Models via Action-Aware Video Drifting</p>
+</div></figure>
+        <p class="article-unit">Minyang Li – The Hong Kong University of Science an…</p>
+        <ul class="article-facts"><li>arXiv 2611.33797</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Minyang Li</strong> – <strong>The Hong Kong University of Science and Technology (Guangzhou)</strong></li><li><strong>Siyu Xu</strong> – <strong>The University of Sydney</strong></li><li><strong>Yunke Wang</strong> – <strong>The University of Sydney</strong></li><li><strong>Ying-Cong Chen</strong> – <strong>The Hong Kong University of Science and Technology (Guangzhou)</strong> &amp; <strong>The Hong Kong University of Science and Technology</strong></li><li><strong>Chang Xu</strong> – <strong>The University of Sydney</strong></li><li><strong>Daochang Liu</strong> – <strong>The University of Western Australia</strong> (通讯作者)</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文针对世界-动作模型（WAMs）在机器人控制中多步去噪导致的推理延迟问题，提出少步蒸馏框架 <strong>DriftWAM</strong>。</li><li>现有少步蒸馏方法仅追求视觉保真度，忽略预测视频对下游动作生成的影响；论文发现视觉相似性与诱导动作相似性之间存在显著分歧。</li><li>DriftWAM 通过将预测视频诱导的动作信息纳入视频学习，在保持视觉质量的同时提升少步推理下的控制性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>指出 WAMs 中视频与动作存在功能不对称性，并提出少步视频蒸馏应同时考虑视觉保真度与下游动作一致性。</li><li>提出 <strong>action-aware video drifting</strong>：在漂移核中联合视觉特征距离与动作响应距离，引导视频分布匹配。</li><li>提出 <strong>action-guided video regularization</strong>：利用联合核选出的兼容学生-教师对，直接通过动作级梯度反向传播监督视频生成器。</li><li>在 <strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong> 和真实世界机器人操作任务上验证了 DriftWAM 在相同推理预算下优于现有一致性蒸馏方法（如 Flash-WAM）。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li>基于 <strong>drifting</strong> 范式，将迭代分布匹配从推理阶段转移到训练阶段，实现一步或少步视频生成。</li><li>使用冻结的教师模型作为视觉特征提取器，并引入教师动作分支的单步流速度预测作为动作响应代理，避免多步采样开销。</li><li>教师-学生吸引与学生-学生排斥分别通过联合核计算权重，其中联合核融合视觉距离和动作响应距离。</li><li>动作分支采用 <strong>一致性蒸馏（LCD）</strong> 和流匹配正则化，总目标包含视频漂移损失、动作引导正则化、动作一致性损失和动作流匹配损失。</li><li>教师视频-动作对离线预生成，训练时学生一步生成候选视频，经教师提取特征和动作响应后更新学生参数。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>RoboTwin 2.0</strong>：50 个双臂操作任务，Horizon=1,2,3，Clean 和 Randomized 两种场景划分。</li><li><strong>LIBERO</strong>：Spatial、Object、Goal、Long 四个套件，各 10 个任务。</li><li>真实世界机器人数据：6-DoF AgileX Piper 机械臂，3 个任务，93 条遥操作示范（40,852 帧）用于微调。</li><li>基础模型为 <strong>LingBot-VA</strong>（级联 WAM），教师推理步数在 RoboTwin 2.0 上为 25v/50a，LIBERO 上为 20v/50a。</li><li>训练资源：RoboTwin 2.0 蒸馏约需 24 小时，使用 <strong>4 块 NVIDIA A800 GPU</strong>；推理速度在 <strong>NVIDIA RTX 4090</strong> 上测量。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li>评估环境包括 <strong>RoboTwin 2.0</strong>、<strong>LIBERO</strong> 仿真基准及真实世界机械臂操作。</li><li>主要指标为任务成功率（%）、推理加速比（相对教师模型）以及条件视频分布的 MMD²。</li><li>在 RoboTwin 2.0 上，DriftWAM 在 1v/2a 和 1v/1a 设定下均超过 Flash-WAM；1v/1a 下在 Randomized split 和 Horizon=2、3 场景分别提升 10.40 和 21.40 个百分点。</li><li>在 LIBERO 上，DriftWAM 平均成功率在 1v/2a 下为 97.5%（vs Flash-WAM 96.1%），在 1v/1a 下为 96.9%（vs 95.1%）。</li><li>视频分布对齐分析显示 DriftWAM 的 MMD² 为 <strong>0.3402</strong>，显著低于 Flash-WAM 的 <strong>0.9272</strong>，证明其分布匹配效果更优。</li><li>真实世界实验中，DriftWAM 在 1v/2a 预算下平均成功率最高，优于 Flash-WAM 和直接减少步数的 LingBot-VA，接近多步教师性能。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33799/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Dynamic Forcing: Learning Action-Grounded Sparse Dynamic Representations with Dense Future Guidance for World Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33794/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Keep or Roll Back? Out-of-Loop Judges for Self-Improving VLA and End-to-End Embodied Policies</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

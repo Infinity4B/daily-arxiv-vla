@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>A Failure-Driven Data Flywheel for Post-Training Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="针对预训练视觉-语言-动作（VLA）模型在新平台上无法满足全部行为要求、且缺乏大规模部署车队来收集失败数据的问题，提出一种失败驱动的数据飞轮用于后训练 VLA 模型。 框架通过向重建的真实场景中插入任务相关实体来构造训练数据中不存在的目标场景，并针对目标任务的每个行为要求评估模型，形成失败地图，迭代更新数据生成配额。 在自动驾驶领域的遮挡行人出现和停车标志控制交叉口让行两个任务上实例化，并在两个 VLA 模型和一个非 VLA 规划器上验证了方法的有效性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34698">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">A Failure-Driven Data Flywheel for Post-Training Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34698" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34698" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">针对预训练视觉-语言-动作（VLA）模型在新平台上无法满足全部行为要求、且缺乏大规模部署车队来收集失败数据的问题，提出一种失败驱动的数据飞轮用于后训练 VLA 模型。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34698.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34698.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34698.webp" alt="A Failure-Driven Data Flywheel for Post-Training Vision-Language-Action Models 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">威斯康星大学麦迪逊分校（University of Wisconsin–Madison）（主要研究机构…</p>
+        <ul class="article-facts"><li>arXiv 2611.34698</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>威斯康星大学麦迪逊分校（University of Wisconsin–Madison）</strong>（主要研究机构，大多数作者所属）</li><li><strong>东南大学（Southeast University）</strong>（作者 Shuai Wang 所属）</li><li>通讯作者：<strong>Sikai Chen</strong>（University of Wisconsin–Madison，sikai.chen@wisc.edu）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>针对预训练<strong>视觉-语言-动作（VLA）模型</strong>在新平台上无法满足全部行为要求、且缺乏大规模部署车队来收集失败数据的问题，提出一种<strong>失败驱动的数据飞轮</strong>用于后训练 VLA 模型。</li><li>框架通过向重建的真实场景中插入任务相关实体来构造训练数据中不存在的目标场景，并针对目标任务的每个行为要求评估模型，形成失败地图，迭代更新数据生成配额。</li><li>在自动驾驶领域的<strong>遮挡行人出现</strong>和<strong>停车标志控制交叉口让行</strong>两个任务上实例化，并在两个 VLA 模型和一个非 VLA 规划器上验证了方法的有效性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>提出失败驱动的数据飞轮</strong>：每轮后根据分箱失败率更新失败地图，并据此分配下一轮的数据生成配额。</li><li><strong>引入细粒度评估</strong>：将目标场景分解为阶段特定的行为要求，结合配对的目标场景和控制场景，区分适当的事件响应与过度保守策略。</li><li><strong>实验验证与泛化性</strong>：在三个公开驾驶模型（AutoVLA、ReCogDrive、LAW）和两个目标能力上验证，同时证明在实车部署中有效，且能通过序列训练获得新能力并大部分保留旧能力。</li><li><strong>开源可复现方法</strong>：使用可控事件构造和专家引导数据生成，不依赖大规模真实车队数据，为资源受限团队提供后训练方案。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>可控事件构造</strong>：从 <strong>nuScenes</strong> 日志用 <strong>OmniRe</strong>（基于 3D Gaussian Splatting）重建真实场景，插入任务相关实体（如遮挡车辆、行人）并控制其运动时间，构造训练数据中不存在的目标场景及对应的无事件控制场景。</li><li><strong>专家引导数据生成</strong>：使用规则专家生成满足目标行为的可行轨迹，将渲染的相机观测与未来轨迹段配对作为监督，混合生成数据与原始任务数据进行后训练。</li><li><strong>失败地图与配额分配</strong>：在开发集上按任务条件和难度分箱计算失败率，通过归一化失败率分配下一轮数据生成配额，形成迭代反馈循环。</li><li><strong>细粒度行为评估与检查点选择</strong>：定义阶段特定行为指标（如预期减速、刹车响应、保持停止、恢复运动）和配对控制场景指标（如不必要刹车率），用于评估和选择每一轮的最佳检查点。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：使用 <strong>nuScenes</strong> 数据集，140 个基础场景（100 训练、20 开发、20 密封测试），通过 <strong>OmniRe</strong> 重建；插入资产包括 <strong>THuman2.1</strong> 人体扫描、<strong>MakeHuman</strong> 和 <strong>Microsoft Rocketbox</strong> 儿童模型、<strong>Objaverse</strong> 和 <strong>3DRealCar</strong> 车辆模型。</li><li><strong>模型</strong>：</li></ul>
+<p> - <strong>AutoVLA</strong>：基于 <strong>Qwen2.5-VL-3B</strong>（约 3B 参数），输入三路前视相机、自车状态和导航指令，冻结视觉编码器、微调语言模型。</p>
+<p> - <strong>ReCogDrive</strong>：结合冻结的 <strong>InternVL3-2B</strong> 和扩散规划器，输入单路前视相机、四步姿态历史和导航命令，仅更新规划器。</p>
+<p> - <strong>LAW</strong>：非 VLA 潜世界模型规划器，仅使用相机输入，为对比架构泛化性而包含。</p>
+<ul><li><strong>渲染设置</strong>：三路前视相机，分辨率 800×450，渲染频率 10 Hz。</li><li><strong>训练资源</strong>：论文未在提供片段中明确列出 GPU/TPU 具体型号或数量。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：开放环（预测轨迹行为评估）和封闭环（仿真与实车执行）两种设置；开放环使用 200 个密封测试对，封闭环使用 163 个密封测试对。</li><li><strong>主要指标</strong>：开放环以<strong>临界阶段无碰撞率（CFR）</strong>为主指标，辅助指标包括预期减速（AD）、刹车响应（BR）、保持停止（RS）、恢复运动（RM）、不必要刹车率（UBR）等；封闭环包括行人碰撞率（PC）、安全通过率（SP）、进度（P）等。</li><li><strong>遮挡行人出现任务</strong>：</li></ul>
+<p> - 五轮后处理：<strong>AutoVLA</strong> CFR 从 0.261 提升至 0.579，<strong>ReCogDrive</strong> 从 0.390 提升至 0.765，<strong>LAW</strong> 从 0.967 调整为 0.791（同时降低不必要刹车率）。</p>
+<p> - 封闭环安全通过率：<strong>AutoVLA</strong> 0.227→0.785，<strong>ReCogDrive</strong> 0.429→0.859，<strong>LAW</strong> 0.227→0.423。</p>
+<p> - 实车测试：后训练的 <strong>ReCogDrive</strong> 在目标场景中 5 次尝试 4 次安全通过，基础模型仅 1 次。</p>
+<ul><li><strong>停车标志控制交叉口让行</strong>：</li></ul>
+<p> - 从基础模型训练：<strong>AutoVLA</strong> SLR 从 0.100 提升至 0.897，<strong>ReCogDrive</strong> 从 0.000 提升至 0.667。</p>
+<p> - 序列训练（从行人能力检查点开始）：<strong>AutoVLA</strong> SLR 0.599，<strong>ReCogDrive</strong> 0.358，同时行人 CFR 仅下降 0.010 和 0.032。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34741/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">ELMO: Emergent Representations In Imitation Learning Via Dynamic Hierarchical Action Chunking</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34675/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">RoboEvo$^2$: Recursive Robot Self-Improvement via Harness-Policy Co-Evolution</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

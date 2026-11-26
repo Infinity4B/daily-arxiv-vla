@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Beyond Natural-Language Instructions: Temporal Logic as a Task Language for VLA Models with Visual-Logical Fusion - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 TL-VLA 框架，用时序逻辑（Temporal Logic, TL）替代自然语言指令作为 VLA 模型的任务输入，显式表达对象关系、逻辑依赖和时间要求。 通过 typed graph encoder 和 visual–logical fusion，将任务规格图与当前视觉观测融合，条件化连续动作生成。 开发 TL-aware 预训练，分离语义与结构读出，冻结语言教师对齐语义，结构读出保留 TL 语法，并用自回归动作预测连接图表示与机器人行为，提升长时序、组合式操作任务的性能。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34352">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Beyond Natural-Language Instructions: Temporal Logic as a Task Language for VLA Models with Visual-Logical Fusion</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34352" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34352" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 TL-VLA 框架，用时序逻辑（Temporal Logic, TL）替代自然语言指令作为 VLA 模型的任务输入，显式表达对象关系、逻辑依赖和时间要求。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34352.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34352.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34352.webp" alt="Beyond Natural-Language Instructions: Temporal Logic as a Task Language for VLA Models with Visual-Logical Fusion 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">Nankai University（刘泽志）</p>
+        <ul class="article-facts"><li>arXiv 2611.34352</li><li>6 节精读</li><li>约 9 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>Nankai University</strong>（刘泽志）</li><li><strong>Beijing Zhongguancun Academy</strong>（刘泽志、孙静文、陈洪锦、任少杰、涂佩言、金鑫、陈志博）</li><li><strong>University of Science and Technology of China</strong>（孙静文、陈志博）</li><li><strong>Harbin Institute of Technology</strong>（陈洪锦）</li><li><strong>University of the Chinese Academy of Sciences</strong>（任少杰）</li><li><strong>Zhejiang University</strong>（涂佩言）</li><li><strong>Eastern Institute of Technology, Ningbo</strong>（金鑫）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>TL-VLA</strong> 框架，用<strong>时序逻辑（Temporal Logic, TL）</strong>替代自然语言指令作为 VLA 模型的任务输入，显式表达对象关系、逻辑依赖和时间要求。</li><li>通过 <strong>typed graph encoder</strong> 和 <strong>visual–logical fusion</strong>，将任务规格图与当前视觉观测融合，条件化连续动作生成。</li><li>开发 <strong>TL-aware 预训练</strong>，分离语义与结构读出，冻结语言教师对齐语义，结构读出保留 TL 语法，并用自回归动作预测连接图表示与机器人行为，提升长时序、组合式操作任务的性能。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li><strong>用时空逻辑替代自然语言作为 VLA 策略任务接口</strong>：将结构化的 TL 规格作为策略唯一任务输入，并通过双向视觉-逻辑融合将任务逻辑与场景信息结合。</li><li><strong>提出 TL-aware 预训练框架</strong>：在机器人数据上联合预训练视觉-语言骨干（Qwen3-VL）和 TL 图编码器，分离语义和结构流，为下游视觉-逻辑策略学习提供可迁移初始化。</li><li><strong>在多样化基准上进行系统评估</strong>：覆盖 CALVIN、LIBERO-10、LIBERO-Mem、LIBERO-Plus-10 和 Panda 等基准，证明 TL 接口与预训练在长时序操作和逻辑组合任务上带来显著提升。</li><li><strong>设计选择性迁移策略</strong>：迁移预训练骨干和 TL 编码器，仅在下游学习融合模块和扩散动作头，保持训练高效。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>任务接口</strong>：策略输入为 TL 公式的有类型语法图，同时输入多视角图像和本体感受状态；TL 图包含谓词、逻辑运算符、时间区间和对象绑定等结构信息。</li><li><strong>图编码与视觉绑定</strong>：图编码器通过消息传递生成上下文节点表示，并为谓词参数生成独立查询 token；采用双向交叉注意力实现 graph-to-vision 和 vision-to-graph 融合，使任务逻辑与当前观测相互条件化。</li><li><strong>TL-aware 预训练</strong>：骨干为 <strong>Qwen3-VL-4B-Instruct</strong>，在 CALVIN、LIBERO、Panda 等机器人数据混合上预训练；图读出分为语义流（与冻结语言教师对齐）和结构流（保留有序图信息）；动作使用 <strong>FAST</strong> tokenization 进行自回归预测。</li><li><strong>下游动作学习</strong>：选择性迁移预训练的 Qwen 骨干和 TL 编码器，重新训练融合模块和 <strong>GR00T-style diffusion transformer</strong> 动作头（条件流匹配），输出连续动作块；下游训练时仅使用 TL 图作为任务条件，不再使用自然语言指令。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：</li></ul>
+<p> - <strong>CALVIN</strong>（ABC→D 分割，评测长时序连续任务链）</p>
+<p> - <strong>LIBERO-10</strong>（长时序操作与知识迁移）</p>
+<p> - <strong>LIBERO-Plus-10</strong>（鲁棒性变体，扰动观测与初始状态）</p>
+<p> - <strong>LIBERO-Mem</strong>（多阶段操作，无观测历史）</p>
+<p> - <strong>Panda</strong>（来自 TeLoGraF 的时序逻辑规划基准，含单目标、多目标、顺序、偏序四类规格）</p>
+<ul><li><strong>模型规模</strong>：</li></ul>
+<p> - 骨干：<strong>Qwen3-VL-4B-Instruct</strong>（约 4B 参数）</p>
+<p> - 动作头：GR00T-style diffusion transformer，宽度 1024，16 层 transformer，输出 7 维动作</p>
+<ul><li><strong>训练资源</strong>：</li></ul>
+<p> - 预训练：全局 batch 256，AdamW，50,000 更新，Qwen 峰值学习率 10⁻⁶，图模块 10⁻⁴</p>
+<p> - 下游 CALVIN/LIBERO：30,000 更新，全局 batch 32，Qwen 峰值学习率 10⁻⁵，动作/TL 模块 10⁻⁴</p>
+<p> - 硬件 GPU/TPU 具体数量论文未明确提及</p></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>CALVIN ABC→D</strong>：TL-pretrain+TL 达到 <strong>ACL 3.800</strong>，5 任务成功率 <strong>62.3%</strong>；相比之下，PI-Fast-pretrain+TL 为 3.578 和 54.5%，Qwen+NL 为 3.485 和 48.6%。TL 接口下，TL-aware 初始化比原始 Qwen 提升 ACL 1.115，比同数据量的 PI-Fast-pretrain 提升 0.222 ACL。</li><li><strong>LIBERO-10</strong>：TL-pretrain+TL 成功率 <strong>95.8%</strong>，较 Qwen+TL 的 91.2% 提升 4.6 个百分点，超过所有 StarVLA 基线（88.4–93.8%）。</li><li><strong>LIBERO-Plus-10</strong>：TL-pretrain+TL 成功率 69.23%，较 Qwen+TL 的 66.34% 提升；加入语义中间阶段后达到 <strong>72.21%</strong>。</li><li><strong>LIBERO-Mem</strong>：无观测历史条件下，TL-pretrain+TL 平均成功率 <strong>65.0%</strong>，较 Qwen+NL 的 45.0% 提升 20 个百分点；在任务 6 和 7（有序重排）上分别从 5% 提升到 60%、从 0% 提升到 55%。</li><li><strong>Panda</strong>：在 held-out 128 个时序逻辑规格上，TL-pretrain+TL 的 Success@256 达到 <strong>59.64%</strong>，高于 Qwen+TL 的 48.44% 和 Qwen+NL 的 36.98%；增益集中在多目标（38.60% vs 19.30%）、顺序（87.18% vs 58.97%）和偏序（52.83% vs 25.79%）任务。</li><li><strong>推理延迟</strong>：CALVIN 上 TL 策略平均每次调用 99.4–103.3 ms，比 Qwen+NL 的 289.5 ms 快约 2.8–2.9 倍。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34360/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">One Patch, Many Policies: Object-Associated Physical Patch Attacks on Robotic Manipulation</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34287/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">DataForgeVLA: Fully Synthetic Manipulation Demonstrations for Vision-Language-Action Training</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

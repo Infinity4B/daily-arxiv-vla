@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>CoTacWAM: Joint Modeling of Vision and Touch for Robotic Manipulation - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 CoTacWAM，一个世界-动作模型，用于联合建模机器人操作中的腕部视觉和触觉信息。 核心问题是：如何让腕部视觉和触觉学习共享的接触语义（如接触存在和强度），同时保留各模态独有的互补证据，以支持预测性动作学习和失败后的自主恢复。 通过共享表示、预测性动作学习和失败条件校正，CoTacWAM 在四个真实世界操作任务上显著提升了成功率和鲁棒性。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34117">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">CoTacWAM: Joint Modeling of Vision and Touch for Robotic Manipulation</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34117" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34117" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 CoTacWAM，一个世界-动作模型，用于联合建模机器人操作中的腕部视觉和触觉信息。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34117.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34117.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34117.webp" alt="CoTacWAM: Joint Modeling of Vision and Touch for Robotic Manipulation 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">清华大学（Tsinghua University）</p>
+        <ul class="article-facts"><li>arXiv 2611.34117</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>清华大学</strong>（Tsinghua University）</li><li><strong>北京航空航天大学</strong>（Beihang University）</li><li><strong>Manifold AI</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>CoTacWAM</strong>，一个世界-动作模型，用于联合建模机器人操作中的腕部视觉和触觉信息。</li><li>核心问题是：如何让腕部视觉和触觉学习共享的接触语义（如接触存在和强度），同时保留各模态独有的互补证据，以支持预测性动作学习和失败后的自主恢复。</li><li>通过共享表示、预测性动作学习和失败条件校正，CoTacWAM 在四个真实世界操作任务上显著提升了成功率和鲁棒性。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出一个联合腕-触觉表示，建立共享接触语义，并在不同输入可用性下保留互补的感觉证据。</li><li>将该表示整合到预测性动作学习中，并加入失败条件校正机制，头部视图场景上下文单独提供。</li><li>在四个真实机器人任务（擦拭、插入、豆腐抓取、倒水）上进行了系统评估，包含表示分析、缺失输入鲁棒性测试和消融实验。</li><li>实验证明 CoTacWAM 在无重试下平均成功率达 71.3%，远高于最强基线（35.0%），且在缺失局部观测时仍保持有效操作能力。</li><li>提供自主重试机制，使插入和擦拭任务的成功率进一步提升（插入 50%→80%，擦拭 80%→100%）。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>共享腕-触觉语义学习</strong>：使用接触存在和四个强度等级（无、轻、中、高）作为共享语义标签；通过共享预测头、VICReg 对齐和触觉到视觉的知识蒸馏，建立跨模态语义对应。</li><li><strong>互补信息保留</strong>：在语义对齐的同时，通过物理重建损失（力向量、力矩、强度统计）和视觉特征保留损失，确保联合向量保留每种模态独有的物理和视觉细节。</li><li><strong>预测性动作学习</strong>：采用三专家框架（Video、Tactile、Action），使用流匹配损失同时预测头部视图未来、关节腕-触觉未来向量和动作块；利用注意力掩码防止未来信息泄露到动作生成。</li><li><strong>失败条件恢复</strong>：独立训练的轻量级循环检测器基于触觉力和本体感觉历史确认失败，触发校正行为；校正上下文（失败事件+交互统计）作为额外条件输入动作专家。</li><li><strong>三阶段训练</strong>：Stage 0 预训练 SAF 触觉编码器；Stage 1 学习联合腕-触觉表示（含模态和单个触觉垫 dropout）；Stage 2 冻结编码器进行预测性动作学习，并对插入和擦拭任务进行任务特定微调。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>数据集</strong>：自收集的四个真实机器人操作任务演示数据：白板擦拭、插头插入、豆腐抓取、纸杯倒水；包含头部和腕部相机图像、双触觉垫测量、本体感觉状态和任务指令。</li><li><strong>模型规模和参数量</strong>：论文未明确说明具体参数量；采用了预训练的 <strong>Wan2.2 VAE</strong> 作为视觉编码器（冻结），并适配了 <strong>SAF</strong> 触觉编码器。</li><li><strong>训练资源</strong>：论文未明确说明使用的 GPU/TPU 数量或型号；训练在真实机器人硬件（<strong>Agilex Piper</strong> 机械臂，<strong>Xense G1-WS</strong> 触觉传感器）上采集数据，并在本地计算资源上进行。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：真实机器人平台 <strong>Agilex Piper</strong> 机械臂，配备两个 <strong>Xense G1-WS</strong> 触觉传感器、头部相机和腕部相机；四个任务各进行 20 次试验，每次限时 3 分钟。</li><li><strong>基准方法</strong>：包括 <strong>π0.5</strong>、<strong>Fast-WAM</strong>、<strong>N0-VTLA</strong>、<strong>N0-TWAM</strong>、<strong>FTP-1</strong> 等视觉和触觉策略。</li><li><strong>主要评估指标</strong>：任务成功率（百分比），以及表示分析中的接触/强度准确率、热力图平均绝对误差（MAE）等。</li><li><strong>关键实验结果</strong>：</li></ul>
+<p> - 无重试下，CoTacWAM 平均成功率为 <strong>71.3%</strong>，最强基线 Fast-WAM 为 <strong>35.0%</strong>，提升 36.3 个百分点。</p>
+<p> - 带重试后，插入成功率从 50% 提升至 <strong>80%</strong>，擦拭从 80% 提升至 <strong>100%</strong>。</p>
+<p> - 缺失腕部视觉时，CoTacWAM 在擦拭和豆腐任务上分别保持 <strong>70%</strong> 和 <strong>75%</strong> 成功率，而所有触觉基线均为 0%；缺失触觉时仍有 60% 和 55% 成功率。</p>
+<p> - 表示分析显示共享语义头从触觉读取接触准确率 <strong>99.91%</strong>，从腕部视觉读取 <strong>92.65%</strong>；联合向量保留的物理热力图 MAE 为 <strong>0.1768</strong>，接近触觉向量的 0.1557。</p>
+<p> - 消融实验表明未来交互监督和历史条件对成功率的贡献显著（未来监督提升擦拭 25 个百分点、豆腐 40 个百分点；历史提升擦拭 50 个百分点、豆腐 15 个百分点）。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34124/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">WAtcher: Watching Ahead for Safe Robotic Manipulation with Efficient World-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34014/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

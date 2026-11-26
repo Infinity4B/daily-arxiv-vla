@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>RoboEvo$^2$: Recursive Robot Self-Improvement via Harness-Policy Co-Evolution - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="提出 RoboEvo2，一种通过 harness–policy 协同进化 实现递归机器人自我改进的框架，无需额外人类演示。 解决视觉-语言-动作策略在分布偏移下脆弱以及推理代理反复修复成本高的问题。 利用当前政策失败驱动 harness 搜索解决方案，并将验证的修正内化到政策中，形成双向改进循环。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.34675">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">RoboEvo$^2$: Recursive Robot Self-Improvement via Harness-Policy Co-Evolution</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.34675" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.34675" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">提出 RoboEvo2，一种通过 harness–policy 协同进化 实现递归机器人自我改进的框架，无需额外人类演示。</p>
+        <figure class="article-figure">
+  <button class="article-figure-zoom" type="button" data-zoom-src="https://raw.githubusercontent.com/Infinity4B/daily-arxiv-vla/master/site/assets/paper-images/2611.34675.webp" data-zoom-fallback="../../assets/paper-images/thumbs/2611.34675.webp" aria-label="放大查看论文首图">
+    <img src="../../assets/paper-images/thumbs/2611.34675.webp" alt="RoboEvo$^2$: Recursive Robot Self-Improvement via Harness-Policy Co-Evolution 论文首图" decoding="async" fetchpriority="high" />
+    <span class="article-figure-hint" aria-hidden="true">点击放大</span>
+  </button>
+</figure>
+        <p class="article-unit">The University of Hong Kong</p>
+        <ul class="article-facts"><li>arXiv 2611.34675</li><li>6 节精读</li><li>约 7 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>The University of Hong Kong</strong></li><li><strong>Zhejiang University</strong></li><li><strong>Southern University of Science and Technology</strong></li><li><strong>The Chinese University of Hong Kong, Shenzhen</strong></li><li><strong>City University of Hong Kong</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>提出 <strong>RoboEvo2</strong>，一种通过 <strong>harness–policy 协同进化</strong> 实现递归机器人自我改进的框架，无需额外人类演示。</li><li>解决视觉-语言-动作策略在分布偏移下脆弱以及推理代理反复修复成本高的问题。</li><li>利用当前政策失败驱动 harness 搜索解决方案，并将验证的修正内化到政策中，形成双向改进循环。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Policy-to-Harness (P2H)</strong> 进化：针对政策失败，并行搜索 <strong>Code</strong>、<strong>Code+ICL</strong>、<strong>Code+Policy</strong> 三条路线，选择最低归一化运动 jerk 的验证解。</li><li>提出 <strong>Harness-to-Policy (H2P)</strong> 进化：结合监督学习和 <strong>Counterfactual Preference Distillation (CPD)</strong>，利用同一初始状态下的失败-修正对，训练政策偏好修正行为。</li><li>设计 <strong>递归协同进化框架</strong>，政策与 harness 相互增强：政策提供更强运动基元，harness 指导后续搜索，逐步降低 agentic 推理成本。</li><li>在 <strong>LIBERO-PRO</strong>、<strong>RoboTwin C2R</strong>、<strong>MolmoSpaces</strong> 和真实 <strong>Unitree G1-D</strong> 上验证有效性，展示数据效率和跨具身转移能力。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>P2H</strong> 采用失败引导的多路线搜索：对每个失败，VLM 编码 agent 并行尝试 <strong>Code</strong>（纯代码技能）、<strong>Code+ICL</strong>（结合演示）、<strong>Code+Policy</strong>（组合代码和策略），基于执行反馈迭代修复，选择最小化运动 jerk 的验证解。</li><li><strong>H2P</strong> 利用成功轨迹和匹配的失败-修正对进行训练；<strong>CPD</strong> 损失包含偏好间隔项和不对称邻近项，鼓励政策相对于冻结参考政策增大成功与失败目标的损失差，同时避免过度抑制。</li><li>采用 <strong>失败感知的任务平衡采样</strong> 和 <strong>EWC</strong> 正则化以缓解灾难性遗忘。</li><li>支持 <strong>standalone</strong>（仅政策执行）和 <strong>hybrid</strong>（harness 协调政策与代码技能）两种执行模式。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>数据集：<strong>LIBERO-PRO</strong>（800 未见 seeds）、<strong>RoboTwin C2R</strong>（5,000 未见 episodes）、<strong>MolmoSpaces</strong>（40 个操纵任务）、真实世界 <strong>Unitree G1-D</strong> 机器人。</li><li>初始政策：在机器人演示上微调的预训练 <strong>VLA 或 WAM</strong>（如 <strong>FastWAM</strong>、<strong>π0.5</strong>）。</li><li>Harness 初始化：基于 <strong>CaP-X</strong> 和 <strong>RATs</strong> 的参数化代码技能，包含技能库、记忆和路由。</li><li>编码 agent：<strong>GPT-6 Astra</strong>（VLM 基础）。</li><li>训练资源：未明确说明 GPU 规格，但涉及离线训练和 PPO 在线细化。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO-PRO</strong>：8 轮进化后，standalone 成功率从 <strong>11.0%→84.1%</strong>，hybrid 从 <strong>30.4%→90.5%</strong>，API 成本从 <strong>$430.63 降至 $98.92</strong>。</li><li><strong>RoboTwin C2R</strong>：5 轮进化后，standalone 从 <strong>46.0%→77.5%</strong>，hybrid 从 <strong>48.8%→87.4%</strong>，API 成本降低。</li><li><strong>数据效率</strong>：在 RoboTwin C2R 上，仅用 <strong>7.5K</strong> 自动收集轨迹达到 <strong>77.5%</strong>，匹配传统训练 27.5K 轨迹的 76.8%。</li><li><strong>对比</strong>：超过 harness-only 方法（如 <strong>EmbodiedRSI</strong> 的 86.8% hybrid），经 PPO 细化后 standalone <strong>94.8%</strong>、hybrid <strong>96.8%</strong>。</li><li><strong>消融</strong>：全协同进化优于单独 P2H 或 H2P；三条 P2H 路径组合提升最大；CPD 的 gap 与 proximity 组件均有效。</li><li><strong>任务获取</strong>：<strong>MolmoSpaces</strong> 上 standalone <strong>57.0%</strong>，hybrid <strong>65.8%</strong>，优于 RATs 的 38.0%。</li><li><strong>跨具身转移</strong>：harness 从 <strong>ALOHA AgileX</strong> 转移到 <strong>ARX-X5</strong> 和 <strong>Franka-Panda</strong>，成功率分别 <strong>42.5%</strong> 和 <strong>41.0%</strong>（原 45.8%）。</li><li><strong>真实世界</strong>：<strong>Unitree G1-D</strong> 上，使用 120 自动演示达到 <strong>85.0%</strong> standalone，优于 200 人类演示的 80.0%；hybrid 达到 <strong>95.0%</strong>。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.34698/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">A Failure-Driven Data Flywheel for Post-Training Vision-Language-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.34655/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">Nav4Manip: From Navigation to Dexterous Mobile Manipulation through Co-Evolution</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

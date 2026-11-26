@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Off the Driven Path: Transferable Road Understanding in Driving VLAs - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文研究端到端驾驶 VLA 模型在推理阶段不使用 HD map 时，是否真正内化了道路结构知识，以及这种知识能否迁移到未见过的道路。 核心问题：驾驶 VLAs 是否能够仅从当前驾驶场景推断道路几何、拓扑和交通规则，而不是依赖训练时对特定地点的记忆。 通过构建 Road-KSU 框架并引入地理不相交划分与答案平衡 VQA，论文在语言输出和动作输出两个模态上系统评估道路理解，揭示驾驶得分提升并不等同于更广泛的道路知识习得。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33878">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">Off the Driven Path: Transferable Road Understanding in Driving VLAs</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33878" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33878" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文研究端到端驾驶 VLA 模型在推理阶段不使用 HD map 时，是否真正内化了道路结构知识，以及这种知识能否迁移到未见过的道路。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #d84f61; --cover-to: #f29c6b; --cover-spot: #ffd6c4; --cover-ink: #fff7f4" aria-hidden="true">
+  <p class="note-cover-title">Off the Driven Path: Transferable Road Understanding in Driving VLAs</p>
+</div></figure>
+        <p class="article-unit">KTH Royal Institute of Technology（Lena Wild、Patric…</p>
+        <ul class="article-facts"><li>arXiv 2611.33878</li><li>6 节精读</li><li>约 8 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>KTH Royal Institute of Technology</strong>（Lena Wild、Patric Jensfelt）</li><li><strong>TRATON</strong>（Lena Wild、Rafael Valencia）</li><li><strong>Technical University of Munich</strong>（Christian Helten）</li><li><strong>Stanford University</strong>（Katie Z Luo、Jakob Thumm、Marco Pavone）</li><li><strong>Waymo</strong>（Katie Z Luo）</li><li><strong>scaledrive.ai</strong>（Jakob Thumm）</li><li><strong>NVIDIA</strong>（Marco Pavone）</li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文研究端到端驾驶 VLA 模型在推理阶段不使用 HD map 时，是否真正内化了道路结构知识，以及这种知识能否迁移到未见过的道路。</li><li>核心问题：驾驶 VLAs 是否能够仅从当前驾驶场景推断道路几何、拓扑和交通规则，而不是依赖训练时对特定地点的记忆。</li><li>通过构建 <strong>Road-KSU</strong> 框架并引入地理不相交划分与答案平衡 VQA，论文在语言输出和动作输出两个模态上系统评估道路理解，揭示驾驶得分提升并不等同于更广泛的道路知识习得。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出 <strong>Road-KSU</strong> 框架，将 HD map 与 actor 标注自动转化为道路中心场景图，并统一支持语言空间（<strong>KNOW</strong> VQA、<strong>SAY</strong> 推理）和动作空间（<strong>USE</strong> 轨迹合规性）的道路知识评估与监督。</li><li>建立<strong>地理留出（geographically held-out）</strong>与<strong>答案平衡（answer-balanced）</strong>评估协议，区分熟悉道路上的记忆表现与陌生道路上的泛化能力，并测试模型对非高频道路配置的识别。</li><li>在 <strong>NAVSIM/NAVTEST</strong> 上发现现有规划器得分与训练时通过测试地点的次数显著相关，表明存在道路几何记忆；重训实验进一步证实动作空间在陌生弯道上退化最大，失败主要由几何合规项主导。</li><li>通过受控数据扩展实验揭示<strong>双重分离</strong>：重复访问同一地点提升未见道路上的驾驶表现但几乎不提升道路 VQA；而地理多样性提升道路 VQA 但驾驶表现变化不大，证明地理多样性对可迁移道路理解的关键作用。</li><li>实验表明，模型可能成功驾驶却无法识别更广泛的道路属性或非标准道路配置，且答案平衡敏感性在通用 VLM 和驾驶 VLM 上普遍存在，而人类标注者不受影响。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>道路场景图构建</strong>：以 ego 位置、actor 历史、交通灯状态、局部 HD map 和 ego 路线为输入，构建有向属性图 \(G_0=(V_0,E_0)\)，将地图图元解析为与自然语言对齐的语义节点和关系边，如“ego 所在道路”“左侧车道”等。</li><li><strong>KNOW（VQA）</strong>：从场景图自动生成关于周边道路结构、车道、交叉口、交通控制等道路中心的问题与答案，用于探测更广泛的道路知识。</li><li><strong>SAY（推理目标）</strong>：生成与当前驾驶任务直接相关的道路属性推理任务，聚焦 ego 附近道路及前方关系，作为语言监督/评估。</li><li><strong>USE（动作合规性）</strong>：在现有规则驾驶指标 <strong>EPDMS</strong> 基础上，新增基于相同 HD map 的速度合规性检查，评估预测轨迹对道路几何和交通规则的遵守程度，并支持细粒度失败分析。</li><li><strong>评估协议</strong>：在 <strong>nuPlan</strong> 上构建地理不相交的 train/test split，并设计答案平衡的 VQA 测试集，以减少模型依赖高频答案先验的影响。</li></ul></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li><strong>nuPlan</strong>：主要数据集，提供 HD map 与 actor 标注，用于实例化 Road-KSU 和地理划分。</li><li><strong>NAVSIM / NAVTEST</strong>：用于分析训练与测试地点重叠效应以及现有规划器的道路几何记忆现象。</li><li><strong>RoadVLA</strong>：论文中使用的驾驶 VLA 模型（具体实现细节见原文第 14 节）。</li><li>模型参数量与 GPU/TPU 等训练资源在提供的 HTML 片段中未明确给出，原文“Implementation details of RoadVLA”小节可能包含具体信息。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>评估环境</strong>：NAVSIM/NAVTEST 开放环驾驶基准；地理留出 split 下的语言与动作双模态评估。</li><li><strong>主要指标</strong>：动作空间采用 <strong>EPDMS</strong> 以及来自 USE 的道路几何合规、速度合规等细粒度指标；语言空间采用道路中心 VQA 准确率（含答案平衡准确率）。</li><li><strong>关键结果</strong>：</li></ul>
+<p> - NAVTEST 上约 95% 测试样本距离训练样本小于 10 m；13 个已发表规划器在弯道上的得分随训练时通过测试地点的次数增加而提升，而人类驾驶得分几乎不变，表明存在道路记忆。</p>
+<p> - 地理留出重训后，动作性能在陌生弯道下降最严重，失败主要由偏离可行驶区域等几何合规问题主导；速度合规等其他项在 seen/unseen 上失败率相近。</p>
+<p> - 语言空间 road-centric VQA 在直线和弯道上都出现准确率下降，答案平衡评估下下降更显著；动态场景相关 VQA 准确率保持稳定。</p>
+<p> - 人类标注者识别稀有道路配置可靠，但所有测试的通用 VLM 和驾驶 VLM 在答案平衡下准确率明显下降，表明存在答案先验依赖。</p>
+<p> - 数据扩展实验显示：重复访问同一地点可提升未知道路上的驾驶表现，但 road VQA 几乎不变；在固定数据预算下增加地理覆盖可显著提升 VQA，而驾驶表现变化不大。</p></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33880/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">Integration of Vision-Language-Action Control for Autonomous Forklift Unloading with Limited Real-World Data</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33816/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">$\widetilde{\varepsilon}$: Does Initial Noise Induce Directional Bias in Vision-Language-Action Models?</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>

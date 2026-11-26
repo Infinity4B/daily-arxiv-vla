@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>FreshVLA: Frequency-Regularized Time Scale Hierarchical Latent Actions for Vision-Language-Action Models - VLA / World Action Model 每日论文卡</title>
+    <meta name="description" content="论文提出 FreshVLA，一种面向视觉-语言-动作（VLA）模型的频率正则化时间尺度分层潜在动作框架，旨在从无动作视频中学习可复用的控制导向表示。 解决现有潜在动作模型过度依赖静态外观信息、难以同时捕捉长期任务进展与短期执行动态的问题。 通过高频先验引导视觉过渡编码关注动态区域，并结合跨时间尺度采样与频域正则化，构造粗粒度任务进展与细粒度执行动态的分层连续潜在动作。" />
+    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1119" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111827'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, sans-serif' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function() {
+        var root = document.documentElement;
+        try {
+          var preference = window.localStorage.getItem('color-theme');
+          if (preference !== 'light' && preference !== 'dark') { preference = 'system'; }
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'system' ? (prefersDark ? 'dark' : 'light') : preference;
+          root.dataset.theme = theme;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = theme;
+        } catch (error) {
+          root.dataset.theme = 'light';
+          root.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../../assets/style.css?v=cc546a9ace" />
+    <script defer src="../../assets/site.js?v=6dd3586935"></script>
+    <script defer src="../../assets/paper.js?v=670fbcf987"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ2KCV5P7B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-WZ2KCV5P7B');
+</script>
+  </head>
+  <body class="detail-page" data-paper-id="2611.33635">
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="container masthead-inner">
+        <a class="brand" href="../../" aria-label="返回首页"><span class="brand-mark">VLA<em>/</em>WAM</span><span class="brand-name">每日论文精读</span></a>
+        <div class="masthead-actions">
+          <a class="masthead-back" href="../../">← 全部论文</a>
+          <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换主题" title="切换主题">
+  <span class="theme-toggle-icons" aria-hidden="true">
+    <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24" fill="none">
+      <path d="M20 15.2A8.1 8.1 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <svg class="theme-toggle-icon theme-toggle-icon-system" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </span>
+</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container article-layout">
+      <article class="article">
+        <p class="article-kicker"><strong>论文精读</strong><time datetime="2026-11-25">2026-11-25</time></p>
+        <h1 class="article-title">FreshVLA: Frequency-Regularized Time Scale Hierarchical Latent Actions for Vision-Language-Action Models</h1>
+        <div class="article-links">
+          <a class="pill-link" data-analytics-event="paper_source_click" href="http://arxiv.org/abs/2611.33635" target="_blank" rel="noopener noreferrer">arXiv 原文 ↗</a>
+<a class="pill-link" data-analytics-event="paper_translation_click" href="https://hjfy.top/arxiv/2611.33635" target="_blank" rel="noopener noreferrer">中文翻译 ↗</a>
+        </div>
+        <p class="article-lead">论文提出 FreshVLA，一种面向视觉-语言-动作（VLA）模型的频率正则化时间尺度分层潜在动作框架，旨在从无动作视频中学习可复用的控制导向表示。</p>
+        <figure class="article-figure"><div class="note-cover" style="--cover-from: #6f4cc9; --cover-to: #c57be8; --cover-spot: #efd9ff; --cover-ink: #fdf7ff" aria-hidden="true">
+  <p class="note-cover-title">FreshVLA: Frequency-Regularized Time Scale Hierarchical Latent Actions for Vision-Language-Action Models</p>
+</div></figure>
+        <p class="article-unit">香港科技大学（广州）</p>
+        <ul class="article-facts"><li>arXiv 2611.33635</li><li>6 节精读</li><li>约 6 分钟</li></ul>
+        <div class="article-sections">
+<section class="article-section" id="section-1">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">01</span>研究单位</h2>
+  <div class="prose"><ul><li><strong>香港科技大学（广州）</strong></li><li><strong>小鹏机器人</strong></li><li><strong>同济大学上海自主智能无人系统科学中心</strong></li><li><strong>香港城市大学</strong></li></ul></div>
+</section>
+<section class="article-section" id="section-2">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">02</span>论文概述</h2>
+  <div class="prose"><ul><li>论文提出 <strong>FreshVLA</strong>，一种面向视觉-语言-动作（VLA）模型的频率正则化时间尺度分层潜在动作框架，旨在从无动作视频中学习可复用的控制导向表示。</li><li>解决现有潜在动作模型过度依赖静态外观信息、难以同时捕捉长期任务进展与短期执行动态的问题。</li><li>通过高频先验引导视觉过渡编码关注动态区域，并结合跨时间尺度采样与频域正则化，构造粗粒度任务进展与细粒度执行动态的分层连续潜在动作。</li></ul></div>
+</section>
+<section class="article-section" id="section-3">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">03</span>核心贡献</h2>
+  <div class="prose"><ul><li>提出一种时间分层连续潜在动作表示，将视觉过渡分解为子阶段级长期任务进展和执行级局部动态残差。</li><li>设计 <strong>FreshVLA</strong> 框架，利用时间高通视觉先验（PAWKL）与 DCT 频率正则化学习该表示，并冻结潜在动作编码器作为 VLA 策略训练的目标生成器。</li><li>采用联合流匹配（joint flow matching）同时建模潜在动作与机器人动作，实现视觉动态信息向连续动作预测的迁移。</li><li>在 <strong>LIBERO</strong>、<strong>LIBERO-Long</strong>、<strong>CALVIN</strong> 和零样本 <strong>LIBERO-PLUS</strong> 上取得领先结果，并在真实机器人任务中平均成功率超越 π₀.₅ 7.5 个百分点。</li></ul></div>
+</section>
+<section class="article-section" id="section-4">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">04</span>方法描述</h2>
+  <div class="prose"><ul><li><strong>阶段一：频率引导的分层潜在目标学习</strong></li></ul>
+<p> 使用冻结的 <strong>DINOv3</strong> 视觉编码器提取 patch 级特征，通过可训练的 <strong>DynaAdapter</strong> 生成帧级表示与 patch 注意力分布；利用 FFT 计算时间高通响应作为目标，用 KL 散度损失（PAWKL）引导注意力关注动态变化区域。</p>
+<ul><li><strong>分层潜在动作构造</strong></li></ul>
+<p> 将帧级过渡特征差分输入共享时间编码器；子阶段分支聚合长时间窗口的粗变化，执行分支处理残差细节；通过时间 DCT 加权对齐损失，强制子阶段表示捕获低频长期进展、执行表示捕获高频局部动态，并支持双向预测。</p>
+<ul><li><strong>阶段二：联合潜在动作流匹配</strong></li></ul>
+<p> 冻结阶段一的视觉编码器与潜在动作编码器，仅训练 2B 参数的 <strong>Qwen3.5-2B</strong> 视觉语言骨干和基于 DiT 的流匹配动作专家；对机器人动作与潜在动作两条流同时加噪并联合去噪，训练时使用 MSE 损失匹配速度场；推理时仅输出机器人动作，无需未来观测。</p></div>
+</section>
+<section class="article-section" id="section-5">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">05</span>数据集与资源</h2>
+  <div class="prose"><ul><li>预训练语料包含来自多样真实和模拟环境的 <strong>227,894</strong> 条轨迹，使用 36 帧观测窗口提取潜在动作。</li><li>模型总参数量为 <strong>2B</strong>，视觉语言骨干采用 <strong>Qwen3.5-2B</strong>，视觉编码器为 <strong>DINOv3</strong>，动作专家为 DiT 架构的联合流匹配模块。</li><li>训练配置详见论文附录，正文未明确列出具体 GPU/TPU 数量与型号。</li></ul></div>
+</section>
+<section class="article-section" id="section-6">
+  <h2 class="article-section-title"><span class="article-section-index" aria-hidden="true">06</span>评估与结果</h2>
+  <div class="prose"><ul><li><strong>LIBERO</strong> 基准：FreshVLA 平均成功率 <strong>98.2%</strong>，其中 LIBERO-Spatial 98.7%、LIBERO-Object 99.7%、LIBERO-Goal 96.3%、LIBERO-Long 98.0%；在 LIBERO-Long 上超过 <strong>GR00T-N1.6</strong> 3.6 个百分点。</li><li><strong>CALVIN</strong> 基准：平均完成子任务长度 <strong>4.52</strong>，完成 1–5 个子任务的成功率分别为 99.6%、97.9%、92.4%、85.1%、77.5%，均优于对比方法。</li><li><strong>LIBERO-PLUS</strong> 零样本泛化：宏观平均成功率 <strong>80.4%</strong>，在 7 类扰动中 6 类取得最佳；语言、光照、背景、噪声扰动下分别达到 88.9%、97.0%、97.1%、84.4%。</li><li><strong>表示分析</strong>：FreshVLA 潜在动作在背景、光照、相机扰动下的相对鲁棒性分数（RRS）最高，分别达到 0.980、0.980、0.933；在 35 步动作回归探针中，分层连续表示（HCLA）的相对误差降低比分层离散表示（HDLA）高 51.3 个百分点。</li><li><strong>消融实验</strong>：去除潜在动作集成（w/o LA）导致 LIBERO 平均成功率下降至 96.0%，证明分层潜在动作对长程任务性能的贡献。</li></ul></div>
+</section>
+        </div>
+        <nav class="paper-nav" aria-label="切换论文"><a class="paper-nav-link paper-nav-prev" rel="prev" href="../../papers/2611.33710/"><span class="paper-nav-label"><kbd>←</kbd> 上一篇</span><span class="paper-nav-title">$\mathrm{M}^{2}$-WAM: Efficient Hierarchical Memory Across Modalities and Timescales for World-Action Models</span></a><a class="paper-nav-link paper-nav-next" rel="next" href="../../papers/2611.33467/"><span class="paper-nav-label">下一篇 <kbd>→</kbd></span><span class="paper-nav-title">SplatWAM: Splatting World Action Models for Real-Time 3D Imagination</span></a></nav>
+      </article>
+      <aside class="article-toc" aria-label="本文目录">
+  <p class="article-toc-title">目录</p>
+  <nav><a href="#section-1"><span>01</span>研究单位</a>
+<a href="#section-2"><span>02</span>论文概述</a>
+<a href="#section-3"><span>03</span>核心贡献</a>
+<a href="#section-4"><span>04</span>方法描述</a>
+<a href="#section-5"><span>05</span>数据集与资源</a>
+<a href="#section-6"><span>06</span>评估与结果</a></nav>
+</aside>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>论文来自 <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a> · 中文精读由大模型生成，可能存在错漏，请以原文为准</p>
+      </div>
+    </footer>
+  </body>
+</html>
